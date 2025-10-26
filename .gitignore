@@ -2,7 +2,8 @@
 # Build Tools
 
 .gradle
-/build/
+build/
+**/build/
 !gradle/wrapper/gradle-wrapper.jar
 
 target/
@@ -29,7 +30,6 @@ target/
 rebel.xml
 ### NetBeans ###
 nbproject/private/
-build/*
 nbbuild/
 nbdist/
 .nb-gradle/

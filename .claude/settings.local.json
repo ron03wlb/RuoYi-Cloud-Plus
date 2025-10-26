@@ -17,7 +17,12 @@
       "WebFetch(domain:repo1.maven.org)",
       "Bash(mvn clean validate:*)",
       "Bash(mvn clean install:*)",
-      "Bash(wait)"
+      "Bash(wait)",
+      "Bash(./gradlew tasks:*)",
+      "Bash(./init-gradle.sh)",
+      "Bash(./gradlew:*)",
+      "Bash(1)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
