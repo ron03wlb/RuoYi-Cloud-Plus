@@ -1,42 +1,39 @@
 ################################################################################
-# RuoYi-Cloud-Plus 生产部署配置
+# RuoYi-Cloud-Plus 本地构建配置
 ################################################################################
 #
 # 说明:
-#   此配置文件使用预构建的远程镜像（从镜像仓库拉取）
-#   适用于生产环境或快速部署测试环境
+#   此配置文件用于从本地源码构建 Docker 镜像并部署所有服务
+#   适用于完整的本地开发和测试环境
 #
 # 前置要求:
-#   - Docker 和 Docker Compose
-#   - 确保可以访问镜像仓库 (ruoyi/*)
-#
-# 与 docker-compose-build.yml 的区别:
-#   - docker-compose.yml:       使用预构建镜像（无需本地构建）
-#   - docker-compose-build.yml: 从本地源码构建镜像
+#   1. 必须先使用 Maven 构建生成 JAR 文件
+#      mvn clean package -P dev
+#   2. 或使用自动化脚本: ./build-and-deploy.sh
 #
 # 包含服务:
 #   基础设施:
-#     - MySQL 8.0.42, Redis 7.2.8, MinIO
-#     - Nacos 2.5.0 (配置中心/注册中心)
-#     - Seata (分布式事务), SnailJob (任务调度)
+#     - MySQL, Redis, MinIO               (使用官方镜像)
+#     - Nacos, Seata, SnailJob           (从本地源码构建)
 #   业务服务:
-#     - Gateway (8080), Auth (9210)
-#     - System (9201), Gen (9202), Job (9203)
-#     - Resource (9204), Workflow (9205), Monitor (9100)
+#     - Gateway, Auth, System, Gen        (从本地源码构建)
+#     - Job, Resource, Workflow, Monitor  (从本地源码构建)
 #   可选扩展:
 #     - ELK, RocketMQ, Kafka, Skywalking, Prometheus, Grafana
 #
 # 使用方式:
-#   docker-compose up -d                          # 启动所有服务
-#   docker-compose up -d mysql redis nacos minio  # 只启动基础设施
-#   docker-compose down                           # 停止所有服务
-#   docker-compose ps                             # 查看状态
-#   docker-compose logs -f [服务名]                # 查看日志
+#   推荐使用自动化脚本:
+#     ./build-and-deploy.sh all          # 构建并启动所有服务
+#     ./build-and-deploy.sh infra        # 只启动基础设施
+#     ./build-and-deploy.sh services     # 只启动业务服务
 #
-# 重要提示:
-#   1. 首次启动后需要导入 Nacos 配置
-#   2. 需要初始化数据库 (执行 script/sql/ 下的脚本)
-#   3. 所有数据存储在 /docker/ 目录
+#   或手动使用 docker-compose:
+#     docker-compose -f docker-compose-build.yml build    # 构建镜像
+#     docker-compose -f docker-compose-build.yml up -d    # 启动所有服务
+#     docker-compose -f docker-compose-build.yml down     # 停止所有服务
+#
+# 网络模式:
+#   使用 host 网络模式，服务直接绑定到宿主机端口
 #
 ################################################################################
 
@@ -69,6 +66,9 @@ services:
     network_mode: "host"
 
   nacos:
+    build:
+      context: ../../ruoyi-visual/ruoyi-nacos
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-nacos:2.5.0
     container_name: nacos
     ports:
@@ -137,6 +137,9 @@ services:
     network_mode: "host"
 
   seata-server:
+    build:
+      context: ../../ruoyi-visual/ruoyi-seata-server
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-seata-server:2.5.0
     container_name: seata-server
     ports:
@@ -176,6 +179,9 @@ services:
     network_mode: "host"
 
   ruoyi-monitor:
+    build:
+      context: ../../ruoyi-visual/ruoyi-monitor
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-monitor:2.5.0
     container_name: ruoyi-monitor
     environment:
@@ -192,6 +198,9 @@ services:
     network_mode: "host"
 
   ruoyi-snailjob-server:
+    build:
+      context: ../../ruoyi-visual/ruoyi-snailjob-server
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-snailjob-server:2.5.0
     container_name: ruoyi-snailjob-server
     environment:
@@ -206,6 +215,9 @@ services:
     network_mode: "host"
 
   ruoyi-gateway:
+    build:
+      context: ../../ruoyi-gateway
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-gateway:2.5.0
     container_name: ruoyi-gateway
     environment:
@@ -222,6 +234,9 @@ services:
     network_mode: "host"
 
   ruoyi-auth:
+    build:
+      context: ../../ruoyi-auth
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-auth:2.5.0
     container_name: ruoyi-auth
     environment:
@@ -238,6 +253,9 @@ services:
     network_mode: "host"
 
   ruoyi-system:
+    build:
+      context: ../../ruoyi-modules/ruoyi-system
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-system:2.5.0
     container_name: ruoyi-system
     environment:
@@ -254,6 +272,9 @@ services:
     network_mode: "host"
 
   ruoyi-gen:
+    build:
+      context: ../../ruoyi-modules/ruoyi-gen
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-gen:2.5.0
     container_name: ruoyi-gen
     environment:
@@ -270,6 +291,9 @@ services:
     network_mode: "host"
 
   ruoyi-job:
+    build:
+      context: ../../ruoyi-modules/ruoyi-job
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-job:2.5.0
     container_name: ruoyi-job
     environment:
@@ -288,6 +312,9 @@ services:
     network_mode: "host"
 
   ruoyi-resource:
+    build:
+      context: ../../ruoyi-modules/ruoyi-resource
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-resource:2.5.0
     container_name: ruoyi-resource
     environment:
@@ -304,6 +331,9 @@ services:
     network_mode: "host"
 
   ruoyi-workflow:
+    build:
+      context: ../../ruoyi-modules/ruoyi-workflow
+      dockerfile: Dockerfile
     image: ruoyi/ruoyi-workflow:2.5.0
     container_name: ruoyi-workflow
     environment:

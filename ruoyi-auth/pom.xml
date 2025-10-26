@@ -16,17 +16,85 @@
 
     <dependencies>
 
+        <!-- Spring核心依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- SLF4J -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- RuoYi核心模块 -->
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-json</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-satoken</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-nacos</artifactId>
         </dependency>
 
+        <!-- API模块 -->
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-api-system</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-api-resource</artifactId>
+        </dependency>
+
+        <!-- Sa-Token -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-core</artifactId>
+        </dependency>
+
+        <!-- JustAuth (第三方登录) -->
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+        </dependency>
+
+        <!-- Hutool验证码 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-captcha</artifactId>
         </dependency>
 
-        <!-- RuoYi Common Security-->
+        <!-- RuoYi Common 功能模块 (保留运行时需要的) -->
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-security</artifactId>
@@ -37,7 +105,6 @@
             <artifactId>ruoyi-common-social</artifactId>
         </dependency>
 
-        <!-- RuoYi Common Log -->
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-log</artifactId>
@@ -65,26 +132,13 @@
 
         <dependency>
             <groupId>org.dromara</groupId>
-            <artifactId>ruoyi-common-dubbo</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>ruoyi-common-seata</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-tenant</artifactId>
         </dependency>
 
+        <!-- Dubbo (可选，用于RPC调用) -->
         <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>ruoyi-common-service-impl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>ruoyi-api-resource</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
         </dependency>
 
         <!-- 自定义负载均衡(多团队开发使用) -->

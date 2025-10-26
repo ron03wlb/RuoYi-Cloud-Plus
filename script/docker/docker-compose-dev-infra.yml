@@ -1,0 +1,119 @@
+################################################################################
+# RuoYi-Cloud-Plus 开发环境基础设施配置
+################################################################################
+#
+# 说明:
+#   此配置文件用于快速启动开发环境所需的基础设施服务
+#   使用官方镜像，无需构建，适合开发调试
+#
+# 包含服务:
+#   - MySQL 8.0.42      数据库 (3306)
+#   - Redis 7.2.8       缓存/消息队列 (6379)
+#   - Nacos 2.4.3       配置中心/注册中心 (8848)
+#   - MinIO             对象存储 (9000/9001)
+#
+# 使用方式:
+#   docker-compose -f docker-compose-dev-infra.yml up -d    # 启动所有服务
+#   docker-compose -f docker-compose-dev-infra.yml down     # 停止所有服务
+#   docker-compose -f docker-compose-dev-infra.yml ps       # 查看状态
+#   docker-compose -f docker-compose-dev-infra.yml logs -f  # 查看日志
+#
+# 或使用快捷脚本:
+#   ./dev-start.sh              # 推荐使用（包含健康检查和配置提示）
+#
+# 数据持久化:
+#   所有数据存储在 /docker/ 目录下，请确保该目录有足够权限
+#
+################################################################################
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0.42
+    container_name: mysql
+    environment:
+      TZ: Asia/Shanghai                      # 时区设置
+      MYSQL_ROOT_PASSWORD: ruoyi123          # root 密码
+      MYSQL_DATABASE: ry-cloud               # 初始化数据库名
+    ports:
+      - "3306:3306"
+    volumes:
+      - /docker/mysql/data/:/var/lib/mysql/         # 数据持久化
+      - /docker/mysql/conf/:/etc/mysql/conf.d/      # 自定义配置
+    command:
+      --default-authentication-plugin=mysql_native_password  # 使用传统密码策略
+      --character-set-server=utf8mb4                        # 字符集
+      --collation-server=utf8mb4_general_ci                 # 排序规则
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1                            # 表名不区分大小写
+    privileged: true
+    network_mode: "host"
+
+  # Redis 缓存和消息队列
+  redis:
+    image: redis:7.2.8
+    container_name: redis
+    environment:
+      TZ: Asia/Shanghai                      # 时区设置
+    ports:
+      - "6379:6379"
+    volumes:
+      - /docker/redis/conf:/redis/config     # 配置文件目录
+      - /docker/redis/data/:/redis/data/     # 数据持久化
+    command: "redis-server --requirepass ruoyi123 --appendonly yes"  # 设置密码并启用 AOF 持久化
+    privileged: true
+    network_mode: "host"
+
+  # Nacos 配置中心和注册中心 (官方镜像)
+  nacos:
+    image: nacos/nacos-server:v2.4.3
+    container_name: nacos
+    ports:
+      - "8848:8848"      # 主端口
+      - "9848:9848"      # 客户端 gRPC 端口
+      - "9849:9849"      # 服务端 gRPC 端口
+    environment:
+      TZ: Asia/Shanghai
+      MODE: standalone                      # 单机模式
+      PREFER_HOST_MODE: hostname
+      # MySQL 数据库配置（存储 Nacos 配置数据）
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: 127.0.0.1
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: ry-config      # Nacos 配置数据库
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: ruoyi123
+      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+      # Nacos 认证配置
+      NACOS_AUTH_ENABLE: true               # 启用认证
+      NACOS_AUTH_TOKEN: SecretKey012345678901234567890123456789012345678901234567890123456789
+      NACOS_AUTH_IDENTITY_KEY: nacos
+      NACOS_AUTH_IDENTITY_VALUE: nacos
+      # JVM 内存配置
+      JVM_XMS: 256m
+      JVM_XMX: 512m
+    volumes:
+      - /docker/nacos/logs/:/home/nacos/logs    # 日志目录
+      - /docker/nacos/data/:/home/nacos/data    # 数据目录
+    network_mode: "host"
+
+  # MinIO 对象存储 (兼容 S3 API)
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z   # 最后一个功能完整版本
+    container_name: minio
+    ports:
+      - "9000:9000"      # API 端口
+      - "9001:9001"      # 控制台端口
+    environment:
+      TZ: Asia/Shanghai
+      MINIO_ROOT_USER: ruoyi                # 管理员用户名
+      MINIO_ROOT_PASSWORD: ruoyi123         # 管理员密码（最少 8 位）
+      MINIO_COMPRESS: "off"                 # 关闭压缩
+      MINIO_COMPRESS_EXTENSIONS: ""
+      MINIO_COMPRESS_MIME_TYPES: ""
+    volumes:
+      - /docker/minio/data:/data                  # 数据存储
+      - /docker/minio/config:/root/.minio/        # 配置文件
+    command: server --address ':9000' --console-address ':9001' /data
+    privileged: true
+    network_mode: "host"

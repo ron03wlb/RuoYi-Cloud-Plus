@@ -111,12 +111,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+        <!-- seata-server: installed to local repo via maven-install-plugin (see build plugins section) -->
         <dependency>
             <groupId>org.apache.seata</groupId>
             <artifactId>seata-server</artifactId>
             <version>${seata.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/seata-server-${seata.version}.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -275,6 +274,29 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
+            <!-- Install seata-server JAR to local Maven repository -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>install-seata-server</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/src/main/resources/lib/seata-server-${seata.version}.jar</file>
+                            <groupId>org.apache.seata</groupId>
+                            <artifactId>seata-server</artifactId>
+                            <version>${seata.version}</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -286,10 +308,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <!-- 作用:项目打成jar的同时将本地jar包也引入进去 -->
-                    <includeSystemScope>true</includeSystemScope>
-                </configuration>
             </plugin>
         </plugins>
     </build>
