@@ -1,11 +1,12 @@
 #!/bin/bash
 
 ################################################################################
-# RuoYi-Cloud-Plus 本地构建和部署脚本
+# RuoYi-Cloud-Plus 本地构建和部署脚本 (Gradle)
 ################################################################################
 #
 # 功能说明:
 #   - 从本地源码构建 Docker 镜像并部署所有服务
+#   - 使用 Gradle 构建系统
 #   - 自动检查并构建缺失的 JAR 文件
 #   - 支持分步部署（基础设施 + 业务服务）
 #   - 支持单独构建和部署特定服务
@@ -20,10 +21,10 @@
 #   ./build-and-deploy.sh stop         - 停止所有服务
 #
 # 环境变量:
-#   MAVEN_PROFILE   Maven 构建配置 (dev|prod)，默认: dev
+#   GRADLE_PROFILE   Gradle 构建配置 (dev|prod)，默认: dev
 #
 # 示例:
-#   MAVEN_PROFILE=prod ./build-and-deploy.sh all
+#   GRADLE_PROFILE=prod ./build-and-deploy.sh all
 #
 ################################################################################
 
@@ -39,16 +40,18 @@ NC='\033[0m' # No Color
 PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 echo -e "${GREEN}项目根目录: ${PROJECT_ROOT}${NC}"
 
-# Maven profile (dev 或 prod)
-PROFILE=${MAVEN_PROFILE:-dev}
-echo -e "${GREEN}使用 Maven Profile: ${PROFILE}${NC}"
+# Gradle profile (dev 或 prod)
+PROFILE=${GRADLE_PROFILE:-dev}
+echo -e "${GREEN}使用 Gradle Profile: ${PROFILE}${NC}"
 
 # 构建指定模块
 build_module() {
     local module=$1
     echo -e "${YELLOW}正在构建模块: ${module}${NC}"
     cd "${PROJECT_ROOT}"
-    mvn clean package -pl "${module}" -am -P "${PROFILE}" -DskipTests=true
+    # 转换模块路径为 Gradle 格式 (ruoyi-gateway -> :ruoyi-gateway)
+    local gradle_module=":${module//\//:}"
+    ./gradlew ${gradle_module}:bootJar -x test --no-configuration-cache
     echo -e "${GREEN}✓ ${module} 构建完成${NC}"
 }
 
@@ -56,7 +59,7 @@ build_module() {
 build_all_services() {
     echo -e "${YELLOW}开始构建所有服务...${NC}"
     cd "${PROJECT_ROOT}"
-    mvn clean package -P "${PROFILE}" -DskipTests=true
+    ./gradlew build -x test --no-configuration-cache
     echo -e "${GREEN}✓ 所有服务构建完成${NC}"
 }
 
@@ -64,8 +67,8 @@ build_all_services() {
 start_infra() {
     echo -e "${YELLOW}启动基础设施服务 (MySQL, Redis, Nacos, MinIO)...${NC}"
 
-    # 检查是否需要构建 Nacos
-    if [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-nacos/target/ruoyi-nacos.jar" ]; then
+    # 检查是否需要构建 Nacos (Gradle 输出在 build/libs/ 目录)
+    if [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-nacos/build/libs/ruoyi-nacos.jar" ]; then
         echo -e "${YELLOW}Nacos JAR 不存在，开始构建...${NC}"
         build_module "ruoyi-visual/ruoyi-nacos"
     fi
@@ -86,19 +89,19 @@ start_infra() {
 start_services() {
     echo -e "${YELLOW}启动业务服务...${NC}"
 
-    # 检查关键服务的 JAR 文件
+    # 检查关键服务的 JAR 文件 (Gradle 输出在 build/libs/ 目录)
     local services_to_build=()
 
-    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-seata-server/target/ruoyi-seata-server.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-seata-server")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-snailjob-server/target/ruoyi-snailjob-server.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-snailjob-server")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-gateway/target/ruoyi-gateway.jar" ] && services_to_build+=("ruoyi-gateway")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-auth/target/ruoyi-auth.jar" ] && services_to_build+=("ruoyi-auth")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-system/target/ruoyi-system.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-system")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-gen/target/ruoyi-gen.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-gen")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-job/target/ruoyi-job.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-job")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-resource/target/ruoyi-resource.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-resource")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-workflow/target/ruoyi-workflow.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-workflow")
-    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-monitor/target/ruoyi-monitor.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-monitor")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-seata-server/build/libs/ruoyi-seata-server.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-seata-server")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-snailjob-server/build/libs/ruoyi-snailjob-server.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-snailjob-server")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-gateway/build/libs/ruoyi-gateway.jar" ] && services_to_build+=("ruoyi-gateway")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-auth/build/libs/ruoyi-auth.jar" ] && services_to_build+=("ruoyi-auth")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-system/build/libs/ruoyi-system.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-system")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-gen/build/libs/ruoyi-gen.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-gen")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-job/build/libs/ruoyi-job.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-job")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-resource/build/libs/ruoyi-resource.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-resource")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-modules/ruoyi-workflow/build/libs/ruoyi-workflow.jar" ] && services_to_build+=("ruoyi-modules/ruoyi-workflow")
+    [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-monitor/build/libs/ruoyi-monitor.jar" ] && services_to_build+=("ruoyi-visual/ruoyi-monitor")
 
     # 如果有缺失的 JAR，直接构建全部
     if [ ${#services_to_build[@]} -gt 0 ]; then

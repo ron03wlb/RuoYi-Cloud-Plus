@@ -17,7 +17,7 @@
 #
 # Nacos 版本选择:
 #   - 官方镜像: 无需构建，启动快速，使用稳定的官方版本
-#   - 自定义版本: 需要 Maven 构建，可以包含项目特定配置
+#   - 自定义版本: 需要 Gradle 构建，可以包含项目特定配置
 #
 ################################################################################
 
@@ -47,7 +47,7 @@ ${YELLOW}使用方式:${NC}
   $0 [选项]
 
 ${YELLOW}选项:${NC}
-  --custom-nacos  使用自定义构建的 Nacos（需要 Maven 构建）
+  --custom-nacos  使用自定义构建的 Nacos（需要 Gradle 构建）
   --skip-build    跳过 Nacos 构建检查（仅与 --custom-nacos 一起使用）
   --help          显示此帮助信息
 
@@ -125,10 +125,10 @@ fi
 if [ "$USE_CUSTOM_NACOS" = true ]; then
     echo -e "${YELLOW}1. 检查自定义 Nacos JAR 文件...${NC}"
     if [ "$SKIP_BUILD" = false ]; then
-        if [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-nacos/target/ruoyi-nacos.jar" ]; then
+        if [ ! -f "${PROJECT_ROOT}/ruoyi-visual/ruoyi-nacos/build/libs/ruoyi-nacos.jar" ]; then
             echo -e "${YELLOW}   Nacos JAR 不存在，开始构建...${NC}"
             cd "${PROJECT_ROOT}"
-            mvn clean package -pl ruoyi-visual/ruoyi-nacos -am -P dev -DskipTests=true
+            ./gradlew :ruoyi-visual:ruoyi-nacos:bootJar -x test --no-configuration-cache
             if [ $? -ne 0 ]; then
                 echo -e "${RED}   Nacos 构建失败！${NC}"
                 exit 1

@@ -140,36 +140,46 @@ ruoyi-modules/ruoyi-{module}/
 
 ### Prerequisites
 - JDK 17 or 21
-- Maven 3.6+
+- Gradle 8.12+ (included via Gradle Wrapper)
 - Running Nacos server (config and registry)
 - Running Redis
 - Running MySQL/PostgreSQL/Oracle/SQLServer
 
-### Maven Profiles
-The project has two Maven profiles defined in `pom.xml`:
-- **dev** (default): Development environment
-- **prod**: Production environment
+### Gradle Profiles
+The project uses Gradle for building. Configuration properties can be set via:
+- `gradle.properties`: Project-level configuration
+- Command-line properties: `-PprofilesActive=prod`
+- Environment variables
 
 Profile settings control:
-- `profiles.active`: Environment identifier
-- `nacos.server`: Nacos server address (default: 127.0.0.1:8848)
-- `nacos.username/password`: Nacos credentials (default: nacos/nacos)
-- `logstash.address`: Logstash server for ELK logging
+- `profilesActive`: Environment identifier (dev/prod), default: dev
+- `nacosServer`: Nacos server address (default: 127.0.0.1:8848)
+- `nacosUsername/password`: Nacos credentials (default: nacos/nacos)
+- `nacosNamespace`: Nacos namespace (default: empty)
 
 ### Build Commands
 
 ```bash
 # Build all modules (skips tests by default)
-mvn clean package
+./gradlew build -x test
 
 # Build with specific profile
-mvn clean package -P prod
+./gradlew build -x test -PprofilesActive=prod
 
 # Build specific module
-mvn clean package -pl ruoyi-modules/ruoyi-system -am
+./gradlew :ruoyi-modules:ruoyi-system:build -x test
 
 # Build and run tests
-mvn clean package -DskipTests=false
+./gradlew build
+
+# Clean build
+./gradlew clean build -x test
+
+# View all available tasks
+./gradlew tasks
+
+# View project structure
+./gradlew projects
 ```
 
 ### Docker Deployment (Local Build)
@@ -266,13 +276,13 @@ Services should be started in this order:
 #### Running Locally
 
 ```bash
-# Option 1: Using Maven
+# Option 1: Using Gradle
 cd ruoyi-{module}
-mvn spring-boot:run
+../../gradlew bootRun
 
 # Option 2: Using compiled JAR
 cd ruoyi-{module}
-java -jar target/ruoyi-{module}.jar
+java -jar build/libs/ruoyi-{module}.jar
 
 # Option 3: Using IntelliJ IDEA
 # Use the pre-configured run configurations in .run/ directory
@@ -280,24 +290,27 @@ java -jar target/ruoyi-{module}.jar
 # Option 4: Mixed mode - Infrastructure in Docker, services locally
 cd script/docker
 docker-compose -f docker-compose-build.yml up -d mysql redis nacos minio
-# Then run services locally using Maven or IDEA
+# Then run services locally using Gradle or IDEA
 ```
 
 ### Testing
 
 ```bash
 # Run all tests
-mvn test
+./gradlew test
 
 # Run tests for specific module
-mvn test -pl ruoyi-modules/ruoyi-system
+./gradlew :ruoyi-modules:ruoyi-system:test
 
-# Run tests with specific profile (controlled by @Tag annotation)
-mvn test -P dev  # Only runs tests tagged with "dev"
-mvn test -P prod # Only runs tests tagged with "prod"
+# Run tests with specific tags (controlled by @Tag annotation)
+./gradlew test --tests "*DevTest"  # Only runs tests with "DevTest" in name
+./gradlew test --tests "*ProdTest" # Only runs tests with "ProdTest" in name
 
-# Skip tests tagged with "exclude"
-mvn test -DexcludedGroups=exclude
+# Skip specific tests
+./gradlew test --exclude-task :ruoyi-example:test
+
+# Run tests with detailed output
+./gradlew test --info
 ```
 
 ### Code Generation
