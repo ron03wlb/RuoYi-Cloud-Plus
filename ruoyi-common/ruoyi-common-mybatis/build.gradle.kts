@@ -11,8 +11,8 @@ dependencies {
     // ===========================================
     // Spring 依赖
     // ===========================================
-    api(libs.spring.context)
-    api(libs.spring.aop)
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-aop")
 
     // ===========================================
     // 工具库
@@ -48,10 +48,10 @@ dependencies {
     // ===========================================
     // MySQL 数据库驱动
     // ===========================================
-    api(libs.mysql.connector)
+    api("com.mysql:mysql-connector-j")
 
     // 可选的其他数据库驱动（注释掉）
-    // compileOnly(libs.oracle.jdbc)
-    // compileOnly(libs.postgresql)
-    // compileOnly(libs.mssql.jdbc)
+    // compileOnly("com.oracle.database.jdbc:ojdbc11")
+    // compileOnly("org.postgresql:postgresql")
+    // compileOnly("com.microsoft.sqlserver:mssql-jdbc")
 }

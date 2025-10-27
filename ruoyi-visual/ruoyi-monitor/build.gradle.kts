@@ -26,10 +26,10 @@ dependencies {
     // ===========================================
     // Spring Boot Web (使用 Undertow)
     // ===========================================
-    implementation(libs.spring.boot.starter.web) {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
-    implementation(libs.spring.boot.starter.undertow)
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
 
     // ===========================================
     // Spring Security

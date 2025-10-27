@@ -16,43 +16,43 @@ dependencies {
     // ===========================================
     // Spring 核心依赖
     // ===========================================
-    api(libs.spring.context)
-    api(libs.spring.core)
-    api(libs.spring.beans)
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-core")
+    api("org.springframework:spring-beans")
 
     // Spring Web 模块
-    api(libs.spring.web)
+    api("org.springframework:spring-web")
 
     // Spring Boot 自动配置
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
     // Jakarta EE API（Jakarta 命名空间，不是 javax）
     // ===========================================
 
     // Validation API
-    api(libs.jakarta.validation.api)
+    api("jakarta.validation:jakarta.validation-api")
 
     // Hibernate Validator（验证框架实现）
-    api(libs.hibernate.validator)
+    api("org.hibernate.validator:hibernate-validator")
 
     // Jakarta Annotation API（@Resource, @PostConstruct 等）
-    api(libs.jakarta.annotation.api)
+    api("jakarta.annotation:jakarta.annotation-api")
 
     // Servlet API
-    api(libs.jakarta.servlet.api)
+    api("jakarta.servlet:jakarta.servlet-api")
 
     // ===========================================
     // 日志
     // ===========================================
-    api(libs.slf4j.api)
+    api("org.slf4j:slf4j-api")
 
     // ===========================================
     // 工具库
     // ===========================================
 
     // Apache Commons Lang3
-    api(libs.commons.lang3)
+    api("org.apache.commons:commons-lang3")
 
     // Hutool 工具库
     api(libs.hutool.core)

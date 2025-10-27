@@ -29,13 +29,13 @@ dependencies {
     // 消息队列依赖
     // ===========================================
     // RabbitMQ
-    implementation(libs.spring.boot.starter.amqp)
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
 
     // RocketMQ
     implementation(libs.rocketmq.spring.boot.starter)
 
     // Kafka
-    implementation(libs.spring.kafka)
+    implementation("org.springframework.kafka:spring-kafka")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

@@ -14,12 +14,12 @@ description = "ruoyi-auth 认证授权中心"
 
 dependencies {
     // Spring 核心
-    api(libs.spring.context)
-    api(libs.spring.boot)
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework:spring-context")
+    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // 日志
-    api(libs.slf4j.api)
+    api("org.slf4j:slf4j-api")
 
     // RuoYi核心模块
     implementation(project(":ruoyi-common:ruoyi-common-core"))

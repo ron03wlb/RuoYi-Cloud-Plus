@@ -16,8 +16,8 @@ dependencies {
     // ===========================================
     // Spring Cloud
     // ===========================================
-    api(libs.spring.cloud.context)
-    api(libs.spring.cloud.commons)
+    api("org.springframework.cloud:spring-cloud-context")
+    api("org.springframework.cloud:spring-cloud-commons")
 
     // ===========================================
     // Dubbo

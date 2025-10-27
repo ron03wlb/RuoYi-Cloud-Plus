@@ -18,8 +18,8 @@ dependencies {
     // ===========================================
 
     // Jackson 核心
-    api(libs.jackson.databind)
+    api("com.fasterxml.jackson.core:jackson-databind")
 
     // Java 8 日期时间支持
-    api(libs.jackson.datatype.jsr310)
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }

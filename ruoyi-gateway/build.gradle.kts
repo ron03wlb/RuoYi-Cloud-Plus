@@ -22,25 +22,31 @@ dependencies {
     // ===========================================
     // Spring 核心依赖
     // ===========================================
-    implementation(libs.spring.context)
-    implementation(libs.spring.core)
-    implementation(libs.spring.web)
-    implementation(libs.spring.boot)
-    implementation(libs.spring.boot.autoconfigure)
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-core")
+    implementation("org.springframework:spring-web")
+    implementation("org.springframework.boot:spring-boot")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
     // Spring Cloud Gateway
     // ===========================================
-    implementation(libs.bundles.spring.cloud.gateway)
+    implementation("org.springframework.cloud:spring-cloud-gateway-server")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
+
+    implementation("io.projectreactor:reactor-core")
+
+    implementation("com.github.ben-manes.caffeine:caffeine")
 
     // 注意：Gateway 使用 WebFlux 而不是 Web MVC
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
 
     // 负载均衡
-    implementation(libs.spring.cloud.starter.loadbalancer)
+    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
 
     // Caffeine 缓存（LoadBalancer 需要）
-    implementation(libs.caffeine)
+    implementation("com.github.ben-manes.caffeine:caffeine")
 
     // ===========================================
     // Nacos 服务发现 + 配置中心
@@ -50,7 +56,7 @@ dependencies {
     // ===========================================
     // Spring Boot Actuator（健康检查、监控）
     // ===========================================
-    implementation(libs.spring.boot.starter.actuator)
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // ===========================================
     // Hutool（工具库）

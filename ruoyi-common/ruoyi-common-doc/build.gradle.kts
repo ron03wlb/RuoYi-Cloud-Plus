@@ -26,5 +26,5 @@ dependencies {
     // ===========================================
     // Jackson Kotlin Module
     // ===========================================
-    api(libs.jackson.module.kotlin)
+    api("com.fasterxml.jackson.module:jackson-module-kotlin")
 }

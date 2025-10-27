@@ -11,24 +11,24 @@ dependencies {
     // ===========================================
     // Spring 核心依赖
     // ===========================================
-    api(libs.spring.context)
-    api(libs.spring.core)
-    api(libs.spring.context.support)
-    api(libs.spring.web)
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-core")
+    api("org.springframework:spring-context-support")
+    api("org.springframework:spring-web")
 
     // Spring Boot
-    api(libs.spring.boot)
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
     // Jakarta EE API
     // ===========================================
-    api(libs.jakarta.servlet.api)
+    api("jakarta.servlet:jakarta.servlet-api")
 
     // ===========================================
     // 日志
     // ===========================================
-    api(libs.slf4j.api)
+    api("org.slf4j:slf4j-api")
 
     // ===========================================
     // 工具库
@@ -53,10 +53,10 @@ dependencies {
     // ===========================================
     // Caffeine（本地缓存）
     // ===========================================
-    api(libs.caffeine)
+    api("com.github.ben-manes.caffeine:caffeine")
 
     // ===========================================
     // Jackson（序列化）
     // ===========================================
-    api(libs.jackson.datatype.jsr310)
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }

@@ -19,5 +19,5 @@ dependencies {
     // ===========================================
     // Spring WebMVC
     // ===========================================
-    api(libs.spring.webmvc)
+    api("org.springframework:spring-webmvc")
 }

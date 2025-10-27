@@ -21,7 +21,7 @@ dependencies {
     // ===========================================
     // Spring Cloud Alibaba Seata
     // ===========================================
-    api(libs.spring.cloud.starter.alibaba.seata) {
+    api("com.alibaba.cloud:spring-cloud-starter-alibaba-seata") {
         // 排除 Log4j
         exclude(group = "org.apache.logging.log4j", module = "*")
         // 排除旧版 dubbo-filter-seata

@@ -31,5 +31,5 @@ dependencies {
     // ===========================================
     // Caffeine 本地缓存
     // ===========================================
-    api(libs.caffeine)
+    api("com.github.ben-manes.caffeine:caffeine")
 }

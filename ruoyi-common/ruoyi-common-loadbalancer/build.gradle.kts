@@ -16,7 +16,7 @@ dependencies {
     // ===========================================
     // Spring Cloud LoadBalancer
     // ===========================================
-    api(libs.spring.cloud.starter.loadbalancer)
+    api("org.springframework.cloud:spring-cloud-starter-loadbalancer")
 
     // ===========================================
     // Dubbo (provided)

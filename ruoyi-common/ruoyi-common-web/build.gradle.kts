@@ -16,23 +16,23 @@ dependencies {
     // ===========================================
     // Spring Boot Web
     // ===========================================
-    api(libs.spring.boot.starter.web) {
+    api("org.springframework.boot:spring-boot-starter-web") {
         // 排除 Tomcat，使用 Undertow
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
 
     // Undertow（性能更强的 Web 容器）
-    api(libs.spring.boot.starter.undertow)
+    api("org.springframework.boot:spring-boot-starter-undertow")
 
     // ===========================================
     // Spring Boot Actuator
     // ===========================================
-    api(libs.spring.boot.starter.actuator)
+    api("org.springframework.boot:spring-boot-starter-actuator")
 
     // ===========================================
     // Nacos Discovery（可选）
     // ===========================================
-    compileOnly(libs.spring.cloud.starter.alibaba.nacos.discovery)
+    compileOnly("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
 
     // ===========================================
     // Mica Metrics

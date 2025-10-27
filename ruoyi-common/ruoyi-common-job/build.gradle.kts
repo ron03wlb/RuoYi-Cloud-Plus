@@ -16,12 +16,12 @@ dependencies {
     // ===========================================
     // Spring Boot
     // ===========================================
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
     // Spring Cloud 服务发现
     // ===========================================
-    api(libs.spring.cloud.commons)
+    api("org.springframework.cloud:spring-cloud-commons")
 
     // ===========================================
     // SnailJob Client

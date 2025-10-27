@@ -14,12 +14,12 @@ description = "ruoyi-gen代码生成"
 
 dependencies {
     // Spring核心依赖
-    api(libs.spring.context)
-    api(libs.spring.boot)
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework:spring-context")
+    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // Apache Commons
-    api(libs.commons.lang3)
+    api("org.apache.commons:commons-lang3")
 
     // MyBatis Plus
     api(libs.mybatis.plus.annotation)

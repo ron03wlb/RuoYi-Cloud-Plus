@@ -14,15 +14,15 @@ description = "ruoyi-system系统模块"
 
 dependencies {
     // Spring核心依赖
-    api(libs.spring.context)
-    api(libs.spring.web)
-    api(libs.spring.beans)
-    api(libs.spring.boot)
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-web")
+    api("org.springframework:spring-beans")
+    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // Jakarta API
-    api(libs.jakarta.servlet.api)
-    api(libs.jakarta.validation.api)
+    api("jakarta.servlet:jakarta.servlet-api")
+    api("jakarta.validation:jakarta.validation-api")
 
     // Hutool
     api(libs.hutool.core)

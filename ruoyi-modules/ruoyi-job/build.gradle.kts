@@ -16,14 +16,14 @@ dependencies {
     // ===========================================
     // Spring核心依赖
     // ===========================================
-    api(libs.spring.context)
-    api(libs.spring.boot)
-    api(libs.spring.boot.autoconfigure)
+    api("org.springframework:spring-context")
+    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
     // SLF4J
     // ===========================================
-    api(libs.slf4j.api)
+    api("org.slf4j:slf4j-api")
 
     // ===========================================
     // Hutool

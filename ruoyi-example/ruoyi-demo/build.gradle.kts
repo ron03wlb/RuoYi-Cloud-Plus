@@ -40,7 +40,7 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
-    testImplementation(libs.spring.boot.starter.test)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

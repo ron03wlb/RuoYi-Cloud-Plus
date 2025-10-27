@@ -11,7 +11,7 @@ dependencies {
     // ===========================================
     // Spring Boot Actuator
     // ===========================================
-    api(libs.spring.boot.starter.actuator)
+    api("org.springframework.boot:spring-boot-starter-actuator")
 
     // ===========================================
     // Micrometer Prometheus Registry
