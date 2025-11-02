@@ -98,6 +98,15 @@ bitwalker = "1.21"
 commons-io = "2.18.0"
 
 # ==========================================
+# 测试框架版本
+# ==========================================
+# 注意：这些版本目前由 Spring Boot BOM 管理
+# 如需覆盖 BOM 版本，可在 build.gradle.kts 中显式引用这些版本
+junit = "5.12.2"
+mockito = "5.17.0"
+assertj = "3.27.4"
+
+# ==========================================
 # 插件版本
 # ==========================================
 springBootPlugin = "3.5.6"
@@ -267,6 +276,20 @@ anyline-environment-spring-data-jdbc = { module = "org.anyline:anyline-environme
 anyline-data-jdbc-mysql = { module = "org.anyline:anyline-data-jdbc-mysql", version.ref = "anyline" }
 
 # ==========================================
+# 测试依赖库
+# ==========================================
+# 注意：这些依赖目前由 Spring Boot BOM 管理版本
+# 仅在需要覆盖 BOM 版本时才使用这些显式声明
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+
+# ==========================================
 # 注意：以下依赖全部由 Spring Boot BOM 管理，已从 version catalog 移除
 # reactor-core, caffeine, slf4j-api
 # jakarta-servlet-api, jakarta-validation-api, jakarta-annotation-api, hibernate-validator
@@ -310,6 +333,17 @@ satoken = [
 api-docs = [
     "springdoc-openapi-starter-webmvc-ui",
     "therapi-runtime-javadoc"
+]
+
+# 测试依赖组合（可选使用）
+# 注意：这些依赖目前由 Spring Boot BOM 管理，通常无需显式引用
+# 仅在需要覆盖 BOM 版本时才使用此 bundle
+test-core = [
+    "junit-jupiter",
+    "junit-jupiter-params",
+    "mockito-core",
+    "mockito-junit-jupiter",
+    "assertj-core"
 ]
 
 [plugins]

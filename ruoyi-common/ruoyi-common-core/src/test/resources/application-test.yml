@@ -1,0 +1,21 @@
+# 集成测试配置文件
+
+spring:
+  # 国际化配置
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+  # 禁用不需要的自动配置
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    org.dromara: DEBUG
+    org.springframework.test: DEBUG

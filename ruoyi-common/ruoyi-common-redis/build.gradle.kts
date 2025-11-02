@@ -5,6 +5,10 @@
  * ===========================================
  */
 
+plugins {
+    id("jacoco")
+}
+
 description = "ruoyi-common-redis 缓存服务"
 
 dependencies {
@@ -59,4 +63,42 @@ dependencies {
     // Jackson（序列化）
     // ===========================================
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    // ===========================================
+    // 测试依赖
+    // ===========================================
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+}
+
+// ===========================================
+// JaCoCo 配置
+// ===========================================
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    // 排除不需要覆盖的类
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "**/annotation/**",      // 注解类
+                    "**/config/**",           // 配置类
+                    "**/handler/**",          // 处理器（会单独测试）
+                    "**/properties/**",       // 属性类（会单独测试）
+                    "**/*Application.class"   // 主程序
+                )
+            }
+        })
+    )
 }

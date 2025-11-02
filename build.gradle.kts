@@ -112,6 +112,7 @@ subprojects {
                     "nacos.username" to (findProperty("nacosUsername")?.toString() ?: "nacos"),
                     "nacos.password" to (findProperty("nacosPassword")?.toString() ?: "nacos"),
                     "nacos.namespace" to (findProperty("nacosNamespace")?.toString() ?: ""),
+                    "nacos.discovery.group" to (findProperty("nacosDiscoveryGroup")?.toString() ?: "DEFAULT_GROUP"),
                     "nacos.config.group" to (findProperty("nacosConfigGroup")?.toString() ?: "DEFAULT_GROUP")
                 )
 
@@ -120,6 +121,7 @@ subprojects {
                     var result = line
                     props.forEach { (key, value) ->
                         result = result.replace("\${$key}", value)
+                        result = result.replace("@$key@", value)  // 支持 Maven 风格的 @key@ 占位符
                     }
                     result
                 }
@@ -134,29 +136,27 @@ subprojects {
             // 使用 platform() 导入 BOM，让所有配置都能继承版本约束
 
             // 核心 BOM：Spring Boot（优先级最高）
-            val springBootBom = platform("org.springframework.boot:spring-boot-dependencies:3.5.6")
-            add("api", springBootBom)
-            add("implementation", springBootBom)
-            add("annotationProcessor", springBootBom)
-            add("testImplementation", springBootBom)
+            // 使用 DependencyHandler 的 add() 方法添加平台依赖到所有相关配置
+            add("api", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("implementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("compileOnly", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("annotationProcessor", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
 
             // Spring Cloud BOM
-            val springCloudBom = platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
-            add("api", springCloudBom)
-            add("implementation", springCloudBom)
-            add("testImplementation", springCloudBom)
+            add("api", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
+            add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
+            add("testImplementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
 
             // Hutool BOM
-            val hutoolBom = platform("cn.hutool:hutool-bom:5.8.40")
-            add("api", hutoolBom)
-            add("implementation", hutoolBom)
-            add("testImplementation", hutoolBom)
+            add("api", platform("cn.hutool:hutool-bom:5.8.40"))
+            add("implementation", platform("cn.hutool:hutool-bom:5.8.40"))
+            add("testImplementation", platform("cn.hutool:hutool-bom:5.8.40"))
 
             // Alibaba BOM（延迟解析项目依赖）
-            val alibabaBom = platform(project(":ruoyi-common:ruoyi-common-alibaba-bom"))
-            add("api", alibabaBom)
-            add("implementation", alibabaBom)
-            add("testImplementation", alibabaBom)
+            add("api", platform(project(":ruoyi-common:ruoyi-common-alibaba-bom")))
+            add("implementation", platform(project(":ruoyi-common:ruoyi-common-alibaba-bom")))
+            add("testImplementation", platform(project(":ruoyi-common:ruoyi-common-alibaba-bom")))
 
             // 注意：ruoyi-common、ruoyi-api 的 BOM
             // 由各个子模块根据需要自行导入

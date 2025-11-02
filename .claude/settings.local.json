@@ -23,7 +23,19 @@
       "Bash(./gradlew:*)",
       "Bash(1)",
       "Bash(cat:*)",
-      "WebFetch(domain:search.maven.org)"
+      "WebFetch(domain:search.maven.org)",
+      "Bash(../../gradlew test:*)",
+      "Bash(./dev-start.sh:*)",
+      "Bash(/dev/null)",
+      "Bash(./script/docker/dev-start.sh:*)",
+      "Bash(bash:*)",
+      "Bash(xargs cat:*)",
+      "Read(//Users/zhangxuanrong/Documents/Workspace/Java/**)",
+      "Bash(xargs basename:*)",
+      "Bash(../../gradlew clean test jacocoTestReport:*)",
+      "Bash(for module in ruoyi-common-excel ruoyi-common-encrypt ruoyi-common-sensitive ruoyi-common-json ruoyi-common-web)",
+      "Bash(do echo '=== $module ===')",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

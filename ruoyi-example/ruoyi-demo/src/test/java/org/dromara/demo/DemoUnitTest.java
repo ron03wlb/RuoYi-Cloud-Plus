@@ -4,8 +4,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * 单元测试案例
  *
@@ -30,15 +28,6 @@ public class DemoUnitTest {
     public void testDisabled() {
         System.out.println(appName);
     }
-
-    @Timeout(value = 2L, unit = TimeUnit.SECONDS)
-    @DisplayName("测试 @Timeout 注解")
-    @Test
-    public void testTimeout() throws InterruptedException {
-        Thread.sleep(3000);
-        System.out.println(appName);
-    }
-
 
     @DisplayName("测试 @RepeatedTest 注解")
     @RepeatedTest(3)

@@ -5,6 +5,10 @@
  * ===========================================
  */
 
+plugins {
+    id("jacoco")
+}
+
 description = "ruoyi-common-mybatis 数据库服务"
 
 dependencies {
@@ -54,4 +58,37 @@ dependencies {
     // compileOnly("com.oracle.database.jdbc:ojdbc11")
     // compileOnly("org.postgresql:postgresql")
     // compileOnly("com.microsoft.sqlserver:mssql-jdbc")
+}
+
+// ===========================================
+// JaCoCo 配置
+// ===========================================
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    // 排除不需要覆盖的类
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "**/annotation/**",      // 注解类
+                    "**/enums/**",            // 枚举类（已有测试覆盖）
+                    "**/config/**",           // 配置类
+                    "**/domain/**",           // POJO
+                    "**/model/**",
+                    "**/*Application.class"   // 主程序
+                )
+            }
+        })
+    )
 }
