@@ -106,6 +106,7 @@ include(":ruoyi-common:ruoyi-common-logstash")
 include(":ruoyi-common:ruoyi-common-elasticsearch")
 include(":ruoyi-common:ruoyi-common-skylog")
 include(":ruoyi-common:ruoyi-common-prometheus")
+include(":ruoyi-common:ruoyi-common-test")
 
 // ruoyi-common BOM 模块（依赖管理）
 include(":ruoyi-common:ruoyi-common-bom")

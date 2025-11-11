@@ -17,6 +17,7 @@ import org.dromara.system.api.RemoteLogService;
 import org.dromara.system.api.domain.bo.RemoteLogininforBo;
 import org.dromara.system.api.domain.bo.RemoteOperLogBo;
 import org.dromara.system.api.domain.vo.RemoteClientVo;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@Profile("!test")
 public class LogEventListener {
 
     @DubboReference

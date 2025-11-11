@@ -93,9 +93,7 @@ tasks.jacocoTestReport {
             fileTree(it) {
                 exclude(
                     "**/annotation/**",      // 注解类
-                    "**/config/**",           // 配置类
-                    "**/handler/**",          // 处理器（会单独测试）
-                    "**/properties/**",       // 属性类（会单独测试）
+                    "**/config/**",           // 配置类（Spring配置）
                     "**/*Application.class"   // 主程序
                 )
             }

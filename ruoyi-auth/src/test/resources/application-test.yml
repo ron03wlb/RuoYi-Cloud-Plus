@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: ruoyi-auth-test
+
+  # Redis 配置（使用 Embedded Redis 或者 Mock）
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 10s
+
+  # 日志配置
+  logging:
+    level:
+      org.dromara.auth: DEBUG
+      org.springframework: INFO
+
+# Sa-Token 配置
+sa-token:
+  # JWT 密钥
+  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+  # token 名称
+  token-name: Authorization
+  # token 有效期（单位：秒）默认30天
+  timeout: 2592000
+  # token 临时有效期（单位：秒）
+  active-timeout: -1
+  # 是否允许同一账号并发登录
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token
+  is-share: false
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+
+# 验证码配置
+captcha:
+  enabled: false  # 测试环境默认禁用验证码
+  type: math
+
+# 用户密码配置
+user:
+  password:
+    maxRetryCount: 5
+    lockTime: 10
+
+# Dubbo 配置（测试环境禁用）
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: N/A
+
+# 租户配置
+tenant:
+  enabled: false  # 测试环境默认禁用多租户

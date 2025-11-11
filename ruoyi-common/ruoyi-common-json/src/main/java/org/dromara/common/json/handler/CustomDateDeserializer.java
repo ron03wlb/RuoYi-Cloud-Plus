@@ -27,11 +27,16 @@ public class CustomDateDeserializer extends JsonDeserializer<Date> {
      */
     @Override
     public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        DateTime parse = DateUtil.parse(p.getText());
-        if (ObjectUtils.isNull(parse)) {
+        try {
+            DateTime parse = DateUtil.parse(p.getText());
+            if (ObjectUtils.isNull(parse)) {
+                return null;
+            }
+            return parse.toJdkDate();
+        } catch (Exception e) {
+            // 解析失败时返回 null
             return null;
         }
-        return parse.toJdkDate();
     }
 
 }

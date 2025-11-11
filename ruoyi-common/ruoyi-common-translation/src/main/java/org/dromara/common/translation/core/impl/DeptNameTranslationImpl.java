@@ -6,6 +6,7 @@ import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.system.api.RemoteDeptService;
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 部门翻译实现
@@ -14,6 +15,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.DEPT_ID_TO_NAME)
+@Profile("!test")
 public class DeptNameTranslationImpl implements TranslationInterface<String> {
 
     @DubboReference

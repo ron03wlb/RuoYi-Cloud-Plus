@@ -1,0 +1,87 @@
+# 代码生成模块集成测试配置
+
+spring:
+  # 数据源配置（由 Testcontainers 动态配置）
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  # 禁用 Nacos
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+
+  # 禁用 Dubbo
+  dubbo:
+    enabled: false
+
+  # 排除自动配置
+  autoconfigure:
+    exclude:
+      - cn.dev33.satoken.spring.SaTokenAutoConfiguration
+      - org.dromara.common.satoken.config.SaTokenConfiguration
+      - org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration
+      - org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBindingAutoConfiguration
+      - org.dromara.common.dubbo.config.DubboConfiguration
+
+# 禁用 Seata 分布式事务
+seata:
+  enabled: false
+
+# 完全禁用 Dubbo
+dubbo:
+  enabled: false
+  application:
+    qos-enable: false
+    register: false
+    logger: slf4j
+  registry:
+    address: N/A
+  protocol:
+    port: -1
+  consumer:
+    check: false
+  provider:
+    register: false
+
+# 动态数据源配置
+spring.datasource.dynamic:
+  primary: master
+  strict: false
+  datasource:
+    master:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # JDBC URL 由 Testcontainers 动态设置
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  mapperPackage: org.dromara.**.mapper
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    org.dromara: DEBUG
+    org.springframework: WARN
+    com.zaxxer.hikari: WARN
+    org.testcontainers: INFO
+    org.anyline: DEBUG
+
+# Velocity 配置
+velocity:
+  resource-loader-path: classpath:/vm/

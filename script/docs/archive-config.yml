@@ -1,0 +1,91 @@
+# RuoYi-Cloud-Plus 测试文档归档配置
+# 用途：定义各阶段的归档规则
+# 作者：Test Team
+# 最后更新：2025-11-10
+
+# 归档配置格式:
+# phases:
+#   <phase-name>:
+#     type: unit-test | integration-test
+#     status_marker: 用于检测完成状态的标记
+#     files_to_archive: 需要归档的文件列表
+#     directories_to_archive: 需要归档的目录列表
+#     archive_destination: 归档目标目录
+
+phases:
+  # 单元测试阶段示例
+  phase6:
+    type: unit-test
+    status_marker: "Phase 6.*✅"
+    files_to_archive:
+      - PHASE6-TESTING-STATUS.md
+      - PHASE6-TESTING-REPORT.md
+    directories_to_archive: [ ]
+    archive_destination: archive/unit-tests/phase6
+    description: "Phase 6 单元测试归档"
+
+  # 集成测试阶段示例
+  integration-test-week2:
+    type: integration-test
+    status_marker: "Week 2.*✅.*completed"
+    files_to_archive:
+      - INTEGRATION-TEST-WEEK2-SUMMARY.md
+      - INTEGRATION-TEST-WEEK2-STATUS.md
+    directories_to_archive: [ ]
+    archive_destination: archive/integration-test-week2
+    description: "Week 2 集成测试归档"
+
+  integration-test-week3:
+    type: integration-test
+    status_marker: "Week 3.*✅.*completed"
+    files_to_archive:
+      - INTEGRATION-TEST-WEEK3-SUMMARY.md
+      - INTEGRATION-TEST-WEEK3-STATUS.md
+    directories_to_archive: [ ]
+    archive_destination: archive/integration-test-week3
+    description: "Week 3 集成测试归档"
+
+# 归档规则
+archive_rules:
+  # 单元测试归档规则
+  unit_test:
+    destination_base: archive/unit-tests
+    naming_pattern: "phase[0-9]+"
+    auto_detect_files: true
+    auto_detect_pattern: "PHASE[0-9]+-.*\\.md"
+
+  # 集成测试归档规则
+  integration_test:
+    destination_base: archive
+    naming_pattern: "integration-test-week[0-9]+"
+    auto_detect_files: true
+    auto_detect_pattern: "INTEGRATION-TEST-WEEK[0-9]+-.*\\.md"
+
+# 文档更新规则
+document_updates:
+  # 需要更新的主文档
+  main_documents:
+    - docs/TESTING-MASTER-STATUS.md
+    - docs/INTEGRATION-TEST-TRACKER.md
+    - docs/DOCUMENTATION-INDEX.md
+    - docs/README.md
+
+  # 链接更新模式
+  link_patterns:
+    - pattern: "\\[.*\\]\\((PHASE[0-9]+-.*\\.md)\\)"
+      replace: "[\\1](archive/unit-tests/phase\\2/\\1)"
+    - pattern: "\\[.*\\]\\((INTEGRATION-TEST-WEEK[0-9]+-.*\\.md)\\)"
+      replace: "[\\1](archive/integration-test-week\\2/\\1)"
+
+# 归档后操作
+post_archive_actions:
+  - generate_readme: true  # 生成归档 README
+  - update_index: true     # 更新文档索引
+  - git_add: true          # 暂存 git 更改
+  - git_commit: false      # 不自动提交（让用户审查）
+
+# 通知设置
+notifications:
+  enabled: false
+  email: test-team@example.com
+  slack_webhook: ""

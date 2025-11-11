@@ -6,6 +6,7 @@ import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.resource.api.RemoteFileService;
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.context.annotation.Profile;
 
 /**
  * OSS翻译实现
@@ -14,6 +15,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.OSS_ID_TO_URL)
+@Profile("!test")
 public class OssUrlTranslationImpl implements TranslationInterface<String> {
 
     @DubboReference(mock = "true")

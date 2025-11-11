@@ -6,6 +6,7 @@ import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.system.api.RemoteUserService;
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 用户名翻译实现
@@ -14,6 +15,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.USER_ID_TO_NAME)
+@Profile("!test")
 public class UserNameTranslationImpl implements TranslationInterface<String> {
 
     @DubboReference

@@ -9,6 +9,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.system.api.RemoteDictService;
 import org.dromara.system.api.domain.vo.RemoteDictDataVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author Lion Li
  */
 @Service
+@Profile("!test")
 public class DictServiceImpl implements DictService {
 
     @Autowired

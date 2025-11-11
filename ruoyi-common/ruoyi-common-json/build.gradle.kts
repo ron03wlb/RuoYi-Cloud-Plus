@@ -5,6 +5,10 @@
  * ===========================================
  */
 
+plugins {
+    id("jacoco")
+}
+
 description = "ruoyi-common-json 序列化模块"
 
 dependencies {
@@ -22,4 +26,42 @@ dependencies {
 
     // Java 8 日期时间支持
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    // ===========================================
+    // 测试依赖
+    // ===========================================
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.mockito:mockito-inline:5.2.0")  // 支持静态方法mock
+}
+
+// ===========================================
+// JaCoCo 配置
+// ===========================================
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    // 排除不需要覆盖的类
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "**/config/**",           // 配置类（Spring配置）
+                    "**/*Application.class"   // 主程序
+                )
+            }
+        })
+    )
 }

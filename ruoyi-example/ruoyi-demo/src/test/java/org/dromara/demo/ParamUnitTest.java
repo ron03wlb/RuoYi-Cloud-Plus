@@ -3,6 +3,7 @@ package org.dromara.demo;
 import org.dromara.common.core.enums.UserType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -19,6 +20,9 @@ import java.util.stream.Stream;
  *
  * @author Lion Li
  */
+@Disabled("原因：ruoyi-demo 是示例模块，仅用于演示JUnit 5的参数化测试功能。" +
+    "此测试不依赖Spring容器，但为了统一管理，暂时禁用。" +
+    "如需启用，可移除@Disabled注解")
 @DisplayName("带参数单元测试案例")
 public class ParamUnitTest {
 

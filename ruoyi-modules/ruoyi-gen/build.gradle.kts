@@ -50,6 +50,27 @@ dependencies {
     // compileOnly("org.anyline:anyline-data-jdbc-oracle:${anyline.version}")
     // compileOnly("org.anyline:anyline-data-jdbc-postgresql:${anyline.version}")
     // compileOnly("org.anyline:anyline-data-jdbc-mssql:${anyline.version}")
+
+    // ===========================================
+    // Integration Testing Framework
+    // ===========================================
+    testImplementation(project(":ruoyi-common:ruoyi-common-test"))
+}
+
+// ===========================================
+// Test Configuration
+// ===========================================
+
+// 排除测试运行时的 Dubbo 依赖，避免 Dubbo 初始化问题
+configurations {
+    testRuntimeClasspath {
+        exclude(group = "org.apache.dubbo")
+        exclude(group = "org.apache.dubbo.spring.boot")
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

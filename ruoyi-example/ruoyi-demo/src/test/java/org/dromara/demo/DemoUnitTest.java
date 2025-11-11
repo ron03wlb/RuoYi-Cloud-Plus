@@ -9,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @author Lion Li
  */
+@Disabled("原因：ruoyi-demo 是示例模块，没有完整的Spring Boot主程序和配置文件。" +
+    "@SpringBootTest 需要一个完整的Spring Boot应用上下文（包含@SpringBootApplication主类和application.yml）。" +
+    "建议：将此类移动到实际的Spring Boot微服务模块（如ruoyi-system）中进行测试")
 @SpringBootTest // 此注解只能在 springboot 主包下使用 需包含 main 方法与 yml 配置文件
 @DisplayName("单元测试案例")
 public class DemoUnitTest {

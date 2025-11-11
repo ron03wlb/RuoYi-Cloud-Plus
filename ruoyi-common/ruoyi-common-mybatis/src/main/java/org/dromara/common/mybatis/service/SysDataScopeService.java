@@ -2,6 +2,7 @@ package org.dromara.common.mybatis.service;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.system.api.RemoteDataScopeService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @author Lion Li
  */
 @Service("sdss")
+@Profile("!test")
 public class SysDataScopeService {
 
     @DubboReference

@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @author Lion Li
  */
+@Disabled("原因：ruoyi-demo 是示例模块，没有完整的Spring Boot主程序和配置文件。" +
+    "@SpringBootTest 需要一个完整的Spring Boot应用上下文")
 @SpringBootTest
 @DisplayName("标签单元测试案例")
 public class TagUnitTest {

@@ -1,0 +1,554 @@
+package org.dromara.auth.service;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.crypto.digest.BCrypt;
+import me.zhyd.oauth.model.AuthToken;
+import me.zhyd.oauth.model.AuthUser;
+import org.dromara.auth.AuthTestDataFactory;
+import org.dromara.auth.BaseUnitTest;
+import org.dromara.auth.form.RegisterBody;
+import org.dromara.auth.properties.CaptchaProperties;
+import org.dromara.auth.properties.UserPasswordProperties;
+import org.dromara.common.core.constant.Constants;
+import org.dromara.common.core.constant.GlobalConstants;
+import org.dromara.common.core.enums.LoginType;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.exception.user.CaptchaException;
+import org.dromara.common.core.exception.user.CaptchaExpireException;
+import org.dromara.common.core.exception.user.UserException;
+import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.tenant.exception.TenantException;
+import org.dromara.system.api.RemoteSocialService;
+import org.dromara.system.api.RemoteTenantService;
+import org.dromara.system.api.RemoteUserService;
+import org.dromara.system.api.domain.bo.RemoteSocialBo;
+import org.dromara.system.api.domain.bo.RemoteUserBo;
+import org.dromara.system.api.domain.vo.RemoteSocialVo;
+import org.dromara.system.api.domain.vo.RemoteTenantVo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * SysLoginService 单元测试
+ * <p>
+ * 测试登录服务的核心功能
+ * </p>
+ *
+ * @author Test Team
+ */
+@DisplayName("SysLoginService 单元测试")
+class SysLoginServiceTest extends BaseUnitTest {
+
+    @Mock
+    private RemoteUserService remoteUserService;
+
+    @Mock
+    private RemoteTenantService remoteTenantService;
+
+    @Mock
+    private RemoteSocialService remoteSocialService;
+
+    @Mock
+    private UserPasswordProperties userPasswordProperties;
+
+    @Mock
+    private CaptchaProperties captchaProperties;
+
+    @InjectMocks
+    private SysLoginService sysLoginService;
+
+    @BeforeEach
+    void setUp() {
+        // 设置默认的密码属性
+        when(userPasswordProperties.getMaxRetryCount()).thenReturn(5);
+        when(userPasswordProperties.getLockTime()).thenReturn(10);
+
+        // 设置默认的验证码属性
+        when(captchaProperties.getEnabled()).thenReturn(false);
+    }
+
+    @Nested
+    @DisplayName("1. validateCaptcha() 验证码校验测试")
+    class ValidateCaptchaTests {
+
+        @Test
+        @DisplayName("验证码正确 - 应该校验成功")
+        void shouldPassWhenCaptchaIsCorrect() {
+            // Arrange
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String username = "admin";
+            String code = "1234";
+            String uuid = "test-uuid";
+            String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class);
+                 MockedStatic<org.dromara.common.core.utils.MessageUtils> messageUtilsMock =
+                     mockStatic(org.dromara.common.core.utils.MessageUtils.class);
+                 MockedStatic<org.dromara.common.core.utils.SpringUtils> springUtilsMock =
+                     mockStatic(org.dromara.common.core.utils.SpringUtils.class)) {
+
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(verifyKey))
+                    .thenReturn("1234");
+
+                // Act & Assert
+                assertThatNoException()
+                    .isThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid));
+
+                // Verify Redis 删除了验证码
+                redisUtilsMock.verify(() -> RedisUtils.deleteObject(verifyKey));
+            }
+        }
+
+        @Test
+        @DisplayName("验证码已过期 - 应该抛出 CaptchaExpireException")
+        void shouldThrowCaptchaExpireExceptionWhenCaptchaExpired() {
+            // Arrange
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String username = "admin";
+            String code = "1234";
+            String uuid = "test-uuid";
+            String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(verifyKey))
+                    .thenReturn(null);
+
+                // Act & Assert
+                assertThatThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
+                    .isInstanceOf(CaptchaExpireException.class);
+
+                // Verify Redis 尝试删除了验证码
+                redisUtilsMock.verify(() -> RedisUtils.deleteObject(verifyKey));
+            }
+        }
+
+        @Test
+        @DisplayName("验证码错误 - 应该抛出 CaptchaException")
+        void shouldThrowCaptchaExceptionWhenCaptchaIsWrong() {
+            // Arrange
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String username = "admin";
+            String code = "1234";
+            String uuid = "test-uuid";
+            String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(verifyKey))
+                    .thenReturn("5678"); // 不匹配
+
+                // Act & Assert
+                assertThatThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
+                    .isInstanceOf(CaptchaException.class);
+
+                // Verify Redis 删除了验证码
+                redisUtilsMock.verify(() -> RedisUtils.deleteObject(verifyKey));
+            }
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "1234, 1234, true",
+            "abcd, ABCD, true",  // 不区分大小写
+            "1234, 5678, false"
+        })
+        @DisplayName("验证码大小写不敏感测试")
+        void shouldBeCaseInsensitive(String captcha, String input, boolean shouldPass) {
+            // Arrange
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String username = "admin";
+            String uuid = "test-uuid";
+            String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(verifyKey))
+                    .thenReturn(captcha);
+
+                // Act & Assert
+                if (shouldPass) {
+                    assertThatNoException()
+                        .isThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, input, uuid));
+                } else {
+                    assertThatThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, input, uuid))
+                        .isInstanceOf(CaptchaException.class);
+                }
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("2. register() 用户注册测试")
+    class RegisterTests {
+
+        @Test
+        @DisplayName("正常注册 - 应该成功创建用户")
+        void shouldRegisterSuccessfully() {
+            // Arrange
+            RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
+                .thenReturn(true);
+
+            // Act & Assert
+            assertThatNoException()
+                .isThrownBy(() -> sysLoginService.register(registerBody));
+
+            // Verify
+            verify(remoteUserService).registerUserInfo(argThat(bo ->
+                bo.getUserName().equals(registerBody.getUsername()) &&
+                bo.getTenantId().equals(registerBody.getTenantId()) &&
+                BCrypt.checkpw(registerBody.getPassword(), bo.getPassword())
+            ));
+        }
+
+        @Test
+        @DisplayName("注册失败 - 应该抛出 UserException")
+        void shouldThrowUserExceptionWhenRegisterFails() {
+            // Arrange
+            RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
+                .thenReturn(false);
+
+            // Act & Assert
+            assertThatThrownBy(() -> sysLoginService.register(registerBody))
+                .isInstanceOf(UserException.class)
+                .hasMessageContaining("user.register.error");
+        }
+
+        @Test
+        @DisplayName("验证码开启时 - 应该校验验证码")
+        void shouldValidateCaptchaWhenEnabled() {
+            // Arrange
+            RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
+            when(captchaProperties.getEnabled()).thenReturn(true);
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
+                .thenReturn(true);
+
+            String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + registerBody.getUuid();
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(verifyKey))
+                    .thenReturn(null); // 模拟验证码过期
+
+                // Act & Assert
+                assertThatThrownBy(() -> sysLoginService.register(registerBody))
+                    .isInstanceOf(CaptchaExpireException.class);
+            }
+        }
+
+        @Test
+        @DisplayName("密码应该被哈希存储")
+        void shouldHashPasswordBeforeStore() {
+            // Arrange
+            RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
+            String originalPassword = registerBody.getPassword();
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
+                .thenReturn(true);
+
+            // Act
+            sysLoginService.register(registerBody);
+
+            // Verify - 密码不应该以明文存储
+            verify(remoteUserService).registerUserInfo(argThat(bo -> {
+                String hashedPassword = bo.getPassword();
+                return !hashedPassword.equals(originalPassword) &&
+                       BCrypt.checkpw(originalPassword, hashedPassword);
+            }));
+        }
+    }
+
+    @Nested
+    @DisplayName("3. checkLogin() 登录校验测试")
+    class CheckLoginTests {
+
+        private static final String ERROR_KEY_PREFIX = "pwd_err_cnt:";
+
+        @Test
+        @DisplayName("首次登录失败 - 应该记录错误次数")
+        void shouldRecordErrorCountOnFirstFailure() {
+            // Arrange
+            String username = "testuser";
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String errorKey = ERROR_KEY_PREFIX + username;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(errorKey))
+                    .thenReturn(0);
+
+                // Act & Assert
+                assertThatThrownBy(() ->
+                    sysLoginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> true)
+                ).isInstanceOf(UserException.class);
+
+                // Verify - 错误次数应该被设置为 1
+                redisUtilsMock.verify(() ->
+                    RedisUtils.setCacheObject(eq(errorKey), eq(1), any(Duration.class))
+                );
+            }
+        }
+
+        @Test
+        @DisplayName("达到最大重试次数 - 应该锁定账号")
+        void shouldLockAccountWhenMaxRetryReached() {
+            // Arrange
+            String username = "testuser";
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String errorKey = ERROR_KEY_PREFIX + username;
+            int maxRetryCount = 5;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(errorKey))
+                    .thenReturn(maxRetryCount); // 已达到最大次数
+
+                // Act & Assert
+                assertThatThrownBy(() ->
+                    sysLoginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> false)
+                ).isInstanceOf(UserException.class)
+                 .hasMessageContaining("user.password.retry.limit.exceed");
+            }
+        }
+
+        @Test
+        @DisplayName("登录成功 - 应该清除错误次数")
+        void shouldClearErrorCountOnSuccess() {
+            // Arrange
+            String username = "testuser";
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String errorKey = ERROR_KEY_PREFIX + username;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(errorKey))
+                    .thenReturn(2); // 之前有错误记录
+
+                // Act - 登录成功（supplier 返回 false 表示校验通过）
+                assertThatNoException()
+                    .isThrownBy(() ->
+                        sysLoginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> false)
+                    );
+
+                // Verify - 错误次数应该被清除
+                redisUtilsMock.verify(() -> RedisUtils.deleteObject(errorKey));
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 3, 4})
+        @DisplayName("未达到最大次数的失败尝试 - 应该递增错误次数")
+        void shouldIncrementErrorCountBeforeMaxRetry(int currentErrorCount) {
+            // Arrange
+            String username = "testuser";
+            String tenantId = AuthTestDataFactory.getDefaultTenantId();
+            String errorKey = ERROR_KEY_PREFIX + username;
+
+            try (MockedStatic<RedisUtils> redisUtilsMock = mockStatic(RedisUtils.class)) {
+                redisUtilsMock.when(() -> RedisUtils.getCacheObject(errorKey))
+                    .thenReturn(currentErrorCount);
+
+                // Act & Assert
+                assertThatThrownBy(() ->
+                    sysLoginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> true)
+                ).isInstanceOf(UserException.class);
+
+                // Verify - 错误次数应该递增
+                redisUtilsMock.verify(() ->
+                    RedisUtils.setCacheObject(eq(errorKey), eq(currentErrorCount + 1), any(Duration.class))
+                );
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("4. checkTenant() 租户校验测试")
+    class CheckTenantTests {
+
+        @Test
+        @DisplayName("租户ID为空 - 应该抛出 TenantException")
+        void shouldThrowExceptionWhenTenantIdIsBlank() {
+            // Act & Assert
+            assertThatThrownBy(() -> sysLoginService.checkTenant(""))
+                .isInstanceOf(TenantException.class)
+                .hasMessageContaining("tenant.number.not.blank");
+
+            assertThatThrownBy(() -> sysLoginService.checkTenant(null))
+                .isInstanceOf(TenantException.class)
+                .hasMessageContaining("tenant.number.not.blank");
+        }
+
+        @Test
+        @DisplayName("租户不存在 - 应该抛出 TenantException")
+        void shouldThrowExceptionWhenTenantNotExists() {
+            // Arrange
+            String tenantId = "999999";
+            when(remoteTenantService.queryByTenantId(tenantId))
+                .thenReturn(null);
+
+            // Act & Assert
+            assertThatThrownBy(() -> sysLoginService.checkTenant(tenantId))
+                .isInstanceOf(TenantException.class)
+                .hasMessageContaining("tenant.not.exists");
+        }
+
+        @Test
+        @DisplayName("租户已停用 - 应该抛出 TenantException")
+        void shouldThrowExceptionWhenTenantIsDisabled() {
+            // Arrange
+            RemoteTenantVo tenant = AuthTestDataFactory.createDisabledTenantVo();
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
+                .thenReturn(tenant);
+
+            // Act & Assert
+            assertThatThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()))
+                .isInstanceOf(TenantException.class)
+                .hasMessageContaining("tenant.blocked");
+        }
+
+        @Test
+        @DisplayName("租户已过期 - 应该抛出 TenantException")
+        void shouldThrowExceptionWhenTenantExpired() {
+            // Arrange
+            RemoteTenantVo tenant = AuthTestDataFactory.createExpiredTenantVo();
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
+                .thenReturn(tenant);
+
+            // Act & Assert
+            assertThatThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()))
+                .isInstanceOf(TenantException.class)
+                .hasMessageContaining("tenant.expired");
+        }
+
+        @Test
+        @DisplayName("租户正常 - 应该校验通过")
+        void shouldPassWhenTenantIsValid() {
+            // Arrange
+            RemoteTenantVo tenant = AuthTestDataFactory.createTenantVo();
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
+                .thenReturn(tenant);
+
+            // Act & Assert
+            assertThatNoException()
+                .isThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()));
+        }
+    }
+
+    @Nested
+    @DisplayName("5. socialRegister() 社交账号绑定测试")
+    class SocialRegisterTests {
+
+        @Test
+        @DisplayName("绑定新的社交账号 - 应该成功")
+        void shouldBindNewSocialAccount() {
+            // Arrange
+            AuthUser authUser = createMockAuthUser();
+
+            try (MockedStatic<org.dromara.common.satoken.utils.LoginHelper> loginHelperMock =
+                     mockStatic(org.dromara.common.satoken.utils.LoginHelper.class)) {
+
+                loginHelperMock.when(org.dromara.common.satoken.utils.LoginHelper::getUserId)
+                    .thenReturn(100L);
+
+                when(remoteSocialService.selectByAuthId(anyString()))
+                    .thenReturn(Collections.emptyList()); // 没有绑定记录
+
+                when(remoteSocialService.queryList(any(RemoteSocialBo.class)))
+                    .thenReturn(Collections.emptyList()); // 用户没有绑定该平台
+
+                // Act & Assert
+                assertThatNoException()
+                    .isThrownBy(() -> sysLoginService.socialRegister(authUser));
+
+                // Verify - 应该新增社交账号绑定
+                verify(remoteSocialService).insertByBo(any(RemoteSocialBo.class));
+                verify(remoteSocialService, never()).updateByBo(any(RemoteSocialBo.class));
+            }
+        }
+
+        @Test
+        @DisplayName("社交账号已被其他用户绑定 - 应该抛出异常")
+        void shouldThrowExceptionWhenSocialAccountAlreadyBound() {
+            // Arrange
+            AuthUser authUser = createMockAuthUser();
+            RemoteSocialVo existingSocial = new RemoteSocialVo();
+            existingSocial.setUserId(999L); // 已被其他用户绑定
+
+            try (MockedStatic<org.dromara.common.satoken.utils.LoginHelper> loginHelperMock =
+                     mockStatic(org.dromara.common.satoken.utils.LoginHelper.class)) {
+
+                loginHelperMock.when(org.dromara.common.satoken.utils.LoginHelper::getUserId)
+                    .thenReturn(100L);
+
+                when(remoteSocialService.selectByAuthId(anyString()))
+                    .thenReturn(List.of(existingSocial)); // 已有绑定记录
+
+                // Act & Assert
+                assertThatThrownBy(() -> sysLoginService.socialRegister(authUser))
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("此三方账号已经被绑定");
+            }
+        }
+
+        @Test
+        @DisplayName("更新已有的社交账号绑定 - 应该成功")
+        void shouldUpdateExistingSocialBinding() {
+            // Arrange
+            AuthUser authUser = createMockAuthUser();
+            RemoteSocialVo existingBinding = new RemoteSocialVo();
+            existingBinding.setId(1L);
+            existingBinding.setUserId(100L);
+
+            try (MockedStatic<org.dromara.common.satoken.utils.LoginHelper> loginHelperMock =
+                     mockStatic(org.dromara.common.satoken.utils.LoginHelper.class)) {
+
+                loginHelperMock.when(org.dromara.common.satoken.utils.LoginHelper::getUserId)
+                    .thenReturn(100L);
+
+                when(remoteSocialService.selectByAuthId(anyString()))
+                    .thenReturn(Collections.emptyList()); // authId 未绑定
+
+                when(remoteSocialService.queryList(any(RemoteSocialBo.class)))
+                    .thenReturn(List.of(existingBinding)); // 用户已绑定该平台
+
+                // Act & Assert
+                assertThatNoException()
+                    .isThrownBy(() -> sysLoginService.socialRegister(authUser));
+
+                // Verify - 应该更新社交账号绑定
+                verify(remoteSocialService).updateByBo(argThat(bo -> bo.getId().equals(1L)));
+                verify(remoteSocialService, never()).insertByBo(any(RemoteSocialBo.class));
+            }
+        }
+
+        private AuthUser createMockAuthUser() {
+            AuthUser authUser = new AuthUser();
+            authUser.setSource("github");
+            authUser.setUuid("github-user-123");
+            authUser.setUsername("testuser");
+            authUser.setNickname("Test User");
+            authUser.setAvatar("https://avatar.example.com/test.jpg");
+            authUser.setEmail("test@example.com");
+
+            AuthToken token = AuthToken.builder()
+                .accessToken("access-token-123")
+                .refreshToken("refresh-token-456")
+                .expireIn(7200)
+                .build();
+            authUser.setToken(token);
+
+            return authUser;
+        }
+    }
+}

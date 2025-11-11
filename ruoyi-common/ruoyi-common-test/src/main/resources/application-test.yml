@@ -1,0 +1,71 @@
+# 集成测试配置文件
+spring:
+  # 数据源配置（由 Testcontainers 动态配置）
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  # Redis 配置（由 Testcontainers 动态配置）
+  data:
+    redis:
+      database: 0
+      timeout: 10s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+  # 禁用 Nacos
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Sa-Token 配置
+sa-token:
+  # token 名称
+  token-name: Authorization
+  # token 前缀
+  token-prefix: Bearer
+  # token 有效期（秒）
+  timeout: 3600
+  # 是否允许同一账号并发登录
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token
+  is-share: false
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    org.dromara: DEBUG
+    org.springframework: WARN
+    com.zaxxer.hikari: WARN
+    org.testcontainers: INFO
+
+  # 禁用不需要的自动配置
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.cloud.client.serviceregistry.ServiceRegistryAutoConfiguration

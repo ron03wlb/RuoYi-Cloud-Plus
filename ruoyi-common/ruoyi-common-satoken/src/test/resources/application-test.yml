@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: ruoyi-common-satoken-test
+
+  # Redis 配置（Testcontainers 動態配置）
+  data:
+    redis:
+      database: 0
+      timeout: 10s
+      ssl:
+        enabled: false
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+
+# Sa-Token 配置
+sa-token:
+  # token 名稱（同時也是 cookie 名稱）
+  token-name: Authorization
+  # token 有效期（單位：秒），默認30天，-1代表永不過期
+  timeout: 2592000
+  # token 最低活躍頻率（單位：秒），如果 token 超過此時間沒有訪問系統就會被凍結，默認-1 代表不限制，永不凍結
+  active-timeout: -1
+  # 是否允許同一賬號多地同時登錄（為 true 時允許一起登錄，為 false 時新登錄擠掉舊登錄）
+  is-concurrent: true
+  # 在多人登錄同一賬號時，是否共用一個 token（為 true 時所有登錄共用一個 token，為 false 時每次登錄新建一個 token）
+  is-share: false
+  # token 風格
+  token-style: uuid
+  # 是否輸出操作日誌
+  is-log: false

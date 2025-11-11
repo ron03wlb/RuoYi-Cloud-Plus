@@ -5,6 +5,10 @@
  * ===========================================
  */
 
+plugins {
+    id("jacoco")
+}
+
 description = "ruoyi-common-web web服务"
 
 dependencies {
@@ -43,4 +47,44 @@ dependencies {
 
     // Mica Core（provided）
     compileOnly(libs.mica.core)
+
+    // ===========================================
+    // 测试依赖
+    // ===========================================
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+}
+
+// ===========================================
+// JaCoCo 配置
+// ===========================================
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    // 排除不需要覆盖的类
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "**/filter/**",                  // Servlet过滤器（依赖Spring）
+                    "**/handler/**",                 // 全局异常处理器（依赖Spring）
+                    "**/config/**",                  // Spring配置类
+                    "**/XssHttpServletRequestWrapper.class", // Servlet包装器
+                    "**/*Application.class"          // 主程序
+                )
+            }
+        })
+    )
 }

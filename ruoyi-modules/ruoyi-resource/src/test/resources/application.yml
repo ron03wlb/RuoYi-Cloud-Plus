@@ -1,0 +1,49 @@
+# Test configuration for ruoyi-resource module
+server:
+  port: 9204
+
+spring:
+  application:
+    name: ruoyi-resource
+  profiles:
+    active: test
+  # Disable Nacos for tests
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+    # Disable Dubbo auto-configuration
+    dubbo:
+      enabled: false
+  config:
+    import: optional:file:./non-existent.yml
+  # Exclude auto-configurations that cause issues with Testcontainers
+  autoconfigure:
+    exclude:
+      - org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration
+      - org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBindingAutoConfiguration
+      - org.apache.seata.spring.boot.autoconfigure.SeataAutoConfiguration
+      - com.alibaba.cloud.seata.rest.SeataRestTemplateAutoConfiguration
+      - org.dromara.common.dubbo.config.DubboConfiguration
+
+# MyBatis-Plus configuration
+mybatis-plus:
+  mapperPackage: org.dromara.**.mapper
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Completely disable Dubbo for tests
+dubbo:
+  enabled: false
+  application:
+    qos-enable: false
+  registry:
+    address: N/A
+  protocol:
+    port: -1
+
+# Disable Seata for tests
+seata:
+  enabled: false

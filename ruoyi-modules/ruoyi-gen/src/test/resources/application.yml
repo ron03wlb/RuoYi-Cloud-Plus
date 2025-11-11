@@ -1,0 +1,24 @@
+# 测试环境配置 - 覆盖主配置文件
+
+# Tomcat
+server:
+  port: 0  # 随机端口避免冲突
+
+# Spring
+spring:
+  application:
+    name: ruoyi-gen-test
+  profiles:
+    active: test
+
+  # 禁用 Nacos 配置
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+
+  # 禁用 Dubbo
+  dubbo:
+    enabled: false

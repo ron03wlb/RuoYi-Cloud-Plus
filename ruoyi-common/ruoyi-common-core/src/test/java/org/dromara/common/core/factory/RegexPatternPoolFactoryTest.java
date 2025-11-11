@@ -324,7 +324,24 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
     }
 
     @Nested
-    @DisplayName("5. 真实业务场景测试")
+    @DisplayName("5. 构造函数测试")
+    class ConstructorTests {
+
+        @Test
+        @DisplayName("应该能够实例化 RegexPatternPoolFactory (继承自 PatternPool)")
+        void shouldInstantiateRegexPatternPoolFactory() {
+            // Act - 通过反射实例化工厂类
+            // 注意: 虽然这是一个工具类, 但它继承自 PatternPool, 可以被实例化
+            RegexPatternPoolFactory factory = new RegexPatternPoolFactory();
+
+            // Assert
+            assertThat(factory).isNotNull();
+            assertThat(factory).isInstanceOf(RegexPatternPoolFactory.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("6. 真实业务场景测试")
     class RealBusinessScenarioTests {
 
         @Test

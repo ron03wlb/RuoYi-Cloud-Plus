@@ -40,6 +40,11 @@ dependencies {
     // ===========================================
     implementation(project(":ruoyi-api:ruoyi-api-system"))
     implementation(project(":ruoyi-api:ruoyi-api-resource"))
+
+    // ===========================================
+    // 测试依赖
+    // ===========================================
+    testImplementation(project(":ruoyi-common:ruoyi-common-test"))
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

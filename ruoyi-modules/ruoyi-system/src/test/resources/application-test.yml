@@ -1,0 +1,54 @@
+# 测试环境配置
+spring:
+  application:
+    name: ruoyi-system-test
+
+  # 禁用 Nacos (测试环境不需要)
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+    config:
+      enabled: false
+
+  # 禁用 Dubbo (单元测试不需要)
+  dubbo:
+    enabled: false
+
+  # 数据源配置 (使用 H2 内存数据库)
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 5
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 2
+      logic-not-delete-value: 0
+
+# Sa-Token 配置
+sa-token:
+  token-name: Authorization
+  timeout: 2592000  # 30 days
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+
+# 日志配置
+logging:
+  level:
+    root: WARN
+    org.dromara: INFO
+    org.springframework: WARN

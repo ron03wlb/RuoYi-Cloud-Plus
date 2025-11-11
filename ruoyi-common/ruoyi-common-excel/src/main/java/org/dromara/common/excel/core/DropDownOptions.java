@@ -64,7 +64,7 @@ public class DropDownOptions {
      */
     public static String createOptionValue(Object... vars) {
         StringBuilder stringBuffer = new StringBuilder();
-        String regex = "^[\\S\\d\\u4e00-\\u9fa5]+$";
+        String regex = "^[a-zA-Z0-9\\u4e00-\\u9fa5]+$";
         for (int i = 0; i < vars.length; i++) {
             String var = StrUtil.trimToEmpty(Convert.toStr(vars[i]));
             if (!var.matches(regex)) {
@@ -76,7 +76,7 @@ public class DropDownOptions {
                 stringBuffer.append(DELIMITER);
             }
         }
-        if (stringBuffer.toString().matches("^\\d_*$")) {
+        if (stringBuffer.toString().matches("^\\d.*")) {
             throw new ServiceException("禁止以数字开头");
         }
         return stringBuffer.toString();

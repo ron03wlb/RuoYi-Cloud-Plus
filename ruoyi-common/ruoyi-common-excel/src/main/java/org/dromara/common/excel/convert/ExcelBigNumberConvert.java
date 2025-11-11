@@ -38,14 +38,22 @@ public class ExcelBigNumberConvert implements Converter<Long> {
 
     @Override
     public WriteCellData<Object> convertToExcelData(Long object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        if (ObjectUtil.isNotNull(object)) {
-            String str = Convert.toStr(object);
-            if (str.length() > 15) {
-                return new WriteCellData<>(str);
-            }
+        if (ObjectUtil.isNull(object)) {
+            object = 0L;
         }
-        WriteCellData<Object> cellData = new WriteCellData<>(new BigDecimal(object));
+        String str = Convert.toStr(object);
+        if (str.length() > 15) {
+            WriteCellData<Object> stringCellData = new WriteCellData<>();
+            stringCellData.setType(CellDataTypeEnum.STRING);
+            stringCellData.setData(str);
+            stringCellData.setStringValue(str);
+            return stringCellData;
+        }
+        BigDecimal bigDecimal = new BigDecimal(object);
+        WriteCellData<Object> cellData = new WriteCellData<>();
         cellData.setType(CellDataTypeEnum.NUMBER);
+        cellData.setData(bigDecimal);
+        cellData.setNumberValue(bigDecimal);
         return cellData;
     }
 

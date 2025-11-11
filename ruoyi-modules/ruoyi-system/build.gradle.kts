@@ -8,6 +8,7 @@
 plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.jib)
+    jacoco
 }
 
 description = "ruoyi-system系统模块"
@@ -59,6 +60,19 @@ dependencies {
     implementation(project(":ruoyi-api:ruoyi-api-system"))
     implementation(project(":ruoyi-api:ruoyi-api-resource"))
     implementation(project(":ruoyi-api:ruoyi-api-workflow"))
+
+    // ====================
+    // 测试依赖
+    // ====================
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation("org.springframework.boot:spring-boot-starter-validation")
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.junit.jupiter)
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("com.h2database:h2")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -88,4 +102,55 @@ jib {
         environment = mapOf("SPRING_OUTPUT_ANSI_ENABLED" to "ALWAYS")
         creationTime.set("USE_CURRENT_TIMESTAMP")
     }
+}
+
+// ====================
+// JaCoCo 配置
+// ====================
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    // 排除配置类
+                    "**/config/**",
+                    "**/configuration/**",
+                    // 排除启动类
+                    "**/*Application.class",
+                    // 排除 DTO/VO/BO
+                    "**/domain/**",
+                    "**/bo/**",
+                    "**/vo/**",
+                    "**/dto/**",
+                    // 排除 Mapper XML
+                    "**/mapper/**/*Mapper.class",
+                    // 排除 Controller (后续可以用 MockMvc 测试)
+                    "**/controller/**",
+                    // 排除 Dubbo 实现 (需要 Dubbo 上下文)
+                    "**/dubbo/**",
+                    // 排除监听器
+                    "**/listener/**",
+                    // 排除转换器
+                    "**/convert/**"
+                )
+            }
+        })
+    )
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+    useJUnitPlatform()
 }
