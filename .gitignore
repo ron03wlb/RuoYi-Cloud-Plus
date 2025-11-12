@@ -30,6 +30,7 @@ target/
 rebel.xml
 ### NetBeans ###
 nbproject/private/
+build/*
 nbbuild/
 nbdist/
 .nb-gradle/
@@ -37,6 +38,7 @@ nbdist/
 ######################################################################
 # Others
 *.log
+*.log.gz
 *.gz
 *.xml.versionsBackup
 *.swp
