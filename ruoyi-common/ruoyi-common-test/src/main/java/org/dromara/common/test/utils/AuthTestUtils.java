@@ -1,5 +1,6 @@
 package org.dromara.common.test.utils;
 
+import cn.dev33.satoken.context.mock.SaTokenContextMockUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +34,57 @@ import java.util.Map;
  * AuthTestUtils.logout(1L);
  * }</pre>
  *
+ * <h3>重要说明：</h3>
+ * <p>
+ * 本类使用 Sa-Token 的 Mock 上下文进行测试。所有需要使用 Sa-Token 功能的测试方法
+ * 会自动初始化 Mock 上下文，无需手动初始化。
+ * </p>
+ *
  * @author Lion Li
  * @since 2025-11-09
  */
 public class AuthTestUtils {
 
     private static final Logger log = LoggerFactory.getLogger(AuthTestUtils.class);
+
+    /**
+     * 线程本地变量，标记当前线程是否已初始化 Mock 上下文
+     */
+    private static final ThreadLocal<Boolean> CONTEXT_INITIALIZED = ThreadLocal.withInitial(() -> false);
+
+    /**
+     * 确保 Sa-Token Mock 上下文已初始化
+     * <p>
+     * 使用 ThreadLocal 确保每个线程只初始化一次
+     * </p>
+     */
+    private static void ensureMockContext() {
+        if (!CONTEXT_INITIALIZED.get()) {
+            try {
+                SaTokenContextMockUtil.setMockContext();
+                CONTEXT_INITIALIZED.set(true);
+                log.debug("Sa-Token Mock 上下文已初始化");
+            } catch (Exception e) {
+                log.warn("初始化 Sa-Token Mock 上下文失败: {}", e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 清除 Mock 上下文
+     * <p>
+     * 测试完成后应调用此方法清理上下文
+     * </p>
+     */
+    public static void clearMockContext() {
+        try {
+            SaTokenContextMockUtil.clearContext();
+            CONTEXT_INITIALIZED.remove();
+            log.debug("Sa-Token Mock 上下文已清除");
+        } catch (Exception e) {
+            log.warn("清除 Sa-Token Mock 上下文失败: {}", e.getMessage());
+        }
+    }
 
     /**
      * 模拟用户登录
@@ -60,6 +106,9 @@ public class AuthTestUtils {
      * @return Token字符串
      */
     public static String mockLogin(Long userId, String username, String tenantId) {
+        // 确保 Mock 上下文已初始化
+        ensureMockContext();
+
         log.debug("模拟用户登录: userId={}, username={}, tenantId={}", userId, username, tenantId);
 
         // 执行登录
@@ -98,6 +147,7 @@ public class AuthTestUtils {
      * @param permissions 权限列表
      */
     public static void setPermissions(Long userId, String... permissions) {
+        ensureMockContext();
         log.debug("设置用户权限: userId={}, permissions={}", userId, permissions);
 
         for (String permission : permissions) {
@@ -112,6 +162,7 @@ public class AuthTestUtils {
      * @param roles  角色列表
      */
     public static void setRoles(Long userId, String... roles) {
+        ensureMockContext();
         log.debug("设置用户角色: userId={}, roles={}", userId, roles);
 
         for (String role : roles) {
@@ -126,6 +177,7 @@ public class AuthTestUtils {
      * @return true-已登录，false-未登录
      */
     public static boolean isLogin(Long userId) {
+        ensureMockContext();
         return StpUtil.isLogin(userId);
     }
 
@@ -135,6 +187,7 @@ public class AuthTestUtils {
      * @return 用户ID
      */
     public static Long getLoginUserId() {
+        ensureMockContext();
         return StpUtil.getLoginIdAsLong();
     }
 
@@ -144,6 +197,7 @@ public class AuthTestUtils {
      * @return 用户名
      */
     public static String getLoginUsername() {
+        ensureMockContext();
         return (String) StpUtil.getSession().get("username");
     }
 
@@ -153,6 +207,7 @@ public class AuthTestUtils {
      * @return 租户ID
      */
     public static String getTenantId() {
+        ensureMockContext();
         return (String) StpUtil.getSession().get("tenantId");
     }
 
@@ -162,6 +217,7 @@ public class AuthTestUtils {
      * @param userId 用户ID
      */
     public static void logout(Long userId) {
+        ensureMockContext();
         log.debug("登出用户: userId={}", userId);
         StpUtil.logout(userId);
     }
@@ -170,6 +226,7 @@ public class AuthTestUtils {
      * 登出当前用户
      */
     public static void logout() {
+        ensureMockContext();
         log.debug("登出当前用户");
         StpUtil.logout();
     }
@@ -190,6 +247,7 @@ public class AuthTestUtils {
      * @return Token字符串
      */
     public static String getToken(Long userId) {
+        ensureMockContext();
         return StpUtil.getTokenValueByLoginId(userId);
     }
 
@@ -199,6 +257,7 @@ public class AuthTestUtils {
      * @return Token字符串
      */
     public static String getToken() {
+        ensureMockContext();
         return StpUtil.getTokenValue();
     }
 

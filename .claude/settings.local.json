@@ -90,7 +90,18 @@
       "Bash(then grep -E \"^BUILD|tests completed\" /tmp/test_full_run.log)",
       "Bash(then tail -500 /tmp/test_full_run.log)",
       "Bash(then tail -1000 /tmp/test_full_run.log)",
-      "Bash(then tail -100 /tmp/test_full_run.log)"
+      "Bash(then tail -100 /tmp/test_full_run.log)",
+      "WebFetch(domain:github.com)",
+      "Bash(if [ -d \"ruoyi-modules/ruoyi-gen/build/reports/tests/test\" ])",
+      "Bash(then cat ruoyi-modules/ruoyi-gen/build/reports/tests/test/index.html)",
+      "Bash(else echo \"No test reports found\")",
+      "Bash(timeout 60 ./gradlew:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git mv:*)",
+      "Bash(git tag:*)",
+      "Bash(git log:*)",
+      "Bash(/bashes)"
     ],
     "deny": [],
     "ask": []

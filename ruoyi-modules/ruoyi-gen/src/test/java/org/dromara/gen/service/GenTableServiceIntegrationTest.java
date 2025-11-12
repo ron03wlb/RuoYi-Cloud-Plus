@@ -7,8 +7,6 @@ import org.dromara.common.test.utils.SqlScriptExecutor;
 import org.dromara.gen.config.TestSaTokenConfig;
 import org.dromara.gen.domain.GenTable;
 import org.dromara.gen.domain.GenTableColumn;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -34,22 +33,53 @@ import static org.assertj.core.api.Assertions.*;
  *     <li>代码下载（ZIP）</li>
  * </ul>
  *
+ * <p><strong>⚠️ 当前状态：已禁用（@Disabled）</strong></p>
+ *
+ * <p><strong>问题描述：</strong></p>
+ * <ul>
+ *     <li>测试在 Spring Boot 上下文启动阶段挂起，无法完成</li>
+ *     <li>即使添加 @Timeout 注解，测试仍会挂起不停止</li>
+ *     <li>可能原因：Testcontainers 初始化、Dubbo 配置、或 Nacos 连接问题</li>
+ * </ul>
+ *
+ * <p><strong>已尝试的解决方案：</strong></p>
+ * <ol>
+ *     <li>❌ 添加类级别 @Timeout(120, TimeUnit.SECONDS) - 无效，测试仍挂起</li>
+ *     <li>❌ 保持 PER_CLASS 生命周期以重用容器 - 无改善</li>
+ *     <li>❌ 简化配置（禁用 Nacos/Dubbo） - 已在 properties 中配置</li>
+ * </ol>
+ *
+ * <p><strong>建议的解决方案：</strong></p>
+ * <ul>
+ *     <li><strong>方案 A（推荐）：</strong>拆分为 5 个独立的测试类
+ *         <ul>
+ *             <li>GenTableInfrastructureTest.java - 基础设施测试（3 tests）</li>
+ *             <li>GenTableDatabaseQueryTest.java - 数据库查询（3 tests）</li>
+ *             <li>GenTableImportTest.java - 表导入（3 tests）</li>
+ *             <li>GenTableInfoQueryTest.java - 表信息查询（3 tests）</li>
+ *             <li>GenTableCodeGenerationTest.java - 代码生成（5 tests）</li>
+ *         </ul>
+ *     </li>
+ *     <li><strong>方案 B：</strong>使用 H2 内存数据库替代 Testcontainers MySQL</li>
+ *     <li><strong>方案 C：</strong>完全移除 Dubbo 依赖，使用纯 Spring Boot 配置</li>
+ *     <li><strong>方案 D：</strong>改为手动测试或端到端测试</li>
+ * </ul>
+ *
+ * <p><strong>下一步行动：</strong></p>
+ * <ul>
+ *     <li>实施方案 A：将此测试类拆分为 5 个独立的小测试类</li>
+ *     <li>每个测试类使用 PER_METHOD 生命周期</li>
+ *     <li>在方法级别添加 @Timeout 注解</li>
+ *     <li>简化每个测试类的数据准备</li>
+ * </ul>
+ *
  * @author Lion Li
  * @since 2025-11-10
  */
-@Disabled("原因：集成测试执行时间过长或卡住不结束。" +
-    "问题详情：" +
-    "1. @TestInstance(Lifecycle.PER_CLASS) 导致整个测试类生命周期过长" +
-    "2. 需要启动完整的 Spring Boot 上下文（包含 Nacos、Dubbo 等组件）" +
-    "3. 需要启动 Testcontainers（MySQL、Redis 等 Docker 容器），启动耗时较长" +
-    "4. 数据库初始化脚本（init-test-tables.sql）可能执行时间较长" +
-    "5. 多个 @Nested 测试类按顺序执行，总耗时累加" +
-    "建议：" +
-    "1. 将大型集成测试拆分为多个独立的小测试类" +
-    "2. 使用 @TestInstance(Lifecycle.PER_METHOD) 减少状态共享" +
-    "3. 优化数据库初始化脚本，只创建必要的测试数据" +
-    "4. 考虑使用内存数据库（H2）替代 Testcontainers MySQL 加快测试速度" +
-    "5. 添加测试超时时间 @Timeout(60) 防止无限等待")
+@Disabled("测试在 Spring 上下文启动时挂起。" +
+    "原因：Testcontainers/Dubbo/Nacos 初始化问题。" +
+    "解决方案：需要拆分为多个独立的小测试类，每个类专注一个功能领域。" +
+    "参考：docs/INTEGRATION-TEST-TRACKER.md")
 @SpringBootTest(
     classes = org.dromara.gen.config.TestApplication.class,
     properties = {
@@ -63,6 +93,7 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("GenTableService 集成测试")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(value = 120, unit = TimeUnit.SECONDS)
 class GenTableServiceIntegrationTest extends BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceIntegrationTest.class);

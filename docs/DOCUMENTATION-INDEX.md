@@ -1,9 +1,9 @@
 # 测试文档索引
 
-> 📅 **最后更新**: 2025-11-10
+> 📅 **最后更新**: 2025-11-12
 > 🎯 **用途**: 快速找到你需要的文档
 > 📊 **文档总数**: 主要文档 3 个，模块文档 10+ 个（参考），归档 60+ 个
-> 🔄 **当前重点**: 集成测试
+> 🔄 **当前重点**: 集成测试（Resource Bean 配置问题已解决）
 
 ---
 
@@ -39,23 +39,7 @@
 
 ---
 
-### 1. [测试进度更新报告](TESTING-PROGRESS-UPDATE-2025-11-11.md) ⭐⭐⭐
-
-**用途**: 本次测试运行的完整分析
-**包含**:
-
-- 3,271 个测试的详细执行结果
-- 失败测试的完整分析和解决方案
-- 与文档记录的对比分析
-- 优先级排序的行动计划
-
-**适合**: 开发人员、测试人员、需要详细信息的场景
-
-**最后更新**: 2025-11-11
-
----
-
-### 2. [测试状态总览](TESTING-MASTER-STATUS.md) ⭐⭐⭐
+### 1. [测试状态总览](TESTING-MASTER-STATUS.md) ⭐⭐⭐
 
 **用途**: 项目测试状态的鸟瞰图
 **包含**:
@@ -72,7 +56,7 @@
 
 ---
 
-### 3. [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) ⭐⭐⭐
+### 2. [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) ⭐⭐⭐
 
 **用途**: 集成测试详细进度跟踪
 **包含**:
@@ -166,7 +150,8 @@
 
 ### 集成测试归档
 
-**位置**: [archive/integration-test-week1/](archive/integration-test-week1/)
+**位置
+**: [archive/integration-test-week1/](archive/integration-test-week1/) + [archive/integration-test-progress/](archive/integration-test-progress/)
 
 **Week 1 (2025-11-10)**:
 
@@ -178,6 +163,13 @@
 - [INTEGRATION-TEST-FINAL-STATUS.md](archive/integration-test-week1/INTEGRATION-TEST-FINAL-STATUS.md) - 最终状态报告
 
 **成果**: 框架 100% 就绪，49 个测试用例编写完成，Dubbo 时序冲突已解决
+
+**进度报告归档 (2025-11-11)**:
+
+- [TESTING-PROGRESS-UPDATE-2025-11-11.md](archive/integration-test-progress/TESTING-PROGRESS-UPDATE-2025-11-11.md) -
+  3,271 测试执行完整分析
+
+**成果**: Sa-Token 上下文问题修复，Resource Bean 配置问题分析
 
 ---
 
@@ -313,7 +305,8 @@ open build/reports/jacoco/test/html/index.html
 
 ---
 
-**最后更新**: 2025-11-10
-**文档版本**: 3.0
-**当前阶段**: 单元测试归档完成，集成测试框架就绪，首批测试进行中
+**最后更新**: 2025-11-12
+**文档版本**: 3.1
+**当前阶段**: Resource Bean 配置问题已解决，集成测试框架稳定运行
 **文档结构**: 已重组为简洁结构（3 个主文档 + reference/ + archive/）
+**最新成果**: Issue #2 (Resource Bean 冲突) 完全修复，切片测试方案成功

@@ -49,7 +49,11 @@ import org.testcontainers.containers.MySQLContainer;
  * @author Lion Li
  * @since 2025-11-09
  */
-@SpringBootTest
+@SpringBootTest(
+    properties = {
+        "spring.main.web-application-type=servlet"
+    }
+)
 @ActiveProfiles("test")
 public abstract class BaseIntegrationTest {
 

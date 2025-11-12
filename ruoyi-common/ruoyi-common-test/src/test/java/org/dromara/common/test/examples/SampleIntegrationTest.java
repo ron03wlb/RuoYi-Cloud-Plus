@@ -1,22 +1,28 @@
 package org.dromara.common.test.examples;
 
 import org.dromara.common.test.BaseIntegrationTest;
+import org.dromara.common.test.config.TestSaTokenConfig;
 import org.dromara.common.test.utils.AuthTestUtils;
 import org.dromara.common.test.utils.TenantTestUtils;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Import;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 集成测试框架示例
  * <p>
  * 演示如何使用集成测试框架进行测试
+ * <p>
+ * 使用 webEnvironment = MOCK 提供 Sa-Token 所需的 Web 上下文
  *
  * @author Lion Li
  * @since 2025-11-09
  */
+@org.springframework.boot.test.context.SpringBootTest(webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK)
+@Import(TestSaTokenConfig.class)
 @DisplayName("集成测试框架示例")
 class SampleIntegrationTest extends BaseIntegrationTest {
 
@@ -37,6 +43,10 @@ class SampleIntegrationTest extends BaseIntegrationTest {
             log.debug("清理登录状态失败（可能未登录）: {}", e.getMessage());
         }
         TenantTestUtils.clear();
+
+        // 清除 Sa-Token Mock 上下文
+        AuthTestUtils.clearMockContext();
+
         log.info("=== 测试结束 ===");
     }
 
@@ -88,10 +98,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
     class AuthenticationTests {
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行。" +
-            "此测试需要Sa-Token的Web过滤器初始化SaTokenContext，" +
-            "但在普通单元测试环境中无法提供完整的Servlet容器环境。" +
-            "建议：改为Spring Boot集成测试(@SpringBootTest + @AutoConfigureMockMvc)")
         @DisplayName("应该成功模拟用户登录")
         void shouldMockUserLogin() {
             // Act
@@ -108,7 +114,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("应该成功模拟管理员登录")
         void shouldMockAdminLogin() {
             // Act
@@ -124,7 +129,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("应该成功设置用户权限")
         void shouldSetUserPermissions() {
             // Arrange
@@ -138,7 +142,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("应该成功登出用户")
         void shouldLogoutUser() {
             // Arrange
@@ -206,7 +209,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("应该成功模拟多租户用户登录")
         void shouldMockTenantUserLogin() {
             // Act
@@ -226,7 +228,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
     class IntegrationScenarios {
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("场景：租户隔离测试")
         void scenarioTenantIsolation() {
             log.info("=== 场景：租户隔离测试 ===");
@@ -258,7 +259,6 @@ class SampleIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @Disabled("原因：SaToken上下文未初始化 - 需要完整的Spring Web环境（Filter链）才能运行")
         @DisplayName("场景：带权限的用户操作测试")
         void scenarioUserWithPermissions() {
             log.info("=== 场景：带权限的用户操作测试 ===");

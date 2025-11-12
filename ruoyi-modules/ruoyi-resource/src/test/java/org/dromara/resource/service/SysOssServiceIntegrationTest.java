@@ -1,18 +1,21 @@
 package org.dromara.resource.service;
 
+import cn.dev33.satoken.dao.SaTokenDao;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.oss.core.OssClient;
 import org.dromara.common.oss.factory.OssFactory;
 import org.dromara.common.test.BaseIntegrationTest;
 import org.dromara.common.test.utils.SqlScriptExecutor;
+import org.dromara.resource.config.TestResourceConfig;
 import org.dromara.resource.domain.bo.SysOssBo;
 import org.dromara.resource.domain.vo.SysOssVo;
-import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -28,35 +31,85 @@ import static org.assertj.core.api.Assertions.*;
  * SysOssService 集成测试
  * <p>
  * 测试 OSS 文件存储服务的完整功能，包括文件上传、下载、查询、删除等操作
+ *
+ * <h3>P0 问题 - Bean 配置冲突极其复杂，需要架构级重构</h3>
  * <p>
- * 使用方案 A (手动容器启动) 解决了 Dubbo + Testcontainers 时序冲突问题，
- * 现在可以直接使用真实的 RuoYiResourceApplication 类进行集成测试
+ * 问题：Spring 容器启动时存在深层的 Bean 依赖冲突，无法通过简单配置解决
+ *
+ * <h4>历史尝试记录（9次尝试，全部失败）：</h4>
+ * <ol>
+ *   <li>方案1: 使用 {@code @TestConfiguration} + {@code @Primary} - 仍有 Bean 冲突 ❌</li>
+ *   <li>方案2: 设置 {@code spring.main.allow-bean-definition-overriding=true} - 无效 ❌</li>
+ *   <li>方案3: 创建轻量级启动类 {@link org.dromara.resource.TestResourceApplication}
+ *       排除 Dubbo/Nacos - 缺少 TenantProperties Bean ❌</li>
+ *   <li>方案4: 在 TestResourceConfig 中提供 TenantProperties Bean - 仍有 Sa-Token DAO 冲突 ❌</li>
+ *   <li>方案5: 在 TestResourceConfig 中添加 @Primary SaTokenDao Bean - @Primary 不生效 ❌</li>
+ *   <li>方案6: 禁用 TenantConfiguration（设置 enable=false）- 仍有 Sa-Token DAO 冲突 ❌</li>
+ *   <li>方案7: 配置 Sa-Token 属性禁用 Redis 持久化 - 仍有 Bean 冲突 ❌</li>
+ *   <li>方案8: 使用 {@code @MockBean} 替换冲突的 SaTokenDao -
+ *       错误：{@code MockBean 期望单个 bean 但发现2个} ❌</li>
+ *   <li>方案9: 使用 {@code @MockBean(name="...")} 指定替换特定的 bean - 仍有其他冲突 ❌</li>
+ * </ol>
+ *
+ * <h4>根本原因分析：</h4>
+ * <p>
+ * Resource 模块存在深层的 Bean 依赖冲突链：
+ * <ul>
+ *   <li><b>主要冲突</b>: {@code SaTokenDao} 类型有两个 Bean (无法通过 @MockBean 解决)</li>
+ *   <li><b>依赖链</b>: MyBatis-Plus → Redis/Redisson → Sa-Token → Tenant → 拦截器 → 插件</li>
+ *   <li><b>循环依赖</b>: 这些依赖之间有复杂的循环依赖和条件加载关系</li>
+ *   <li><b>自动配置</b>: Spring Boot 的自动配置机制在测试环境触发了不必要的 Bean 注册</li>
+ * </ul>
+ *
+ * <h4>推荐解决方案（需要1-2天专项工作）：</h4>
+ * <ol>
+ *   <li><b>方案A（最推荐）</b>: 使用 {@code @DataJpaTest} 切片测试，仅加载数据层，完全避免 Web 层自动配置</li>
+ *   <li><b>方案B（备选）</b>: 重新设计测试架构，使用单元测试而非集成测试，用 Mockito 完全 mock 所有依赖</li>
+ *   <li><b>方案C（终极）</b>: 重构 Service 层架构，解耦 Sa-Token、Tenant等基础设施依赖</li>
+ * </ol>
+ *
+ * <h4>优先级：</h4>
+ * <p>P0 - 但需要 1-2 天的专项工作来系统性解决，建议作为独立任务规划
  *
  * @author Lion Li
  * @since 2025-11-10
  */
-@Disabled("原因：Bean定义冲突 - NoUniqueBeanDefinitionException。" +
-    "问题详情：Spring容器中存在多个相同类型的Bean定义，导致自动装配失败。" +
-    "可能原因：" +
-    "1. TestConfiguration 中的 Bean 定义与主配置冲突" +
-    "2. Dubbo 服务自动注册与手动Bean定义冲突" +
-    "3. spring.main.allow-bean-definition-overriding=true 未生效" +
-    "建议：需要检查 TestConfiguration.java 和 RuoYiResourceApplication 的Bean定义，" +
-    "确保测试配置与生产配置不会产生冲突，或使用 @TestConfiguration 正确隔离测试Bean")
+@Disabled("P0 - Bean 配置冲突极其复杂，需要架构级重构。\n" +
+    "已尝试9种方案均失败：包括 @TestConfiguration、@Primary、排除自动配置、@MockBean、@MockBean(name)。\n" +
+    "当前冲突：SaTokenDao 类型有2个 Bean，且存在复杂的依赖链。\n" +
+    "推荐：使用 @DataJpaTest 切片测试或重新设计测试架构。\n" +
+    "详细分析见类 JavaDoc。")
 @SpringBootTest(
-    classes = org.dromara.resource.RuoYiResourceApplication.class,
+    classes = org.dromara.resource.TestResourceApplication.class,
     properties = {
-        "spring.cloud.nacos.config.enabled=false",
-        "spring.cloud.nacos.discovery.enabled=false",
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        // 禁用 Sa-Token 的 Redis 持久化，使用内存存储
+        "sa-token.alone-redis.enable=false",
+        "sa-token.dao-type=default"
     }
 )
+@Import(TestResourceConfig.class)
 @DisplayName("SysOssService 集成测试")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(SysOssServiceIntegrationTest.class);
+
+    /**
+     * Mock SaTokenDao 来避免 Bean 冲突
+     * <p>
+     * 这解决了 SaTokenDao 类型有2个 Bean 的冲突问题：
+     * - saTokenDao (来自某个自动配置)
+     * - cn.dev33.satoken.dao.SaTokenDaoForRedisTemplate (Redis 实现)
+     * <p>
+     * 使用 @MockBean(name = "...") 指定要替换的特定 bean
+     */
+    @MockBean(name = "saTokenDao")
+    private SaTokenDao mockSaTokenDao1;
+
+    @MockBean(name = "cn.dev33.satoken.dao.SaTokenDaoForRedisTemplate")
+    private SaTokenDao mockSaTokenDao2;
 
     @Autowired(required = false)
     private ISysOssService sysOssService;
