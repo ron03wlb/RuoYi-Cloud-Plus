@@ -101,7 +101,14 @@
       "Bash(git mv:*)",
       "Bash(git tag:*)",
       "Bash(git log:*)",
-      "Bash(/bashes)"
+      "Bash(/bashes)",
+      "Bash(then grep -E \"FAILED|BUILD FAILED|Task.*FAILED\" /tmp/test_full_run.log)",
+      "Bash(else echo \"Log file not found\")",
+      "Bash(then grep -B 5 -A 10 \"ruoyi-resource\" /tmp/test_full_run.log)",
+      "Bash(else echo \"Log not found\")",
+      "Bash(then grep -B 5 -A 5 \"BigNumberSerializer\" /tmp/test_full_run.log)",
+      "Bash(then grep -B 3 -A 3 \"ruoyi-demo\" /tmp/test_full_run.log)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

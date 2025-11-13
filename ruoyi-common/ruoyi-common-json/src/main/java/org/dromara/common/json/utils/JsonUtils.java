@@ -195,7 +195,7 @@ public class JsonUtils {
             return false;
         }
         try {
-            OBJECT_MAPPER.readTree(str);
+            getObjectMapper().readTree(str);
             return true;
         } catch (Exception e) {
             return false;
@@ -213,7 +213,7 @@ public class JsonUtils {
             return false;
         }
         try {
-            JsonNode node = OBJECT_MAPPER.readTree(str);
+            JsonNode node = getObjectMapper().readTree(str);
             return node.isObject();
         } catch (Exception e) {
             return false;
@@ -231,7 +231,7 @@ public class JsonUtils {
             return false;
         }
         try {
-            JsonNode node = OBJECT_MAPPER.readTree(str);
+            JsonNode node = getObjectMapper().readTree(str);
             return node.isArray();
         } catch (Exception e) {
             return false;

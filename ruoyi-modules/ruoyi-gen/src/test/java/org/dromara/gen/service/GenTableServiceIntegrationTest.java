@@ -7,6 +7,7 @@ import org.dromara.common.test.utils.SqlScriptExecutor;
 import org.dromara.gen.config.TestSaTokenConfig;
 import org.dromara.gen.domain.GenTable;
 import org.dromara.gen.domain.GenTableColumn;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * GenTableService 集成测试

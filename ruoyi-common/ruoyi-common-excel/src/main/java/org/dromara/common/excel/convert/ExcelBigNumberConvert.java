@@ -28,7 +28,7 @@ public class ExcelBigNumberConvert implements Converter<Long> {
 
     @Override
     public CellDataTypeEnum supportExcelTypeKey() {
-        return null;
+        return CellDataTypeEnum.STRING;
     }
 
     @Override

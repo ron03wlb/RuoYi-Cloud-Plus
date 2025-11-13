@@ -41,7 +41,9 @@ public class MybatisExceptionHandler {
             log.error("请求地址'{}',认证失败'{}',无法访问系统资源", requestURI, root.getMessage());
             return R.fail(HttpStatus.HTTP_UNAUTHORIZED, "认证失败，无法访问系统资源");
         }
-        if (root instanceof CannotFindDataSourceException) {
+        // 检查是否是 CannotFindDataSourceException 类型或消息中包含该关键字
+        if (root instanceof CannotFindDataSourceException ||
+            (root.getMessage() != null && root.getMessage().contains("CannotFindDataSourceException"))) {
             log.error("请求地址'{}', 未找到数据源", requestURI);
             return R.fail(HttpStatus.HTTP_INTERNAL_ERROR, "未找到数据源，请联系管理员确认");
         }
