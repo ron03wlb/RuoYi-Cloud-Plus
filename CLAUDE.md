@@ -38,7 +38,8 @@ See `script/docker/README-LOCAL-BUILD.md` for detailed deployment instructions.
 RuoYi-Cloud-Plus is a Spring Cloud microservice system based on RuoYi-Cloud, featuring a completely rewritten architecture with modern tech stack. This is a production-ready enterprise microservice platform with multi-tenancy, RBAC permission system, workflow engine, and comprehensive business modules.
 
 **Tech Stack:**
-- Java 17/21, Spring Boot 3.5.6, Spring Cloud 2025.0.0
+
+- Java 21, Spring Boot 3.5.6, Spring Cloud 2025.0.0
 - Microservices: Nacos (registry/config), Dubbo 3.X (RPC), Gateway, Seata (distributed transactions)
 - Authentication: Sa-Token + JWT
 - Database: MyBatis-Plus 3.5.14, HikariCP, P6Spy (SQL monitoring), Dynamic-Datasource (multi-DB)
@@ -139,7 +140,8 @@ ruoyi-modules/ruoyi-{module}/
 ## Build & Development Commands
 
 ### Prerequisites
-- JDK 17 or 21
+
+- JDK 21
 - Gradle 8.12+ (included via Gradle Wrapper)
 - Running Nacos server (config and registry)
 - Running Redis

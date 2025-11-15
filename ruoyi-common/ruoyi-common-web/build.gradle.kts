@@ -34,16 +34,17 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-actuator")
 
     // ===========================================
-    // Nacos Discovery（可选）
-    // ===========================================
-    compileOnly("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
-
-    // ===========================================
     // Mica Metrics
     // ===========================================
     api(libs.mica.metrics) {
         exclude(group = "net.dreamlu", module = "mica-core")
     }
+
+    // ===========================================
+    // 可选依赖（compileOnly）
+    // ===========================================
+    // Nacos Discovery（可选）
+    compileOnly("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
 
     // Mica Core（provided）
     compileOnly(libs.mica.core)
@@ -51,8 +52,13 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
+    // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    // AssertJ
     testImplementation("org.assertj:assertj-core")
+
+    // Mockito
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
 }
@@ -61,7 +67,7 @@ dependencies {
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.jacocoTestReport {

@@ -108,7 +108,11 @@
       "Bash(else echo \"Log not found\")",
       "Bash(then grep -B 5 -A 5 \"BigNumberSerializer\" /tmp/test_full_run.log)",
       "Bash(then grep -B 3 -A 3 \"ruoyi-demo\" /tmp/test_full_run.log)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(java -version:*)",
+      "WebFetch(domain:rules.sonarsource.com)",
+      "Bash(sort echo \"\" echo \"docker-entrypoint.sh 脚本 (9个):\" find . -name \"docker-entrypoint.sh\" -exec echo \"  ✓ {}\")",
+      "Bash(sort echo \"\" echo \"模板文件 (1个):\" ls -1 script/docker/templates/docker-entrypoint.sh.template)"
     ],
     "deny": [],
     "ask": []

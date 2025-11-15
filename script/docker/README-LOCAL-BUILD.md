@@ -47,7 +47,7 @@ cd script/docker
 
 确保已安装：
 - Docker 和 Docker Compose
-- JDK 17 或 21（仅完整部署需要）
+- JDK 21（仅完整部署需要）
 - Maven 3.6+（仅完整部署需要）
 
 ### 2. 开发模式 vs 完整部署

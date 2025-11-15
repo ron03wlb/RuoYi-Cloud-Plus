@@ -80,6 +80,10 @@ dependencies {
     // 离线 IP 地址定位库
     api(libs.ip2region)
 
+    // ===========================================
+    // 运行时依赖
+    // ===========================================
+
     // Spring Boot Properties Migrator（运行时依赖）
     // 版本由 Spring Boot BOM 管理
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
@@ -87,28 +91,31 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
+    // Spring Boot Test
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Mockito 模拟框架
+    // JUnit
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-params") // 参数化测试
+
+    // Mockito
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-inline:5.2.0")  // 支持 mock 静态方法和 final 类
+    testImplementation(libs.mockito.inline)  // 支持 mock 静态方法和 final 类
 
-    // AssertJ 流式断言
+    // AssertJ
     testImplementation("org.assertj:assertj-core")
 
-    // JUnit 5 参数化测试
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-
     // AspectJ（用于集成测试的 AOP 支持）
-    testImplementation("org.aspectj:aspectjweaver:1.9.20")
+    testImplementation(libs.aspectjweaver)
 
     // Jakarta EL（用于 Hibernate Validator 消息插值）
-    testImplementation("org.glassfish:jakarta.el:4.0.2")
+    testImplementation(libs.jakarta.el)
+
+    // JUnit Runtime
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 // ===========================================
@@ -130,7 +137,7 @@ tasks.test {
 // JaCoCo 覆盖率配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.named<JacocoReport>("jacocoTestReport") {

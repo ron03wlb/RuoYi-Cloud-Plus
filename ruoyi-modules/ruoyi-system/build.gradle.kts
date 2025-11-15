@@ -47,10 +47,6 @@ dependencies {
     implementation(project(":ruoyi-common:ruoyi-common-mybatis"))
     implementation(project(":ruoyi-common:ruoyi-common-idempotent"))
     implementation(project(":ruoyi-common:ruoyi-common-tenant"))
-
-    // 分布式事务（某些业务需要）
-    compileOnly(project(":ruoyi-common:ruoyi-common-seata"))
-
     implementation(project(":ruoyi-common:ruoyi-common-security"))
     implementation(project(":ruoyi-common:ruoyi-common-translation"))
     implementation(project(":ruoyi-common:ruoyi-common-sensitive"))
@@ -62,6 +58,12 @@ dependencies {
     implementation(project(":ruoyi-api:ruoyi-api-workflow"))
 
     // ====================
+    // 可选依赖（compileOnly）
+    // ====================
+    // 分布式事务（某些业务需要）
+    compileOnly(project(":ruoyi-common:ruoyi-common-seata"))
+
+    // ====================
     // 测试依赖
     // ====================
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -70,7 +72,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.junit.jupiter)
-    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation(libs.mockito.inline)
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.h2database:h2")
 }
@@ -108,7 +110,7 @@ jib {
 // JaCoCo 配置
 // ====================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.jacocoTestReport {

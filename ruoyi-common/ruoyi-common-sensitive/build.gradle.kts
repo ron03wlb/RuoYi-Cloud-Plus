@@ -20,8 +20,13 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
+    // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    // AssertJ
     testImplementation("org.assertj:assertj-core")
+
+    // Mockito
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
 }
@@ -30,7 +35,7 @@ dependencies {
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.jacocoTestReport {

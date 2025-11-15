@@ -40,11 +40,18 @@ dependencies {
     // ===========================================
     // 測試依賴
     // ===========================================
+    // Spring Boot Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation") // Bean Validation
+
+    // Mockito
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
+
+    // AssertJ
     testImplementation("org.assertj:assertj-core")
+
+    // Testcontainers
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
 }
@@ -53,7 +60,7 @@ dependencies {
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.jacocoTestReport {

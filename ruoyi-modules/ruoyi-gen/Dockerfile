@@ -1,20 +1,39 @@
 # 贝尔实验室 Spring 官方推荐镜像 JDK下载地址 https://bell-sw.com/pages/downloads/
-FROM bellsoft/liberica-openjdk-rocky:17.0.16-cds
-#FROM bellsoft/liberica-openjdk-rocky:21.0.8-cds
-#FROM findepi/graalvm:java17-native
+ARG JDK_VERSION=21.0.8
+FROM bellsoft/liberica-openjdk-rocky:${JDK_VERSION}-cds
 
 LABEL maintainer="Lion Li"
 
-RUN mkdir -p /ruoyi/gen/logs
+# Create non-root user and directories
+RUN groupadd -r ruoyi && useradd -r -g ruoyi ruoyi && \
+    mkdir -p /ruoyi/gen/logs \
+    /ruoyi/gen/temp \
+    /ruoyi/skywalking/agent && \
+    chown -R ruoyi:ruoyi /ruoyi
 
 WORKDIR /ruoyi/gen
 
-ENV SERVER_PORT=9202 LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV SERVER_PORT=9202 \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    JAVA_OPTS="" \
+    SKYWALKING_ENABLED=false
 
 EXPOSE ${SERVER_PORT}
 
-ADD ./target/ruoyi-gen.jar ./app.jar
+COPY --chown=ruoyi:ruoyi ./build/libs/ruoyi-gen.jar ./app.jar
+COPY --chown=ruoyi:ruoyi ./docker-entrypoint.sh /docker-entrypoint.sh
 
-SHELL ["/bin/bash", "-c"]
+# Switch to non-root user
+USER ruoyi
 
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -Dserver.port=${SERVER_PORT} ${JAVA_OPTS} -jar app.jar
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${SERVER_PORT}/actuator/health || exit 1
+
+# Set service-specific environment variables for entrypoint script
+ENV SERVICE_NAME=ruoyi-gen \
+    WORKDIR=/ruoyi/gen
+
+# Use exec form for better signal handling
+ENTRYPOINT ["/docker-entrypoint.sh"]

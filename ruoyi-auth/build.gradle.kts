@@ -57,32 +57,35 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
+    // Spring Boot Test
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Mockito 模拟框架
+    // JUnit
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-params") // 参数化测试
+
+    // Mockito
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation(libs.mockito.inline)
 
-    // AssertJ 流式断言
+    // AssertJ
     testImplementation("org.assertj:assertj-core")
 
-    // JUnit 5 参数化测试
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    // MockWebServer
+    testImplementation(libs.mockwebserver)
 
-    // MockWebServer for HTTP mocking
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+    // Embedded Redis
+    testImplementation(libs.embedded.redis)
 
-    // Embedded Redis for integration tests
-    testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
+    // Testcontainers
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.junit.jupiter)
 
-    // Testcontainers for integration tests
-    testImplementation("org.testcontainers:testcontainers:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    // JUnit Runtime
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -133,7 +136,7 @@ tasks.test {
 // JaCoCo 覆盖率配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.named<JacocoReport>("jacocoTestReport") {

@@ -34,6 +34,15 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
 
+    // 定义版本变量（从 version catalog 获取）
+    val springBootVersion = rootProject.libs.versions.springBoot.get()
+    val springCloudVersion = rootProject.libs.versions.springCloud.get()
+    val hutoolVersion = rootProject.libs.versions.hutool.get()
+    val therafiJavadocVersion = rootProject.libs.versions.therapi.javadoc.get()
+    val lombokVersion = rootProject.libs.versions.lombok.get()
+    val mapstructPlusProcessorVersion = rootProject.libs.versions.mapstructPlusProcessor.get()
+    val lombokMapstructBindingVersion = rootProject.libs.versions.lombokMapstructBinding.get()
+
     // 只对非 BOM 模块应用 Java 插件（BOM 模块使用 java-platform 插件）
     if (!project.name.endsWith("-bom")) {
         apply(plugin = "java")
@@ -41,8 +50,8 @@ subprojects {
 
         // Java 编译配置
         configure<JavaPluginExtension> {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
 
             // 启用 Java 编译参数
             withSourcesJar()
@@ -137,21 +146,24 @@ subprojects {
 
             // 核心 BOM：Spring Boot（优先级最高）
             // 使用 DependencyHandler 的 add() 方法添加平台依赖到所有相关配置
-            add("api", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("implementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("compileOnly", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("annotationProcessor", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("api", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("implementation", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("compileOnly", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("annotationProcessor", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
 
             // Spring Cloud BOM
-            add("api", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
-            add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
-            add("testImplementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
+            add("api", platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"))
+            add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"))
+            add(
+                "testImplementation",
+                platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+            )
 
             // Hutool BOM
-            add("api", platform("cn.hutool:hutool-bom:5.8.40"))
-            add("implementation", platform("cn.hutool:hutool-bom:5.8.40"))
-            add("testImplementation", platform("cn.hutool:hutool-bom:5.8.40"))
+            add("api", platform("cn.hutool:hutool-bom:$hutoolVersion"))
+            add("implementation", platform("cn.hutool:hutool-bom:$hutoolVersion"))
+            add("testImplementation", platform("cn.hutool:hutool-bom:$hutoolVersion"))
 
             // Alibaba BOM（延迟解析项目依赖）
             add("api", platform(project(":ruoyi-common:ruoyi-common-alibaba-bom")))
@@ -164,14 +176,14 @@ subprojects {
             // ===========================================
             // 注解处理器（必须按此顺序！）
             // ===========================================
-            annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0")
-            annotationProcessor("org.projectlombok:lombok:1.18.40")
+            annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:$therafiJavadocVersion")
+            annotationProcessor("org.projectlombok:lombok:$lombokVersion")
             annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-            annotationProcessor("io.github.linpeilie:mapstruct-plus-processor:1.5.0")
-            annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+            annotationProcessor("io.github.linpeilie:mapstruct-plus-processor:$mapstructPlusProcessorVersion")
+            annotationProcessor("org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion")
 
             // compileOnly 依赖
-            compileOnly("org.projectlombok:lombok:1.18.40")
+            compileOnly("org.projectlombok:lombok:$lombokVersion")
 
             // 测试依赖
             testImplementation("org.springframework.boot:spring-boot-starter-test")
