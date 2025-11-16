@@ -22,11 +22,7 @@ dependencies {
     // ===========================================
     // Spring 核心依赖
     // ===========================================
-    implementation("org.springframework:spring-context")
-    implementation("org.springframework:spring-core")
-    implementation("org.springframework:spring-web")
-    implementation("org.springframework.boot:spring-boot")
-    implementation("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("org.springframework.boot:spring-boot-starter")
 
     // ===========================================
     // Spring Cloud Gateway
@@ -100,6 +96,13 @@ dependencies {
 // ===========================================
 // Spring Boot 配置
 // ===========================================
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    // 添加 JVM 参数禁用 Nacos 默认日志配置
+    jvmArgs = listOf(
+        "-Dnacos.logging.default.config.enabled=false"
+    )
+}
+
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     // 设置生成的 JAR 文件名
     archiveFileName.set("${project.name}.jar")
@@ -161,7 +164,8 @@ jib {
             "-XX:MaxGCPauseMillis=200",
             "-Djava.security.egd=file:/dev/./urandom",
             "-Dfile.encoding=UTF-8",
-            "-Duser.timezone=Asia/Shanghai"
+            "-Duser.timezone=Asia/Shanghai",
+            "-Dnacos.logging.default.config.enabled=false"
         )
 
         // 暴露端口

@@ -108,7 +108,18 @@
       "Bash(else echo \"Log not found\")",
       "Bash(then grep -B 5 -A 5 \"BigNumberSerializer\" /tmp/test_full_run.log)",
       "Bash(then grep -B 3 -A 3 \"ruoyi-demo\" /tmp/test_full_run.log)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(java -version:*)",
+      "Bash(curl:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker rm:*)",
+      "Bash(do curl -s http://localhost:8848/nacos/v2/console/health)",
+      "Bash(docker exec:*)",
+      "Bash(docker-compose:*)",
+      "Bash(do sleep 3)",
+      "Bash(./import-nacos-config.sh:*)",
+      "Bash(jar -tf:*)",
+      "Bash(unzip:*)"
     ],
     "deny": [],
     "ask": []

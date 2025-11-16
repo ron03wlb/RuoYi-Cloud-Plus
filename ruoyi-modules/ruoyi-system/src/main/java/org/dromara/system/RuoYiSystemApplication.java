@@ -14,6 +14,9 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 @SpringBootApplication
 public class RuoYiSystemApplication {
     public static void main(String[] args) {
+        // 禁用 Nacos 默认日志配置，避免 Logback appender 冲突
+        System.setProperty("nacos.logging.default.config.enabled", "false");
+
         SpringApplication application = new SpringApplication(RuoYiSystemApplication.class);
         application.setApplicationStartup(new BufferingApplicationStartup(2048));
         application.run(args);
