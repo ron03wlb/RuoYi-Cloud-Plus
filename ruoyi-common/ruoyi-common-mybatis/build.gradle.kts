@@ -30,6 +30,9 @@ dependencies {
     // Sa-Token 模块
     api(project(":ruoyi-common:ruoyi-common-satoken"))
 
+    // Dubbo 模块（可选）
+    compileOnly(project(":ruoyi-common:ruoyi-common-dubbo"))
+
     // ===========================================
     // MyBatis Plus
     // ===========================================
@@ -51,12 +54,6 @@ dependencies {
     // ===========================================
     api("com.mysql:mysql-connector-j")
 
-    // ===========================================
-    // 可选依赖（compileOnly）
-    // ===========================================
-    // Dubbo 模块（可选）
-    compileOnly(project(":ruoyi-common:ruoyi-common-dubbo"))
-
     // 可选的其他数据库驱动（注释掉）
     // compileOnly("com.oracle.database.jdbc:ojdbc11")
     // compileOnly("org.postgresql:postgresql")
@@ -67,7 +64,7 @@ dependencies {
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = libs.versions.jacoco.get()
+    toolVersion = "0.8.11"
 }
 
 tasks.jacocoTestReport {

@@ -1,44 +1,30 @@
 # 贝尔实验室 Spring 官方推荐镜像 JDK下载地址 https://bell-sw.com/pages/downloads/
-ARG JDK_VERSION=21.0.8
-FROM bellsoft/liberica-openjdk-rocky:${JDK_VERSION}-cds
+FROM bellsoft/liberica-openjdk-rocky:17.0.16-cds
+#FROM bellsoft/liberica-openjdk-rocky:21.0.8-cds
+#FROM findepi/graalvm:java17-native
 
 LABEL maintainer="Lion Li"
 
-# Create non-root user and directories
-RUN groupadd -r ruoyi && useradd -r -g ruoyi ruoyi && \
-    mkdir -p /ruoyi/job/logs \
+RUN mkdir -p /ruoyi/job/logs \
     /ruoyi/job/temp \
-    /ruoyi/skywalking/agent && \
-    chown -R ruoyi:ruoyi /ruoyi
+    /ruoyi/skywalking/agent
 
 WORKDIR /ruoyi/job
 
-ENV SERVER_PORT=9203 \
-    SNAIL_PORT=29203 \
-    LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    JAVA_OPTS="" \
-    SKYWALKING_ENABLED=false
+ENV SERVER_PORT=9203 SNAIL_PORT=29203 LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
 
 EXPOSE ${SERVER_PORT}
 # 暴露 snail job 客户端端口 用于定时任务调度中心通信
 EXPOSE ${SNAIL_PORT}
 
-COPY --chown=ruoyi:ruoyi ./build/libs/ruoyi-job.jar ./app.jar
-COPY --chown=ruoyi:ruoyi ./docker-entrypoint.sh /docker-entrypoint.sh
+ADD ./target/ruoyi-job.jar ./app.jar
 
-# Switch to non-root user
-USER ruoyi
+SHELL ["/bin/bash", "-c"]
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${SERVER_PORT}/actuator/health || exit 1
-
-# Set service-specific environment variables for entrypoint script
-ENV SERVICE_NAME=ruoyi-job \
-    WORKDIR=/ruoyi/job \
-    EXTRA_JAVA_OPTS="-Dsnail-job.port=${SNAIL_PORT}"
-
-# Use exec form for better signal handling
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -Dserver.port=${SERVER_PORT} \
+           -Dsnail-job.port=${SNAIL_PORT} \
+           #-Dskywalking.agent.service_name=ruoyi-job \
+           #-javaagent:/ruoyi/skywalking/agent/skywalking-agent.jar \
+           -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
+           -jar app.jar
 

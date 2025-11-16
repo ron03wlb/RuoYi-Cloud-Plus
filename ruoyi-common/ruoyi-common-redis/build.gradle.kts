@@ -75,7 +75,7 @@ dependencies {
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = libs.versions.jacoco.get()
+    toolVersion = "0.8.11"
 }
 
 tasks.jacocoTestReport {

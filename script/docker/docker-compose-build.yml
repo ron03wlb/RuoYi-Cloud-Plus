@@ -7,8 +7,8 @@
 #   适用于完整的本地开发和测试环境
 #
 # 前置要求:
-#   1. 必须先使用 Gradle 构建生成 JAR 文件
-#      ./gradlew build -x test -PprofilesActive=dev
+#   1. 必须先使用 Maven 构建生成 JAR 文件
+#      mvn clean package -P dev
 #   2. 或使用自动化脚本: ./build-and-deploy.sh
 #
 # 包含服务:

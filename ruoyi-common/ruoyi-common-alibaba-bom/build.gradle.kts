@@ -32,7 +32,7 @@ dependencies {
     // 导入 Spring Cloud Alibaba BOM
     // ===========================================
     // 导入 Spring Cloud Alibaba Dependencies BOM
-    api(platform(libs.spring.cloud.alibaba.dependencies))
+    api(platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2023.0.3.3"))
 
     // ===========================================
     // 自定义版本约束
@@ -40,20 +40,20 @@ dependencies {
     constraints {
         // Nacos 客户端
         // 注意：排除配置应该在实际使用此依赖的模块中配置
-        api(libs.nacos.client)
+        api("com.alibaba.nacos:nacos-client:2.5.1")
 
         // Seata 分布式事务
-        api(libs.seata.spring.boot.starter)
-        api(libs.seata.all)
+        api("org.apache.seata:seata-spring-boot-starter:2.5.0")
+        api("org.apache.seata:seata-all:2.5.0")
 
         // Apache Dubbo
-        api(libs.dubbo.spring.boot.starter)
-        api(libs.dubbo.spring.boot.actuator)
-        api(libs.dubbo)
+        api("org.apache.dubbo:dubbo-spring-boot-starter:3.3.5")
+        api("org.apache.dubbo:dubbo-spring-boot-actuator:3.3.5")
+        api("org.apache.dubbo:dubbo:3.3.5")
 
         // Dubbo Extensions
-        api(libs.dubbo.metadata.report.redis)
-        api(libs.dubbo.filter.seata)
+        api("org.apache.dubbo.extensions:dubbo-metadata-report-redis:3.3.1")
+        api("org.apache.dubbo.extensions:dubbo-filter-seata:3.3.1")
     }
 }
 

@@ -57,35 +57,32 @@ dependencies {
     // ===========================================
     // 测试依赖
     // ===========================================
-    // Spring Boot Test
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-
-    // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.junit.jupiter:junit-jupiter-params") // 参数化测试
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Mockito
+    // Mockito 模拟框架
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation(libs.mockito.inline)
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 
-    // AssertJ
+    // AssertJ 流式断言
     testImplementation("org.assertj:assertj-core")
 
-    // MockWebServer
-    testImplementation(libs.mockwebserver)
+    // JUnit 5 参数化测试
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 
-    // Embedded Redis
-    testImplementation(libs.embedded.redis)
+    // MockWebServer for HTTP mocking
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
 
-    // Testcontainers
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.junit.jupiter)
+    // Embedded Redis for integration tests
+    testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
 
-    // JUnit Runtime
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Testcontainers for integration tests
+    testImplementation("org.testcontainers:testcontainers:1.19.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -136,7 +133,7 @@ tasks.test {
 // JaCoCo 覆盖率配置
 // ===========================================
 jacoco {
-    toolVersion = libs.versions.jacoco.get()
+    toolVersion = "0.8.11"
 }
 
 tasks.named<JacocoReport>("jacocoTestReport") {
