@@ -55,20 +55,20 @@ class SampleIntegrationTest extends BaseIntegrationTest {
     class InfrastructureTests {
 
         @Test
-        @DisplayName("应该成功连接到 MySQL 容器")
-        void shouldConnectToMysql() {
+        @DisplayName("应该成功连接到 PostgreSQL 容器")
+        void shouldConnectToPostgres() {
             // Arrange
-            String jdbcUrl = getMysqlJdbcUrl();
-            String username = getMysqlUsername();
-            String password = getMysqlPassword();
+            String jdbcUrl = getPostgresJdbcUrl();
+            String username = getPostgresUsername();
+            String password = getPostgresPassword();
 
             // Assert
             assertThat(jdbcUrl).isNotNull();
-            assertThat(jdbcUrl).contains("jdbc:mysql://");
-            assertThat(username).isEqualTo("root");
-            assertThat(password).isEqualTo("root123");
+            assertThat(jdbcUrl).contains("jdbc:postgresql://");
+            assertThat(username).isEqualTo("postgres");
+            assertThat(password).isEqualTo("postgres123");
 
-            log.info("MySQL 连接信息 - URL: {}, Username: {}", jdbcUrl, username);
+            log.info("PostgreSQL 连接信息 - URL: {}, Username: {}", jdbcUrl, username);
         }
 
         @Test

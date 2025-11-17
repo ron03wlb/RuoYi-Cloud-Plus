@@ -1,21 +1,34 @@
-# 贝尔实验室 Spring 官方推荐镜像 JDK下载地址 https://bell-sw.com/pages/downloads/
-FROM bellsoft/liberica-openjdk-rocky:17.0.16-cds
-#FROM bellsoft/liberica-openjdk-rocky:21.0.8-cds
-#FROM findepi/graalvm:java17-native
+# RuoYi Custom Nacos with PostgreSQL Support
+FROM eclipse-temurin:17-jre
 
-LABEL maintainer="Lion Li"
+LABEL maintainer="RuoYi-Cloud-Plus"
+LABEL description="Custom Nacos Server with PostgreSQL support"
 
-RUN mkdir -p /ruoyi/nacos
+# 设置工作目录
+WORKDIR /home/nacos
 
-WORKDIR /ruoyi/nacos
+# 复制构建好的 JAR 文件
+COPY build/libs/ruoyi-nacos.jar /home/nacos/nacos-server.jar
 
-EXPOSE 8848
+# 复制 PostgreSQL 数据源插件到 plugins 目录
+COPY src/main/resources/META-INF/plugins/*.jar /home/nacos/plugins/
 
-ENV TZ=Asia/Shanghai LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS="-Xms512m -Xmx1024m"
+# 创建日志和数据目录
+RUN mkdir -p /home/nacos/logs /home/nacos/data
 
-ADD ./target/ruoyi-nacos.jar ./app.jar
+# 暴露端口
+EXPOSE 8848 9848 9849
 
-SHELL ["/bin/bash", "-c"]
+# 设置环境变量
+ENV MODE=standalone \
+    PREFER_HOST_MODE=hostname \
+    SPRING_DATASOURCE_PLATFORM=postgresql \
+    TZ=Asia/Shanghai
 
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom ${JAVA_OPTS} -jar app.jar
-
+# 启动命令
+ENTRYPOINT ["java", \
+            "-Djava.security.egd=file:/dev/./urandom", \
+            "-Xms256m", \
+            "-Xmx512m", \
+            "-jar", \
+            "/home/nacos/nacos-server.jar"]

@@ -3,7 +3,6 @@ package org.dromara.common.test.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
@@ -12,6 +11,8 @@ import org.testcontainers.utility.DockerImageName;
  * Testcontainers 配置类
  * <p>
  * 提供各种测试容器的配置和管理
+ * <p>
+ * 注意：项目已全面迁移至 PostgreSQL，不再使用 MySQL
  *
  * @author Lion Li
  * @since 2025-11-09
@@ -21,53 +22,10 @@ public class TestContainersConfig {
     private static final Logger log = LoggerFactory.getLogger(TestContainersConfig.class);
 
     /**
-     * MySQL 容器配置
-     */
-    public static class MySQL {
-        private static final String MYSQL_IMAGE = "mysql:8.0";
-        private static final String DATABASE_NAME = "ry_cloud_test";
-        private static final String USERNAME = "root";
-        private static final String PASSWORD = "root123";
-
-        /**
-         * 创建 MySQL 容器
-         */
-        public static MySQLContainer<?> createContainer() {
-            MySQLContainer<?> mysql = new MySQLContainer<>(DockerImageName.parse(MYSQL_IMAGE))
-                .withDatabaseName(DATABASE_NAME)
-                .withUsername(USERNAME)
-                .withPassword(PASSWORD)
-                .withReuse(true)  // 重用容器，加快测试速度
-                .withLogConsumer(new Slf4jLogConsumer(log));
-
-            // 配置字符集和时区
-            mysql.withCommand(
-                "--character-set-server=utf8mb4",
-                "--collation-server=utf8mb4_unicode_ci",
-                "--default-time-zone=+8:00"
-            );
-
-            return mysql;
-        }
-
-        public static String getDatabaseName() {
-            return DATABASE_NAME;
-        }
-
-        public static String getUsername() {
-            return USERNAME;
-        }
-
-        public static String getPassword() {
-            return PASSWORD;
-        }
-    }
-
-    /**
      * PostgreSQL 容器配置
      */
     public static class PostgreSQL {
-        private static final String POSTGRES_IMAGE = "postgres:15-alpine";
+        private static final String POSTGRES_IMAGE = "postgres:17-alpine";
         private static final String DATABASE_NAME = "ry_cloud_test";
         private static final String USERNAME = "postgres";
         private static final String PASSWORD = "postgres123";

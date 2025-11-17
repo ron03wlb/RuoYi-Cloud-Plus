@@ -7,7 +7,7 @@
 #   使用官方镜像，无需构建，适合开发调试
 #
 # 包含服务:
-#   - MySQL 8.0.42      数据库 (3306)
+#   - PostgreSQL 17     数据库 (5432)
 #   - Redis 7.2.8       缓存/消息队列 (6379)
 #   - Nacos 2.4.3       配置中心/注册中心 (8848)
 #   - MinIO             对象存储 (9000/9001)
@@ -27,25 +27,47 @@
 ################################################################################
 
 services:
-  # MySQL 数据库
+  # MySQL 数据库 (仅用于 Nacos 配置存储)
   mysql:
     image: mysql:8.0.42
     container_name: mysql
     environment:
-      TZ: Asia/Shanghai                      # 时区设置
-      MYSQL_ROOT_PASSWORD: ruoyi123          # root 密码
-      MYSQL_DATABASE: ry-cloud               # 初始化数据库名
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ruoyi123
+      MYSQL_DATABASE: ry-config
     ports:
       - "3306:3306"
     volumes:
-      - /docker/mysql/data/:/var/lib/mysql/         # 数据持久化
-      - /docker/mysql/conf/:/etc/mysql/conf.d/      # 自定义配置
+      - /docker/mysql/data/:/var/lib/mysql/
+      - /docker/mysql/conf/:/etc/mysql/conf.d/
     command:
-      - --default-authentication-plugin=mysql_native_password  # 使用传统密码策略
-      - --character-set-server=utf8mb4                        # 字符集
-      - --collation-server=utf8mb4_general_ci                 # 排序规则
-      - --explicit_defaults_for_timestamp=true
-      - --lower_case_table_names=1                            # 表名不区分大小写
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --max_connections=200
+    privileged: true
+    network_mode: "host"
+
+  # PostgreSQL 数据库 (业务数据)
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      TZ: Asia/Shanghai                      # 时区设置
+      POSTGRES_PASSWORD: ruoyi123            # postgres 用户密码
+      POSTGRES_DB: ry-cloud                  # 初始化数据库名
+      POSTGRES_USER: postgres                # 默认用户
+    ports:
+      - "5432:5432"
+    volumes:
+      - /docker/postgres/data/:/var/lib/postgresql/data/     # 数据持久化
+      - /docker/postgres/conf/:/etc/postgresql/              # 自定义配置
+    command:
+      - postgres
+      - -c
+      - max_connections=200
+      - -c
+      - shared_buffers=256MB
     privileged: true
     network_mode: "host"
 
@@ -64,7 +86,7 @@ services:
     privileged: true
     network_mode: "host"
 
-  # Nacos 配置中心和注册中心 (官方镜像)
+  # Nacos 配置中心和注册中心 (官方镜像 + MySQL)
   nacos:
     image: nacos/nacos-server:v2.4.3
     container_name: nacos
@@ -80,13 +102,13 @@ services:
       SPRING_DATASOURCE_PLATFORM: mysql
       MYSQL_SERVICE_HOST: 127.0.0.1
       MYSQL_SERVICE_PORT: 3306
-      MYSQL_SERVICE_DB_NAME: ry-config      # Nacos 配置数据库
+      MYSQL_SERVICE_DB_NAME: ry-config
       MYSQL_SERVICE_USER: root
       MYSQL_SERVICE_PASSWORD: ruoyi123
-      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       # Nacos 认证配置
       NACOS_AUTH_ENABLE: true               # 启用认证
-      NACOS_AUTH_TOKEN: SecretKey012345678901234567890123456789012345678901234567890123456789
+      NACOS_AUTH_TOKEN: U2VjcmV0S2V5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5
       NACOS_AUTH_IDENTITY_KEY: nacos
       NACOS_AUTH_IDENTITY_VALUE: nacos
       # JVM 内存配置
@@ -95,6 +117,8 @@ services:
     volumes:
       - /docker/nacos/logs/:/home/nacos/logs    # 日志目录
       - /docker/nacos/data/:/home/nacos/data    # 数据目录
+    depends_on:
+      - mysql
     network_mode: "host"
 
   # MinIO 对象存储 (兼容 S3 API)

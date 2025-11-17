@@ -13,8 +13,8 @@
 #
 # 包含服务:
 #   基础设施:
-#     - MySQL, Redis, MinIO               (使用官方镜像)
-#     - Nacos, Seata, SnailJob           (从本地源码构建)
+#     - PostgreSQL, Redis, MinIO          (使用官方镜像)
+#     - Nacos, Seata, SnailJob            (从本地源码构建)
 #   业务服务:
 #     - Gateway, Auth, System, Gen        (从本地源码构建)
 #     - Job, Resource, Workflow, Monitor  (从本地源码构建)
@@ -38,30 +38,31 @@
 ################################################################################
 
 services:
-  mysql:
-    image: mysql:8.0.42
-    container_name: mysql
+  postgres:
+    image: postgres:17
+    container_name: postgres
     environment:
       # 时区上海
       TZ: Asia/Shanghai
-      # root 密码
-      MYSQL_ROOT_PASSWORD: ruoyi123
+      # postgres 用户密码
+      POSTGRES_PASSWORD: ruoyi123
       # 初始化数据库
-      MYSQL_DATABASE: ry-cloud
+      POSTGRES_DB: ry-cloud
+      # 默认用户
+      POSTGRES_USER: postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
       # 数据挂载
-      - /docker/mysql/data/:/var/lib/mysql/
+      - /docker/postgres/data/:/var/lib/postgresql/data/
       # 配置挂载
-      - /docker/mysql/conf/:/etc/mysql/conf.d/
+      - /docker/postgres/conf/:/etc/postgresql/
     command:
-      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
-      --default-authentication-plugin=mysql_native_password
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_general_ci
-      --explicit_defaults_for_timestamp=true
-      --lower_case_table_names=1
+      - postgres
+      - -c
+      - max_connections=200
+      - -c
+      - shared_buffers=256MB
     privileged: true
     network_mode: "host"
 

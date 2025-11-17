@@ -22,13 +22,12 @@ dependencies {
     // ===========================================
     api("org.testcontainers:testcontainers")
     api("org.testcontainers:junit-jupiter")
-    api("org.testcontainers:mysql")
     api("org.testcontainers:postgresql")
 
     // ===========================================
     // Database
     // ===========================================
-    api("com.mysql:mysql-connector-j")
+    api("org.postgresql:postgresql")
     api("com.zaxxer:HikariCP")
 
     // MyBatis Plus (for database operations)

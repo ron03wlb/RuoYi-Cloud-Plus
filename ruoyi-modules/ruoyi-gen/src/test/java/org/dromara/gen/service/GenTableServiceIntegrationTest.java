@@ -144,11 +144,11 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该成功连接到数据库")
         void shouldConnectToDatabase() {
             // Arrange
-            String jdbcUrl = getMysqlJdbcUrl();
+            String jdbcUrl = getPostgresJdbcUrl();
 
             // Assert
             assertThat(jdbcUrl).isNotNull();
-            assertThat(jdbcUrl).contains("jdbc:mysql://");
+            assertThat(jdbcUrl).contains("jdbc:postgresql://");
             log.info("✅ 数据库连接成功: {}", jdbcUrl);
         }
 

@@ -9,14 +9,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
  * 集成测试基类
  * <p>
  * 提供完整的集成测试环境，包括：
  * <ul>
- *     <li>MySQL 数据库（Testcontainers）</li>
+ *     <li>PostgreSQL 数据库（Testcontainers）</li>
  *     <li>Redis 缓存（Testcontainers）</li>
  *     <li>MinIO 对象存储（Testcontainers）</li>
  *     <li>Spring Boot 上下文</li>
@@ -60,11 +60,11 @@ public abstract class BaseIntegrationTest {
     private static final Logger log = LoggerFactory.getLogger(BaseIntegrationTest.class);
 
     /**
-     * MySQL 容器
+     * PostgreSQL 容器
      * <p>
      * 在静态初始化块中手动启动，确保在 Spring 容器初始化之前容器已运行
      */
-    protected static final MySQLContainer<?> MYSQL_CONTAINER;
+    protected static final PostgreSQLContainer<?> POSTGRES_CONTAINER;
 
     /**
      * Redis 容器
@@ -87,10 +87,10 @@ public abstract class BaseIntegrationTest {
     static {
         log.info("=== 开始启动 Testcontainers（方案 A：手动容器启动）===");
 
-        // 创建并启动 MySQL 容器
-        MYSQL_CONTAINER = TestContainersConfig.MySQL.createContainer();
-        MYSQL_CONTAINER.start();
-        log.info("✅ MySQL 容器已启动: {}", MYSQL_CONTAINER.getJdbcUrl());
+        // 创建并启动 PostgreSQL 容器
+        POSTGRES_CONTAINER = TestContainersConfig.PostgreSQL.createContainer();
+        POSTGRES_CONTAINER.start();
+        log.info("✅ PostgreSQL 容器已启动: {}", POSTGRES_CONTAINER.getJdbcUrl());
 
         // 创建并启动 Redis 容器
         REDIS_CONTAINER = TestContainersConfig.Redis.createContainer();
@@ -120,10 +120,10 @@ public abstract class BaseIntegrationTest {
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         // 配置数据源
-        registry.add("spring.datasource.url", MYSQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", MYSQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", MYSQL_CONTAINER::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "com.mysql.cj.jdbc.Driver");
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
+        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
 
         // 配置 Redis
         registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
@@ -159,8 +159,8 @@ public abstract class BaseIntegrationTest {
     @BeforeAll
     static void setUpIntegrationTest() {
         // 确保容器已启动
-        if (!MYSQL_CONTAINER.isRunning()) {
-            throw new IllegalStateException("MySQL container is not running");
+        if (!POSTGRES_CONTAINER.isRunning()) {
+            throw new IllegalStateException("PostgreSQL container is not running");
         }
         if (!REDIS_CONTAINER.isRunning()) {
             throw new IllegalStateException("Redis container is not running");
@@ -171,24 +171,24 @@ public abstract class BaseIntegrationTest {
     }
 
     /**
-     * 获取 MySQL JDBC URL
+     * 获取 PostgreSQL JDBC URL
      */
-    protected static String getMysqlJdbcUrl() {
-        return MYSQL_CONTAINER.getJdbcUrl();
+    protected static String getPostgresJdbcUrl() {
+        return POSTGRES_CONTAINER.getJdbcUrl();
     }
 
     /**
-     * 获取 MySQL 用户名
+     * 获取 PostgreSQL 用户名
      */
-    protected static String getMysqlUsername() {
-        return MYSQL_CONTAINER.getUsername();
+    protected static String getPostgresUsername() {
+        return POSTGRES_CONTAINER.getUsername();
     }
 
     /**
-     * 获取 MySQL 密码
+     * 获取 PostgreSQL 密码
      */
-    protected static String getMysqlPassword() {
-        return MYSQL_CONTAINER.getPassword();
+    protected static String getPostgresPassword() {
+        return POSTGRES_CONTAINER.getPassword();
     }
 
     /**

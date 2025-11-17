@@ -35,27 +35,27 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
 
         @Test
         @Order(1)
-        @DisplayName("应该成功启动 MySQL 容器")
-        void shouldStartMysqlContainer() {
-            log.info("=== 验证 MySQL 容器 ===");
+        @DisplayName("应该成功启动 PostgreSQL 容器")
+        void shouldStartPostgresContainer() {
+            log.info("=== 验证 PostgreSQL 容器 ===");
 
             // Assert - 容器应该正在运行
-            assertThat(MYSQL_CONTAINER.isRunning())
-                .as("MySQL 容器应该正在运行")
+            assertThat(POSTGRES_CONTAINER.isRunning())
+                .as("PostgreSQL 容器应该正在运行")
                 .isTrue();
 
-            // Assert - JDBC URL 应该包含 MySQL 连接信息
-            String jdbcUrl = getMysqlJdbcUrl();
+            // Assert - JDBC URL 应该包含 PostgreSQL 连接信息
+            String jdbcUrl = getPostgresJdbcUrl();
             assertThat(jdbcUrl)
                 .as("JDBC URL 应该不为空")
                 .isNotNull()
-                .contains("jdbc:mysql://")
+                .contains("jdbc:postgresql://")
                 .contains("ry_cloud_test");
 
-            log.info("✅ MySQL 容器启动成功");
+            log.info("✅ PostgreSQL 容器启动成功");
             log.info("   JDBC URL: {}", jdbcUrl);
-            log.info("   Username: {}", getMysqlUsername());
-            log.info("   Password: {}", getMysqlPassword());
+            log.info("   Username: {}", getPostgresUsername());
+            log.info("   Password: {}", getPostgresPassword());
         }
 
         @Test
@@ -336,7 +336,7 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             // 注意：这个测试实际上在整个测试类加载时已经启动了容器
             // 这里只是记录和验证
 
-            assertThat(MYSQL_CONTAINER.isRunning()).isTrue();
+            assertThat(POSTGRES_CONTAINER.isRunning()).isTrue();
             assertThat(REDIS_CONTAINER.isRunning()).isTrue();
 
             log.info("✅ 容器启动正常");

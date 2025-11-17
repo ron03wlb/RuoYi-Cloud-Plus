@@ -66,9 +66,7 @@ dependencies {
     implementation("com.alibaba:druid")
     implementation("org.apache.commons:commons-dbcp2")
     implementation("com.zaxxer:HikariCP")
-    implementation("mysql:mysql-connector-java:8.0.27")
     implementation("org.postgresql:postgresql")
-    implementation("com.dameng:DmJdbcDriver18")
     implementation("com.beust:jcommander")
 
     // ===========================================

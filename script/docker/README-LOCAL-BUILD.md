@@ -64,7 +64,8 @@ cd script/docker
 - `./dev-start.sh --custom-nacos` - 使用自定义 Nacos（需要构建）
 
 启动内容：
-- 仅启动基础设施（MySQL, Redis, Nacos, MinIO）
+
+- 仅启动基础设施（PostgreSQL, Redis, Nacos, MinIO）
 - 业务服务在 IDE 中运行
 
 #### 完整部署模式
@@ -153,7 +154,7 @@ mvn clean package -P dev
 cd script/docker
 
 # 2. 启动基础设施
-docker-compose -f docker-compose-build.yml up -d mysql redis nacos minio
+docker-compose -f docker-compose-build.yml up -d postgres redis nacos minio
 
 # 3. 等待并导入 Nacos 配置
 
@@ -196,7 +197,7 @@ MAVEN_PROFILE=prod ./maven-build-all.sh
 # 启动所有服务（首次会自动构建）
 ./build-and-deploy.sh all
 
-# 只启动基础设施（MySQL, Redis, Nacos, MinIO）
+# 只启动基础设施（PostgreSQL, Redis, Nacos, MinIO）
 ./build-and-deploy.sh infra
 
 # 只启动业务服务（需要先启动基础设施）
@@ -298,25 +299,31 @@ cd script/docker
 
 ## 数据库初始化
 
-首次启动 MySQL 后，需要执行数据库初始化脚本：
+首次启动 PostgreSQL 后，需要执行数据库初始化脚本：
 
 ```bash
-# 连接到 MySQL 容器
-docker exec -it mysql mysql -u root -pruoyi123
+# 连接到 PostgreSQL 容器
+docker exec -it postgres psql -U postgres
 
 # 或者使用数据库客户端连接
 # Host: localhost
-# Port: 3306
-# User: root
+# Port: 5432
+# User: postgres
 # Password: ruoyi123
+# Database: ry-cloud
 
-# 执行 script/sql/ 目录下的 SQL 脚本
+# 执行 script/sql/ 目录下的 PostgreSQL SQL 脚本：
+# - ry_cloud.sql
+# - ry_job.sql
+# - ry_seata.sql
+# - ry_workflow.sql
 ```
 
 ## 服务端口说明
 
 ### 基础设施
-- MySQL: 3306
+
+- PostgreSQL: 5432
 - Redis: 6379
 - Nacos: 8848, 9848, 9849
 - MinIO: 9000 (API), 9001 (Console)
@@ -438,7 +445,7 @@ docker-compose -f docker-compose-build.yml restart ruoyi-gateway
 
 ### 数据库连接失败
 
-1. 确认 MySQL 已启动
+1. 确认 PostgreSQL 已启动
 2. 确认数据库脚本已执行
 3. 检查 Nacos 中的数据库配置
 

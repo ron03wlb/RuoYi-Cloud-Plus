@@ -50,14 +50,9 @@ dependencies {
     api(libs.dynamic.datasource)
 
     // ===========================================
-    // MySQL 数据库驱动
+    // PostgreSQL 数据库驱动
     // ===========================================
-    api("com.mysql:mysql-connector-j")
-
-    // 可选的其他数据库驱动（注释掉）
-    // compileOnly("com.oracle.database.jdbc:ojdbc11")
-    // compileOnly("org.postgresql:postgresql")
-    // compileOnly("com.microsoft.sqlserver:mssql-jdbc")
+    api("org.postgresql:postgresql")
 }
 
 // ===========================================

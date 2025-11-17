@@ -11,10 +11,20 @@
  */
 
 plugins {
+    java
     id("org.springframework.boot") version "2.7.18"
+    id("io.spring.dependency-management") version "1.0.15.RELEASE"
 }
 
+group = "org.dromara"
+version = "2.5.0"
+
 description = "ruoyi-nacos Nacos服务器"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 // Nacos 版本
 val nacosVersion = "2.5.1"
@@ -87,17 +97,17 @@ dependencies {
     // ===========================================
     // 其他依赖
     // ===========================================
-    implementation("com.caucho:hessian")
-    implementation("commons-collections:commons-collections")
+    implementation("com.caucho:hessian:4.0.66")
+    implementation("commons-collections:commons-collections:3.2.2")
     implementation("ch.qos.logback:logback-classic")
     implementation("ch.qos.logback:logback-core")
-    implementation("com.mysql:mysql-connector-j")
-    implementation("org.apache.derby:derby")
-    implementation("com.alipay.sofa:jraft-core")
-    implementation("com.alipay.sofa:rpc-grpc-impl")
-    implementation("io.jsonwebtoken:jjwt-api")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson")
+    implementation("com.mysql:mysql-connector-j:9.1.0")
+    implementation("org.apache.derby:derby:10.17.1.0")
+    implementation("com.alipay.sofa:jraft-core:1.3.14")
+    implementation("com.alipay.sofa:sofa-rpc-all:5.12.0")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("com.google.code.gson:gson")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("io.micrometer:micrometer-registry-influx")

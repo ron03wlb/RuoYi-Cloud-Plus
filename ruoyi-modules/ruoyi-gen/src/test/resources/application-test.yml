@@ -56,7 +56,7 @@ spring.datasource.dynamic:
   strict: false
   datasource:
     master:
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: org.postgresql.Driver
       # JDBC URL 由 Testcontainers 动态设置
 
 # MyBatis-Plus 配置

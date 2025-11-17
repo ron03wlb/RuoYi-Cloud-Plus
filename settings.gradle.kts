@@ -137,7 +137,7 @@ include(":ruoyi-modules:ruoyi-workflow")
 include(":ruoyi-visual")
 include(":ruoyi-visual:ruoyi-monitor")
 // 注意：ruoyi-seata-server 和 ruoyi-nacos 使用 Spring Boot 2.7.18，与主项目不兼容
-// 生产环境建议使用官方 Docker 镜像，因此从 Gradle 构建中排除
+// 已采用混合方案：使用官方 Nacos Docker 镜像（MySQL）+ PostgreSQL（业务数据）
 // include(":ruoyi-visual:ruoyi-seata-server")
 // include(":ruoyi-visual:ruoyi-nacos")
 include(":ruoyi-visual:ruoyi-snailjob-server")

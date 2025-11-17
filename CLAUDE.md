@@ -41,7 +41,7 @@ RuoYi-Cloud-Plus is a Spring Cloud microservice system based on RuoYi-Cloud, fea
 - Java 17/21, Spring Boot 3.5.6, Spring Cloud 2025.0.0
 - Microservices: Nacos (registry/config), Dubbo 3.X (RPC), Gateway, Seata (distributed transactions)
 - Authentication: Sa-Token + JWT
-- Database: MyBatis-Plus 3.5.14, HikariCP, P6Spy (SQL monitoring), Dynamic-Datasource (multi-DB)
+- Database: PostgreSQL 17, MyBatis-Plus 3.5.14, HikariCP, P6Spy (SQL monitoring), Dynamic-Datasource (multi-DB)
 - Cache: Redis 5-7 + Redisson
 - Message Queue: RocketMQ, RabbitMQ, Kafka
 - Job Scheduling: SnailJob
@@ -143,7 +143,7 @@ ruoyi-modules/ruoyi-{module}/
 - Gradle 8.12+ (included via Gradle Wrapper)
 - Running Nacos server (config and registry)
 - Running Redis
-- Running MySQL/PostgreSQL/Oracle/SQLServer
+- Running PostgreSQL 17
 
 ### Gradle Profiles
 The project uses Gradle for building. Configuration properties can be set via:
@@ -196,7 +196,7 @@ cd script/docker
 # Build and start all services (infrastructure + business services)
 ./build-and-deploy.sh all
 
-# Only start infrastructure services (MySQL, Redis, Nacos, MinIO)
+# Only start infrastructure services (PostgreSQL, Redis, Nacos, MinIO)
 ./build-and-deploy.sh infra
 
 # Build and start only business services (assumes infra is running)
@@ -224,7 +224,7 @@ cd script/docker
 cd script/docker
 
 # Build and start infrastructure only
-docker-compose -f docker-compose-build.yml up -d mysql redis nacos minio
+docker-compose -f docker-compose-build.yml up -d postgres redis nacos minio
 
 # Build and start all services
 docker-compose -f docker-compose-build.yml up -d --build
@@ -260,7 +260,8 @@ After starting Nacos for the first time:
 #### Service Startup Order
 
 Services should be started in this order:
-1. **Infrastructure**: MySQL, Redis, Nacos (can use Docker for these)
+
+1. **Infrastructure**: PostgreSQL, Redis, Nacos (can use Docker for these)
 2. `ruoyi-nacos` - If running locally (port 8848)
 3. `ruoyi-seata-server` - If using distributed transactions (port 8091)
 4. `ruoyi-snailjob-server` - If using scheduled jobs (port 8800)
@@ -289,7 +290,7 @@ java -jar build/libs/ruoyi-{module}.jar
 
 # Option 4: Mixed mode - Infrastructure in Docker, services locally
 cd script/docker
-docker-compose -f docker-compose-build.yml up -d mysql redis nacos minio
+docker-compose -f docker-compose-build.yml up -d postgres redis nacos minio
 # Then run services locally using Gradle or IDEA
 ```
 
@@ -352,8 +353,14 @@ spring:
 ## Database Initialization
 
 Database scripts are in `script/sql/`:
-- Execute SQL scripts for your target database (MySQL, Oracle, PostgreSQL, SQLServer)
+
+- Execute PostgreSQL SQL scripts from `script/sql/` directory:
+    - `ry_cloud.sql` - Main application database
+    - `ry_job.sql` - Job scheduling database
+    - `ry_seata.sql` - Seata distributed transaction database
+    - `ry_workflow.sql` - Workflow engine database
 - For demo module, also execute `ruoyi-example/ruoyi-demo/test.sql`
+- Archived MySQL and Oracle scripts are in `script/sql/archive/` for reference
 
 ## Key Development Patterns
 

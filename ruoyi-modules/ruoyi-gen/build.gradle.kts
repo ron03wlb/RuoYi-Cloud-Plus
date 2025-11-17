@@ -44,12 +44,7 @@ dependencies {
 
     // Anyline (面向运行时的D-ORM依赖,支持100+种类型数据库)
     implementation(libs.anyline.environment.spring.data.jdbc)
-    implementation(libs.anyline.data.jdbc.mysql)
-
-    // anyline支持100+种类型数据库 添加对应的jdbc依赖与anyline对应数据库依赖包即可
-    // compileOnly("org.anyline:anyline-data-jdbc-oracle:${anyline.version}")
-    // compileOnly("org.anyline:anyline-data-jdbc-postgresql:${anyline.version}")
-    // compileOnly("org.anyline:anyline-data-jdbc-mssql:${anyline.version}")
+    implementation(libs.anyline.data.jdbc.postgresql)
 
     // ===========================================
     // Integration Testing Framework

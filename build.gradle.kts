@@ -177,6 +177,29 @@ subprojects {
             testImplementation("org.springframework.boot:spring-boot-starter-test")
             testImplementation("org.junit.jupiter:junit-jupiter")
             testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+            // ===========================================
+            // Netty 原生 DNS 解析器（平台特定依赖）
+            // ===========================================
+            // 解决 macOS 上的 DNS 解析警告和性能问题
+            // 根据运行平台自动添加对应的原生库
+            val osName = System.getProperty("os.name").lowercase()
+            val osArch = System.getProperty("os.arch").lowercase()
+
+            when {
+                // macOS ARM64 (M1/M2/M3)
+                osName.contains("mac") && (osArch.contains("aarch64") || osArch.contains("arm")) -> {
+                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-aarch_64")
+                }
+                // macOS x86_64
+                osName.contains("mac") && osArch.contains("x86_64") -> {
+                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-x86_64")
+                }
+                // Linux x86_64 (生产环境)
+                osName.contains("linux") && osArch.contains("amd64") -> {
+                    runtimeOnly("io.netty:netty-resolver-dns-native-epoll:4.1.127.Final:linux-x86_64")
+                }
+            }
         }
 
         // Javadoc 配置

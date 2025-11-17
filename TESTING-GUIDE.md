@@ -269,7 +269,7 @@ spring:
 
   # 数据源配置（集成测试时由 TestContainers 动态设置）
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
       minimum-idle: 2

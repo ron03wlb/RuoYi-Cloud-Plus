@@ -119,7 +119,15 @@
       "Bash(do sleep 3)",
       "Bash(./import-nacos-config.sh:*)",
       "Bash(jar -tf:*)",
-      "Bash(unzip:*)"
+      "Bash(unzip:*)",
+      "Bash(do mv \"$file\" \"../$file#postgres_\")",
+      "Bash(do mv \"$file\" \"../$file\")",
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(sudo rm:*)",
+      "Bash(docker volume:*)",
+      "Bash(docker cp:*)",
+      "Bash(jar tf:*)"
     ],
     "deny": [],
     "ask": []
