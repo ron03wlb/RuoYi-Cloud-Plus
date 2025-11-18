@@ -1,11 +1,33 @@
-# 测试文档索引
+# 文档索引
 
-> 📅 **最后更新**: 2025-11-12
+> 📅 **最后更新**: 2025-11-18
 > 🎯 **用途**: 快速找到你需要的文档
-> 📊 **文档总数**: 主要文档 3 个，模块文档 10+ 个（参考），归档 60+ 个
-> 🔄 **当前重点**: 集成测试（Resource Bean 配置问题已解决）
+> 📊 **文档结构**: 项目文档 + 操作指南 + 测试文档
 
 ---
+
+## 📁 项目文档
+
+### 核心指南
+
+| 文档 | 说明 |
+|------|------|
+| [**CLAUDE.md**](project/CLAUDE.md) | Claude Code 项目指南 - 项目概述、架构原则、开发模式、最佳实践 |
+| [**GRADLE.md**](project/GRADLE.md) | Gradle 构建完整指南 - 快速开始、命令对照、配置说明 |
+| [**开发环境初始化**](project/DEVELOPMENT-SETUP.md) | 开发环境初始化指南 - 环境要求、基础设施启动、验证步骤（中文） |
+| [**Docker 部署**](project/DOCKER-DEPLOYMENT.md) | Docker 部署专题 - 开发模式、完整部署、故障排查 |
+
+### 操作指南
+
+| 指南 | 说明 |
+|------|------|
+| [Nacos 配置导入](guides/nacos-config-import.md) | 自动/手动导入 Nacos 配置 |
+| [数据库初始化](guides/database-initialization.md) | PostgreSQL 初始化步骤 |
+| [服务启动顺序](guides/service-startup-order.md) | 服务依赖关系和启动顺序 |
+
+---
+
+## 📊 测试文档
 
 ## 🔍 如何使用本索引
 
