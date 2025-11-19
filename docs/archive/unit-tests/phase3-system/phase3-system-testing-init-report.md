@@ -352,7 +352,7 @@ List<SysRoleVo> roles = TestDataFactory.createRoleList(3);
 
 ### 文档
 
-6. `docs/PHASE3-SYSTEM-TESTING-INIT-REPORT.md` (本文档)
+6. `docs/phase3-system-testing-init-report.md` (本文档)
 
 ---
 

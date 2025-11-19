@@ -213,6 +213,6 @@ spring:
 
 ## 相关文档
 
-- [Docker 部署指南](../project/DOCKER-DEPLOYMENT.md)
-- [开发环境初始化](../project/DEVELOPMENT-SETUP.md)
+- [Docker 部署指南](../project/docker-deployment.md)
+- [开发环境初始化](../project/development-setup.md)
 - [Nacos 配置导入](./nacos-config-import.md)

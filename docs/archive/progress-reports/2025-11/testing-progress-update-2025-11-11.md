@@ -225,7 +225,7 @@ BigNumberSerializer 单元测试 > 真实业务场景测试 >
 
 **解决方案**:
 
-- 参考 TESTING-MASTER-STATUS.md 的建议
+- 参考 testing-master-status.md 的建议
 - 移至集成测试或接受当前限制
 
 ---
@@ -327,7 +327,7 @@ class SampleIntegrationTest extends BaseIntegrationTest {
 
 **任务**:
 
-- 更新 TESTING-MASTER-STATUS.md 的测试数量 (1,116 → 3,271)
+- 更新 testing-master-status.md 的测试数量 (1,116 → 3,271)
 - 更新通过率 (95% → 99.05%)
 - 添加新发现的问题到技术债务清单
 

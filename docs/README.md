@@ -12,18 +12,19 @@
 
 ### ⚡ 快速入口 (推荐)
 
-- [**📄 测试状态摘要**](TEST-STATUS-SUMMARY.md) - ⭐⭐⭐⭐ **一页纸快速了解当前状态**
-- [**📊 测试进度更新**](TESTING-PROGRESS-UPDATE-2025-11-11.md) - ⭐⭐⭐ **本次执行完整分析报告**
+- [**📊 测试状态总览**](active/testing-master-status.md) - ⭐⭐⭐⭐ **整体测试状态、统计数据、质量指标**
+- [**📊 测试进度更新**](archive/progress-reports/2025-11/testing-progress-update-2025-11-11.md) - ⭐⭐⭐ **本次执行完整分析报告
+  **
 
 ### 📋 文档导航
 
-- [**📚 文档索引**](DOCUMENTATION-INDEX.md) - 按场景快速查找文档
+- [**📚 文档索引**](documentation-index.md) - 按场景快速查找文档
 
 ### 📊 主要文档
 
-- [**测试状态总览**](TESTING-MASTER-STATUS.md) - 整体测试状态、统计数据、质量指标（需更新）
-- [**集成测试跟踪器**](INTEGRATION-TEST-TRACKER.md) - 集成测试详细进度、任务、里程碑
-- [**集成测试框架文档**](archive/integration-test-week1/) - Week 1 集成测试框架设置与工作总结
+- [**测试状态总览**](active/testing-master-status.md) - 整体测试状态、统计数据、质量指标（需更新）
+- [**集成测试跟踪器**](active/integration-test-tracker.md) - 集成测试详细进度、任务、里程碑
+- [**集成测试框架文档**](archive/integration-tests/week1-framework/) - Week 1 集成测试框架设置与工作总结
 
 ### 📁 按模块查看测试文档
 
@@ -56,7 +57,7 @@
     - [客户端社交服务](reference/modules/system/client-social-services.md) - Client/Social
     - [租户服务](reference/modules/system/tenant-services.md) - Tenant/TenantPackage
 
-#### 🔄 集成测试进行中 (19个服务) - [详见跟踪器](INTEGRATION-TEST-TRACKER.md)
+#### 🔄 集成测试进行中 (19个服务) - [详见跟踪器](active/integration-test-tracker.md)
 
 - [**ruoyi-gen**](reference/modules/gen/README.md) - 🔄 集成测试中 (代码生成，依赖 Velocity + Anyline)
 - [**ruoyi-resource**](reference/modules/resource/README.md) - 🔄 集成测试中 (6个服务，依赖 MinIO + Redis)
@@ -158,28 +159,26 @@ void shouldQueryUserById_WhenValidIdProvided() {
 
 ### 单元测试归档 (已完成)
 
-- [**Phase 1 报告**](archive/unit-tests/phase1/) - ruoyi-common 模块历史报告 (12个文件)
-- [**Phase 2 报告**](archive/unit-tests/phase2/) - ruoyi-auth 模块历史报告 (6个文件)
-- [**Phase 3 报告**](archive/unit-tests/phase3/) - ruoyi-system 模块历史报告 (15个文件)
-- [**Phase 4 报告**](archive/unit-tests/phase4/) - 其他模块分析报告 (1个文件)
-- [**Phase 5 报告**](archive/unit-tests/phase5-gen-module/) - ruoyi-gen 模块分析
-- [**单元测试跟踪器**](archive/unit-tests/tracking/) - 单元测试进度跟踪（已完成）
+- [**Phase 1 报告**](archive/unit-tests/phase1-common/) - ruoyi-common 模块历史报告 (12个文件)
+- [**Phase 2 报告**](archive/unit-tests/phase2-auth/) - ruoyi-auth 模块历史报告 (3个文件)
+- [**Phase 3 报告**](archive/unit-tests/phase3-system/) - ruoyi-system 模块历史报告 (15个文件)
+- [**Phase 4 报告**](archive/unit-tests/phase4-analysis/) - 其他模块分析报告 (1个文件)
+- [**Phase 5 报告**](archive/unit-tests/phase5-gen/) - ruoyi-gen 模块分析
 
 ### 集成测试归档
 
-- [**Week 1 归档**](archive/integration-test-week1/) - 集成测试框架设置与首批测试
+- [**Week 1 归档**](archive/integration-tests/week1-framework/) - 集成测试框架设置与首批测试
     - 框架设置文档
     - 工作总结
     - 最终状态报告
 
 ### 旧版总结文档（已合并）
 
-以下文档已合并到 [TESTING-MASTER-STATUS.md](TESTING-MASTER-STATUS.md)：
+以下文档已合并到 [testing-master-status.md](active/testing-master-status.md) 并已删除：
 
-- [TESTING-STATUS-SUMMARY.md](archive/legacy/TESTING-STATUS-SUMMARY.md) - 旧版状态总结
-- [OVERALL-TESTING-STATUS-SUMMARY.md](archive/legacy/OVERALL-TESTING-STATUS-SUMMARY.md) - 旧版整体总结
-- [FINAL-MODULE-ANALYSIS-SUMMARY.md](archive/legacy/FINAL-MODULE-ANALYSIS-SUMMARY.md) - 旧版模块分析
-- [TESTING-TASK-IMPLEMENTATION-SUMMARY.md](archive/legacy/TESTING-TASK-IMPLEMENTATION-SUMMARY.md) - 任务实施对比
+- testing-status-summary.md - 旧版状态总结
+- overall-testing-status-summary.md - 旧版整体总结
+- [final-module-analysis-summary.md](archive/legacy/final-module-analysis-summary.md) - 旧版模块分析（保留）
 
 ---
 
@@ -187,12 +186,12 @@ void shouldQueryUserById_WhenValidIdProvided() {
 
 ### 📖 查看整体测试状态
 
-👉 访问 [**测试状态总览**](TESTING-MASTER-STATUS.md)
+👉 访问 [**测试状态总览**](active/testing-master-status.md)
 了解所有模块的测试完成情况、统计数据、技术债务等
 
 ### 🔄 查看集成测试进度
 
-👉 访问 [**集成测试跟踪器**](INTEGRATION-TEST-TRACKER.md)
+👉 访问 [**集成测试跟踪器**](active/integration-test-tracker.md)
 查看集成测试任务、进度、里程碑和下一步行动
 
 ### 🔍 查看具体模块测试详情
@@ -205,16 +204,16 @@ void shouldQueryUserById_WhenValidIdProvided() {
 👉 访问归档文件夹：
 
 - [单元测试归档](archive/unit-tests/) - 已完成的单元测试文档
-- [集成测试归档](archive/integration-test-week1/) - Week 1 集成测试工作归档
+- [集成测试归档](archive/integration-tests/week1-framework/) - Week 1 集成测试工作归档
 - [历史文档归档](archive/legacy/) - 旧版总结文档
 
 ### 🚀 开始编写新的集成测试
 
-1. 参考 [集成测试框架文档](archive/integration-test-week1/)
-2. 查看 [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) 了解待测试服务
+1. 参考 [集成测试框架文档](archive/integration-tests/week1-framework/)
+2. 查看 [集成测试跟踪器](active/integration-test-tracker.md) 了解待测试服务
 3. 使用 BaseIntegrationTest 基类
 4. 配置 Testcontainers（MySQL, Redis, MinIO）
-5. 更新 [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md)
+5. 更新 [集成测试跟踪器](active/integration-test-tracker.md)
 
 ---
 
@@ -286,12 +285,12 @@ open build/reports/jacoco/test/html/index.html
 2. 继承 BaseIntegrationTest 或创建模块专用基类
 3. 配置必要的 Testcontainers
 4. 运行测试确保通过
-5. 更新 [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md)
+5. 更新 [集成测试跟踪器](active/integration-test-tracker.md)
 
 ### 更新文档
 
-1. 每完成一批集成测试，更新 [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md)
-2. 更新 [TESTING-MASTER-STATUS.md](TESTING-MASTER-STATUS.md) 中的统计数据
+1. 每完成一批集成测试，更新 [集成测试跟踪器](active/integration-test-tracker.md)
+2. 更新 [testing-master-status.md](active/testing-master-status.md) 中的统计数据
 3. 在本 README.md 中更新进度仪表板
 4. 如需归档阶段性工作，使用自动归档脚本（见 script/docs/）
 

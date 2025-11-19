@@ -221,9 +221,9 @@ CREATE TABLE test_user (
 
 ## 📚 相关文档
 
-- [PHASE4-RESOURCE-MODULE-ANALYSIS.md](../../archive/phase4/PHASE4-RESOURCE-MODULE-ANALYSIS.md) - 原始分析报告
-- [测试进度跟踪器](../../TESTING-PROGRESS-TRACKER.md) - 查看待办事项
-- [测试状态总览](../../TESTING-MASTER-STATUS.md) - 整体状态
+- [phase4-resource-module-analysis.md](../../archive/phase4/phase4-resource-module-analysis.md) - 原始分析报告
+- [测试进度跟踪器](../../testing-progress-tracker.md) - 查看待办事项
+- [测试状态总览](../../testing-master-status.md) - 整体状态
 
 ---
 

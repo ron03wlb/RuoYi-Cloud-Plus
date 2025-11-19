@@ -191,7 +191,7 @@ RuoYi-Cloud-Plus/
 ├── build.gradle.kts                  ✅ 已创建
 ├── settings.gradle.kts               ✅ 已创建
 ├── gradle.properties                 ✅ 已创建
-├── GRADLE.md                         ✅ 本文件
+├── gradle.md                         ✅ 本文件
 ├── gradle/
 │   ├── libs.versions.toml            ✅ 已创建
 │   └── wrapper/

@@ -8,36 +8,36 @@
 
 ### 核心指南
 
-| 文档 | 说明 | 推荐度 |
-|------|------|--------|
-| [**CLAUDE.md**](./CLAUDE.md) | Claude Code 项目指南 - 项目概述、架构原则、开发模式、最佳实践 | ⭐⭐⭐⭐⭐ |
-| [**GRADLE.md**](./GRADLE.md) | Gradle 构建完整指南 - 快速开始、命令对照、配置说明、常见问题 | ⭐⭐⭐⭐⭐ |
-| [**DEVELOPMENT-SETUP.md**](./DEVELOPMENT-SETUP.md) | 开发环境初始化指南 - 环境要求、基础设施启动、服务启动、验证步骤（中文） | ⭐⭐⭐⭐ |
+| 文档                                                 | 说明                                     | 推荐度   |
+|----------------------------------------------------|----------------------------------------|-------|
+| [**claude.md**](./claude.md)                       | Claude Code 项目指南 - 项目概述、架构原则、开发模式、最佳实践 | ⭐⭐⭐⭐⭐ |
+| [**gradle.md**](./gradle.md)                       | Gradle 构建完整指南 - 快速开始、命令对照、配置说明、常见问题    | ⭐⭐⭐⭐⭐ |
+| [**development-setup.md**](./development-setup.md) | 开发环境初始化指南 - 环境要求、基础设施启动、服务启动、验证步骤（中文）  | ⭐⭐⭐⭐  |
 
 ### 专题文档
 
-| 文档 | 说明 |
-|------|------|
-| [**DOCKER-DEPLOYMENT.md**](./DOCKER-DEPLOYMENT.md) | Docker 部署专题 - 开发模式、完整部署、故障排查、最佳实践 |
+| 文档                                                 | 说明                                |
+|----------------------------------------------------|-----------------------------------|
+| [**docker-deployment.md**](./docker-deployment.md) | Docker 部署专题 - 开发模式、完整部署、故障排查、最佳实践 |
 
 ---
 
 ## 快速导航
 
-| 我想... | 查看文档 |
-|---------|---------|
-| 快速了解项目架构和开发规范 | [CLAUDE.md](./CLAUDE.md) |
-| 使用 Gradle 构建项目 | [GRADLE.md](./GRADLE.md) |
-| 初始化开发环境（中文） | [DEVELOPMENT-SETUP.md](./DEVELOPMENT-SETUP.md) |
-| Docker 部署项目 | [DOCKER-DEPLOYMENT.md](./DOCKER-DEPLOYMENT.md) |
-| 具体操作步骤（Nacos、数据库等） | [操作指南](../guides/) |
-| 测试相关文档 | [测试文档中心](../) |
+| 我想...              | 查看文档                                           |
+|--------------------|------------------------------------------------|
+| 快速了解项目架构和开发规范      | [claude.md](./claude.md)                       |
+| 使用 Gradle 构建项目     | [gradle.md](./gradle.md)                       |
+| 初始化开发环境（中文）        | [development-setup.md](./development-setup.md) |
+| Docker 部署项目        | [docker-deployment.md](./docker-deployment.md) |
+| 具体操作步骤（Nacos、数据库等） | [操作指南](../guides/)                             |
+| 测试相关文档             | [测试文档中心](../)                                  |
 
 ---
 
 ## 文档概览
 
-### CLAUDE.md
+### claude.md
 
 **适合**: 所有开发者，特别是新加入项目的成员
 
@@ -50,7 +50,7 @@
 - 配置管理
 - 开发模式和最佳实践
 
-### GRADLE.md
+### gradle.md
 
 **适合**: 需要了解 Gradle 构建系统的开发者
 
@@ -62,7 +62,7 @@
 - 常见问题解答
 - 迁移路线图
 
-### DEVELOPMENT-SETUP.md（中文）
+### development-setup.md（中文）
 
 **适合**: 首次搭建开发环境的开发者
 
@@ -75,7 +75,7 @@
 - 验证步骤
 - 常见问题
 
-### DOCKER-DEPLOYMENT.md
+### docker-deployment.md
 
 **适合**: 需要使用 Docker 部署的开发者/运维
 
@@ -100,7 +100,7 @@
 ### 测试文档
 
 - [测试文档中心](../)
-- [测试状态总览](../ACTIVE/TESTING-MASTER-STATUS.md)
+- [测试状态总览](../active/testing-master-status.md)
 
 ### 外部资源
 

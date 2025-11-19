@@ -32,7 +32,7 @@ foundation of the system's RBAC (Role-Based Access Control) and are critical for
 - User import functionality
 - Boundary conditions
 
-**Report**: `PHASE3-SYSTEM-USER-SERVICE-EXPANSION-REPORT.md`
+**Report**: `phase3-system-user-service-expansion-report.md`
 
 ---
 
@@ -50,7 +50,7 @@ foundation of the system's RBAC (Role-Based Access Control) and are critical for
 - Role authorization
 - Boundary conditions
 
-**Report**: `PHASE3-SYSTEM-ROLE-SERVICE-REPORT.md`
+**Report**: `phase3-system-role-service-report.md`
 
 ---
 
@@ -68,7 +68,7 @@ foundation of the system's RBAC (Role-Based Access Control) and are critical for
 - Uniqueness validation
 - Boundary conditions
 
-**Report**: `PHASE3-SYSTEM-MENU-SERVICE-REPORT.md`
+**Report**: `phase3-system-menu-service-report.md`
 
 ---
 
@@ -86,7 +86,7 @@ foundation of the system's RBAC (Role-Based Access Control) and are critical for
 - Delete operations
 - Boundary conditions
 
-**Report**: `PHASE3-SYSTEM-DEPT-SERVICE-REPORT.md`
+**Report**: `phase3-system-dept-service-report.md`
 
 ---
 
@@ -104,7 +104,7 @@ foundation of the system's RBAC (Role-Based Access Control) and are critical for
 - Boundary conditions
 - Multi-module permissions
 
-**Report**: `PHASE3-SYSTEM-PERMISSION-SERVICE-REPORT.md`
+**Report**: `phase3-system-permission-service-report.md`
 
 ---
 

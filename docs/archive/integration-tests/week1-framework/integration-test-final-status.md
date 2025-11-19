@@ -26,10 +26,10 @@
 
 #### 3. 文档完成 ✅
 
-- **INTEGRATION-TEST-FRAMEWORK-SETUP.md** (480 行)
-- **INTEGRATION-TEST-WORK-SUMMARY.md** (580 行)
-- **INTEGRATION-TEST-FINAL-STATUS.md** (本文档)
-- **已更新**: README.md, TESTING-PROGRESS-TRACKER.md
+- **integration-test-framework-setup.md** (480 行)
+- **integration-test-work-summary.md** (580 行)
+- **integration-test-final-status.md** (本文档)
+- **已更新**: README.md, testing-progress-tracker.md
 
 ---
 
@@ -327,9 +327,9 @@ class SysOssServiceUnitTest {
 
 | 文档                                  | 行数         | 说明               |
 |-------------------------------------|------------|------------------|
-| INTEGRATION-TEST-FRAMEWORK-SETUP.md | 480        | 框架详细文档           |
-| INTEGRATION-TEST-WORK-SUMMARY.md    | 580        | 工作总结             |
-| INTEGRATION-TEST-FINAL-STATUS.md    | 350        | 最终状态（本文档）        |
+| integration-test-framework-setup.md | 480        | 框架详细文档           |
+| integration-test-work-summary.md    | 580        | 工作总结             |
+| integration-test-final-status.md    | 350        | 最终状态（本文档）        |
 | 其他更新                                | ~80        | README + TRACKER |
 | **文档总计**                            | **~1,490** | **详尽完整**         |
 

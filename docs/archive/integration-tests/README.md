@@ -23,9 +23,9 @@
 
 **主要文档**:
 - [README.md](week1-framework/README.md) - Week 1 归档说明
-- [FRAMEWORK-SETUP.md](week1-framework/INTEGRATION-TEST-FRAMEWORK-SETUP.md) - 框架详细设置（480行）
-- [WORK-SUMMARY.md](week1-framework/INTEGRATION-TEST-WORK-SUMMARY.md) - 工作完整总结（580行）
-- [FINAL-STATUS.md](week1-framework/INTEGRATION-TEST-FINAL-STATUS.md) - 最终状态报告
+- [FRAMEWORK-SETUP.md](week1-framework/integration-test-framework-setup.md) - 框架详细设置（480行）
+- [WORK-SUMMARY.md](week1-framework/integration-test-work-summary.md) - 工作完整总结（580行）
+- [FINAL-STATUS.md](week1-framework/integration-test-final-status.md) - 最终状态报告
 
 **关键技术**:
 - ✅ BaseIntegrationTest 基类创建
@@ -55,11 +55,11 @@
 
 ## 🔍 快速导航
 
-| 我想查看... | 前往 |
-|----------|------|
-| Week 1 总结 | [week1-framework/](week1-framework/) |
-| 框架设置详解 | [week1-framework/FRAMEWORK-SETUP.md](week1-framework/INTEGRATION-TEST-FRAMEWORK-SETUP.md) |
-| Dubbo问题解决 | [week1-framework/FINAL-STATUS.md](week1-framework/INTEGRATION-TEST-FINAL-STATUS.md) |
+| 我想查看...   | 前往                                                                                        |
+|-----------|-------------------------------------------------------------------------------------------|
+| Week 1 总结 | [week1-framework/](week1-framework/)                                                      |
+| 框架设置详解    | [week1-framework/FRAMEWORK-SETUP.md](week1-framework/integration-test-framework-setup.md) |
+| Dubbo问题解决 | [week1-framework/FINAL-STATUS.md](week1-framework/integration-test-final-status.md)       |
 
 ---
 
@@ -86,10 +86,10 @@
 
 ## 🔗 相关链接
 
-- [返回主索引](../../DOCUMENTATION-INDEX.md)
+- [返回主索引](../../documentation-index.md)
 - [单元测试归档](../unit-tests/)
 - [进度报告归档](../progress-reports/)
-- [当前集成测试跟踪](../../ACTIVE/INTEGRATION-TEST-TRACKER.md)
+- [当前集成测试跟踪](../../active/integration-test-tracker.md)
 
 ---
 

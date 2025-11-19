@@ -470,16 +470,16 @@ public Boolean insertByBo(SysClientBo bo) {
 ### Comprehensive Reports
 
 1. **PHASE1-CORE-TESTING-REPORT.md** - Core utilities (208 tests)
-2. **PHASE1-MYBATIS-TESTING-REPORT.md** - MyBatis integration (100 tests)
-3. **PHASE1-SATOKEN-TESTING-REPORT.md** - Auth integration (85 tests)
-4. **PHASE1-WEB-TESTING-REPORT.md** - Web layer (52 tests)
-5. **PHASE1-FINAL-SUMMARY.md** - Phase 1 consolidation (645 tests)
-6. **PHASE2-AUTH-TESTING-STATUS-REPORT.md** - Auth analysis (166 tests)
-7. **PHASE3-SYSTEM-TESTING-STATUS-REPORT.md** - System analysis (262 tests)
-8. **PHASE3.2-MISSING-SERVICES-COMPLETION-REPORT.md** - New services (43 tests)
-9. **PHASE4-RESOURCE-MODULE-ANALYSIS.md** - Resource analysis (0 tests, integration required)
-10. **OVERALL-TESTING-STATUS-SUMMARY.md** - Project-wide summary
-11. **FINAL-MODULE-ANALYSIS-SUMMARY.md** - This document
+2. **phase1-mybatis-testing-report.md** - MyBatis integration (100 tests)
+3. **phase1-satoken-testing-report.md** - Auth integration (85 tests)
+4. **phase1-web-testing-report.md** - Web layer (52 tests)
+5. **phase1-final-summary.md** - Phase 1 consolidation (645 tests)
+6. **phase2-auth-testing-status-report.md** - Auth analysis (166 tests)
+7. **phase3-system-testing-status-report.md** - System analysis (262 tests)
+8. **phase3.2-missing-services-completion-report.md** - New services (43 tests)
+9. **phase4-resource-module-analysis.md** - Resource analysis (0 tests, integration required)
+10. **overall-testing-status-summary.md** - Project-wide summary
+11. **final-module-analysis-summary.md** - This document
 
 **Total Documentation**: 11 comprehensive markdown reports
 

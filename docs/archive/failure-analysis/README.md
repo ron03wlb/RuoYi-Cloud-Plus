@@ -19,7 +19,7 @@
 
 #### Issue #2: OSS 配置问题
 
-- **文档**: [FAILURE-ANALYSIS-2025-11-12.md](pending/TEST-FAILURE-ANALYSIS-2025-11-12.md)
+- **文档**: [test-failure-analysis-2025-11-12.md](pending/test-failure-analysis-2025-11-12.md)
 - **状态**: 🔄 进行中（已临时禁用测试）
 - **影响**: ruoyi-resource 模块 11个测试
 - **优先级**: P2
@@ -45,11 +45,11 @@
 
 ## 🔍 快速导航
 
-| 我想查看... | 前往 |
-|----------|------|
-| 待解决问题列表 | [pending/](pending/) |
-| 已解决问题列表 | [resolved/](resolved/) |
-| 当前活跃问题 | [../../ACTIVE/ACTIVE-ISSUES.md](../../ACTIVE/ACTIVE-ISSUES.md) |
+| 我想查看... | 前往                                                             |
+|---------|----------------------------------------------------------------|
+| 待解决问题列表 | [pending/](pending/)                                           |
+| 已解决问题列表 | [resolved/](resolved/)                                         |
+| 当前活跃问题  | [../../active/active-issues.md](../../active/active-issues.md) |
 
 ---
 
@@ -70,22 +70,22 @@
 1. 创建详细分析文档
 2. 保存到 `pending/` 目录
 3. 更新此 README
-4. 在 ACTIVE-ISSUES.md 中追踪
+4. 在 active-issues.md 中追踪
 
 ### 问题解决 → resolved/
 1. 验证问题已完全解决
 2. 在分析文档中添加解决方案章节
 3. 移动文档: `pending/` → `resolved/`
 4. 更新此 README
-5. 从 ACTIVE-ISSUES.md 中移除
+5. 从 active-issues.md 中移除
 
 ---
 
 ## 🔗 相关链接
 
-- [返回主索引](../../DOCUMENTATION-INDEX.md)
-- [当前活跃问题](../../ACTIVE/ACTIVE-ISSUES.md)
-- [集成测试跟踪](../../ACTIVE/INTEGRATION-TEST-TRACKER.md)
+- [返回主索引](../../documentation-index.md)
+- [当前活跃问题](../../active/active-issues.md)
+- [集成测试跟踪](../../active/integration-test-tracker.md)
 
 ---
 

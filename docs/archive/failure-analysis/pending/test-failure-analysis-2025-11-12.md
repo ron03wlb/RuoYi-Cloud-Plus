@@ -279,7 +279,7 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
 **实现思路**:
 ```java
-@Disabled("需要 Mock OssClient 或配置真实 MinIO - 参见 TEST-FAILURE-ANALYSIS-2025-11-12.md")
+@Disabled("需要 Mock OssClient 或配置真实 MinIO - 参见 test-failure-analysis-2025-11-12.md")
 @DisplayName("SysOssService 切片测试")
 class SysOssServiceSliceTest {
     // ... 现有测试代码
@@ -370,7 +370,7 @@ SysOssServiceIntegrationTest
 4. **如果选择方案 C (临时禁用)**
    - [ ] 添加 `@Disabled` 注解到 `SysOssServiceSliceTest`
    - [ ] 添加详细的禁用原因注释
-   - [ ] 在 INTEGRATION-TEST-TRACKER.md 中记录技术债务
+   - [ ] 在 integration-test-tracker.md 中记录技术债务
 
 ### 中期计划 (下周)
 
@@ -380,8 +380,8 @@ SysOssServiceIntegrationTest
    - [ ] 达到 ruoyi-resource 模块 90%+ 测试覆盖率
 
 6. **更新文档**
-   - [ ] 更新 INTEGRATION-TEST-TRACKER.md
-   - [ ] 更新 TESTING-MASTER-STATUS.md
+    - [ ] 更新 integration-test-tracker.md
+    - [ ] 更新 testing-master-status.md
    - [ ] 添加 OSS 测试最佳实践文档
 
 ---
@@ -390,9 +390,9 @@ SysOssServiceIntegrationTest
 
 ### 内部文档
 
-- [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) - 整体进度
+- [集成测试跟踪器](integration-test-tracker.md) - 整体进度
 - [资源模块详细文档](reference/modules/resource/README.md) - ruoyi-resource 说明
-- [集成测试框架设置](archive/integration-test-week1/INTEGRATION-TEST-FRAMEWORK-SETUP.md) - 测试框架文档
+- [集成测试框架设置](archive/integration-test-week1/integration-test-framework-setup.md) - 测试框架文档
 
 ### 外部资源
 

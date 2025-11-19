@@ -17,19 +17,20 @@
 
 ### 旧版状态总结文档
 
-| 旧文档 | 状态 | 替代文档 |
-|-------|------|---------|
-| [TESTING-STATUS-SUMMARY.md](TESTING-STATUS-SUMMARY.md) | 已整合 | [../../ACTIVE/TEST-STATUS-SUMMARY.md](../../ACTIVE/TEST-STATUS-SUMMARY.md) |
-| [OVERALL-TESTING-STATUS-SUMMARY.md](OVERALL-TESTING-STATUS-SUMMARY.md) | 已整合 | [../../ACTIVE/TESTING-MASTER-STATUS.md](../../ACTIVE/TESTING-MASTER-STATUS.md) |
-| [FINAL-MODULE-ANALYSIS-SUMMARY.md](FINAL-MODULE-ANALYSIS-SUMMARY.md) | 已整合 | [../unit-tests/UNIT-TEST-COMPLETION-SUMMARY.md](../unit-tests/UNIT-TEST-COMPLETION-SUMMARY.md) |
-| [TESTING-TASK-IMPLEMENTATION-SUMMARY.md](TESTING-TASK-IMPLEMENTATION-SUMMARY.md) | 已整合 | [../../ACTIVE/INTEGRATION-TEST-TRACKER.md](../../ACTIVE/INTEGRATION-TEST-TRACKER.md) |
+| 旧文档                                                                              | 状态  | 替代文档                                                                                           |
+|----------------------------------------------------------------------------------|-----|------------------------------------------------------------------------------------------------|
+| [testing-status-summary.md](testing-status-summary.md)                           | 已整合 | [../../active/test-status-summary.md](../../active/test-status-summary.md)                     |
+| [overall-testing-status-summary.md](overall-testing-status-summary.md)           | 已整合 | [../../active/testing-master-status.md](../../active/testing-master-status.md)                 |
+| [final-module-analysis-summary.md](final-module-analysis-summary.md)             | 已整合 | [../unit-tests/unit-test-completion-summary.md](../unit-tests/unit-test-completion-summary.md) |
+| [testing-task-implementation-summary.md](testing-task-implementation-summary.md) | 已整合 | [../../active/integration-test-tracker.md](../../active/integration-test-tracker.md)           |
 
 ---
 
 ## ℹ️ 为什么归档？
 
 2025年11月进行了文档重组（v4.0），将文档结构优化为：
-- **ACTIVE/**: 活跃文档区（频繁更新）
+
+- **active/**: 活跃文档区（频繁更新）
 - **reference/**: 参考文档区（稳定资料）
 - **archive/**: 归档区（历史记录）
 
@@ -47,22 +48,22 @@
 
 ## 🔍 快速导航到新文档
 
-| 我想查看... | 新文档位置 |
-|----------|-----------|
-| 快速状态摘要 | [../../ACTIVE/TEST-STATUS-SUMMARY.md](../../ACTIVE/TEST-STATUS-SUMMARY.md) |
-| 整体测试状态 | [../../ACTIVE/TESTING-MASTER-STATUS.md](../../ACTIVE/TESTING-MASTER-STATUS.md) |
-| 单元测试总结 | [../unit-tests/UNIT-TEST-COMPLETION-SUMMARY.md](../unit-tests/UNIT-TEST-COMPLETION-SUMMARY.md) |
-| 集成测试跟踪 | [../../ACTIVE/INTEGRATION-TEST-TRACKER.md](../../ACTIVE/INTEGRATION-TEST-TRACKER.md) |
-| 主文档索引 | [../../DOCUMENTATION-INDEX.md](../../DOCUMENTATION-INDEX.md) |
+| 我想查看... | 新文档位置                                                                                          |
+|---------|------------------------------------------------------------------------------------------------|
+| 快速状态摘要  | [../../active/test-status-summary.md](../../active/test-status-summary.md)                     |
+| 整体测试状态  | [../../active/testing-master-status.md](../../active/testing-master-status.md)                 |
+| 单元测试总结  | [../unit-tests/unit-test-completion-summary.md](../unit-tests/unit-test-completion-summary.md) |
+| 集成测试跟踪  | [../../active/integration-test-tracker.md](../../active/integration-test-tracker.md)           |
+| 主文档索引   | [../../documentation-index.md](../../documentation-index.md)                                   |
 
 ---
 
 ## 🔗 相关链接
 
-- [返回主索引](../../DOCUMENTATION-INDEX.md)
+- [返回主索引](../../documentation-index.md)
 - [单元测试归档](../unit-tests/)
 - [集成测试归档](../integration-tests/)
-- [文档重组计划](../../DOCUMENTATION-REORGANIZATION-PLAN.md)
+- [文档重组计划](../../documentation-reorganization-plan.md)
 
 ---
 

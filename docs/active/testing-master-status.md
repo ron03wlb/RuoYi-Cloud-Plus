@@ -377,13 +377,13 @@
 - PHASE2-*-TESTING-REPORT.md (6 个文件) → [archive/unit-tests/phase2/](archive/unit-tests/phase2/)
 - PHASE3-*-TESTING-REPORT.md (15 个文件) → [archive/unit-tests/phase3/](archive/unit-tests/phase3/)
 - PHASE4-*-ANALYSIS.md (1 个文件) → [archive/unit-tests/phase4/](archive/unit-tests/phase4/)
-- PHASE5-GEN-MODULE-TESTING-STATUS.md → [archive/unit-tests/phase5-gen-module/](archive/unit-tests/phase5-gen-module/)
+- phase5-gen-module-testing-status.md → [archive/unit-tests/phase5-gen-module/](archive/unit-tests/phase5-gen-module/)
 
 ### 旧版总结文档（已合并到本文档）
 
-- TESTING-STATUS-SUMMARY.md → [archive/legacy/](archive/legacy/)
-- OVERALL-TESTING-STATUS-SUMMARY.md → [archive/legacy/](archive/legacy/)
-- FINAL-MODULE-ANALYSIS-SUMMARY.md → [archive/legacy/](archive/legacy/)
+- testing-status-summary.md → [archive/legacy/](archive/legacy/)
+- overall-testing-status-summary.md → [archive/legacy/](archive/legacy/)
+- final-module-analysis-summary.md → [archive/legacy/](archive/legacy/)
 
 ---
 
@@ -429,8 +429,8 @@
 
 ## 📚 相关文档
 
-- [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) - 集成测试详细进度跟踪
-- [文档索引](DOCUMENTATION-INDEX.md) - 按场景快速查找文档
+- [集成测试跟踪器](integration-test-tracker.md) - 集成测试详细进度跟踪
+- [文档索引](documentation-index.md) - 按场景快速查找文档
 - [测试文档中心](README.md) - 主导航页面
-- [单元测试跟踪器（已归档）](archive/unit-tests/tracking/TESTING-PROGRESS-TRACKER.md) - 单元测试进度（已完成）
+- [单元测试跟踪器（已归档）](archive/unit-tests/tracking/testing-progress-tracker.md) - 单元测试进度（已完成）
 - [集成测试框架文档（已归档）](archive/integration-test-week1/) - Week 1 集成测试工作归档

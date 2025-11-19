@@ -282,9 +282,9 @@ lock4j.enabled=false
 
 ## 📄 相关文档
 
-- `docs/TESTING-TASK-CHECKLIST.md` - 完整任务清单
-- `docs/TESTING-STATUS-SUMMARY.md` - 测试状态总结
-- `docs/PHASE2-AUTH-TESTING-FINAL-REPORT.md` - 之前的报告
+- `docs/testing-task-checklist.md` - 完整任务清单
+- `docs/testing-status-summary.md` - 测试状态总结
+- `docs/phase2-auth-testing-final-report.md` - 之前的报告
 - `ruoyi-auth/src/test/java/**/BaseIntegrationTestWithContainers.java` - 集成测试基类
 - `ruoyi-auth/src/test/java/org/dromara/auth/config/TestAutoConfiguration.java` - 测试配置
 

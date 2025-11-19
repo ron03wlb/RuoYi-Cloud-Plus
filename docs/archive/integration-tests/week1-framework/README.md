@@ -2,13 +2,13 @@
 
 > 📅 **时间**: 2025-11-10 (Week 1)
 > 📦 **归档原因**: 整合文档，保留历史记录
-> 🔗 **主文档**: 请查看 [INTEGRATION-TEST-FINAL-STATUS.md](../../INTEGRATION-TEST-FINAL-STATUS.md)
+> 🔗 **主文档**: 请查看 [integration-test-final-status.md](../../integration-test-final-status.md)
 
 ---
 
 ## 📁 归档文件列表
 
-### 1. INTEGRATION-TEST-FRAMEWORK-SETUP.md (16K, 480行)
+### 1. integration-test-framework-setup.md (16K, 480行)
 
 **内容**: 集成测试框架的详细设置文档
 
@@ -20,13 +20,13 @@
 - 框架验证测试结果
 - 详细的使用示例
 
-**归档原因**: 内容已整合到 INTEGRATION-TEST-FINAL-STATUS.md 的"框架设置"部分
+**归档原因**: 内容已整合到 integration-test-final-status.md 的"框架设置"部分
 
-**查看**: [INTEGRATION-TEST-FRAMEWORK-SETUP.md](INTEGRATION-TEST-FRAMEWORK-SETUP.md)
+**查看**: [integration-test-framework-setup.md](integration-test-framework-setup.md)
 
 ---
 
-### 2. INTEGRATION-TEST-WORK-SUMMARY.md (13K, 580行)
+### 2. integration-test-work-summary.md (13K, 580行)
 
 **内容**: Week 1 Day 1-3 工作总结
 
@@ -40,9 +40,9 @@
 - 工作量统计
 - 下一步建议
 
-**归档原因**: 内容已整合和精简到 INTEGRATION-TEST-FINAL-STATUS.md
+**归档原因**: 内容已整合和精简到 integration-test-final-status.md
 
-**查看**: [INTEGRATION-TEST-WORK-SUMMARY.md](INTEGRATION-TEST-WORK-SUMMARY.md)
+**查看**: [integration-test-work-summary.md](integration-test-work-summary.md)
 
 ---
 
@@ -53,9 +53,9 @@
 ### 整合前（3个文档）
 
 ```
-INTEGRATION-TEST-FRAMEWORK-SETUP.md     (16K, 框架细节)
-INTEGRATION-TEST-WORK-SUMMARY.md        (13K, 工作总结)
-INTEGRATION-TEST-FINAL-STATUS.md        (11K, 最终状态)
+integration-test-framework-setup.md     (16K, 框架细节)
+integration-test-work-summary.md        (13K, 工作总结)
+integration-test-final-status.md        (11K, 最终状态)
 总计: 40K, 1,410行
 ```
 
@@ -63,12 +63,12 @@ INTEGRATION-TEST-FINAL-STATUS.md        (11K, 最终状态)
 
 ```
 主文档:
-INTEGRATION-TEST-FINAL-STATUS.md        (11K, 完整总结)
+integration-test-final-status.md        (11K, 完整总结)
 
 归档:
 archive/integration-test-week1/
-  ├── INTEGRATION-TEST-FRAMEWORK-SETUP.md
-  ├── INTEGRATION-TEST-WORK-SUMMARY.md
+  ├── integration-test-framework-setup.md
+  ├── integration-test-work-summary.md
   └── README.md (本文档)
 ```
 
@@ -90,14 +90,14 @@ archive/integration-test-week1/
 
 ## 🎯 何时查看归档文档
 
-### 查看 INTEGRATION-TEST-FRAMEWORK-SETUP.md 如果你需要：
+### 查看 integration-test-framework-setup.md 如果你需要：
 
 - 详细的 Testcontainers 配置步骤
 - BaseIntegrationTest 的实现细节和设计决策
 - SqlScriptExecutor 的完整 API 文档
 - 框架验证测试的完整日志
 
-### 查看 INTEGRATION-TEST-WORK-SUMMARY.md 如果你需要：
+### 查看 integration-test-work-summary.md 如果你需要：
 
 - 完整的时间线和工作流程
 - 详细的每个测试类的说明

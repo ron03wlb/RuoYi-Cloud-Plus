@@ -158,6 +158,6 @@ curl http://localhost:8848/nacos/v1/console/health/readiness
 
 ## 相关文档
 
-- [Docker 部署指南](../project/DOCKER-DEPLOYMENT.md)
-- [开发环境初始化](../project/DEVELOPMENT-SETUP.md)
+- [Docker 部署指南](../project/docker-deployment.md)
+- [开发环境初始化](../project/development-setup.md)
 - [数据库初始化](./database-initialization.md)

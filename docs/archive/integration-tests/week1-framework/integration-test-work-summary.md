@@ -404,10 +404,10 @@ class SysOssServiceUnitTest {
 
 | 文档                                  | 行数         | 说明       |
 |-------------------------------------|------------|----------|
-| INTEGRATION-TEST-FRAMEWORK-SETUP.md | 480        | 框架设置详细文档 |
-| TESTING-PROGRESS-TRACKER.md (更新)    | +30        | 进度跟踪更新   |
+| integration-test-framework-setup.md | 480        | 框架设置详细文档 |
+| testing-progress-tracker.md (更新)    | +30        | 进度跟踪更新   |
 | README.md (更新)                      | +5         | 主文档更新    |
-| INTEGRATION-TEST-WORK-SUMMARY.md    | 580        | 本总结文档    |
+| integration-test-work-summary.md    | 580        | 本总结文档    |
 | **总计**                              | **~1,095** | -        |
 
 ### 时间估算
@@ -464,10 +464,10 @@ class SysOssServiceUnitTest {
 
 ## 📚 相关文档
 
-- [集成测试框架设置报告](INTEGRATION-TEST-FRAMEWORK-SETUP.md)
-- [测试进度跟踪器](TESTING-PROGRESS-TRACKER.md)
+- [集成测试框架设置报告](integration-test-framework-setup.md)
+- [测试进度跟踪器](testing-progress-tracker.md)
 - [测试文档中心](README.md)
-- [测试状态总览](TESTING-MASTER-STATUS.md)
+- [测试状态总览](testing-master-status.md)
 
 ---
 

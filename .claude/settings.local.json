@@ -127,7 +127,15 @@
       "Bash(sudo rm:*)",
       "Bash(docker volume:*)",
       "Bash(docker cp:*)",
-      "Bash(jar tf:*)"
+      "Bash(jar tf:*)",
+      "Bash(git rm:*)",
+      "Bash(docs/archive/unit-tests/phase2-auth/phase2-auth-testing-status-report.md )",
+      "Bash(docs/archive/unit-tests/phase2-auth/phase2-auth-testing-completion-report.md )",
+      "Bash(docs/archive/unit-tests/phase2-auth/phase2-auth-testing-final-report.md )",
+      "Bash(docs/archive/unit-tests/tracking/testing-progress-tracker.md )",
+      "Bash(docs/archive/legacy/testing-task-checklist.md )",
+      "Bash(docs/archive/legacy/testing-progress-report.md )",
+      "Bash(docs/archive/legacy/testing-task-implementation-summary.md)"
     ],
     "deny": [],
     "ask": []

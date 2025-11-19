@@ -215,7 +215,7 @@
 
 - [ ] 更新所有测试文档
 - [ ] 生成最终测试报告
-- [ ] 更新 TESTING-MASTER-STATUS.md
+- [ ] 更新 testing-master-status.md
 
 ---
 
@@ -243,14 +243,14 @@
 
 ### ⚠️ 当前阻塞问题
 
-| 问题                          | 影响范围                      | 优先级    | 状态    | 解决方案                                     |
-|-----------------------------|---------------------------|--------|-------|------------------------------------------|
-| Dubbo + Testcontainers 时序冲突 | 所有 Dubbo 模块               | **P0** | ✅ 已解决 | 方案 A (手动容器启动)                            |
-| Seata 配置问题                  | ruoyi-gen, ruoyi-resource | **P0** | ✅ 已解决 | 配置 seata.enabled=false                   |
-| Sa-Token Bean 冲突            | ruoyi-gen, ruoyi-resource | **P0** | ✅ 已解决 | TestSaTokenConfig + 排除自动配置               |
-| Dubbo 深层初始化                 | ruoyi-gen                 | **P0** | ✅ 已解决 | 方案 B+: 测试运行时排除 Dubbo + @Profile("!test") |
-| Resource 模块 Bean 配置冲突       | ruoyi-resource            | **P0** | ✅ 已解决 | 方案 A (切片测试): 排除 DynamicDataSource + @Primary |
-| OSS 配置缺失                    | SysOssServiceSliceTest    | **P2** | ⏸️ 已禁用 | 临时使用 @Disabled，可选方案见 TEST-FAILURE-ANALYSIS-2025-11-12.md |
+| 问题                          | 影响范围                      | 优先级    | 状态     | 解决方案                                                     |
+|-----------------------------|---------------------------|--------|--------|----------------------------------------------------------|
+| Dubbo + Testcontainers 时序冲突 | 所有 Dubbo 模块               | **P0** | ✅ 已解决  | 方案 A (手动容器启动)                                            |
+| Seata 配置问题                  | ruoyi-gen, ruoyi-resource | **P0** | ✅ 已解决  | 配置 seata.enabled=false                                   |
+| Sa-Token Bean 冲突            | ruoyi-gen, ruoyi-resource | **P0** | ✅ 已解决  | TestSaTokenConfig + 排除自动配置                               |
+| Dubbo 深层初始化                 | ruoyi-gen                 | **P0** | ✅ 已解决  | 方案 B+: 测试运行时排除 Dubbo + @Profile("!test")                 |
+| Resource 模块 Bean 配置冲突       | ruoyi-resource            | **P0** | ✅ 已解决  | 方案 A (切片测试): 排除 DynamicDataSource + @Primary             |
+| OSS 配置缺失                    | SysOssServiceSliceTest    | **P2** | ⏸️ 已禁用 | 临时使用 @Disabled，可选方案见 test-failure-analysis-2025-11-12.md |
 
 ### 🔧 需要特殊处理的场景
 
@@ -292,15 +292,15 @@
 
 ### 主要文档
 
-- [📚 文档索引](DOCUMENTATION-INDEX.md) - 按场景快速查找文档
-- [测试状态总览](TESTING-MASTER-STATUS.md) - 整体测试状态（包含单元测试）
+- [📚 文档索引](documentation-index.md) - 按场景快速查找文档
+- [测试状态总览](testing-master-status.md) - 整体测试状态（包含单元测试）
 - [测试文档中心](README.md) - 主导航页面
 
 ### 集成测试框架文档
 
-- [集成测试框架设置](archive/integration-test-week1/INTEGRATION-TEST-FRAMEWORK-SETUP.md) - 框架详细文档 (480 行)
-- [集成测试工作总结](archive/integration-test-week1/INTEGRATION-TEST-WORK-SUMMARY.md) - Week 1 总结 (580 行)
-- [集成测试最终状态](archive/integration-test-week1/INTEGRATION-TEST-FINAL-STATUS.md) - Week 1 完整报告
+- [集成测试框架设置](archive/integration-test-week1/integration-test-framework-setup.md) - 框架详细文档 (480 行)
+- [集成测试工作总结](archive/integration-test-week1/integration-test-work-summary.md) - Week 1 总结 (580 行)
+- [集成测试最终状态](archive/integration-test-week1/integration-test-final-status.md) - Week 1 完整报告
 
 ### 模块详细文档
 
@@ -310,8 +310,8 @@
 
 ### 单元测试文档（已归档）
 
-- [单元测试进度跟踪器](archive/unit-tests/tracking/TESTING-PROGRESS-TRACKER.md) - 单元测试跟踪（已完成）
-- [Phase 5 Gen 模块](archive/unit-tests/phase5-gen-module/PHASE5-GEN-MODULE-TESTING-STATUS.md)
+- [单元测试进度跟踪器](archive/unit-tests/tracking/testing-progress-tracker.md) - 单元测试跟踪（已完成）
+- [Phase 5 Gen 模块](archive/unit-tests/phase5-gen-module/phase5-gen-module-testing-status.md)
 
 ---
 
@@ -334,7 +334,7 @@
     - ✅ 添加详细禁用原因和解决方案文档
     - ✅ 13个 OSS 测试现在正确地 SKIPPED (不再 FAILED)
     - ✅ CI/CD 构建不再被阻塞 (BUILD SUCCESSFUL)
-    - ✅ 创建 `TEST-FAILURE-ANALYSIS-2025-11-12.md` 详细分析文档
+  - ✅ 创建 `test-failure-analysis-2025-11-12.md` 详细分析文档
     - 📋 三个可选方案已记录: Mock (2-3h) | Testcontainers (3-4h) | 当前 (@Disabled)
 - 📝 归档历史文档到 `docs/archive/integration-test-progress/`
 

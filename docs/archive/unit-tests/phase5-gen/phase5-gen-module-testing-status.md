@@ -463,7 +463,7 @@ PageQuery pageQuery = PageQuery.build(1, 10);
 
 ### C. 应用到其他模块
 
-按照 TESTING-PROGRESS-TRACKER.md 的计划:
+按照 testing-progress-tracker.md 的计划:
 
 - Phase 6: ruoyi-resource (P0 - Critical)
 - Phase 7: ruoyi-workflow (P0 - Critical)
@@ -502,7 +502,7 @@ PageQuery pageQuery = PageQuery.build(1, 10);
 3. `ruoyi-modules/ruoyi-gen/src/test/resources/application-test.yml`
 4. `ruoyi-modules/ruoyi-gen/src/test/java/org/dromara/gen/service/GenTableServiceIntegrationTest.java`
 5. `ruoyi-modules/ruoyi-gen/src/test/java/org/dromara/gen/config/TestSaTokenConfig.java`
-6. `docs/PHASE5-GEN-MODULE-TESTING-STATUS.md` (本文档)
+6. `docs/phase5-gen-module-testing-status.md` (本文档)
 
 ### 修改文件
 

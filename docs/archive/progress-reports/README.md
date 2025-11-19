@@ -9,7 +9,7 @@
 
 ### 2025-11-11
 
-**[TESTING-PROGRESS-UPDATE-2025-11-11.md](TESTING-PROGRESS-UPDATE-2025-11-11.md)**
+**[testing-progress-update-2025-11-11.md](testing-progress-update-2025-11-11.md)**
 
 **报告内容**:
 - 3,271 个测试的详细执行结果分析
@@ -34,7 +34,7 @@
 
 - 详细进度报告写完后 1-2 周
 - 问题已解决或状态已稳定
-- 报告内容已整合到主文档 (TEST-STATUS-SUMMARY.md)
+- 报告内容已整合到主文档 (test-status-summary.md)
 
 ### 归档原则
 
@@ -45,8 +45,9 @@
 ### 文档链接
 
 归档后的文档在以下位置可访问:
-- [文档索引](../../DOCUMENTATION-INDEX.md) - "归档文档" 部分
-- [测试状态摘要](../../TEST-STATUS-SUMMARY.md) - "归档文档" 部分
+
+- [文档索引](../../documentation-index.md) - "归档文档" 部分
+- [测试状态摘要](../../test-status-summary.md) - "归档文档" 部分
 
 ---
 

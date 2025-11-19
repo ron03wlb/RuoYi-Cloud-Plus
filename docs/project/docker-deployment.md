@@ -325,8 +325,8 @@ docker-compose -f docker-compose-build.yml restart ruoyi-gateway
 
 ## 相关文档
 
-- [CLAUDE.md](./CLAUDE.md) - 项目概述和开发指南
-- [开发环境初始化](./DEVELOPMENT-SETUP.md) - 完整初始化步骤（中文）
+- [claude.md](./claude.md) - 项目概述和开发指南
+- [开发环境初始化](./development-setup.md) - 完整初始化步骤（中文）
 - [Nacos 配置导入](../guides/nacos-config-import.md) - 配置导入详细指南
 - [数据库初始化](../guides/database-initialization.md) - 数据库初始化指南
 - [服务启动顺序](../guides/service-startup-order.md) - 服务依赖和启动顺序

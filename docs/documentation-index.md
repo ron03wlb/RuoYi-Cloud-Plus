@@ -10,12 +10,12 @@
 
 ### 核心指南
 
-| 文档 | 说明 |
-|------|------|
-| [**CLAUDE.md**](project/CLAUDE.md) | Claude Code 项目指南 - 项目概述、架构原则、开发模式、最佳实践 |
-| [**GRADLE.md**](project/GRADLE.md) | Gradle 构建完整指南 - 快速开始、命令对照、配置说明 |
-| [**开发环境初始化**](project/DEVELOPMENT-SETUP.md) | 开发环境初始化指南 - 环境要求、基础设施启动、验证步骤（中文） |
-| [**Docker 部署**](project/DOCKER-DEPLOYMENT.md) | Docker 部署专题 - 开发模式、完整部署、故障排查 |
+| 文档                                            | 说明                                     |
+|-----------------------------------------------|----------------------------------------|
+| [**claude.md**](project/claude.md)            | Claude Code 项目指南 - 项目概述、架构原则、开发模式、最佳实践 |
+| [**gradle.md**](project/gradle.md)            | Gradle 构建完整指南 - 快速开始、命令对照、配置说明         |
+| [**开发环境初始化**](project/development-setup.md)   | 开发环境初始化指南 - 环境要求、基础设施启动、验证步骤（中文）       |
+| [**Docker 部署**](project/docker-deployment.md) | Docker 部署专题 - 开发模式、完整部署、故障排查           |
 
 ### 操作指南
 
@@ -33,35 +33,20 @@
 
 ### 按使用场景导航
 
-| 我想...          | 查看文档                                        | 说明                         |
-|----------------|---------------------------------------------|----------------------------|
-| **查看项目整体测试状态** | [测试状态总览](TESTING-MASTER-STATUS.md)          | 所有模块的完成情况、统计数据、技术债务（单元+集成） |
-| **查看集成测试进度**   | [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md)      | 集成测试任务列表、进度、里程碑            |
-| **了解集成测试框架**   | [集成测试框架文档](archive/integration-test-week1/) | Week 1 完整总结，包含框架、代码、障碍、方案  |
-| **查看具体模块测试**   | [模块文档](#-模块测试文档)                            | 按模块分类的详细测试文档               |
-| **查看历史文档**     | [归档区](#-归档文档)                               | 按时间/阶段组织的历史文档              |
-| **开始编写新测试**    | [测试最佳实践](#-测试最佳实践)                          | 框架使用、命名规范、模式参考             |
+| 我想...          | 查看文档                                                   | 说明                         |
+|----------------|--------------------------------------------------------|----------------------------|
+| **查看项目整体测试状态** | [测试状态总览](active/testing-master-status.md)              | 所有模块的完成情况、统计数据、技术债务（单元+集成） |
+| **查看集成测试进度**   | [集成测试跟踪器](active/integration-test-tracker.md)          | 集成测试任务列表、进度、里程碑            |
+| **了解集成测试框架**   | [集成测试框架文档](archive/integration-tests/week1-framework/) | Week 1 完整总结，包含框架、代码、障碍、方案  |
+| **查看具体模块测试**   | [模块文档](#-模块测试文档)                                       | 按模块分类的详细测试文档               |
+| **查看历史文档**     | [归档区](#-归档文档)                                          | 按时间/阶段组织的历史文档              |
+| **开始编写新测试**    | [测试最佳实践](#-测试最佳实践)                                     | 框架使用、命名规范、模式参考             |
 
 ---
 
 ## 📊 主要文档（必读）
 
-### 0. [测试状态摘要](TEST-STATUS-SUMMARY.md) ⭐⭐⭐⭐
-
-**用途**: 快速查看当前测试状态
-**包含**:
-
-- 一页纸摘要（测试数量、通过率、待办事项）
-- P0 问题快速定位
-- 快速命令参考
-
-**适合**: 所有人，最快了解当前状态
-
-**最后更新**: 2025-11-11
-
----
-
-### 1. [测试状态总览](TESTING-MASTER-STATUS.md) ⭐⭐⭐
+### 1. [测试状态总览](active/testing-master-status.md) ⭐⭐⭐⭐
 
 **用途**: 项目测试状态的鸟瞰图
 **包含**:
@@ -78,7 +63,7 @@
 
 ---
 
-### 2. [集成测试跟踪器](INTEGRATION-TEST-TRACKER.md) ⭐⭐⭐
+### 2. [集成测试跟踪器](active/integration-test-tracker.md) ⭐⭐⭐
 
 **用途**: 集成测试详细进度跟踪
 **包含**:
@@ -97,7 +82,7 @@
 
 ---
 
-### 3. [集成测试框架文档](archive/integration-test-week1/) ⭐⭐
+### 3. [集成测试框架文档](archive/integration-tests/week1-framework/) ⭐⭐
 
 **用途**: Week 1 集成测试工作的完整总结
 **包含**:
@@ -113,9 +98,9 @@
 
 **详细文档**:
 
-- [框架设置详解](archive/integration-test-week1/INTEGRATION-TEST-FRAMEWORK-SETUP.md)
-- [工作总结](archive/integration-test-week1/INTEGRATION-TEST-WORK-SUMMARY.md)
-- [最终状态报告](archive/integration-test-week1/INTEGRATION-TEST-FINAL-STATUS.md)
+- [框架设置详解](archive/integration-tests/week1-framework/integration-test-framework-setup.md)
+- [工作总结](archive/integration-tests/week1-framework/integration-test-work-summary.md)
+- [最终状态报告](archive/integration-tests/week1-framework/integration-test-final-status.md)
 
 ---
 
@@ -159,12 +144,11 @@
 
 **按阶段**:
 
-- [Phase 1](archive/unit-tests/phase1/) - ruoyi-common 模块 (12 个文件)
-- [Phase 2](archive/unit-tests/phase2/) - ruoyi-auth 模块 (6 个文件)
-- [Phase 3](archive/unit-tests/phase3/) - ruoyi-system 模块 (15 个文件)
-- [Phase 4](archive/unit-tests/phase4/) - 其他模块分析 (1 个文件)
-- [Phase 5](archive/unit-tests/phase5-gen-module/) - ruoyi-gen 模块分析
-- [单元测试跟踪器](archive/unit-tests/tracking/TESTING-PROGRESS-TRACKER.md) - 进度跟踪（已完成）
+- [Phase 1](archive/unit-tests/phase1-common/) - ruoyi-common 模块 (11 个文件)
+- [Phase 2](archive/unit-tests/phase2-auth/) - ruoyi-auth 模块 (3 个文件)
+- [Phase 3](archive/unit-tests/phase3-system/) - ruoyi-system 模块 (15 个文件)
+- [Phase 4](archive/unit-tests/phase4-analysis/) - 其他模块分析 (1 个文件)
+- [Phase 5](archive/unit-tests/phase5-gen/) - ruoyi-gen 模块分析
 
 **说明**: 所有单元测试工作已完成并归档，作为参考资料保留
 
@@ -173,22 +157,24 @@
 ### 集成测试归档
 
 **位置
-**: [archive/integration-test-week1/](archive/integration-test-week1/) + [archive/integration-test-progress/](archive/integration-test-progress/)
+**: [archive/integration-tests/](archive/integration-tests/) + [archive/progress-reports/](archive/progress-reports/)
 
 **Week 1 (2025-11-10)**:
 
-- [README.md](archive/integration-test-week1/README.md) - 归档说明
-- [INTEGRATION-TEST-FRAMEWORK-SETUP.md](archive/integration-test-week1/INTEGRATION-TEST-FRAMEWORK-SETUP.md) -
+- [README.md](archive/integration-tests/week1-framework/README.md) - 归档说明
+- [integration-test-framework-setup.md](archive/integration-tests/week1-framework/integration-test-framework-setup.md) -
   框架详细设置 (480 行)
-- [INTEGRATION-TEST-WORK-SUMMARY.md](archive/integration-test-week1/INTEGRATION-TEST-WORK-SUMMARY.md) - 工作完整总结 (
+- [integration-test-work-summary.md](archive/integration-tests/week1-framework/integration-test-work-summary.md) -
+  工作完整总结 (
   580 行)
-- [INTEGRATION-TEST-FINAL-STATUS.md](archive/integration-test-week1/INTEGRATION-TEST-FINAL-STATUS.md) - 最终状态报告
+- [integration-test-final-status.md](archive/integration-tests/week1-framework/integration-test-final-status.md) -
+  最终状态报告
 
 **成果**: 框架 100% 就绪，49 个测试用例编写完成，Dubbo 时序冲突已解决
 
 **进度报告归档 (2025-11-11)**:
 
-- [TESTING-PROGRESS-UPDATE-2025-11-11.md](archive/integration-test-progress/TESTING-PROGRESS-UPDATE-2025-11-11.md) -
+- [testing-progress-update-2025-11-11.md](archive/progress-reports/2025-11/testing-progress-update-2025-11-11.md) -
   3,271 测试执行完整分析
 
 **成果**: Sa-Token 上下文问题修复，Resource Bean 配置问题分析
@@ -199,12 +185,17 @@
 
 **位置**: [archive/legacy/](archive/legacy/)
 
-**已合并文档**（内容已整合到 TESTING-MASTER-STATUS.md）:
+**已删除文档**（内容已整合到 testing-master-status.md）:
 
-- TESTING-STATUS-SUMMARY.md
-- OVERALL-TESTING-STATUS-SUMMARY.md
-- FINAL-MODULE-ANALYSIS-SUMMARY.md
-- TESTING-TASK-IMPLEMENTATION-SUMMARY.md
+- testing-status-summary.md
+- overall-testing-status-summary.md
+- testing-task-implementation-summary.md
+- testing-progress-report.md
+- testing-task-checklist.md
+
+**保留文档**:
+
+- [final-module-analysis-summary.md](archive/legacy/final-module-analysis-summary.md) - 模块分析总结
 
 ---
 
@@ -246,7 +237,7 @@ class MyServiceIntegrationTest extends BaseIntegrationTest {
 }
 ```
 
-**详细指南**: [集成测试最终状态](INTEGRATION-TEST-FINAL-STATUS.md) - "可行的解决方案" 章节
+**详细指南**: [集成测试最终状态](integration-test-final-status.md) - "可行的解决方案" 章节
 
 ---
 
@@ -274,9 +265,9 @@ open build/reports/jacoco/test/html/index.html
 
 | 文档                               | 大小  | 用途        |
 |----------------------------------|-----|-----------|
-| TESTING-MASTER-STATUS.md         | 15K | 状态总览      |
-| TESTING-PROGRESS-TRACKER.md      | 16K | 进度跟踪      |
-| INTEGRATION-TEST-FINAL-STATUS.md | 11K | Week 1 总结 |
+| testing-master-status.md         | 15K | 状态总览      |
+| testing-progress-tracker.md      | 16K | 进度跟踪      |
+| integration-test-final-status.md | 11K | Week 1 总结 |
 
 ### 模块文档
 
@@ -298,8 +289,8 @@ open build/reports/jacoco/test/html/index.html
 
 ### 更新频率
 
-- **TESTING-MASTER-STATUS.md**: 每完成一批测试后更新
-- **INTEGRATION-TEST-TRACKER.md**: 每周更新一次
+- **testing-master-status.md**: 每完成一批测试后更新
+- **integration-test-tracker.md**: 每周更新一次
 - **模块文档**: 模块测试完成时创建
 - **本索引**: 结构变化时更新
 
@@ -312,8 +303,8 @@ open build/reports/jacoco/test/html/index.html
 
 ### 贡献指南
 
-1. 新集成测试完成后，更新 [INTEGRATION-TEST-TRACKER.md](INTEGRATION-TEST-TRACKER.md)
-2. 重要里程碑达成后，更新 [TESTING-MASTER-STATUS.md](TESTING-MASTER-STATUS.md)
+1. 新集成测试完成后，更新 [integration-test-tracker.md](active/integration-test-tracker.md)
+2. 重要里程碑达成后，更新 [testing-master-status.md](active/testing-master-status.md)
 3. 每个阶段完成后，运行归档脚本
 4. 保持文档链接的有效性
 

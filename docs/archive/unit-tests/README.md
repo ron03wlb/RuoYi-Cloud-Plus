@@ -28,8 +28,9 @@
   - ruoyi-common-encrypt, sensitive, translation, web, redis, tenant 等
 
 **主要文档**:
-- [PHASE1-FINAL-SUMMARY.md](phase1-common/PHASE1-FINAL-SUMMARY.md) - 阶段总结
-- [PHASE1-OVERALL-SUMMARY.md](phase1-common/PHASE1-OVERALL-SUMMARY.md) - 整体概览
+
+- [phase1-final-summary.md](phase1-common/phase1-final-summary.md) - 阶段总结
+- [phase1-overall-summary.md](phase1-common/phase1-overall-summary.md) - 整体概览
 - 各模块详细测试报告（12个）
 
 ---
@@ -42,8 +43,9 @@
 - **模块**: ruoyi-auth（认证授权服务）
 
 **主要文档**:
-- [PHASE2-FINAL-COMPLETION-REPORT.md](phase2-auth/PHASE2-FINAL-COMPLETION-REPORT.md) - 最终完成报告
-- [PHASE2-AUTH-TESTING-COMPLETION-REPORT.md](phase2-auth/PHASE2-AUTH-TESTING-COMPLETION-REPORT.md) - 测试完成报告
+
+- [phase2-final-completion-report.md](phase2-auth/phase2-final-completion-report.md) - 最终完成报告
+- [phase2-auth-testing-completion-report.md](phase2-auth/phase2-auth-testing-completion-report.md) - 测试完成报告
 - [PHASE2-AUTH-TESTING-方案A+C-FINAL-REPORT.md](phase2-auth/PHASE2-AUTH-TESTING-方案A+C-FINAL-REPORT.md) - 方案实施报告
 
 ---
@@ -66,8 +68,9 @@
 - SysTenantServiceImpl, SysTenantPackageServiceImpl
 
 **主要文档**:
-- [PHASE3.1-COMPLETION-SUMMARY.md](phase3-system/PHASE3.1-COMPLETION-SUMMARY.md) - 阶段1完成总结
-- [PHASE3-SYSTEM-TESTING-STATUS-REPORT.md](phase3-system/PHASE3-SYSTEM-TESTING-STATUS-REPORT.md) - 状态报告
+
+- [phase3.1-completion-summary.md](phase3-system/phase3.1-completion-summary.md) - 阶段1完成总结
+- [phase3-system-testing-status-report.md](phase3-system/phase3-system-testing-status-report.md) - 状态报告
 - 各服务详细测试报告（15个）
 
 ---
@@ -79,7 +82,8 @@
 - **模块**: ruoyi-resource, ruoyi-workflow, ruoyi-job 等
 
 **主要文档**:
-- [PHASE4-RESOURCE-MODULE-ANALYSIS.md](phase4-analysis/PHASE4-RESOURCE-MODULE-ANALYSIS.md) - Resource模块分析
+
+- [phase4-resource-module-analysis.md](phase4-analysis/phase4-resource-module-analysis.md) - Resource模块分析
 
 ---
 
@@ -90,20 +94,22 @@
 - **模块**: ruoyi-gen（代码生成服务）
 
 **主要文档**:
-- [PHASE5-GEN-MODULE-TESTING-STATUS.md](phase5-gen/PHASE5-GEN-MODULE-TESTING-STATUS.md) - Gen模块测试状态
+
+- [phase5-gen-module-testing-status.md](phase5-gen/phase5-gen-module-testing-status.md) - Gen模块测试状态
 
 ---
 
 ### [进度跟踪](tracking/)
 
 **主要文档**:
-- [TESTING-PROGRESS-TRACKER.md](tracking/TESTING-PROGRESS-TRACKER.md) - 完整进度跟踪器
+
+- [testing-progress-tracker.md](tracking/testing-progress-tracker.md) - 完整进度跟踪器
 
 ---
 
 ## 📄 汇总文档
 
-### [单元测试完整总结](UNIT-TEST-COMPLETION-SUMMARY.md) ⭐⭐⭐
+### [单元测试完整总结](unit-test-completion-summary.md) ⭐⭐⭐
 
 **用途**: 所有阶段的汇总概览，快速了解单元测试全貌
 
@@ -117,15 +123,15 @@
 
 ## 🔍 快速导航
 
-| 我想查看... | 前往 |
-|----------|------|
-| 完整汇总 | [UNIT-TEST-COMPLETION-SUMMARY.md](UNIT-TEST-COMPLETION-SUMMARY.md) |
-| Common模块测试 | [phase1-common/](phase1-common/) |
-| Auth模块测试 | [phase2-auth/](phase2-auth/) |
-| System模块测试 | [phase3-system/](phase3-system/) |
-| 其他模块分析 | [phase4-analysis/](phase4-analysis/) |
-| Gen模块测试 | [phase5-gen/](phase5-gen/) |
-| 进度跟踪 | [tracking/TESTING-PROGRESS-TRACKER.md](tracking/TESTING-PROGRESS-TRACKER.md) |
+| 我想查看...    | 前往                                                                           |
+|------------|------------------------------------------------------------------------------|
+| 完整汇总       | [unit-test-completion-summary.md](unit-test-completion-summary.md)           |
+| Common模块测试 | [phase1-common/](phase1-common/)                                             |
+| Auth模块测试   | [phase2-auth/](phase2-auth/)                                                 |
+| System模块测试 | [phase3-system/](phase3-system/)                                             |
+| 其他模块分析     | [phase4-analysis/](phase4-analysis/)                                         |
+| Gen模块测试    | [phase5-gen/](phase5-gen/)                                                   |
+| 进度跟踪       | [tracking/testing-progress-tracker.md](tracking/testing-progress-tracker.md) |
 
 ---
 
@@ -153,7 +159,7 @@
 
 ## 🔗 相关链接
 
-- [返回主索引](../../DOCUMENTATION-INDEX.md)
+- [返回主索引](../../documentation-index.md)
 - [集成测试归档](../integration-tests/)
 - [进度报告归档](../progress-reports/)
 - [测试指南](../../reference/testing-guidelines/)

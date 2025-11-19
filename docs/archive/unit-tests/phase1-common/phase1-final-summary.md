@@ -62,7 +62,7 @@
 - 包含单元测试和集成测试
 - 测试覆盖全面，无需额外工作
 
-**详细报告**: `PHASE1-ENCRYPT-TESTING-REPORT.md`
+**详细报告**: `phase1-encrypt-testing-report.md`
 
 ---
 
@@ -99,7 +99,7 @@
 - ❌ JsonUtils的17个测试失败 (MockedStatic问题)
     - 建议: 重构JsonUtils接受ObjectMapper参数或使用真实ObjectMapper
 
-**详细报告**: `PHASE1-JSON-TESTING-STATUS.md`
+**详细报告**: `phase1-json-testing-status.md`
 
 ---
 
@@ -138,7 +138,7 @@
 - ❌ DropDownOptions - 级联选项测试
 - ❌ ExcelUtil - @CsvSource格式修复
 
-**详细报告**: `PHASE1-EXCEL-TESTING-STATUS.md`
+**详细报告**: `phase1-excel-testing-status.md`
 
 ---
 
@@ -184,7 +184,7 @@
 - 包含真实业务场景
 - 测试结构清晰
 
-**详细报告**: `PHASE1-SENSITIVE-TESTING-REPORT.md`
+**详细报告**: `phase1-sensitive-testing-report.md`
 
 ---
 
@@ -232,7 +232,7 @@
 - 支持5种常见翻译场景
 - 代码精简，仅12个文件
 
-**详细报告**: `PHASE1-TRANSLATION-TESTING-REPORT.md`
+**详细报告**: `phase1-translation-testing-report.md`
 
 ---
 
@@ -292,7 +292,7 @@ I18nLocaleResolverTest (16个测试)
 - 包含参数化测试
 - 真实业务场景完备
 
-**详细报告**: `PHASE1-WEB-TESTING-REPORT.md`
+**详细报告**: `phase1-web-testing-report.md`
 
 ---
 

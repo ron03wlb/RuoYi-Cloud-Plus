@@ -85,13 +85,13 @@ check_phase_completion() {
 
     print_info "检测阶段 '$phase_name' 的完成状态..."
 
-    # 检查 TESTING-MASTER-STATUS.md 中的完成标记
-    if grep -q "$phase_name.*✅" "$DOCS_DIR/TESTING-MASTER-STATUS.md" 2>/dev/null; then
+    # 检查 testing-master-status.md 中的完成标记
+    if grep -q "$phase_name.*✅" "$DOCS_DIR/testing-master-status.md" 2>/dev/null; then
         return 0  # 已完成
     fi
 
-    # 检查 INTEGRATION-TEST-TRACKER.md 中的完成标记
-    if grep -q "$phase_name.*completed" "$DOCS_DIR/INTEGRATION-TEST-TRACKER.md" 2>/dev/null; then
+    # 检查 integration-test-tracker.md 中的完成标记
+    if grep -q "$phase_name.*completed" "$DOCS_DIR/integration-test-tracker.md" 2>/dev/null; then
         return 0  # 已完成
     fi
 
@@ -168,9 +168,9 @@ EOF
 
 ## 相关文档
 
-- [测试状态总览](../../TESTING-MASTER-STATUS.md)
-- [集成测试跟踪器](../../INTEGRATION-TEST-TRACKER.md)
-- [文档索引](../../DOCUMENTATION-INDEX.md)
+- [测试状态总览](../../testing-master-status.md)
+- [集成测试跟踪器](../../integration-test-tracker.md)
+- [文档索引](../../documentation-index.md)
 
 ---
 
@@ -190,13 +190,13 @@ update_document_links() {
     print_info "更新文档中的链接..."
 
     if [ "$dry_run" == "true" ]; then
-        print_warning "[DRY RUN] 将更新 TESTING-MASTER-STATUS.md 和 DOCUMENTATION-INDEX.md 中的链接"
+        print_warning "[DRY RUN] 将更新 testing-master-status.md 和 documentation-index.md 中的链接"
     else
         # 这里可以添加自动更新链接的逻辑
         # 由于复杂性，建议手动更新或使用更复杂的脚本
         print_warning "请手动更新以下文档中的链接:"
-        echo "  - docs/TESTING-MASTER-STATUS.md"
-        echo "  - docs/DOCUMENTATION-INDEX.md"
+        echo "  - docs/testing-master-status.md"
+        echo "  - docs/documentation-index.md"
         echo "  - docs/README.md"
     fi
 }

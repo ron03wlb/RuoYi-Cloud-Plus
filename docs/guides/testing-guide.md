@@ -37,7 +37,7 @@
 ./gradlew test jacocoTestReport
 
 # 查看进度报告
-cat docs/TESTING-PROGRESS-REPORT.md
+cat docs/testing-progress-report.md
 ```
 
 ---
@@ -1201,7 +1201,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 
 ### B.1 当前进度概览
 
-**详细进度报告:** 请查看 [docs/TESTING-PROGRESS-REPORT.md](docs/TESTING-PROGRESS-REPORT.md)
+**详细进度报告:** 请查看 [docs/testing-progress-report.md](docs/testing-progress-report.md)
 
 **最新统计 (2025-10-27):**
 
@@ -1213,10 +1213,10 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 
 ```bash
 # 命令行查看
-cat docs/TESTING-PROGRESS-REPORT.md
+cat docs/testing-progress-report.md
 
 # 或在浏览器中打开
-open docs/TESTING-PROGRESS-REPORT.md
+open docs/testing-progress-report.md
 ```
 
 ### B.3 生成最新覆盖率报告
@@ -1231,7 +1231,7 @@ open ruoyi-common/ruoyi-common-core/build/reports/jacoco/test/html/index.html
 
 ### B.4 进度更新规则
 
-进度报告 (`TESTING-PROGRESS-REPORT.md`) 应在以下情况下更新：
+进度报告 (`testing-progress-report.md`) 应在以下情况下更新：
 
 1. 完成一个完整工具类的测试（覆盖率 > 90%）
 2. 完成一个模块的所有测试
@@ -1260,7 +1260,7 @@ open ruoyi-common/ruoyi-common-core/build/reports/jacoco/test/html/index.html
 
 **相关资源：**
 
-- [进度报告](docs/TESTING-PROGRESS-REPORT.md) - 实时跟踪测试进展
+- [进度报告](docs/testing-progress-report.md) - 实时跟踪测试进展
 - [JUnit 5 文档](https://junit.org/junit5/docs/current/user-guide/)
 - [Mockito 文档](https://javadoc.io/doc/org.mockito/mockito-core/latest/)
 - [AssertJ 文档](https://assertj.github.io/doc/)

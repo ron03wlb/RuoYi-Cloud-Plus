@@ -53,9 +53,9 @@ cd script/docker
 
 ### 项目文档
 
-- [CLAUDE.md](../project/CLAUDE.md) - 项目概述和开发指南
-- [开发环境初始化](../project/DEVELOPMENT-SETUP.md) - 完整初始化步骤（中文）
-- [Docker 部署](../project/DOCKER-DEPLOYMENT.md) - Docker 部署专题
+- [claude.md](../project/claude.md) - 项目概述和开发指南
+- [开发环境初始化](../project/development-setup.md) - 完整初始化步骤（中文）
+- [Docker 部署](../project/docker-deployment.md) - Docker 部署专题
 
 ### 测试文档
 

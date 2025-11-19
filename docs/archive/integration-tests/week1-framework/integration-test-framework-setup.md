@@ -8,7 +8,7 @@
 
 ## 📋 任务概述
 
-根据 [TESTING-PROGRESS-TRACKER.md](TESTING-PROGRESS-TRACKER.md) 的计划，完成集成测试框架的基础设施搭建，为后续的业务模块集成测试（ruoyi-gen,
+根据 [testing-progress-tracker.md](testing-progress-tracker.md) 的计划，完成集成测试框架的基础设施搭建，为后续的业务模块集成测试（ruoyi-gen,
 ruoyi-resource, ruoyi-workflow）提供支持。
 
 ---

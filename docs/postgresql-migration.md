@@ -79,7 +79,7 @@ datasource:
 ✅ **更新文档**
 
 - `README.md` - 项目说明更新
-- `CLAUDE.md` - 开发指南更新
+- `claude.md` - 开发指南更新
 - `script/docker/README-LOCAL-BUILD.md` - 部署指南更新
 
 ## 服务状态

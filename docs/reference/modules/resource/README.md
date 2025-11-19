@@ -72,4 +72,4 @@
 **预计工期**: 3 天
 **优先级**: P0
 **详细报告**:
-见 [archive/phase4/PHASE4-RESOURCE-MODULE-ANALYSIS.md](../../archive/phase4/PHASE4-RESOURCE-MODULE-ANALYSIS.md)
+见 [archive/phase4/phase4-resource-module-analysis.md](../../archive/phase4/phase4-resource-module-analysis.md)

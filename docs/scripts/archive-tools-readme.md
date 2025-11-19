@@ -81,8 +81,8 @@ cd script/docs
 #    - 暂存 git 更改
 
 # 5. 手动更新主文档中的链接
-#    - docs/TESTING-MASTER-STATUS.md
-#    - docs/DOCUMENTATION-INDEX.md
+#    - docs/testing-master-status.md
+#    - docs/documentation-index.md
 #    - docs/README.md
 
 # 6. 审查并提交更改
@@ -105,7 +105,7 @@ git commit -m "docs: archive phase6 unit tests"
 # 3. 确认并完成归档
 
 # 4. 更新集成测试跟踪器
-#    编辑 docs/INTEGRATION-TEST-TRACKER.md，更新进度
+#    编辑 docs/integration-test-tracker.md，更新进度
 
 # 5. 提交更改
 git commit -m "docs: archive integration test week 2"
@@ -136,8 +136,8 @@ git commit -m "docs: archive integration test week 2"
    └─ 文档编写完整
 
 2. 标记阶段完成
-   ├─ 在 TESTING-MASTER-STATUS.md 中标记 ✅
-   └─ 或在 INTEGRATION-TEST-TRACKER.md 中标记 completed
+   ├─ 在 testing-master-status.md 中标记 ✅
+   └─ 或在 integration-test-tracker.md 中标记 completed
 
 3. 运行归档脚本
    ├─ 选择要归档的文件
@@ -145,9 +145,9 @@ git commit -m "docs: archive integration test week 2"
    └─ 脚本自动处理
 
 4. 手动更新文档链接
-   ├─ TESTING-MASTER-STATUS.md
-   ├─ INTEGRATION-TEST-TRACKER.md
-   ├─ DOCUMENTATION-INDEX.md
+   ├─ testing-master-status.md
+   ├─ integration-test-tracker.md
+   ├─ documentation-index.md
    └─ README.md
 
 5. 审查并提交
@@ -176,7 +176,7 @@ docs/
 │   │   │   ├── PHASE6-TESTING-STATUS.md
 │   │   │   └── PHASE6-TESTING-REPORT.md
 │   │   └── tracking/
-│   │       └── TESTING-PROGRESS-TRACKER.md
+│   │       └── testing-progress-tracker.md
 │   ├── integration-test-week1/        # 集成测试归档
 │   ├── integration-test-week2/        # 新归档的周
 │   │   ├── README.md
@@ -209,8 +209,8 @@ archive_rules:                         # 归档规则
 
 document_updates:                      # 文档更新
   main_documents:
-    - docs/TESTING-MASTER-STATUS.md
-    - docs/INTEGRATION-TEST-TRACKER.md
+    - docs/testing-master-status.md
+    - docs/integration-test-tracker.md
 ```
 
 ### 自定义配置
@@ -274,11 +274,11 @@ git status
 
 归档后，需要更新以下文档中的链接：
 
-1. **TESTING-MASTER-STATUS.md**
+1. **testing-master-status.md**
     - 更新"文档生成历史"部分的链接
     - 添加新归档阶段的链接
 
-2. **DOCUMENTATION-INDEX.md**
+2. **documentation-index.md**
     - 更新"归档文档"部分
     - 添加新归档的描述
 
