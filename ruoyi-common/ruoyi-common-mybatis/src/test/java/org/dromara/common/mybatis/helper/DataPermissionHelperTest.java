@@ -1,5 +1,6 @@
 package org.dromara.common.mybatis.helper;
 
+import com.alibaba.ttl.TtlRunnable;
 import org.dromara.common.mybatis.BaseUnitTest;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -257,28 +259,53 @@ class DataPermissionHelperTest extends BaseUnitTest {
     }
 
     @Nested
-    @DisplayName("4. 线程隔离测试")
-    class ThreadIsolationTests {
+    @DisplayName("4. 线程传递测试（TTL）")
+    class ThreadTransmissionTests {
 
         @Test
-        @DisplayName("不同线程的权限缓存应该隔离")
-        void shouldIsolatePermissionBetweenThreads() throws InterruptedException {
+        @DisplayName("使用TtlRunnable时子线程应该能访问父线程的权限缓存")
+        void shouldTransmitPermissionToChildThreadWithTtl() throws InterruptedException {
             // Arrange
             DataPermission mainThreadPermission = mock(DataPermission.class);
             DataPermissionHelper.setPermission(mainThreadPermission);
 
-            AtomicBoolean otherThreadSeesNull = new AtomicBoolean(false);
+            AtomicReference<DataPermission> childThreadPermission = new AtomicReference<>(null);
 
-            // Act
+            // Act - 使用 TtlRunnable 包装，确保 TTL 值传递到子线程
+            Runnable task = TtlRunnable.get(() -> {
+                DataPermission permission = DataPermissionHelper.getPermission();
+                childThreadPermission.set(permission);
+            });
+
+            Thread otherThread = new Thread(task);
+            otherThread.start();
+            otherThread.join();
+
+            // Assert - 子线程应该能够访问父线程设置的权限（TTL 的核心功能）
+            assertThat(childThreadPermission.get()).isEqualTo(mainThreadPermission);
+            assertThat(DataPermissionHelper.getPermission()).isEqualTo(mainThreadPermission);
+        }
+
+        @Test
+        @DisplayName("子线程应该自动继承父线程的权限缓存")
+        void shouldInheritPermissionToChildThread() throws InterruptedException {
+            // Arrange
+            DataPermission mainThreadPermission = mock(DataPermission.class);
+            DataPermissionHelper.setPermission(mainThreadPermission);
+
+            AtomicReference<DataPermission> childThreadPermission = new AtomicReference<>(null);
+
+            // Act - TransmittableThreadLocal 继承自 InheritableThreadLocal，
+            // 子线程会自动继承父线程的值
             Thread otherThread = new Thread(() -> {
                 DataPermission permission = DataPermissionHelper.getPermission();
-                otherThreadSeesNull.set(permission == null);
+                childThreadPermission.set(permission);
             });
             otherThread.start();
             otherThread.join();
 
-            // Assert
-            assertThat(otherThreadSeesNull.get()).isTrue();
+            // Assert - 子线程应该能够访问父线程设置的权限
+            assertThat(childThreadPermission.get()).isEqualTo(mainThreadPermission);
             assertThat(DataPermissionHelper.getPermission()).isEqualTo(mainThreadPermission);
         }
 

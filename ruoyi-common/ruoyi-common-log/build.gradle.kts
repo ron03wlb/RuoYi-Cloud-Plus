@@ -22,4 +22,9 @@ dependencies {
     // Dubbo（可选）
     // ===========================================
     compileOnly(libs.dubbo.spring.boot.starter)
+
+    // ===========================================
+    // TransmittableThreadLocal（虚拟线程支持）
+    // ===========================================
+    api(libs.transmittable.thread.local)
 }

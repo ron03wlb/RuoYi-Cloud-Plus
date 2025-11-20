@@ -53,6 +53,11 @@ dependencies {
     // PostgreSQL 数据库驱动
     // ===========================================
     api("org.postgresql:postgresql")
+
+    // ===========================================
+    // TransmittableThreadLocal（虚拟线程支持）
+    // ===========================================
+    api(libs.transmittable.thread.local)
 }
 
 // ===========================================

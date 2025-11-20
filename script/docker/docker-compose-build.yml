@@ -67,10 +67,7 @@ services:
     network_mode: "host"
 
   nacos:
-    build:
-      context: ../../ruoyi-visual/ruoyi-nacos
-      dockerfile: Dockerfile
-    image: ruoyi/ruoyi-nacos:2.5.0
+    image: nacos/nacos-server:v2.5.1
     container_name: nacos
     ports:
       - "8848:8848"
@@ -78,12 +75,22 @@ services:
       - "9849:9849"
     environment:
       TZ: Asia/Shanghai
+      MODE: standalone
+      NACOS_AUTH_ENABLE: "true"
+      NACOS_AUTH_TOKEN: "SecretKey012345678901234567890123456789012345678901234567890123456789"
+      NACOS_AUTH_IDENTITY_KEY: "serverIdentity"
+      NACOS_AUTH_IDENTITY_VALUE: "security"
+      # PostgreSQL 数据库配置
+      SPRING_DATASOURCE_PLATFORM: postgresql
+      POSTGRESQL_SERVICE_HOST: 127.0.0.1
+      POSTGRESQL_SERVICE_PORT: 5432
+      POSTGRESQL_SERVICE_DB_NAME: nacos
+      POSTGRESQL_SERVICE_USER: postgres
+      POSTGRESQL_SERVICE_PASSWORD: ruoyi123
       JAVA_OPTS: "-Xms256m -Xmx512m"
     volumes:
       # 日志目录 注意集群模式下 日志目录不能一致 需要区分例如 nacos1 nacos2
-      - /docker/nacos/logs/:/root/nacos/logs
-      # 集群配置文件 集群所有nacos都必须使用此文件
-      - /docker/nacos/conf/cluster.conf:/root/nacos/conf/cluster.conf
+      - /docker/nacos/logs/:/home/nacos/logs
     network_mode: "host"
 
   redis:

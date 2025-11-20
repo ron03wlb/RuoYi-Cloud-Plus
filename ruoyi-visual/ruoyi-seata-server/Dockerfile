@@ -1,6 +1,6 @@
 # 贝尔实验室 Spring 官方推荐镜像 JDK下载地址 https://bell-sw.com/pages/downloads/
-FROM bellsoft/liberica-openjdk-rocky:17.0.16-cds
-#FROM bellsoft/liberica-openjdk-rocky:21.0.8-cds
+#FROM bellsoft/liberica-openjdk-rocky:17.0.16-cds
+FROM bellsoft/liberica-openjdk-rocky:21.0.8-cds
 #FROM findepi/graalvm:java17-native
 
 LABEL maintainer="Lion Li"
@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 EXPOSE 7091
 EXPOSE 8091
 
-ADD ./target/ruoyi-seata-server.jar ./app.jar
+COPY "./target"/ruoyi-seata-server.jar ./app.jar
 
 SHELL ["/bin/bash", "-c"]
 

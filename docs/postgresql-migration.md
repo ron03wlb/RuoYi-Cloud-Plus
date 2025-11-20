@@ -17,11 +17,10 @@
 - `ry-job` - 任务调度数据库
 - `ry-seata` - 分布式事务数据库
 - `ry-workflow` - 工作流引擎数据库
-- `ry-config` - Nacos 配置数据（此数据库在 PostgreSQL 中保留但未使用）
 
 ### MySQL 数据库列表
 
-- `ry-config` - Nacos 配置存储（唯一使用 MySQL 的数据库）
+- `ry-config` - Nacos 配置存储（Nacos 配置中心专用数据库）
 
 ## 已完成的迁移工作
 

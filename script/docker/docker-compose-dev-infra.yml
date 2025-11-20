@@ -11,6 +11,7 @@
 #   - Redis 7.2.8       缓存/消息队列 (6379)
 #   - Nacos 2.4.3       配置中心/注册中心 (8848)
 #   - MinIO             对象存储 (9000/9001)
+#   - RabbitMQ 3.13.3   消息队列/Spring Cloud Bus (5672/15672)
 #
 # 使用方式:
 #   docker-compose -f docker-compose-dev-infra.yml up -d    # 启动所有服务
@@ -139,5 +140,25 @@ services:
       - /docker/minio/data:/data                  # 数据存储
       - /docker/minio/config:/root/.minio/        # 配置文件
     command: server --address ':9000' --console-address ':9001' /data
+    privileged: true
+    network_mode: "host"
+
+  # RabbitMQ 消息队列 (Spring Cloud Bus)
+  rabbitmq:
+    container_name: rabbitmq
+    build:
+      context: ./rabbitmq
+    image: rabbitmq-delayed:3.13.3
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: ruoyi          # 默认用户名
+      RABBITMQ_DEFAULT_PASS: ruoyi123       # 默认密码
+    ports:
+      - "5672:5672"       # AMQP 端口
+      - "15672:15672"     # 管理界面端口
+      - "15692:15692"     # Prometheus 指标端口
+    volumes:
+      - /docker/rabbitmq/data:/var/lib/rabbitmq     # 数据持久化
+      - /docker/rabbitmq/log:/var/log/rabbitmq      # 日志目录
     privileged: true
     network_mode: "host"

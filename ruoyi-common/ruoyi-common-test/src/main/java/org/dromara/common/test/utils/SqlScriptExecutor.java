@@ -170,17 +170,12 @@ public class SqlScriptExecutor {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // 禁用外键约束
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
-
             for (String tableName : tableNames) {
-                String sql = "TRUNCATE TABLE " + tableName;
+                // 使用 CASCADE 自动处理外键约束（PostgreSQL 兼容）
+                String sql = "TRUNCATE TABLE " + tableName + " CASCADE";
                 log.debug("执行: {}", sql);
                 stmt.execute(sql);
             }
-
-            // 启用外键约束
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
 
             log.info("表数据清空成功");
         } catch (SQLException e) {

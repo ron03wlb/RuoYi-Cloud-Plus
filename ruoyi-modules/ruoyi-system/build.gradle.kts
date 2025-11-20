@@ -14,63 +14,81 @@ plugins {
 description = "ruoyi-system系统模块"
 
 dependencies {
-    // Spring核心依赖
+    // ===========================================
+    // Spring 核心依赖
+    // ===========================================
     api("org.springframework:spring-context")
     api("org.springframework:spring-web")
     api("org.springframework:spring-beans")
     api("org.springframework.boot:spring-boot")
     api("org.springframework.boot:spring-boot-autoconfigure")
 
-    // Jakarta API
+    // ===========================================
+    // Jakarta EE API
+    // ===========================================
     api("jakarta.servlet:jakarta.servlet-api")
     api("jakarta.validation:jakarta.validation-api")
 
-    // Hutool
+    // ===========================================
+    // 工具库
+    // ===========================================
     api(libs.hutool.core)
 
-    // Dubbo
-    implementation(libs.dubbo)
-
-    // Sa-Token
-    implementation(libs.sa.token.core)
-
-    // RuoYi核心模块
+    // ===========================================
+    // RuoYi 核心模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-core"))
     implementation(project(":ruoyi-common:ruoyi-common-excel"))
     implementation(project(":ruoyi-common:ruoyi-common-satoken"))
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
 
-    // RuoYi Common Log
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-log"))
     implementation(project(":ruoyi-common:ruoyi-common-doc"))
     implementation(project(":ruoyi-common:ruoyi-common-web"))
     implementation(project(":ruoyi-common:ruoyi-common-mybatis"))
     implementation(project(":ruoyi-common:ruoyi-common-idempotent"))
     implementation(project(":ruoyi-common:ruoyi-common-tenant"))
-
-    // 分布式事务（某些业务需要）
-    compileOnly(project(":ruoyi-common:ruoyi-common-seata"))
-
     implementation(project(":ruoyi-common:ruoyi-common-security"))
     implementation(project(":ruoyi-common:ruoyi-common-translation"))
     implementation(project(":ruoyi-common:ruoyi-common-sensitive"))
     implementation(project(":ruoyi-common:ruoyi-common-encrypt"))
 
-    // RuoYi Api System
+    // ===========================================
+    // RuoYi API 模块
+    // ===========================================
     implementation(project(":ruoyi-api:ruoyi-api-system"))
     implementation(project(":ruoyi-api:ruoyi-api-resource"))
     implementation(project(":ruoyi-api:ruoyi-api-workflow"))
 
-    // ====================
+    // ===========================================
+    // Sa-Token 权限认证
+    // ===========================================
+    implementation(libs.sa.token.core)
+
+    // ===========================================
+    // Dubbo
+    // ===========================================
+    implementation(libs.dubbo)
+
+    // ===========================================
+    // 可选依赖
+    // ===========================================
+    // 分布式事务（某些业务需要）
+    compileOnly(project(":ruoyi-common:ruoyi-common-seata"))
+
+    // ===========================================
     // 测试依赖
-    // ====================
+    // ===========================================
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.junit.jupiter)
-    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation(libs.mockito.inline)
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.h2database:h2")
 }

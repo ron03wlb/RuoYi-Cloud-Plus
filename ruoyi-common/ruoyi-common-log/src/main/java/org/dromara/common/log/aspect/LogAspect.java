@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class LogAspect {
     /**
      * 计时 key
      */
-    private static final ThreadLocal<StopWatch> KEY_CACHE = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<StopWatch> KEY_CACHE = new TransmittableThreadLocal<>();
 
     /**
      * 处理请求前执行

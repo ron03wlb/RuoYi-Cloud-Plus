@@ -4,6 +4,7 @@ import cn.dev33.satoken.SaManager;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.JoinPoint;
@@ -36,7 +37,7 @@ import java.util.StringJoiner;
 @Aspect
 public class RepeatSubmitAspect {
 
-    private static final ThreadLocal<String> KEY_CACHE = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<String> KEY_CACHE = new TransmittableThreadLocal<>();
 
     @Before("@annotation(repeatSubmit)")
     public void doBefore(JoinPoint point, RepeatSubmit repeatSubmit) throws Throwable {

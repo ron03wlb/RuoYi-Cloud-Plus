@@ -4,6 +4,7 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import lombok.AccessLevel;
@@ -28,9 +29,14 @@ public class DataPermissionHelper {
 
     public static final String DATA_PERMISSION_KEY = "data:permission";
 
-    private static final ThreadLocal<Stack<Integer>> REENTRANT_IGNORE = ThreadLocal.withInitial(Stack::new);
+    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE = new TransmittableThreadLocal<Stack<Integer>>() {
+        @Override
+        protected Stack<Integer> initialValue() {
+            return new Stack<>();
+        }
+    };
 
-    private static final ThreadLocal<DataPermission> PERMISSION_CACHE = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<DataPermission> PERMISSION_CACHE = new TransmittableThreadLocal<>();
 
     /**
      * 获取当前执行mapper权限注解

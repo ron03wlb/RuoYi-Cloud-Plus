@@ -34,14 +34,14 @@ dependencies {
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-inline:5.2.0")  // 支持静态方法mock
+    testImplementation(libs.mockito.inline)  // 支持静态方法mock
 }
 
 // ===========================================
 // JaCoCo 配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.jacocoTestReport {

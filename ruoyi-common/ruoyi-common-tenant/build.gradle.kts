@@ -23,6 +23,11 @@ dependencies {
     api(project(":ruoyi-common:ruoyi-common-redis"))
 
     // ===========================================
+    // TransmittableThreadLocal（虚拟线程支持）
+    // ===========================================
+    api(libs.transmittable.thread.local)
+
+    // ===========================================
     // 测试依赖
     // ===========================================
     testImplementation("org.junit.jupiter:junit-jupiter")

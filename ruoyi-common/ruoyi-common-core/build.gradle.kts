@@ -96,7 +96,7 @@ dependencies {
     // Mockito 模拟框架
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-inline:5.2.0")  // 支持 mock 静态方法和 final 类
+    testImplementation(libs.mockito.inline)  // 支持 mock 静态方法和 final 类
 
     // AssertJ 流式断言
     testImplementation("org.assertj:assertj-core")
@@ -105,10 +105,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
 
     // AspectJ（用于集成测试的 AOP 支持）
-    testImplementation("org.aspectj:aspectjweaver:1.9.20")
+    testImplementation(libs.aspectjweaver)
 
     // Jakarta EL（用于 Hibernate Validator 消息插值）
-    testImplementation("org.glassfish:jakarta.el:4.0.2")
+    testImplementation(libs.jakarta.el)
 }
 
 // ===========================================
@@ -130,7 +130,7 @@ tasks.test {
 // JaCoCo 覆盖率配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.named<JacocoReport>("jacocoTestReport") {

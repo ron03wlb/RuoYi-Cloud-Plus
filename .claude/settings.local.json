@@ -135,7 +135,14 @@
       "Bash(docs/archive/unit-tests/tracking/testing-progress-tracker.md )",
       "Bash(docs/archive/legacy/testing-task-checklist.md )",
       "Bash(docs/archive/legacy/testing-progress-report.md )",
-      "Bash(docs/archive/legacy/testing-task-implementation-summary.md)"
+      "Bash(docs/archive/legacy/testing-task-implementation-summary.md)",
+      "Bash(git branch:*)",
+      "Bash(docker inspect:*)",
+      "Bash(docker stop:*)",
+      "Bash(do if curl -s http://localhost:8848/nacos)",
+      "Bash(then echo \"Nacos is ready!\")",
+      "Bash(docker build:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzYxMjc4MX0.26WHv3jTYx41YU8jXd20el49f378LXFI_V4OYhRiGHtb3xHxyvo9Qly2y5CrVTaI\")"
     ],
     "deny": [],
     "ask": []

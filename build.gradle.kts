@@ -41,8 +41,8 @@ subprojects {
 
         // Java 编译配置
         configure<JavaPluginExtension> {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
 
             // 启用 Java 编译参数
             withSourcesJar()
@@ -135,23 +135,31 @@ subprojects {
             // ===========================================
             // 使用 platform() 导入 BOM，让所有配置都能继承版本约束
 
+            // 获取版本号
+            val springBootVersion = rootProject.libs.versions.springBoot.get()
+            val springCloudVersion = rootProject.libs.versions.springCloud.get()
+            val hutoolVersion = rootProject.libs.versions.hutool.get()
+
             // 核心 BOM：Spring Boot（优先级最高）
             // 使用 DependencyHandler 的 add() 方法添加平台依赖到所有相关配置
-            add("api", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("implementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("compileOnly", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("annotationProcessor", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
-            add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:3.5.6"))
+            add("api", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("implementation", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("compileOnly", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("annotationProcessor", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+            add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
 
             // Spring Cloud BOM
-            add("api", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
-            add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
-            add("testImplementation", platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
+            add("api", platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"))
+            add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"))
+            add(
+                "testImplementation",
+                platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+            )
 
             // Hutool BOM
-            add("api", platform("cn.hutool:hutool-bom:5.8.40"))
-            add("implementation", platform("cn.hutool:hutool-bom:5.8.40"))
-            add("testImplementation", platform("cn.hutool:hutool-bom:5.8.40"))
+            add("api", platform("cn.hutool:hutool-bom:$hutoolVersion"))
+            add("implementation", platform("cn.hutool:hutool-bom:$hutoolVersion"))
+            add("testImplementation", platform("cn.hutool:hutool-bom:$hutoolVersion"))
 
             // Alibaba BOM（延迟解析项目依赖）
             add("api", platform(project(":ruoyi-common:ruoyi-common-alibaba-bom")))
@@ -164,16 +172,20 @@ subprojects {
             // ===========================================
             // 注解处理器（必须按此顺序！）
             // ===========================================
-            annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0")
-            annotationProcessor("org.projectlombok:lombok:1.18.40")
+            annotationProcessor(rootProject.libs.therapi.javadoc.scribe)
+            annotationProcessor(rootProject.libs.lombok)
             annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-            annotationProcessor("io.github.linpeilie:mapstruct-plus-processor:1.5.0")
-            annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+            annotationProcessor("io.github.linpeilie:mapstruct-plus-processor:${rootProject.libs.versions.mapstructPlus.get()}")
+            annotationProcessor(rootProject.libs.lombok.mapstruct.binding)
 
+            // ===========================================
             // compileOnly 依赖
-            compileOnly("org.projectlombok:lombok:1.18.40")
+            // ===========================================
+            compileOnly(rootProject.libs.lombok)
 
+            // ===========================================
             // 测试依赖
+            // ===========================================
             testImplementation("org.springframework.boot:spring-boot-starter-test")
             testImplementation("org.junit.jupiter:junit-jupiter")
             testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -185,19 +197,20 @@ subprojects {
             // 根据运行平台自动添加对应的原生库
             val osName = System.getProperty("os.name").lowercase()
             val osArch = System.getProperty("os.arch").lowercase()
+            val nettyVersion = rootProject.libs.versions.netty.get()
 
             when {
                 // macOS ARM64 (M1/M2/M3)
                 osName.contains("mac") && (osArch.contains("aarch64") || osArch.contains("arm")) -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-aarch_64")
+                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64")
                 }
                 // macOS x86_64
                 osName.contains("mac") && osArch.contains("x86_64") -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-x86_64")
+                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
                 }
                 // Linux x86_64 (生产环境)
                 osName.contains("linux") && osArch.contains("amd64") -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-epoll:4.1.127.Final:linux-x86_64")
+                    runtimeOnly("io.netty:netty-resolver-dns-native-epoll:$nettyVersion:linux-x86_64")
                 }
             }
         }

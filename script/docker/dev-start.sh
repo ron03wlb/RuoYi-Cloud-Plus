@@ -53,10 +53,11 @@ ${YELLOW}选项:${NC}
 
 ${YELLOW}说明:${NC}
   此脚本启动开发环境所需的基础设施服务：
-    - MySQL (3306)       数据库
-    - Redis (6379)       缓存/消息队列
+    - PostgreSQL (5432)  数据库
+    - Redis (6379)       缓存
     - Nacos (8848)       配置中心/注册中心
     - MinIO (9000/9001)  对象存储
+    - RabbitMQ (5672/15672)  消息队列/Spring Cloud Bus
 
 ${YELLOW}Nacos 版本选择:${NC}
   ${BLUE}官方镜像${NC}（默认，推荐）:
@@ -166,7 +167,7 @@ fi
 
 echo ""
 echo -e "${YELLOW}${STEP}. 等待服务启动...${NC}"
-echo -e "   - MySQL (3306)"
+echo -e "   - PostgreSQL (5432)"
 echo -e "   - Redis (6379)"
 if [ "$USE_CUSTOM_NACOS" = true ]; then
     echo -e "   - Nacos (8848) - ${BLUE}自定义构建版本${NC}"
@@ -174,6 +175,7 @@ else
     echo -e "   - Nacos (8848) - ${BLUE}官方镜像版本${NC}"
 fi
 echo -e "   - MinIO (9000/9001)"
+echo -e "   - RabbitMQ (5672/15672)"
 
 ((STEP++))
 
@@ -206,9 +208,9 @@ echo -e "     - 用户名/密码: ${GREEN}nacos/nacos${NC}"
 echo -e "     - 导入配置文件: ${GREEN}${PROJECT_ROOT}/script/config/nacos/*.yml${NC}"
 echo ""
 echo -e "2. 初始化数据库 (仅首次运行):"
-echo -e "   - 连接 MySQL: ${GREEN}localhost:3306${NC}"
-echo -e "   - 用户名/密码: ${GREEN}root/ruoyi123${NC}"
-echo -e "   - 执行 SQL: ${GREEN}${PROJECT_ROOT}/script/sql/ry-cloud.sql${NC}"
+echo -e "   - 连接 PostgreSQL: ${GREEN}localhost:5432${NC}"
+echo -e "   - 用户名/密码: ${GREEN}postgres/ruoyi123${NC}"
+echo -e "   - 执行 SQL: ${GREEN}${PROJECT_ROOT}/script/sql/*.sql${NC}"
 echo ""
 echo -e "3. 在 IntelliJ IDEA 中运行业务服务:"
 echo -e "   - 使用 ${GREEN}.run/${NC} 目录下的运行配置"
@@ -221,8 +223,9 @@ echo ""
 echo -e "4. 访问服务:"
 echo -e "   - 前端地址: ${GREEN}http://localhost:80${NC}"
 echo -e "   - API 网关: ${GREEN}http://localhost:8080${NC}"
-echo -e "   - Nacos 控制台: ${GREEN}http://localhost:8848/nacos${NC}"
+echo -e "   - Nacos 控制台: ${GREEN}http://localhost:8848/nacos${NC} (nacos/nacos)"
 echo -e "   - MinIO 控制台: ${GREEN}http://localhost:9001${NC} (ruoyi/ruoyi123)"
+echo -e "   - RabbitMQ 控制台: ${GREEN}http://localhost:15672${NC} (ruoyi/ruoyi123)"
 echo ""
 
 echo -e "${YELLOW}实用命令:${NC}"

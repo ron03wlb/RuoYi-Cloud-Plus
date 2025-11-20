@@ -23,4 +23,9 @@ dependencies {
     // Sa-Token Core
     // ===========================================
     api(libs.sa.token.core)
+
+    // ===========================================
+    // TransmittableThreadLocal（虚拟线程支持）
+    // ===========================================
+    api(libs.transmittable.thread.local)
 }

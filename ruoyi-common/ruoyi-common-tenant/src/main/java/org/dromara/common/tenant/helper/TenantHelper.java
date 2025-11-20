@@ -5,6 +5,7 @@ import cn.dev33.satoken.context.model.SaStorage;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import lombok.AccessLevel;
@@ -31,9 +32,14 @@ public class TenantHelper {
 
     private static final String DYNAMIC_TENANT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
 
-    private static final ThreadLocal<String> TEMP_DYNAMIC_TENANT = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
 
-    private static final ThreadLocal<Stack<Integer>> REENTRANT_IGNORE = ThreadLocal.withInitial(Stack::new);
+    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE = new TransmittableThreadLocal<Stack<Integer>>() {
+        @Override
+        protected Stack<Integer> initialValue() {
+            return new Stack<>();
+        }
+    };
 
     /**
      * 租户功能是否启用
@@ -162,7 +168,7 @@ public class TenantHelper {
         tenantId = storage.getString(cacheKey);
         // 如果为 -1 说明已经查过redis并且不存在值 则直接返回null
         if (StringUtils.isNotBlank(tenantId)) {
-            return tenantId.equals("-1") ? null : tenantId;
+            return StringUtils.equals(tenantId, "-1") ? null : tenantId;
         }
         tenantId = RedisUtils.getCacheObject(cacheKey);
         storage.set(cacheKey, StringUtils.isBlank(tenantId) ? "-1" : tenantId);

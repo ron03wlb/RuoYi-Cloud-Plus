@@ -14,34 +14,29 @@ plugins {
 description = "ruoyi-auth 认证授权中心"
 
 dependencies {
-    // Spring 核心
+    // ===========================================
+    // Spring 核心依赖
+    // ===========================================
     api("org.springframework:spring-context")
     api("org.springframework.boot:spring-boot")
     api("org.springframework.boot:spring-boot-autoconfigure")
 
+    // ===========================================
     // 日志
+    // ===========================================
     api("org.slf4j:slf4j-api")
 
-    // RuoYi核心模块
+    // ===========================================
+    // RuoYi 核心模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-core"))
     implementation(project(":ruoyi-common:ruoyi-common-json"))
     implementation(project(":ruoyi-common:ruoyi-common-satoken"))
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
 
-    // API模块
-    implementation(project(":ruoyi-api:ruoyi-api-system"))
-    implementation(project(":ruoyi-api:ruoyi-api-resource"))
-
-    // Sa-Token
-    implementation(libs.sa.token.core)
-
-    // JustAuth (第三方登录)
-    implementation(libs.justauth)
-
-    // Hutool验证码
-    implementation(libs.hutool.captcha)
-
-    // RuoYi Common 功能模块
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-security"))
     implementation(project(":ruoyi-common:ruoyi-common-social"))
     implementation(project(":ruoyi-common:ruoyi-common-log"))
@@ -50,8 +45,29 @@ dependencies {
     implementation(project(":ruoyi-common:ruoyi-common-ratelimiter"))
     implementation(project(":ruoyi-common:ruoyi-common-encrypt"))
     implementation(project(":ruoyi-common:ruoyi-common-tenant"))
+    implementation(project(":ruoyi-common:ruoyi-common-dubbo"))
 
-    // Dubbo (可选,用于RPC调用)
+    // ===========================================
+    // RuoYi API 模块
+    // ===========================================
+    implementation(project(":ruoyi-api:ruoyi-api-system"))
+    implementation(project(":ruoyi-api:ruoyi-api-resource"))
+
+    // ===========================================
+    // Sa-Token 权限认证
+    // ===========================================
+    implementation(libs.sa.token.core)
+
+    // ===========================================
+    // 第三方库
+    // ===========================================
+    // JustAuth (第三方登录)
+    implementation(libs.justauth)
+
+    // Hutool 验证码
+    implementation(libs.hutool.captcha)
+
+    // Dubbo (RPC 调用)
     implementation(libs.dubbo)
 
     // ===========================================
@@ -61,28 +77,17 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    // Mockito 模拟框架
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
-
-    // AssertJ 流式断言
+    testImplementation(libs.mockito.inline)
     testImplementation("org.assertj:assertj-core")
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.embedded.redis)
+    testImplementation(libs.testcontainers.core)
+    testImplementation(libs.testcontainers.junit.jupiter)
 
-    // JUnit 5 参数化测试
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-
-    // MockWebServer for HTTP mocking
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
-
-    // Embedded Redis for integration tests
-    testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
-
-    // Testcontainers for integration tests
-    testImplementation("org.testcontainers:testcontainers:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -133,7 +138,7 @@ tasks.test {
 // JaCoCo 覆盖率配置
 // ===========================================
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = libs.versions.jacoco.get()
 }
 
 tasks.named<JacocoReport>("jacocoTestReport") {
