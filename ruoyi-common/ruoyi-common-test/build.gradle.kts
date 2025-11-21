@@ -13,9 +13,23 @@ description = "ruoyi-common-test 集成测试框架"
 
 dependencies {
     // ===========================================
+    // 项目内依赖 - api
+    // ===========================================
+    api(project(":ruoyi-common:ruoyi-common-core"))
+
+    // ===========================================
+    // 项目内依赖 - compileOnly
+    // ===========================================
+    compileOnly(project(":ruoyi-common:ruoyi-common-satoken"))
+    compileOnly(project(":ruoyi-common:ruoyi-common-mybatis"))
+    compileOnly(project(":ruoyi-common:ruoyi-common-redis"))
+    compileOnly(project(":ruoyi-common:ruoyi-common-tenant"))
+
+    // ===========================================
     // Spring Boot Test
     // ===========================================
     api("org.springframework.boot:spring-boot-starter-test")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
 
     // ===========================================
     // Testcontainers
@@ -25,47 +39,30 @@ dependencies {
     api("org.testcontainers:postgresql")
 
     // ===========================================
-    // Database
+    // 数据库
     // ===========================================
     api("org.postgresql:postgresql")
     api("com.zaxxer:HikariCP")
-
-    // MyBatis Plus (for database operations)
     api(libs.mybatis.plus.spring.boot3.starter)
 
     // ===========================================
     // Redis
     // ===========================================
-    api("org.springframework.boot:spring-boot-starter-data-redis")
     api(libs.redisson)
 
     // ===========================================
-    // Sa-Token (for authentication testing)
+    // Sa-Token
     // ===========================================
     api(libs.sa.token.spring.boot3.starter)
     api(libs.sa.token.redis.jackson)
 
     // ===========================================
-    // Dubbo (for RPC mocking)
-    // ===========================================
-    compileOnly(libs.dubbo.spring.boot.starter)
-
-    // ===========================================
-    // Common dependencies from project
-    // ===========================================
-    api(project(":ruoyi-common:ruoyi-common-core"))
-    compileOnly(project(":ruoyi-common:ruoyi-common-satoken"))
-    compileOnly(project(":ruoyi-common:ruoyi-common-mybatis"))
-    compileOnly(project(":ruoyi-common:ruoyi-common-redis"))
-    compileOnly(project(":ruoyi-common:ruoyi-common-tenant"))
-
-    // ===========================================
-    // AOP Support
+    // AOP
     // ===========================================
     api("org.aspectj:aspectjweaver")
 
     // ===========================================
-    // Test utilities
+    // 测试工具库
     // ===========================================
     api("org.junit.jupiter:junit-jupiter")
     api("org.mockito:mockito-core")
@@ -73,10 +70,15 @@ dependencies {
     api("org.assertj:assertj-core")
 
     // ===========================================
-    // Logging
+    // 日志
     // ===========================================
     api("org.slf4j:slf4j-api")
     api("ch.qos.logback:logback-classic")
+
+    // ===========================================
+    // Dubbo (compileOnly)
+    // ===========================================
+    compileOnly(libs.dubbo.spring.boot.starter)
 }
 
 // ===========================================

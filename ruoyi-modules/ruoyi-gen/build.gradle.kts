@@ -13,28 +13,32 @@ plugins {
 description = "ruoyi-gen代码生成"
 
 dependencies {
-    // Spring核心依赖
+    // ===========================================
+    // Spring 核心依赖
+    // ===========================================
     api("org.springframework:spring-context")
     api("org.springframework.boot:spring-boot")
     api("org.springframework.boot:spring-boot-autoconfigure")
 
+    // ===========================================
     // Apache Commons
+    // ===========================================
     api("org.apache.commons:commons-lang3")
 
+    // ===========================================
     // MyBatis Plus
+    // ===========================================
     api(libs.mybatis.plus.annotation)
 
-    // Dubbo
-    implementation(libs.dubbo)
-
-    // RuoYi核心
+    // ===========================================
+    // RuoYi 核心模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-core"))
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
 
-    // Apache Velocity (代码模板引擎)
-    implementation(libs.velocity.engine.core)
-
-    // RuoYi功能模块（保留必需的）
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-log"))
     implementation(project(":ruoyi-common:ruoyi-common-idempotent"))
     implementation(project(":ruoyi-common:ruoyi-common-doc"))
@@ -42,12 +46,24 @@ dependencies {
     implementation(project(":ruoyi-common:ruoyi-common-mybatis"))
     implementation(project(":ruoyi-common:ruoyi-common-security"))
 
-    // Anyline (面向运行时的D-ORM依赖,支持100+种类型数据库)
+    // ===========================================
+    // 代码生成引擎
+    // ===========================================
+    implementation(libs.velocity.engine.core)
+
+    // ===========================================
+    // Anyline (面向运行时的 D-ORM)
+    // ===========================================
     implementation(libs.anyline.environment.spring.data.jdbc)
     implementation(libs.anyline.data.jdbc.postgresql)
 
     // ===========================================
-    // Integration Testing Framework
+    // Dubbo
+    // ===========================================
+    implementation(libs.dubbo)
+
+    // ===========================================
+    // 测试依赖
     // ===========================================
     testImplementation(project(":ruoyi-common:ruoyi-common-test"))
 }

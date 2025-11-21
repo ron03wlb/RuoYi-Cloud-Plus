@@ -21,7 +21,7 @@ dependencies {
     // ===========================================
     // Spring Boot Admin
     // ===========================================
-    implementation("de.codecentric:spring-boot-admin-starter-server:3.5.0")
+    implementation(libs.spring.boot.admin.starter.server)
 
     // ===========================================
     // Spring Boot Web (使用 Undertow)

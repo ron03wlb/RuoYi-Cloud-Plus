@@ -20,66 +20,42 @@ description = "ruoyi-gateway 网关模块"
 
 dependencies {
     // ===========================================
-    // Spring 核心依赖
+    // Spring Boot 核心
     // ===========================================
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // ===========================================
     // Spring Cloud Gateway
     // ===========================================
     implementation("org.springframework.cloud:spring-cloud-gateway-server")
-
-    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-
-    implementation("io.projectreactor:reactor-core")
-
-    implementation("com.github.ben-manes.caffeine:caffeine")
-
-    // 注意：Gateway 使用 WebFlux 而不是 Web MVC
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
-
-    // 负载均衡
     implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-
-    // Caffeine 缓存（LoadBalancer 需要）
+    implementation("io.projectreactor:reactor-core")
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     // ===========================================
-    // Nacos 服务发现 + 配置中心
+    // RuoYi 核心模块
     // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
+    implementation(project(":ruoyi-common:ruoyi-common-satoken"))
+    implementation(project(":ruoyi-common:ruoyi-common-redis"))
+    implementation(project(":ruoyi-common:ruoyi-common-tenant"))
 
     // ===========================================
-    // Spring Boot Actuator（健康检查、监控）
+    // Sa-Token 权限认证 (Reactor 响应式)
     // ===========================================
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation(libs.sa.token.core)
+    implementation(libs.sa.token.reactor.spring.boot3.starter)
 
     // ===========================================
-    // Hutool（工具库）
+    // 工具库
     // ===========================================
     implementation(libs.hutool.http)
 
     // ===========================================
-    // Sa-Token 权限认证（Reactor 响应式集成）
-    // ===========================================
-    implementation(libs.sa.token.core)
-    implementation(libs.sa.token.reactor.spring.boot3.starter)
-    implementation(project(":ruoyi-common:ruoyi-common-satoken"))
-
-    // ===========================================
-    // Redis 缓存
-    // ===========================================
-    implementation(project(":ruoyi-common:ruoyi-common-redis"))
-
-    // ===========================================
-    // 多租户支持
-    // ===========================================
-    implementation(project(":ruoyi-common:ruoyi-common-tenant"))
-
-    // ===========================================
     // 可选：其他公共模块
     // ===========================================
-
     // 自定义负载均衡（多团队开发使用，默认注释）
     // implementation(project(":ruoyi-common:ruoyi-common-loadbalancer"))
 

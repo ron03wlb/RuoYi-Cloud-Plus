@@ -37,10 +37,8 @@ configurations.all {
 
 dependencies {
     // ===========================================
-    // Seata Server (本地 JAR)
+    // Seata Server
     // ===========================================
-    // 注意：需要先通过 Maven 安装到本地仓库
-    // 或者使用 files() 直接引用本地 jar
     implementation("org.apache.seata:seata-server:$seataVersion")
     implementation("org.apache.seata:seata-spring-autoconfigure-server:$seataVersion")
     implementation("org.apache.seata:seata-core:$seataVersion")
@@ -53,12 +51,21 @@ dependencies {
     implementation("org.apache.seata:seata-metrics-all:$seataVersion")
 
     // ===========================================
-    // Spring Boot (2.7.18)
+    // Spring Boot & Spring Framework
     // ===========================================
     implementation("org.springframework.boot:spring-boot-starter:$springBootForServerVersion")
     implementation("org.springframework:spring-web:$springFrameworkForServerVersion")
-    implementation("org.yaml:snakeyaml:$snakeYamlForServerVersion")
     implementation("javax.servlet:javax.servlet-api")
+
+    // ===========================================
+    // 配置解析
+    // ===========================================
+    implementation("org.yaml:snakeyaml:$snakeYamlForServerVersion")
+
+    // ===========================================
+    // 数据库驱动
+    // ===========================================
+    implementation("org.postgresql:postgresql")
 
     // ===========================================
     // 数据库连接池
@@ -66,27 +73,42 @@ dependencies {
     implementation("com.alibaba:druid")
     implementation("org.apache.commons:commons-dbcp2")
     implementation("com.zaxxer:HikariCP")
-    implementation("org.postgresql:postgresql")
-    implementation("com.beust:jcommander")
 
     // ===========================================
-    // 其他依赖
+    // Redis
     // ===========================================
-    implementation("com.google.guava:guava")
     implementation("redis.clients:jedis:$jedisVersion")
-    implementation("com.alibaba:fastjson")
+
+    // ===========================================
+    // 日志
+    // ===========================================
     implementation("ch.qos.logback:logback-classic")
     implementation("ch.qos.logback:logback-core")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashLogbackEncoderVersion")
     implementation("com.github.danielwegener:logback-kafka-appender") {
         exclude(group = "org.apache.kafka", module = "kafka-clients")
     }
+    implementation("org.codehaus.janino:janino")
+
+    // ===========================================
+    // Kafka
+    // ===========================================
     implementation("org.apache.kafka:kafka-clients:$kafkaClientsVersion")
+
+    // ===========================================
+    // Raft 共识算法
+    // ===========================================
     implementation("com.alipay.sofa:jraft-core") {
         exclude(group = "com.alipay.sofa", module = "bolt")
     }
     implementation("com.alipay.sofa:bolt")
-    implementation("org.codehaus.janino:janino")
+
+    // ===========================================
+    // 工具库
+    // ===========================================
+    implementation("com.google.guava:guava")
+    implementation("com.alibaba:fastjson")
+    implementation("com.beust:jcommander")
     implementation("com.bucket4j:bucket4j_jdk8-core")
 }
 

@@ -14,9 +14,13 @@ description = "工作流模块"
 
 dependencies {
     // ===========================================
-    // 项目内依赖
+    // RuoYi 核心模块
     // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
+
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-doc"))
     implementation(project(":ruoyi-common:ruoyi-common-mybatis"))
     implementation(project(":ruoyi-common:ruoyi-common-web"))
@@ -32,15 +36,15 @@ dependencies {
     implementation(project(":ruoyi-common:ruoyi-common-bus"))
 
     // ===========================================
-    // Warm-Flow 工作流引擎
-    // ===========================================
-    implementation("org.dromara.warm:warm-flow-mybatis-plus-sb3-starter:1.8.1")
-    implementation("org.dromara.warm:warm-flow-plugin-ui-sb-web:1.8.1")
-
-    // ===========================================
-    // RuoYi Api
+    // RuoYi API 模块
     // ===========================================
     implementation(project(":ruoyi-api:ruoyi-api-workflow"))
+
+    // ===========================================
+    // Warm-Flow 工作流引擎
+    // ===========================================
+    implementation(libs.warm.flow.mybatis.plus.sb.starter)
+    implementation(libs.warm.flow.plugin.ui.sb.web)
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

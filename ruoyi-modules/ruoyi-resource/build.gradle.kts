@@ -14,9 +14,13 @@ description = "ruoyi-resource资源服务"
 
 dependencies {
     // ===========================================
-    // 项目内依赖
+    // RuoYi 核心模块
     // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
+
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-doc"))
     implementation(project(":ruoyi-common:ruoyi-common-dubbo"))
     implementation(project(":ruoyi-common:ruoyi-common-seata"))
@@ -36,7 +40,7 @@ dependencies {
     implementation(project(":ruoyi-common:ruoyi-common-service-impl"))
 
     // ===========================================
-    // RuoYi Api
+    // RuoYi API 模块
     // ===========================================
     implementation(project(":ruoyi-api:ruoyi-api-system"))
     implementation(project(":ruoyi-api:ruoyi-api-resource"))

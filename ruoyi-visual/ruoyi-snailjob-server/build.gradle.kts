@@ -21,19 +21,19 @@ dependencies {
     // ===========================================
     // SnailJob Server
     // ===========================================
-    implementation("com.aizuda:snail-job-server-starter:1.8.0") {
+    implementation(libs.snailjob.server.starter) {
         exclude(group = "org.scala-lang", module = "scala-library")
     }
 
     // ===========================================
     // Scala Library
     // ===========================================
-    implementation("org.scala-lang:scala-library:2.13.9")
+    implementation(libs.scala.library)
 
     // ===========================================
     // Spring Boot Admin Client
     // ===========================================
-    implementation("de.codecentric:spring-boot-admin-starter-client:3.5.0")
+    implementation(libs.spring.boot.admin.starter.client)
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

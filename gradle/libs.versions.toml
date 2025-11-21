@@ -80,6 +80,7 @@ mica = "2.7.6"
 # ==========================================
 logstash-logback-encoder = "8.0"
 skywalking-toolkit = "9.3.0"
+spring-boot-admin = "3.5.0"
 
 # ==========================================
 # 工作流 & 定时任务
@@ -96,6 +97,7 @@ oshi = "6.6.5"
 ip2region = "2.7.0"
 bitwalker = "1.21"
 commons-io = "2.18.0"
+scala = "2.13.9"
 
 # ==========================================
 # 测试框架版本
@@ -255,6 +257,7 @@ rocketmq-spring-boot-starter = { module = "org.apache.rocketmq:rocketmq-spring-b
 # 工作流引擎
 # ==========================================
 warm-flow-mybatis-plus-sb-starter = { module = "org.dromara.warm-flow:warm-flow-mybatis-plus-sb-starter", version.ref = "warm-flow" }
+warm-flow-plugin-ui-sb-web = { module = "org.dromara.warm-flow:warm-flow-plugin-ui-sb-web", version.ref = "warm-flow" }
 
 # ==========================================
 # 定时任务
@@ -272,6 +275,8 @@ easy-es-boot-starter = { module = "org.dromara.easy-es:easy-es-boot-starter", ve
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback-encoder" }
 skywalking-toolkit-logback = { module = "org.apache.skywalking:apm-toolkit-logback-1.x", version.ref = "skywalking-toolkit" }
 skywalking-toolkit-trace = { module = "org.apache.skywalking:apm-toolkit-trace", version.ref = "skywalking-toolkit" }
+spring-boot-admin-starter-server = { module = "de.codecentric:spring-boot-admin-starter-server", version.ref = "spring-boot-admin" }
+spring-boot-admin-starter-client = { module = "de.codecentric:spring-boot-admin-starter-client", version.ref = "spring-boot-admin" }
 
 # ==========================================
 # 其他工具
@@ -291,6 +296,8 @@ commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 jedis = { module = "redis.clients:jedis", version.ref = "jedis" }
 anyline-environment-spring-data-jdbc = { module = "org.anyline:anyline-environment-spring-data-jdbc", version.ref = "anyline" }
 anyline-data-jdbc-postgresql = { module = "org.anyline:anyline-data-jdbc-postgresql", version.ref = "anyline" }
+scala-library = { module = "org.scala-lang:scala-library", version.ref = "scala" }
+snailjob-server-starter = { module = "com.aizuda:snail-job-server-starter", version.ref = "snailjob" }
 
 # ==========================================
 # 测试依赖库

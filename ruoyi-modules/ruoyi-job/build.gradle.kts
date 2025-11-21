@@ -14,47 +14,50 @@ description = "ruoyi-job 任务调度模块"
 
 dependencies {
     // ===========================================
-    // Spring核心依赖
+    // Spring 核心依赖
     // ===========================================
     api("org.springframework:spring-context")
     api("org.springframework.boot:spring-boot")
     api("org.springframework.boot:spring-boot-autoconfigure")
 
     // ===========================================
-    // SLF4J
+    // 日志
     // ===========================================
     api("org.slf4j:slf4j-api")
 
     // ===========================================
-    // Hutool
+    // 工具库
     // ===========================================
     api(libs.hutool.core)
 
     // ===========================================
-    // Dubbo
-    // ===========================================
-    implementation(libs.dubbo)
-
-    // ===========================================
-    // 项目内依赖
+    // RuoYi 核心模块
     // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-json"))
     implementation(project(":ruoyi-common:ruoyi-common-nacos"))
+
+    // ===========================================
+    // RuoYi 功能模块
+    // ===========================================
     implementation(project(":ruoyi-common:ruoyi-common-log"))
     implementation(project(":ruoyi-common:ruoyi-common-web"))
     implementation(project(":ruoyi-common:ruoyi-common-mybatis"))
     implementation(project(":ruoyi-common:ruoyi-common-job"))
+    implementation(project(":ruoyi-common:ruoyi-common-security"))
 
     implementation(project(":ruoyi-common:ruoyi-common-tenant")) {
         exclude(group = "org.dromara", module = "ruoyi-common-mybatis")
     }
 
-    implementation(project(":ruoyi-common:ruoyi-common-security"))
-
     // ===========================================
-    // RuoYi Api System
+    // RuoYi API 模块
     // ===========================================
     implementation(project(":ruoyi-api:ruoyi-api-system"))
+
+    // ===========================================
+    // Dubbo
+    // ===========================================
+    implementation(libs.dubbo)
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
