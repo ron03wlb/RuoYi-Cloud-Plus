@@ -85,7 +85,7 @@ spring-boot-admin = "3.5.0"
 # ==========================================
 # 工作流 & 定时任务
 # ==========================================
-warm-flow = "1.8.2"
+warm-flow = "1.8.1"
 snailjob = "1.8.0"
 
 # ==========================================
@@ -256,8 +256,8 @@ rocketmq-spring-boot-starter = { module = "org.apache.rocketmq:rocketmq-spring-b
 # ==========================================
 # 工作流引擎
 # ==========================================
-warm-flow-mybatis-plus-sb-starter = { module = "org.dromara.warm-flow:warm-flow-mybatis-plus-sb-starter", version.ref = "warm-flow" }
-warm-flow-plugin-ui-sb-web = { module = "org.dromara.warm-flow:warm-flow-plugin-ui-sb-web", version.ref = "warm-flow" }
+warm-flow-mybatis-plus-sb-starter = { module = "org.dromara.warm:warm-flow-mybatis-plus-sb3-starter", version.ref = "warm-flow" }
+warm-flow-plugin-ui-sb-web = { module = "org.dromara.warm:warm-flow-plugin-ui-sb-web", version.ref = "warm-flow" }
 
 # ==========================================
 # 定时任务

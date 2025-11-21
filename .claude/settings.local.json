@@ -142,7 +142,8 @@
       "Bash(do if curl -s http://localhost:8848/nacos)",
       "Bash(then echo \"Nacos is ready!\")",
       "Bash(docker build:*)",
-      "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzYxMjc4MX0.26WHv3jTYx41YU8jXd20el49f378LXFI_V4OYhRiGHtb3xHxyvo9Qly2y5CrVTaI\")"
+      "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzYxMjc4MX0.26WHv3jTYx41YU8jXd20el49f378LXFI_V4OYhRiGHtb3xHxyvo9Qly2y5CrVTaI\")",
+      "WebFetch(domain:mvnrepository.com)"
     ],
     "deny": [],
     "ask": []
