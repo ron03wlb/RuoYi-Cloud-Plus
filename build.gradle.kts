@@ -94,6 +94,39 @@ subprojects {
                 // 处理重复的 JAR 文件
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             }
+
+            // ===========================================
+            // Netty 原生传输层和 DNS 解析器（通用 JAR 方案）
+            // ===========================================
+            // 为所有 Spring Boot 应用添加 Netty 原生传输层和 DNS 解析器
+            // 解决 macOS 上的 DNS 解析警告，提升网络性能
+            //
+            // 说明：
+            // - macOS 需要 kqueue 传输层 + DNS resolver 原生库
+            // - Linux 不需要特定的 DNS resolver 原生库，但 epoll 传输层已自动包含
+            // - Windows 同样不需要特定的原生库
+            //
+            // 通用 JAR 方案：打包所有平台的原生库，运行时自动选择
+            // 优点：一次构建，到处运行（macOS 开发，Linux 生产无缝切换）
+            // 缺点：JAR 体积增加约 1-2MB
+            dependencies {
+                val nettyVersion = rootProject.libs.versions.netty.get()
+
+                // macOS: 添加 kqueue 传输层（DNS resolver 依赖它）
+                // macOS ARM64 (M1/M2/M3/M4)
+                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-aarch_64")
+                // macOS x86_64 (Intel Mac)
+                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-x86_64")
+
+                // macOS: 添加 DNS 解析器原生库
+                // macOS ARM64 (M1/M2/M3/M4)
+                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64")
+                // macOS x86_64 (Intel Mac)
+                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
+
+                // Linux: 不需要添加，Netty 会自动使用标准 DNS 解析实现
+                // epoll 传输层已通过传递依赖自动包含
+            }
         }
 
         // 资源文件处理（替代 Maven 的 resource filtering）
@@ -106,7 +139,7 @@ subprojects {
                 // 定义项目属性映射
                 val props = mapOf(
                     "project.version" to version.toString(),
-                    "project.artifactId" to name,
+                    "project.artifactId" to project.name,
                     "profiles.active" to (findProperty("profilesActive")?.toString() ?: "dev"),
                     "nacos.server" to (findProperty("nacosServer")?.toString() ?: "127.0.0.1:8848"),
                     "nacos.username" to (findProperty("nacosUsername")?.toString() ?: "nacos"),
@@ -190,29 +223,6 @@ subprojects {
             testImplementation("org.junit.jupiter:junit-jupiter")
             testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-            // ===========================================
-            // Netty 原生 DNS 解析器（平台特定依赖）
-            // ===========================================
-            // 解决 macOS 上的 DNS 解析警告和性能问题
-            // 根据运行平台自动添加对应的原生库
-            val osName = System.getProperty("os.name").lowercase()
-            val osArch = System.getProperty("os.arch").lowercase()
-            val nettyVersion = rootProject.libs.versions.netty.get()
-
-            when {
-                // macOS ARM64 (M1/M2/M3)
-                osName.contains("mac") && (osArch.contains("aarch64") || osArch.contains("arm")) -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64")
-                }
-                // macOS x86_64
-                osName.contains("mac") && osArch.contains("x86_64") -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
-                }
-                // Linux x86_64 (生产环境)
-                osName.contains("linux") && osArch.contains("amd64") -> {
-                    runtimeOnly("io.netty:netty-resolver-dns-native-epoll:$nettyVersion:linux-x86_64")
-                }
-            }
         }
 
         // Javadoc 配置

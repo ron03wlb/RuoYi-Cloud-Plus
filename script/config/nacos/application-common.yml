@@ -18,6 +18,9 @@ dubbo:
   application:
     # 关闭qos端口避免单机多生产者端口冲突 如需使用自行开启
     qos-enable: false
+    # 配置服务发现迁移策略，避免consumer端重复订阅
+    # FORCE_APPLICATION: 仅应用级订阅 | APPLICATION_FIRST: 双重订阅(默认) | FORCE_INTERFACE: 仅接口级订阅
+    migration: FORCE_APPLICATION
   protocol:
     # 如需使用 Triple 3.0 新协议 可查看官方文档
     # 使用 dubbo 协议通信
@@ -28,6 +31,11 @@ dubbo:
     # host: 192.168.0.100
     # 开启虚拟线程
     threadpool: virtual
+  # 注册中心配置
+  registry:
+    # 设置注册模式为应用级服务发现，避免重复订阅警告
+    # instance: 应用级服务发现 | interface: 接口级服务发现 | all: 双重注册(默认)
+    register-mode: instance
   # 消费者相关配置
   consumer:
     # 超时时间
@@ -91,6 +99,12 @@ spring:
       preferred-networks:
         - 192.168.1
     nacos:
+      # 禁用 Nacos SDK 的日志自动配置（避免重复加载 logback 配置）
+      # Nacos 日志将通过标准 logger 输出到项目日志文件
+      logging:
+        default:
+          config:
+            enabled: false
       discovery:
         metadata:
           # admin 监控账号密码
@@ -124,8 +138,9 @@ redisson:
   keyPrefix:
   # 线程池数量
   threads: 4
-  # Netty线程池数量
-  nettyThreads: 8
+  # Netty线程池数量（JDK 21 虚拟线程环境下建议使用较大值，避免解码错误）
+  # 默认值 0 = cores_amount * 2，推荐值：32/64/128/256
+  nettyThreads: 32
   # 单节点配置
   singleServerConfig:
     # 客户端名称
@@ -140,6 +155,16 @@ redisson:
     timeout: 3000
     # 发布和订阅连接池大小
     subscriptionConnectionPoolSize: 50
+    # 命令失败重试次数（针对 JDK 21 优化）
+    retryAttempts: 3
+    # 命令重试间隔，单位：毫秒
+    retryInterval: 1500
+    # PING 连接间隔，单位：毫秒（减少心跳频率避免解码错误）
+    pingConnectionInterval: 30000
+    # 启用 TCP keepalive
+    keepAlive: true
+    # 禁用 Nagle 算法，减少延迟
+    tcpNoDelay: true
 
 # 分布式锁 lock4j 全局配置
 lock4j:
@@ -166,11 +191,18 @@ logging:
     org.springframework: warn
     org.apache.dubbo: error
     com.alibaba.nacos: error
+    com.alibaba.nacos.client.naming: error  # 抑制 Nacos 重复订阅警告
     org.mybatis.spring.mapper: error
     org.apache.fury: warn
     io.micrometer: error
     # 临时处理 spring 调整日志级别导致启动警告问题 不影响使用等待 alibaba 适配
     org.springframework.context.support.PostProcessorRegistrationDelegate: error
+    # Redisson 日志配置（JDK 21 虚拟线程环境优化）
+    org.redisson: INFO
+    org.redisson.client.handler.CommandDecoder: ERROR  # 抑制解码错误警告
+    # Netty 日志配置（监控网络层问题）
+    io.netty.handler.codec: WARN
+    io.netty.channel.nio: WARN
   config: classpath:logback-plus.xml
 
 # Sa-Token配置
