@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  覆盖 Nacos SDK 内置的 nacos-logback14.xml
+  禁用 Nacos 独立日志配置，避免 appender 冲突
+
+  Nacos 日志将通过项目的标准 logback 配置输出到：
+  - 控制台 (console)
+  - 标准应用日志文件 (console.log, info.log, error.log)
+
+  不再创建独立的 Nacos 日志文件 (nacos/config.log, nacos/naming.log, nacos/remote.log)
+-->
+<configuration debug="false" scan="false">
+    <!--
+      空配置文件：不定义任何 appender
+      Nacos 的所有日志包将使用 root logger 和主配置文件中的 appender
+    -->
+</configuration>

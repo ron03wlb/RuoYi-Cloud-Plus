@@ -23,7 +23,8 @@
       "Bash(then head -5 out/production/ruoyi-job/logback-plus.xml)",
       "Bash(else echo \"IDE build output not found in out/\")",
       "Bash(javap:*)",
-      "Bash(do cp ruoyi-modules/ruoyi-job/src/main/resources/nacos-logback14.xml $module/src/main/resources/)"
+      "Bash(do cp ruoyi-modules/ruoyi-job/src/main/resources/nacos-logback14.xml $module/src/main/resources/)",
+      "Bash(../../gradlew:*)"
     ],
     "deny": [],
     "ask": []
