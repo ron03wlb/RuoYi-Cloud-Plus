@@ -60,7 +60,7 @@ dependencies {
     // ===========================================
     // Dubbo
     // ===========================================
-    implementation(libs.dubbo)
+    implementation(project(":ruoyi-common:ruoyi-common-dubbo"))
 
     // ===========================================
     // 测试依赖

@@ -71,7 +71,7 @@ dependencies {
     // ===========================================
     // Dubbo
     // ===========================================
-    implementation(libs.dubbo)
+    implementation(project(":ruoyi-common:ruoyi-common-dubbo"))
 
     // ===========================================
     // 可选依赖

@@ -33,6 +33,8 @@ dubbo:
     threadpool: virtual
   # 注册中心配置
   registry:
+    # Nacos 注册中心地址
+    address: nacos://localhost:8848?username=nacos&password=nacos&namespace=${spring.profiles.active}
     # 设置注册模式为应用级服务发现，避免重复订阅警告
     # instance: 应用级服务发现 | interface: 接口级服务发现 | all: 双重注册(默认)
     register-mode: instance
@@ -138,9 +140,9 @@ redisson:
   keyPrefix:
   # 线程池数量
   threads: 4
-  # Netty线程池数量（JDK 21 虚拟线程环境下建议使用较大值，避免解码错误）
-  # 默认值 0 = cores_amount * 2，推荐值：32/64/128/256
-  nettyThreads: 32
+  # Netty线程池数量（禁用虚拟线程后需要更大的线程池）
+  # 默认值 0 = cores_amount * 2，推荐值：64/128/256
+  nettyThreads: 128
   # 单节点配置
   singleServerConfig:
     # 客户端名称
@@ -160,11 +162,13 @@ redisson:
     # 命令重试间隔，单位：毫秒
     retryInterval: 1500
     # PING 连接间隔，单位：毫秒（减少心跳频率避免解码错误）
-    pingConnectionInterval: 30000
+    pingConnectionInterval: 60000
     # 启用 TCP keepalive
     keepAlive: true
     # 禁用 Nagle 算法，减少延迟
     tcpNoDelay: true
+    # 在专用执行器中解码，避免阻塞 Netty 事件循环（JDK 21 优化）
+    decodeInExecutor: true
 
 # 分布式锁 lock4j 全局配置
 lock4j:

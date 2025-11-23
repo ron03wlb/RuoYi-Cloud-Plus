@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.utils.SpringUtils;
 import org.dromara.common.redis.config.properties.RedissonProperties;
 import org.dromara.common.redis.handler.KeyPrefixHandler;
 import org.dromara.common.redis.handler.RedisExceptionHandler;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.VirtualThreadTaskExecutor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,9 +62,11 @@ public class RedisConfiguration {
                 // 缓存 Lua 脚本 减少网络传输(redisson 大部分的功能都是基于 Lua 脚本实现)
                 .setUseScriptCache(true)
                 .setCodec(codec);
-            if (SpringUtils.isVirtual()) {
-                config.setNettyExecutor(new VirtualThreadTaskExecutor("redisson-"));
-            }
+            // 临时禁用虚拟线程执行器以解决 JDK 21 下的 Redisson 解码问题
+            // TODO: 等待 Redisson 官方修复虚拟线程兼容性后重新启用
+            // if (SpringUtils.isVirtual()) {
+            //     config.setNettyExecutor(new VirtualThreadTaskExecutor("redisson-"));
+            // }
             RedissonProperties.SingleServerConfig singleServerConfig = redissonProperties.getSingleServerConfig();
             if (ObjectUtil.isNotNull(singleServerConfig)) {
                 // 使用单机模式
