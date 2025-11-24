@@ -93,6 +93,11 @@ subprojects {
             tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
                 // 处理重复的 JAR 文件
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+                // 解压 Netty 原生库（Spring Boot会在启动时解压到临时目录）
+                // 这样 Netty 就能正确找到并加载原生库
+                requiresUnpack("**/netty-transport-native-kqueue-*.jar")
+                requiresUnpack("**/netty-resolver-dns-native-macos-*.jar")
             }
 
             // ===========================================
@@ -114,15 +119,15 @@ subprojects {
 
                 // macOS: 添加 kqueue 传输层（DNS resolver 依赖它）
                 // macOS ARM64 (M1/M2/M3/M4)
-                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-aarch_64")
+                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-aarch_64@jar")
                 // macOS x86_64 (Intel Mac)
-                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-x86_64")
+                add("runtimeOnly", "io.netty:netty-transport-native-kqueue:$nettyVersion:osx-x86_64@jar")
 
                 // macOS: 添加 DNS 解析器原生库
                 // macOS ARM64 (M1/M2/M3/M4)
-                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64")
+                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64@jar")
                 // macOS x86_64 (Intel Mac)
-                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
+                add("runtimeOnly", "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64@jar")
 
                 // Linux: 不需要添加，Netty 会自动使用标准 DNS 解析实现
                 // epoll 传输层已通过传递依赖自动包含

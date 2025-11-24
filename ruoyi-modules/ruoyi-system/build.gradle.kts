@@ -80,6 +80,16 @@ dependencies {
     compileOnly(project(":ruoyi-common:ruoyi-common-seata"))
 
     // ===========================================
+    // Netty 原生库（macOS DNS 解析）
+    // ===========================================
+    // 注意：这些依赖已在根 build.gradle.kts 中配置
+    // 但由于依赖解析问题，在模块级别明确添加以确保正确加载
+    // runtimeOnly("io.netty:netty-transport-native-kqueue:${libs.versions.netty.get()}:osx-aarch_64")
+    // runtimeOnly("io.netty:netty-transport-native-kqueue:${libs.versions.netty.get()}:osx-x86_64")
+    // runtimeOnly("io.netty:netty-resolver-dns-native-macos:${libs.versions.netty.get()}:osx-aarch_64")
+    // runtimeOnly("io.netty:netty-resolver-dns-native-macos:${libs.versions.netty.get()}:osx-x86_64")
+
+    // ===========================================
     // 测试依赖
     // ===========================================
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

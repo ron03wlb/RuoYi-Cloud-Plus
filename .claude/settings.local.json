@@ -29,7 +29,17 @@
       "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzkyNDU1MX0.8E2V3EJ2Suei9YHBS6-1xTPCB_QTRzNxlKpzIW4QJ5aKZSTkq-owYLX7KwA8Guzg\" echo \"=== 检查应用级服务 ===\" curl -s \"http://localhost:8848/nacos/v1/ns/instance/list?serviceName=ruoyi-system&namespaceId=dev&accessToken=$TOKEN\")",
       "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzkyNDU1MX0.8E2V3EJ2Suei9YHBS6-1xTPCB_QTRzNxlKpzIW4QJ5aKZSTkq-owYLX7KwA8Guzg\":*)",
       "Bash(TOKEN=\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc2MzkyNDU1MX0.8E2V3EJ2Suei9YHBS6-1xTPCB_QTRzNxlKpzIW4QJ5aKZSTkq-owYLX7KwA8Guzg\" curl -s -G \"http://localhost:8848/nacos/v1/cs/configs\" --data-urlencode \"dataId=application-common.yml\" --data-urlencode \"group=DEFAULT_GROUP\" --data-urlencode \"tenant=dev\" --data-urlencode \"accessToken=$TOKEN\")",
-      "Bash(/tmp/nacos-config.yml)"
+      "Bash(/tmp/nacos-config.yml)",
+      "WebSearch",
+      "Bash(./gradlew dependencies:*)",
+      "Bash(./gradlew :ruoyi-modules:ruoyi-system:dependencies:*)",
+      "Bash(if [ -f \"ruoyi-modules/ruoyi-system/build/libs/ruoyi-system.jar\" ])",
+      "Bash(then unzip -l ruoyi-modules/ruoyi-system/build/libs/ruoyi-system.jar)",
+      "Bash(test:*)",
+      "Bash(unzip:*)",
+      "Bash(./gradlew clean:*)",
+      "Bash(./gradlew :ruoyi-modules:ruoyi-system:build:*)",
+      "Bash(./gradlew:*)"
     ],
     "deny": [],
     "ask": []
