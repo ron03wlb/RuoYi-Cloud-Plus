@@ -16,5 +16,4 @@ public interface RemoteClientService {
      * @return 客户端对象
      */
     RemoteClientVo queryByClientId(String clientId);
-
 }

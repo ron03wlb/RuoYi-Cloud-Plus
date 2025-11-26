@@ -23,5 +23,4 @@ public class RuoYiJobApplication {
         application.run(args);
         System.out.println("(♥◠‿◠)ﾉﾞ  任务调度模块启动成功   ლ(´ڡ`ლ)ﾞ  ");
     }
-
 }

@@ -1,6 +1,14 @@
 package org.dromara.gateway.utils;
 
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR;
+
 import cn.hutool.core.util.ObjectUtil;
+import java.net.URI;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashSet;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.json.utils.JsonUtils;
@@ -18,15 +26,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashSet;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR;
-
 /**
  * WebFlux 工具类
  *
@@ -34,12 +33,12 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  */
 public class WebFluxUtils {
 
-    /**
-     * 获取原请求路径
-     */
+    /** 获取原请求路径 */
     public static String getOriginalRequestUrl(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        LinkedHashSet<URI> uris = exchange.getAttributeOrDefault(GATEWAY_ORIGINAL_REQUEST_URL_ATTR, new LinkedHashSet<>());
+        LinkedHashSet<URI> uris =
+                exchange.getAttributeOrDefault(
+                        GATEWAY_ORIGINAL_REQUEST_URL_ATTR, new LinkedHashSet<>());
         URI requestUri = uris.stream().findFirst().orElse(request.getURI());
         return UriComponentsBuilder.fromPath(requestUri.getRawPath()).build().toUriString();
     }
@@ -57,27 +56,28 @@ public class WebFluxUtils {
     /**
      * 读取request内的body
      *
-     * 注意一个request只能读取一次 读取之后需要重新包装
+     * <p>注意一个request只能读取一次 读取之后需要重新包装
      */
     public static String resolveBodyFromRequest(ServerHttpRequest serverHttpRequest) {
         // 获取请求体
         Flux<DataBuffer> body = serverHttpRequest.getBody();
         AtomicReference<String> bodyRef = new AtomicReference<>();
-        body.subscribe(buffer -> {
-            try (DataBuffer.ByteBufferIterator iterator = buffer.readableByteBuffers()) {
-                CharBuffer charBuffer = StandardCharsets.UTF_8.decode(iterator.next());
-                DataBufferUtils.release(buffer);
-                bodyRef.set(charBuffer.toString());
-            }
-        });
+        body.subscribe(
+                buffer -> {
+                    try (DataBuffer.ByteBufferIterator iterator = buffer.readableByteBuffers()) {
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(iterator.next());
+                        DataBufferUtils.release(buffer);
+                        bodyRef.set(charBuffer.toString());
+                    }
+                });
         return bodyRef.get();
     }
 
     /**
      * 从缓存中读取request内的body
      *
-     * 注意要求经过 {@link ServerWebExchangeUtils#cacheRequestBody(ServerWebExchange, Function)} 此方法创建缓存
-     * 框架内已经使用 {@link WebCacheRequestFilter} 全局创建了body缓存
+     * <p>注意要求经过 {@link ServerWebExchangeUtils#cacheRequestBody(ServerWebExchange, Function)}
+     * 此方法创建缓存 框架内已经使用 {@link WebCacheRequestFilter} 全局创建了body缓存
      *
      * @return body
      */
@@ -89,9 +89,10 @@ public class WebFluxUtils {
         DataBuffer buffer = (DataBuffer) obj;
         try (DataBuffer.ByteBufferIterator iterator = buffer.readableByteBuffers()) {
             StringBuilder sb = new StringBuilder();
-            iterator.forEachRemaining(e -> {
-                sb.append(StandardCharsets.UTF_8.decode(e));
-            });
+            iterator.forEachRemaining(
+                    e -> {
+                        sb.append(StandardCharsets.UTF_8.decode(e));
+                    });
             return sb.toString();
         }
     }
@@ -100,7 +101,7 @@ public class WebFluxUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param value    响应内容
+     * @param value 响应内容
      * @return Mono<Void>
      */
     public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, Object value) {
@@ -111,11 +112,12 @@ public class WebFluxUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param code     响应状态码
-     * @param value    响应内容
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, Object value, int code) {
+    public static Mono<Void> webFluxResponseWriter(
+            ServerHttpResponse response, Object value, int code) {
         return webFluxResponseWriter(response, HttpStatus.OK, value, code);
     }
 
@@ -123,30 +125,38 @@ public class WebFluxUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param status   http状态码
-     * @param code     响应状态码
-     * @param value    响应内容
+     * @param status http状态码
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, HttpStatus status, Object value, int code) {
-        return webFluxResponseWriter(response, MediaType.APPLICATION_JSON_VALUE, status, value, code);
+    public static Mono<Void> webFluxResponseWriter(
+            ServerHttpResponse response, HttpStatus status, Object value, int code) {
+        return webFluxResponseWriter(
+                response, MediaType.APPLICATION_JSON_VALUE, status, value, code);
     }
 
     /**
      * 设置webflux模型响应
      *
-     * @param response    ServerHttpResponse
+     * @param response ServerHttpResponse
      * @param contentType content-type
-     * @param status      http状态码
-     * @param code        响应状态码
-     * @param value       响应内容
+     * @param status http状态码
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, String contentType, HttpStatus status, Object value, int code) {
+    public static Mono<Void> webFluxResponseWriter(
+            ServerHttpResponse response,
+            String contentType,
+            HttpStatus status,
+            Object value,
+            int code) {
         response.setStatusCode(status);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, contentType);
         R<?> result = R.fail(code, value.toString());
-        DataBuffer dataBuffer = response.bufferFactory().wrap(JsonUtils.toJsonString(result).getBytes());
+        DataBuffer dataBuffer =
+                response.bufferFactory().wrap(JsonUtils.toJsonString(result).getBytes());
         return response.writeWith(Mono.just(dataBuffer));
     }
 }

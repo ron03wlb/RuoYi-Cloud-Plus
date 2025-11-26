@@ -1,8 +1,9 @@
 package org.dromara.resource.controller;
 
-
 import cn.hutool.core.util.RandomUtil;
 import jakarta.validation.constraints.NotBlank;
+import java.time.Duration;
+import java.util.LinkedHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
@@ -18,9 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Duration;
-import java.util.LinkedHashMap;
 
 /**
  * 短信功能
@@ -41,7 +39,8 @@ public class SysSmsController extends BaseController {
      */
     @RateLimiter(key = "#phonenumber", time = 60, count = 1)
     @GetMapping("/code")
-    public R<Void> smsCaptcha(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
+    public R<Void> smsCaptcha(
+            @NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
@@ -57,5 +56,4 @@ public class SysSmsController extends BaseController {
         }
         return R.ok();
     }
-
 }

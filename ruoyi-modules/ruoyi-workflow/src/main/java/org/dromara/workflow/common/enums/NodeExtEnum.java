@@ -27,6 +27,4 @@ public interface NodeExtEnum {
      * @return 是否默认选中
      */
     boolean isSelected();
-
 }
-

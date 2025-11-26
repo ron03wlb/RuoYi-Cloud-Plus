@@ -1,16 +1,15 @@
 package org.dromara.common.mybatis.core.page;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /**
  * TableDataInfo 表格分页数据测试
@@ -331,7 +330,8 @@ class TableDataInfoTest {
         @Test
         @DisplayName("serialVersionUID 应该被定义")
         void shouldHaveSerialVersionUID() throws NoSuchFieldException {
-            java.lang.reflect.Field field = TableDataInfo.class.getDeclaredField("serialVersionUID");
+            java.lang.reflect.Field field =
+                    TableDataInfo.class.getDeclaredField("serialVersionUID");
             assertThat(field).isNotNull();
             assertThat(field.getType()).isEqualTo(long.class);
         }

@@ -20,41 +20,30 @@ import org.dromara.workflow.domain.FlowSpel;
 @AutoMapper(target = FlowSpel.class, reverseConvertGenerate = false)
 public class FlowSpelBo extends BaseEntity {
 
-    /**
-     * 主键id
-     */
+    /** 主键id */
     private Long id;
 
-    /**
-     * 组件名称
-     */
+    /** 组件名称 */
     private String componentName;
 
-    /**
-     * 方法名
-     */
+    /** 方法名 */
     private String methodName;
 
-    /**
-     * 参数
-     */
+    /** 参数 */
     private String methodParams;
 
-    /**
-     * 预览spel值
-     */
-    @NotBlank(message = "预览spel值不能为空", groups = { AddGroup.class, EditGroup.class })
+    /** 预览spel值 */
+    @NotBlank(
+            message = "预览spel值不能为空",
+            groups = {AddGroup.class, EditGroup.class})
     private String viewSpel;
 
-    /**
-     * 状态（0正常 1停用）
-     */
-    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
+    /** 状态（0正常 1停用） */
+    @NotBlank(
+            message = "状态（0正常 1停用）不能为空",
+            groups = {AddGroup.class, EditGroup.class})
     private String status;
 
-    /**
-     * 备注
-     */
+    /** 备注 */
     private String remark;
-
 }

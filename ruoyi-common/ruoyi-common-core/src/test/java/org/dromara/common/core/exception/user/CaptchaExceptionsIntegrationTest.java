@@ -1,5 +1,8 @@
 package org.dromara.common.core.exception.user;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Locale;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.exception.base.BaseException;
 import org.junit.jupiter.api.DisplayName;
@@ -7,19 +10,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * CaptchaException 和 CaptchaExpireException 集成测试
- * <p>
- * 测试验证码相关异常类的功能，包括：
- * - CaptchaException（验证码错误异常）
- * - CaptchaExpireException（验证码过期异常）
- * <p>
- * 这些异常类继承自 UserException，依赖 MessageUtils 进行国际化消息处理，
- * 因此需要 Spring 容器环境进行集成测试。
+ *
+ * <p>测试验证码相关异常类的功能，包括： - CaptchaException（验证码错误异常） - CaptchaExpireException（验证码过期异常）
+ *
+ * <p>这些异常类继承自 UserException，依赖 MessageUtils 进行国际化消息处理， 因此需要 Spring 容器环境进行集成测试。
  *
  * @author Test Team
  * @date 2025-10-31
@@ -141,12 +137,16 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该定义 serialVersionUID")
             void shouldDefineSerialVersionUID() {
                 // Assert
-                assertThatCode(() -> {
-                    java.lang.reflect.Field field = CaptchaException.class.getDeclaredField("serialVersionUID");
-                    field.setAccessible(true);
-                    long serialVersionUID = field.getLong(null);
-                    assertThat(serialVersionUID).isEqualTo(1L);
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    java.lang.reflect.Field field =
+                                            CaptchaException.class.getDeclaredField(
+                                                    "serialVersionUID");
+                                    field.setAccessible(true);
+                                    long serialVersionUID = field.getLong(null);
+                                    assertThat(serialVersionUID).isEqualTo(1L);
+                                })
+                        .doesNotThrowAnyException();
             }
         }
 
@@ -158,30 +158,34 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("场景: 用户输入错误的验证码")
             void shouldHandleIncorrectCaptchaInput() {
                 // Arrange & Act
-                Throwable thrown = catchThrowable(() -> {
-                    // 模拟验证码验证失败
-                    throw new CaptchaException();
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    // 模拟验证码验证失败
+                                    throw new CaptchaException();
+                                });
 
                 // Assert
                 assertThat(thrown)
-                    .isInstanceOf(CaptchaException.class)
-                    .hasFieldOrPropertyWithValue("code", "user.jcaptcha.error");
+                        .isInstanceOf(CaptchaException.class)
+                        .hasFieldOrPropertyWithValue("code", "user.jcaptcha.error");
             }
 
             @Test
             @DisplayName("场景: 验证码格式不合法")
             void shouldHandleInvalidCaptchaFormat() {
                 // Arrange & Act
-                Throwable thrown = catchThrowable(() -> {
-                    // 模拟验证码格式不合法
-                    throw new CaptchaException("user.captcha.format.invalid");
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    // 模拟验证码格式不合法
+                                    throw new CaptchaException("user.captcha.format.invalid");
+                                });
 
                 // Assert
                 assertThat(thrown)
-                    .isInstanceOf(CaptchaException.class)
-                    .isInstanceOf(UserException.class);
+                        .isInstanceOf(CaptchaException.class)
+                        .isInstanceOf(UserException.class);
             }
         }
     }
@@ -270,12 +274,16 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该定义 serialVersionUID")
             void shouldDefineSerialVersionUID() {
                 // Assert
-                assertThatCode(() -> {
-                    java.lang.reflect.Field field = CaptchaExpireException.class.getDeclaredField("serialVersionUID");
-                    field.setAccessible(true);
-                    long serialVersionUID = field.getLong(null);
-                    assertThat(serialVersionUID).isEqualTo(1L);
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    java.lang.reflect.Field field =
+                                            CaptchaExpireException.class.getDeclaredField(
+                                                    "serialVersionUID");
+                                    field.setAccessible(true);
+                                    long serialVersionUID = field.getLong(null);
+                                    assertThat(serialVersionUID).isEqualTo(1L);
+                                })
+                        .doesNotThrowAnyException();
             }
         }
 
@@ -287,25 +295,29 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("场景: 用户超时输入验证码")
             void shouldHandleExpiredCaptcha() {
                 // Arrange & Act
-                Throwable thrown = catchThrowable(() -> {
-                    // 模拟验证码已过期（超过5分钟）
-                    throw new CaptchaExpireException();
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    // 模拟验证码已过期（超过5分钟）
+                                    throw new CaptchaExpireException();
+                                });
 
                 // Assert
                 assertThat(thrown)
-                    .isInstanceOf(CaptchaExpireException.class)
-                    .hasFieldOrPropertyWithValue("code", "user.jcaptcha.expire");
+                        .isInstanceOf(CaptchaExpireException.class)
+                        .hasFieldOrPropertyWithValue("code", "user.jcaptcha.expire");
             }
 
             @Test
             @DisplayName("场景: 验证码已被使用过")
             void shouldHandleCaptchaAlreadyUsed() {
                 // Arrange & Act
-                Throwable thrown = catchThrowable(() -> {
-                    // 验证码已过期（被使用后失效）
-                    throw new CaptchaExpireException();
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    // 验证码已过期（被使用后失效）
+                                    throw new CaptchaExpireException();
+                                });
 
                 // Assert
                 assertThat(thrown).isInstanceOf(CaptchaExpireException.class);
@@ -371,37 +383,43 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该能正确抛出和捕获 CaptchaException")
         void shouldThrowAndCatchCaptchaException() {
             // Assert
-            assertThatThrownBy(() -> {
-                throw new CaptchaException();
-            })
-                .isInstanceOf(CaptchaException.class)
-                .isInstanceOf(UserException.class)
-                .hasFieldOrPropertyWithValue("code", "user.jcaptcha.error");
+            assertThatThrownBy(
+                            () -> {
+                                throw new CaptchaException();
+                            })
+                    .isInstanceOf(CaptchaException.class)
+                    .isInstanceOf(UserException.class)
+                    .hasFieldOrPropertyWithValue("code", "user.jcaptcha.error");
         }
 
         @Test
         @DisplayName("应该能正确抛出和捕获 CaptchaExpireException")
         void shouldThrowAndCatchCaptchaExpireException() {
             // Assert
-            assertThatThrownBy(() -> {
-                throw new CaptchaExpireException();
-            })
-                .isInstanceOf(CaptchaExpireException.class)
-                .isInstanceOf(UserException.class)
-                .hasFieldOrPropertyWithValue("code", "user.jcaptcha.expire");
+            assertThatThrownBy(
+                            () -> {
+                                throw new CaptchaExpireException();
+                            })
+                    .isInstanceOf(CaptchaExpireException.class)
+                    .isInstanceOf(UserException.class)
+                    .hasFieldOrPropertyWithValue("code", "user.jcaptcha.expire");
         }
 
         @Test
         @DisplayName("应该能通过 UserException 类型捕获验证码异常")
         void shouldCatchAsUserException() {
             // Arrange & Act
-            Throwable captchaError = catchThrowable(() -> {
-                throw new CaptchaException();
-            });
+            Throwable captchaError =
+                    catchThrowable(
+                            () -> {
+                                throw new CaptchaException();
+                            });
 
-            Throwable captchaExpire = catchThrowable(() -> {
-                throw new CaptchaExpireException();
-            });
+            Throwable captchaExpire =
+                    catchThrowable(
+                            () -> {
+                                throw new CaptchaExpireException();
+                            });
 
             // Assert
             assertThat(captchaError).isInstanceOf(UserException.class);
@@ -412,13 +430,17 @@ class CaptchaExceptionsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该能通过 RuntimeException 类型捕获验证码异常")
         void shouldCatchAsRuntimeException() {
             // Arrange & Act
-            Throwable captchaError = catchThrowable(() -> {
-                throw new CaptchaException();
-            });
+            Throwable captchaError =
+                    catchThrowable(
+                            () -> {
+                                throw new CaptchaException();
+                            });
 
-            Throwable captchaExpire = catchThrowable(() -> {
-                throw new CaptchaExpireException();
-            });
+            Throwable captchaExpire =
+                    catchThrowable(
+                            () -> {
+                                throw new CaptchaExpireException();
+                            });
 
             // Assert
             assertThat(captchaError).isInstanceOf(RuntimeException.class);

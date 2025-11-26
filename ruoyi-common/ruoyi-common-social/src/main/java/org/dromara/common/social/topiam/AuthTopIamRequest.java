@@ -1,5 +1,7 @@
 package org.dromara.common.social.topiam;
 
+import static org.dromara.common.social.topiam.AuthTopIamSource.TOPIAM;
+
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
@@ -19,8 +21,6 @@ import me.zhyd.oauth.utils.UrlBuilder;
 import org.dromara.common.core.utils.SpringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 
-import static org.dromara.common.social.topiam.AuthTopIamSource.TOPIAM;
-
 /**
  * TopIAM 认证请求
  *
@@ -30,11 +30,10 @@ import static org.dromara.common.social.topiam.AuthTopIamSource.TOPIAM;
 @Slf4j
 public class AuthTopIamRequest extends AuthDefaultRequest {
 
-    public static final String SERVER_URL = SpringUtils.getProperty("justauth.type.topiam.server-url");
+    public static final String SERVER_URL =
+            SpringUtils.getProperty("justauth.type.topiam.server-url");
 
-    /**
-     * 设定归属域
-     */
+    /** 设定归属域 */
     public AuthTopIamRequest(AuthConfig config) {
         super(config, TOPIAM);
     }
@@ -49,12 +48,12 @@ public class AuthTopIamRequest extends AuthDefaultRequest {
         Dict object = JsonUtils.parseMap(body);
         checkResponse(object);
         return AuthToken.builder()
-            .accessToken(object.getStr("access_token"))
-            .refreshToken(object.getStr("refresh_token"))
-            .idToken(object.getStr("id_token"))
-            .tokenType(object.getStr("token_type"))
-            .scope(object.getStr("scope"))
-            .build();
+                .accessToken(object.getStr("access_token"))
+                .refreshToken(object.getStr("refresh_token"))
+                .idToken(object.getStr("id_token"))
+                .tokenType(object.getStr("token_type"))
+                .scope(object.getStr("scope"))
+                .build();
     }
 
     @Override
@@ -63,40 +62,53 @@ public class AuthTopIamRequest extends AuthDefaultRequest {
         Dict object = JsonUtils.parseMap(body);
         checkResponse(object);
         return AuthUser.builder()
-            .uuid(object.getStr("sub"))
-            .username(object.getStr("preferred_username"))
-            .nickname(object.getStr("nickname"))
-            .avatar(object.getStr("picture"))
-            .email(object.getStr("email"))
-            .token(authToken)
-            .source(source.toString())
-            .build();
+                .uuid(object.getStr("sub"))
+                .username(object.getStr("preferred_username"))
+                .nickname(object.getStr("nickname"))
+                .avatar(object.getStr("picture"))
+                .email(object.getStr("email"))
+                .token(authToken)
+                .source(source.toString())
+                .build();
     }
 
     @Override
     protected String doPostAuthorizationCode(String code) {
-        HttpRequest request = HttpRequest.post(source.accessToken())
-            .header("Authorization", "Basic " + Base64.encode("%s:%s".formatted(config.getClientId(), config.getClientSecret())))
-            .form("grant_type", "authorization_code")
-            .form("code", code)
-            .form("redirect_uri", config.getRedirectUri());
+        HttpRequest request =
+                HttpRequest.post(source.accessToken())
+                        .header(
+                                "Authorization",
+                                "Basic "
+                                        + Base64.encode(
+                                                "%s:%s"
+                                                        .formatted(
+                                                                config.getClientId(),
+                                                                config.getClientSecret())))
+                        .form("grant_type", "authorization_code")
+                        .form("code", code)
+                        .form("redirect_uri", config.getRedirectUri());
         HttpResponse response = request.execute();
         return response.body();
     }
 
     @Override
     protected String doGetUserInfo(AuthToken authToken) {
-        return new HttpUtils(config.getHttpConfig()).get(source.userInfo(), null, new HttpHeader()
-            .add("Content-Type", "application/json")
-            .add("Authorization", "Bearer " + authToken.getAccessToken()), false).getBody();
+        return new HttpUtils(config.getHttpConfig())
+                .get(
+                        source.userInfo(),
+                        null,
+                        new HttpHeader()
+                                .add("Content-Type", "application/json")
+                                .add("Authorization", "Bearer " + authToken.getAccessToken()),
+                        false)
+                .getBody();
     }
-
 
     @Override
     public String authorize(String state) {
         return UrlBuilder.fromBaseUrl(super.authorize(state))
-            .queryParam("scope", StrUtil.join("%20", config.getScopes()))
-            .build();
+                .queryParam("scope", StrUtil.join("%20", config.getScopes()))
+                .build();
     }
 
     private static void checkResponse(Dict object) {
@@ -109,5 +121,4 @@ public class AuthTopIamRequest extends AuthDefaultRequest {
             throw new AuthException(object.getStr("message"));
         }
     }
-
 }

@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 
 /**
  * Rabbit回调
+ *
  * @author JC
  */
-
 @Slf4j
 @Component
-public class RabbitCallback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
+public class RabbitCallback
+        implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
 
     private static final int MAX_RETRY_COUNT = 3;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Autowired private RabbitTemplate rabbitTemplate;
 
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
@@ -34,12 +34,13 @@ public class RabbitCallback implements RabbitTemplate.ConfirmCallback, RabbitTem
 
     @Override
     public void returnedMessage(ReturnedMessage returnedMessage) {
-        log.error("消息返回: ReplyCode: {}, ReplyText: {}, Exchange: {}, RoutingKey: {}, Message: {}",
-            returnedMessage.getReplyCode(),
-            returnedMessage.getReplyText(),
-            returnedMessage.getExchange(),
-            returnedMessage.getRoutingKey(),
-            returnedMessage.getMessage());
+        log.error(
+                "消息返回: ReplyCode: {}, ReplyText: {}, Exchange: {}, RoutingKey: {}, Message: {}",
+                returnedMessage.getReplyCode(),
+                returnedMessage.getReplyText(),
+                returnedMessage.getExchange(),
+                returnedMessage.getRoutingKey(),
+                returnedMessage.getMessage());
         retrySendMessage(returnedMessage);
     }
 
@@ -62,11 +63,18 @@ public class RabbitCallback implements RabbitTemplate.ConfirmCallback, RabbitTem
 
     private void retrySend(CorrelationData correlationData) {
         String messageContent = correlationData.getId();
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, messageContent, correlationData);
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.EXCHANGE_NAME,
+                RabbitConfig.ROUTING_KEY,
+                messageContent,
+                correlationData);
     }
 
     private void retrySendMessage(ReturnedMessage returnedMessage) {
         log.info("正在重试发送返回的消息: {}", returnedMessage.getMessage());
-        rabbitTemplate.convertAndSend(returnedMessage.getExchange(), returnedMessage.getRoutingKey(), returnedMessage.getMessage());
+        rabbitTemplate.convertAndSend(
+                returnedMessage.getExchange(),
+                returnedMessage.getRoutingKey(),
+                returnedMessage.getMessage());
     }
 }

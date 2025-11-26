@@ -12,28 +12,27 @@ import org.dromara.common.json.utils.JsonUtils;
 
 /**
  * Dubbo 日志过滤器
- * <p>
- * 该过滤器通过实现 Dubbo 的 Filter 接口，在服务调用前后记录日志信息
- * 可根据配置开关和日志级别输出不同详细程度的日志信息
- * <p>
- * 激活条件：
- * - 在 Provider 和 Consumer 端都生效
- * - 执行顺序设置为最大值，确保在所有其他过滤器之后执行
- * <p>
- * 使用 SpringUtils 获取配置信息，根据配置决定是否记录日志及日志详细程度
- * <p>
- * 使用 Lombok 的 @Slf4j 注解简化日志记录
+ *
+ * <p>该过滤器通过实现 Dubbo 的 Filter 接口，在服务调用前后记录日志信息 可根据配置开关和日志级别输出不同详细程度的日志信息
+ *
+ * <p>激活条件： - 在 Provider 和 Consumer 端都生效 - 执行顺序设置为最大值，确保在所有其他过滤器之后执行
+ *
+ * <p>使用 SpringUtils 获取配置信息，根据配置决定是否记录日志及日志详细程度
+ *
+ * <p>使用 Lombok 的 @Slf4j 注解简化日志记录
  *
  * @author Lion Li
  */
 @Slf4j
-@Activate(group = {CommonConstants.PROVIDER, CommonConstants.CONSUMER}, order = Integer.MAX_VALUE)
+@Activate(
+        group = {CommonConstants.PROVIDER, CommonConstants.CONSUMER},
+        order = Integer.MAX_VALUE)
 public class DubboRequestFilter implements Filter {
 
     /**
      * Dubbo Filter 接口实现方法，处理服务调用逻辑并记录日志
      *
-     * @param invoker    Dubbo 服务调用者实例
+     * @param invoker Dubbo 服务调用者实例
      * @param invocation 调用的具体方法信息
      * @return 调用结果
      * @throws RpcException 如果调用过程中发生异常
@@ -53,7 +52,14 @@ public class DubboRequestFilter implements Filter {
         }
 
         // 构建基础日志信息
-        String baselog = "Client[" + client + "],InterfaceName=[" + invocation.getInvoker().getInterface().getSimpleName() + "],MethodName=[" + invocation.getMethodName() + "]";
+        String baselog =
+                "Client["
+                        + client
+                        + "],InterfaceName=["
+                        + invocation.getInvoker().getInterface().getSimpleName()
+                        + "],MethodName=["
+                        + invocation.getMethodName()
+                        + "]";
         // 根据日志级别输出不同详细程度的日志信息
         if (properties.getLogLevel() == RequestLogEnum.INFO) {
             log.info("DUBBO - 服务调用: {}", baselog);
@@ -75,10 +81,13 @@ public class DubboRequestFilter implements Filter {
             if (properties.getLogLevel() == RequestLogEnum.INFO) {
                 log.info("DUBBO - 服务响应: {},SpendTime=[{}ms]", baselog, elapsed);
             } else if (properties.getLogLevel() == RequestLogEnum.FULL) {
-                log.info("DUBBO - 服务响应: {},SpendTime=[{}ms],Response={}", baselog, elapsed, JsonUtils.toJsonString(new Object[]{result.getValue()}));
+                log.info(
+                        "DUBBO - 服务响应: {},SpendTime=[{}ms],Response={}",
+                        baselog,
+                        elapsed,
+                        JsonUtils.toJsonString(new Object[] {result.getValue()}));
             }
         }
         return result;
     }
-
 }

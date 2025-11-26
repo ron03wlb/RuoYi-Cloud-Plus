@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Social 配置属性
+ *
  * @author thiszhc
  */
 @AutoConfiguration
@@ -19,5 +20,4 @@ public class SocialAutoConfiguration {
     public AuthStateCache authStateCache() {
         return new AuthRedisStateCache();
     }
-
 }

@@ -2,7 +2,6 @@ package org.dromara.common.core.xss;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HtmlUtil;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -17,5 +16,4 @@ public class XssValidator implements ConstraintValidator<Xss, String> {
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         return !ReUtil.contains(HtmlUtil.RE_HTML_MARK, value);
     }
-
 }

@@ -34,7 +34,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation(libs.mockito.inline)  // 支持静态方法mock
+    testImplementation(libs.mockito.inline) // 支持静态方法mock
 }
 
 // ===========================================
@@ -55,13 +55,15 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/config/**",           // 配置类（Spring配置）
-                    "**/*Application.class"   // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/config/**", // 配置类（Spring配置）
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

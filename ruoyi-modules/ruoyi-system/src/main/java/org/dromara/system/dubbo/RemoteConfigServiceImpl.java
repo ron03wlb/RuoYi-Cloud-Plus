@@ -18,12 +18,9 @@ public class RemoteConfigServiceImpl implements RemoteConfigService {
 
     private final ISysConfigService configService;
 
-    /**
-     * 获取注册开关
-     */
+    /** 获取注册开关 */
     @Override
     public boolean selectRegisterEnabled(String tenantId) {
         return configService.selectRegisterEnabled(tenantId);
     }
-
 }

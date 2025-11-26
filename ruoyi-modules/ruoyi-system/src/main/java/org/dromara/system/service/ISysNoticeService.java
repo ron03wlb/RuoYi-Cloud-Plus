@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysNoticeBo;
 import org.dromara.system.domain.vo.SysNoticeVo;
-
-import java.util.List;
 
 /**
  * 公告 服务层
@@ -17,7 +16,7 @@ public interface ISysNoticeService {
     /**
      * 分页查询通知公告列表
      *
-     * @param notice    查询条件
+     * @param notice 查询条件
      * @param pageQuery 分页参数
      * @return 通知公告分页列表
      */

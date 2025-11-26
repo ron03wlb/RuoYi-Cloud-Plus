@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysOperLogBo;
 import org.dromara.system.domain.vo.SysOperLogVo;
-
-import java.util.List;
 
 /**
  * 操作日志 服务层
@@ -17,7 +16,7 @@ public interface ISysOperLogService {
     /**
      * 分页查询操作日志列表
      *
-     * @param operLog   查询条件
+     * @param operLog 查询条件
      * @param pageQuery 分页参数
      * @return 操作日志分页列表
      */
@@ -54,8 +53,6 @@ public interface ISysOperLogService {
      */
     SysOperLogVo selectOperLogById(Long operId);
 
-    /**
-     * 清空操作日志
-     */
+    /** 清空操作日志 */
     void cleanOperLog();
 }

@@ -10,5 +10,4 @@ public class SnailJobServerProperties {
     private String serverName;
 
     private String port;
-
 }

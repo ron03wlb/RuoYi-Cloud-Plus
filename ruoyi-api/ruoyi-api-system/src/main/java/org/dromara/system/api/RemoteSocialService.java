@@ -1,9 +1,8 @@
 package org.dromara.system.api;
 
+import java.util.List;
 import org.dromara.system.api.domain.bo.RemoteSocialBo;
 import org.dromara.system.api.domain.vo.RemoteSocialVo;
-
-import java.util.List;
 
 /**
  * 社会化关系服务
@@ -48,5 +47,4 @@ public interface RemoteSocialService {
      * @return 结果
      */
     Boolean deleteWithValidById(Long socialId);
-
 }

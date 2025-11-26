@@ -1,17 +1,16 @@
 package org.dromara.common.tenant.exception;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.tenant.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * TenantException 测试
- * <p>
- * 测试租户异常类的创建和属性
- * </p>
+ *
+ * <p>测试租户异常类的创建和属性
  *
  * @author Test Team
  */
@@ -96,10 +95,7 @@ class TenantExceptionTest extends BaseUnitTest {
             String tenantId = "TENANT-999";
 
             // Act
-            TenantException exception = new TenantException(
-                "tenant.not.found",
-                tenantId
-            );
+            TenantException exception = new TenantException("tenant.not.found", tenantId);
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("tenant");
@@ -115,11 +111,7 @@ class TenantExceptionTest extends BaseUnitTest {
             String expireDate = "2024-12-31";
 
             // Act
-            TenantException exception = new TenantException(
-                "tenant.expired",
-                tenantId,
-                expireDate
-            );
+            TenantException exception = new TenantException("tenant.expired", tenantId, expireDate);
 
             // Assert
             assertThat(exception.getCode()).isEqualTo("tenant.expired");
@@ -133,10 +125,7 @@ class TenantExceptionTest extends BaseUnitTest {
             String operation = "删除用户";
 
             // Act
-            TenantException exception = new TenantException(
-                "tenant.permission.denied",
-                operation
-            );
+            TenantException exception = new TenantException("tenant.permission.denied", operation);
 
             // Assert
             assertThat(exception.getCode()).isEqualTo("tenant.permission.denied");
@@ -151,12 +140,8 @@ class TenantExceptionTest extends BaseUnitTest {
             Integer current = 101;
 
             // Act
-            TenantException exception = new TenantException(
-                "tenant.quota.exceeded",
-                resource,
-                limit,
-                current
-            );
+            TenantException exception =
+                    new TenantException("tenant.quota.exceeded", resource, limit, current);
 
             // Assert
             assertThat(exception.getCode()).isEqualTo("tenant.quota.exceeded");

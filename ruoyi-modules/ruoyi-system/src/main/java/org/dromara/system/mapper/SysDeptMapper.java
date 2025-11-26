@@ -3,6 +3,7 @@ package org.dromara.system.mapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
@@ -10,8 +11,6 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.vo.SysDeptVo;
-
-import java.util.List;
 
 /**
  * 部门管理 数据层
@@ -23,7 +22,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
     /**
      * 构建角色对应的部门 SQL 查询语句
      *
-     * <p>该 SQL 用于查询某个角色关联的所有部门 ID，常用于数据权限控制</p>
+     * <p>该 SQL 用于查询某个角色关联的所有部门 ID，常用于数据权限控制
      *
      * @param roleId 角色ID
      * @return 查询部门ID的 SQL 语句字符串
@@ -33,15 +32,14 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
                 select srd.dept_id from sys_role_dept srd
                     left join sys_role sr on sr.role_id = srd.role_id
                     where srd.role_id = %d and sr.status = '0'
-            """.formatted(roleId);
+          """
+                .formatted(roleId);
     }
 
     /**
      * 构建 SQL 查询，用于获取当前角色拥有的部门中所有的父部门ID
      *
-     * <p>
-     * 该 SQL 用于 deptCheckStrictly 场景下，排除非叶子节点（父节点）用。
-     * </p>
+     * <p>该 SQL 用于 deptCheckStrictly 场景下，排除非叶子节点（父节点）用。
      *
      * @param roleId 角色ID
      * @return SQL 语句字符串，查询角色下部门的所有父部门ID
@@ -53,7 +51,8 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
                         left join sys_role sr on sr.role_id = srd.role_id
                         where srd.role_id = %d and sr.status = '0'
                 )
-            """.formatted(roleId);
+          """
+                .formatted(roleId);
     }
 
     /**
@@ -62,9 +61,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
      * @param queryWrapper 查询条件
      * @return 部门信息集合
      */
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id")
-    })
+    @DataPermission({@DataColumn(key = "deptName", value = "dept_id")})
     default List<SysDeptVo> selectDeptList(Wrapper<SysDept> queryWrapper) {
         return this.selectVoList(queryWrapper);
     }
@@ -72,7 +69,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
     /**
      * 分页查询部门管理数据
      *
-     * @param page         分页信息
+     * @param page 分页信息
      * @param queryWrapper 查询条件
      * @return 部门信息集合
      */
@@ -89,9 +86,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
      * @param deptId 部门ID
      * @return 该部门ID的部门数量
      */
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id")
-    })
+    @DataPermission({@DataColumn(key = "deptName", value = "dept_id")})
     default long countDeptById(Long deptId) {
         return this.selectCount(new LambdaQueryWrapper<SysDept>().eq(SysDept::getDeptId, deptId));
     }
@@ -103,9 +98,10 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
      * @return 包含子部门的列表
      */
     default List<SysDept> selectListByParentId(Long parentId) {
-        return this.selectList(new LambdaQueryWrapper<SysDept>()
-            .select(SysDept::getDeptId)
-            .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
+        return this.selectList(
+                new LambdaQueryWrapper<SysDept>()
+                        .select(SysDept::getDeptId)
+                        .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
     }
 
     /**
@@ -124,20 +120,19 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
     /**
      * 根据角色ID查询部门树信息
      *
-     * @param roleId            角色ID
+     * @param roleId 角色ID
      * @param deptCheckStrictly 部门树选择项是否关联显示
      * @return 选中部门列表
      */
     default List<Long> selectDeptListByRoleId(Long roleId, boolean deptCheckStrictly) {
         LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(SysDept::getDeptId)
-            .inSql(SysDept::getDeptId, this.buildDeptByRoleSql(roleId))
-            .orderByAsc(SysDept::getParentId)
-            .orderByAsc(SysDept::getOrderNum);
+                .inSql(SysDept::getDeptId, this.buildDeptByRoleSql(roleId))
+                .orderByAsc(SysDept::getParentId)
+                .orderByAsc(SysDept::getOrderNum);
         if (deptCheckStrictly) {
             wrapper.notInSql(SysDept::getDeptId, this.buildParentDeptByRoleSql(roleId));
         }
         return this.selectObjs(wrapper);
     }
-
 }

@@ -1,9 +1,8 @@
 package org.dromara.resource.api.domain;
 
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * 文件信息
@@ -13,37 +12,23 @@ import java.io.Serializable;
 @Data
 public class RemoteFile implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * oss主键
-     */
+    /** oss主键 */
     private Long ossId;
 
-    /**
-     * 文件名称
-     */
+    /** 文件名称 */
     private String name;
 
-    /**
-     * 文件地址
-     */
+    /** 文件地址 */
     private String url;
 
-    /**
-     * 原名
-     */
+    /** 原名 */
     private String originalName;
 
-    /**
-     * 文件后缀名
-     */
+    /** 文件后缀名 */
     private String fileSuffix;
 
-    /**
-     * 扩展字段
-     */
+    /** 扩展字段 */
     private String ext1;
-
 }

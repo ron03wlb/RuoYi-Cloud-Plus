@@ -1,25 +1,24 @@
 package org.dromara.common.satoken.config;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.common.core.service.PermissionService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Sa-Token 測試配置類
- * <p>
- * 提供所有測試需要的 Mock Bean
- * </p>
  *
- * <p>功能:</p>
+ * <p>提供所有測試需要的 Mock Bean
+ *
+ * <p>功能:
+ *
  * <ul>
- *   <li>Mock PermissionService 接口</li>
- *   <li>提供測試用的權限數據</li>
- *   <li>使用 @Primary 覆蓋默認 Bean</li>
+ *   <li>Mock PermissionService 接口
+ *   <li>提供測試用的權限數據
+ *   <li>使用 @Primary 覆蓋默認 Bean
  * </ul>
  *
  * @author Test Team
@@ -29,9 +28,8 @@ public class SaTokenTestConfig {
 
     /**
      * Mock PermissionService
-     * <p>
-     * SaPermissionImpl 依賴此接口來獲取權限數據
-     * </p>
+     *
+     * <p>SaPermissionImpl 依賴此接口來獲取權限數據
      */
     @Bean
     @Primary

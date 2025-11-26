@@ -8,6 +8,7 @@ import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.event.AnalysisEventListener;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.SpringUtils;
@@ -22,15 +23,14 @@ import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysConfigService;
 import org.dromara.system.service.ISysUserService;
 
-import java.util.List;
-
 /**
  * 系统用户自定义导入
  *
  * @author Lion Li
  */
 @Slf4j
-public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo> implements ExcelListener<SysUserImportVo> {
+public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo>
+        implements ExcelListener<SysUserImportVo> {
 
     private final ISysUserService userService;
 
@@ -46,7 +46,9 @@ public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo
     private final StringBuilder failureMsg = new StringBuilder();
 
     public SysUserImportListener(Boolean isUpdateSupport) {
-        String initPassword = SpringUtils.getBean(ISysConfigService.class).selectConfigByKey("sys.user.initPassword");
+        String initPassword =
+                SpringUtils.getBean(ISysConfigService.class)
+                        .selectConfigByKey("sys.user.initPassword");
         this.userService = SpringUtils.getBean(ISysUserService.class);
         this.password = BCrypt.hashpw(initPassword);
         this.isUpdateSupport = isUpdateSupport;
@@ -65,7 +67,12 @@ public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo
                 user.setCreateBy(operUserId);
                 userService.insertUser(user);
                 successNum++;
-                successMsg.append("<br/>").append(successNum).append("、账号 ").append(user.getUserName()).append(" 导入成功");
+                successMsg
+                        .append("<br/>")
+                        .append(successNum)
+                        .append("、账号 ")
+                        .append(user.getUserName())
+                        .append(" 导入成功");
             } else if (isUpdateSupport) {
                 Long userId = sysUser.getUserId();
                 SysUserBo user = BeanUtil.toBean(userVo, SysUserBo.class);
@@ -76,17 +83,36 @@ public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo
                 user.setUpdateBy(operUserId);
                 userService.updateUser(user);
                 successNum++;
-                successMsg.append("<br/>").append(successNum).append("、账号 ").append(user.getUserName()).append(" 更新成功");
+                successMsg
+                        .append("<br/>")
+                        .append(successNum)
+                        .append("、账号 ")
+                        .append(user.getUserName())
+                        .append(" 更新成功");
             } else {
                 failureNum++;
-                failureMsg.append("<br/>").append(failureNum).append("、账号 ").append(sysUser.getUserName()).append(" 已存在");
+                failureMsg
+                        .append("<br/>")
+                        .append(failureNum)
+                        .append("、账号 ")
+                        .append(sysUser.getUserName())
+                        .append(" 已存在");
             }
         } catch (Exception e) {
             failureNum++;
-            String msg = "<br/>" + failureNum + "、账号 " + HtmlUtil.cleanHtmlTag(userVo.getUserName()) + " 导入失败：";
+            String msg =
+                    "<br/>"
+                            + failureNum
+                            + "、账号 "
+                            + HtmlUtil.cleanHtmlTag(userVo.getUserName())
+                            + " 导入失败：";
             String message = e.getMessage();
             if (e instanceof ConstraintViolationException cvException) {
-                message = StreamUtils.join(cvException.getConstraintViolations(), ConstraintViolation::getMessage, ", ");
+                message =
+                        StreamUtils.join(
+                                cvException.getConstraintViolations(),
+                                ConstraintViolation::getMessage,
+                                ", ");
             }
             failureMsg.append(msg).append(message);
             log.error(msg, e);
@@ -94,9 +120,7 @@ public class SysUserImportListener extends AnalysisEventListener<SysUserImportVo
     }
 
     @Override
-    public void doAfterAllAnalysed(AnalysisContext context) {
-
-    }
+    public void doAfterAllAnalysed(AnalysisContext context) {}
 
     @Override
     public ExcelResult<SysUserImportVo> getExcelResult() {

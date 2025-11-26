@@ -96,7 +96,7 @@ dependencies {
     // Mockito 模拟框架
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation(libs.mockito.inline)  // 支持 mock 静态方法和 final 类
+    testImplementation(libs.mockito.inline) // 支持 mock 静态方法和 final 类
 
     // AssertJ 流式断言
     testImplementation("org.assertj:assertj-core")
@@ -143,19 +143,21 @@ tasks.named<JacocoReport>("jacocoTestReport") {
     }
 
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/constant/**",     // 排除常量类
-                    "**/enums/**",        // 排除枚举类
-                    "**/domain/**",       // 排除简单 POJO
-                    "**/config/**",       // 排除配置类
-                    "**/validate/AddGroup.class",
-                    "**/validate/EditGroup.class",
-                    "**/validate/QueryGroup.class"
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/constant/**", // 排除常量类
+                        "**/enums/**", // 排除枚举类
+                        "**/domain/**", // 排除简单 POJO
+                        "**/config/**", // 排除配置类
+                        "**/validate/AddGroup.class",
+                        "**/validate/EditGroup.class",
+                        "**/validate/QueryGroup.class",
+                    )
+                }
+            },
+        ),
     )
 }
 

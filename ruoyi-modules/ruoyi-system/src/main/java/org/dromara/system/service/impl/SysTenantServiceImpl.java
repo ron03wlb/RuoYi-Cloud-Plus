@@ -9,6 +9,7 @@ import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.common.core.constant.CacheNames;
@@ -36,8 +37,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-
 /**
  * 租户Service业务层处理
  *
@@ -62,26 +61,21 @@ public class SysTenantServiceImpl implements ISysTenantService {
     @DubboReference(mock = "true")
     private RemoteWorkflowService remoteWorkflowService;
 
-    /**
-     * 查询租户
-     */
+    /** 查询租户 */
     @Override
     public SysTenantVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
-    /**
-     * 基于租户ID查询租户
-     */
+    /** 基于租户ID查询租户 */
     @Cacheable(cacheNames = CacheNames.SYS_TENANT, key = "#tenantId")
     @Override
     public SysTenantVo queryByTenantId(String tenantId) {
-        return baseMapper.selectVoOne(new LambdaQueryWrapper<SysTenant>().eq(SysTenant::getTenantId, tenantId));
+        return baseMapper.selectVoOne(
+                new LambdaQueryWrapper<SysTenant>().eq(SysTenant::getTenantId, tenantId));
     }
 
-    /**
-     * 查询租户列表
-     */
+    /** 查询租户列表 */
     @Override
     public TableDataInfo<SysTenantVo> queryPageList(SysTenantBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
@@ -89,9 +83,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
         return TableDataInfo.build(result);
     }
 
-    /**
-     * 查询租户列表
-     */
+    /** 查询租户列表 */
     @Override
     public List<SysTenantVo> queryList(SysTenantBo bo) {
         LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
@@ -101,10 +93,22 @@ public class SysTenantServiceImpl implements ISysTenantService {
     private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantBo bo) {
         LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getTenantId()), SysTenant::getTenantId, bo.getTenantId());
-        lqw.like(StringUtils.isNotBlank(bo.getContactUserName()), SysTenant::getContactUserName, bo.getContactUserName());
-        lqw.eq(StringUtils.isNotBlank(bo.getContactPhone()), SysTenant::getContactPhone, bo.getContactPhone());
-        lqw.like(StringUtils.isNotBlank(bo.getCompanyName()), SysTenant::getCompanyName, bo.getCompanyName());
-        lqw.eq(StringUtils.isNotBlank(bo.getLicenseNumber()), SysTenant::getLicenseNumber, bo.getLicenseNumber());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getContactUserName()),
+                SysTenant::getContactUserName,
+                bo.getContactUserName());
+        lqw.eq(
+                StringUtils.isNotBlank(bo.getContactPhone()),
+                SysTenant::getContactPhone,
+                bo.getContactPhone());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getCompanyName()),
+                SysTenant::getCompanyName,
+                bo.getCompanyName());
+        lqw.eq(
+                StringUtils.isNotBlank(bo.getLicenseNumber()),
+                SysTenant::getLicenseNumber,
+                bo.getLicenseNumber());
         lqw.eq(StringUtils.isNotBlank(bo.getAddress()), SysTenant::getAddress, bo.getAddress());
         lqw.eq(StringUtils.isNotBlank(bo.getIntro()), SysTenant::getIntro, bo.getIntro());
         lqw.like(StringUtils.isNotBlank(bo.getDomain()), SysTenant::getDomain, bo.getDomain());
@@ -116,17 +120,19 @@ public class SysTenantServiceImpl implements ISysTenantService {
         return lqw;
     }
 
-    /**
-     * 新增租户
-     */
+    /** 新增租户 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantBo bo) {
         SysTenant add = MapstructUtils.convert(bo, SysTenant.class);
 
         // 获取所有租户编号
-        List<String> tenantIds = baseMapper.selectObjs(
-            new LambdaQueryWrapper<SysTenant>().select(SysTenant::getTenantId), x -> {return Convert.toStr(x);});
+        List<String> tenantIds =
+                baseMapper.selectObjs(
+                        new LambdaQueryWrapper<SysTenant>().select(SysTenant::getTenantId),
+                        x -> {
+                            return Convert.toStr(x);
+                        });
         String tenantId = generateTenantId(tenantIds);
         add.setTenantId(tenantId);
         boolean flag = baseMapper.insert(add) > 0;
@@ -161,7 +167,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
         user.setPassword(BCrypt.hashpw(bo.getPassword()));
         user.setDeptId(deptId);
         userMapper.insert(user);
-        //新增系统用户后，默认当前用户为部门的负责人
+        // 新增系统用户后，默认当前用户为部门的负责人
         SysDept sd = new SysDept();
         sd.setLeader(user.getUserId());
         sd.setDeptId(deptId);
@@ -174,10 +180,14 @@ public class SysTenantServiceImpl implements ISysTenantService {
         userRoleMapper.insert(userRole);
 
         String defaultTenantId = TenantConstants.DEFAULT_TENANT_ID;
-        List<SysDictType> dictTypeList = dictTypeMapper.selectList(
-            new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getTenantId, defaultTenantId));
-        List<SysDictData> dictDataList = dictDataMapper.selectList(
-            new LambdaQueryWrapper<SysDictData>().eq(SysDictData::getTenantId, defaultTenantId));
+        List<SysDictType> dictTypeList =
+                dictTypeMapper.selectList(
+                        new LambdaQueryWrapper<SysDictType>()
+                                .eq(SysDictType::getTenantId, defaultTenantId));
+        List<SysDictData> dictDataList =
+                dictDataMapper.selectList(
+                        new LambdaQueryWrapper<SysDictData>()
+                                .eq(SysDictData::getTenantId, defaultTenantId));
         for (SysDictType dictType : dictTypeList) {
             dictType.setDictId(null);
             dictType.setTenantId(tenantId);
@@ -199,8 +209,10 @@ public class SysTenantServiceImpl implements ISysTenantService {
         dictTypeMapper.insertBatch(dictTypeList);
         dictDataMapper.insertBatch(dictDataList);
 
-        List<SysConfig> sysConfigList = configMapper.selectList(
-            new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getTenantId, defaultTenantId));
+        List<SysConfig> sysConfigList =
+                configMapper.selectList(
+                        new LambdaQueryWrapper<SysConfig>()
+                                .eq(SysConfig::getTenantId, defaultTenantId));
         for (SysConfig config : sysConfigList) {
             config.setConfigId(null);
             config.setTenantId(tenantId);
@@ -236,7 +248,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
     /**
      * 根据租户菜单创建租户角色
      *
-     * @param tenantId  租户编号
+     * @param tenantId 租户编号
      * @param packageId 租户套餐id
      * @return 角色id
      */
@@ -261,20 +273,19 @@ public class SysTenantServiceImpl implements ISysTenantService {
 
         // 创建角色菜单
         List<SysRoleMenu> roleMenus = new ArrayList<>(menuIds.size());
-        menuIds.forEach(menuId -> {
-            SysRoleMenu roleMenu = new SysRoleMenu();
-            roleMenu.setRoleId(roleId);
-            roleMenu.setMenuId(menuId);
-            roleMenus.add(roleMenu);
-        });
+        menuIds.forEach(
+                menuId -> {
+                    SysRoleMenu roleMenu = new SysRoleMenu();
+                    roleMenu.setRoleId(roleId);
+                    roleMenu.setMenuId(menuId);
+                    roleMenus.add(roleMenu);
+                });
         roleMenuMapper.insertBatch(roleMenus);
 
         return roleId;
     }
 
-    /**
-     * 修改租户
-     */
+    /** 修改租户 */
     @CacheEvict(cacheNames = CacheNames.SYS_TENANT, key = "#bo.tenantId")
     @Override
     public Boolean updateByBo(SysTenantBo bo) {
@@ -311,9 +322,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
         }
     }
 
-    /**
-     * 批量删除租户
-     */
+    /** 批量删除租户 */
     @CacheEvict(cacheNames = CacheNames.SYS_TENANT, allEntries = true)
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
@@ -326,20 +335,21 @@ public class SysTenantServiceImpl implements ISysTenantService {
         return baseMapper.deleteByIds(ids) > 0;
     }
 
-    /**
-     * 校验企业名称是否唯一
-     */
+    /** 校验企业名称是否唯一 */
     @Override
     public boolean checkCompanyNameUnique(SysTenantBo bo) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
-            .eq(SysTenant::getCompanyName, bo.getCompanyName())
-            .ne(ObjectUtil.isNotNull(bo.getTenantId()), SysTenant::getTenantId, bo.getTenantId()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<SysTenant>()
+                                .eq(SysTenant::getCompanyName, bo.getCompanyName())
+                                .ne(
+                                        ObjectUtil.isNotNull(bo.getTenantId()),
+                                        SysTenant::getTenantId,
+                                        bo.getTenantId()));
         return !exist;
     }
 
-    /**
-     * 校验账号余额
-     */
+    /** 校验账号余额 */
     @Override
     public boolean checkAccountBalance(String tenantId) {
         SysTenantVo tenant = SpringUtils.getAopProxy(this).queryByTenantId(tenantId);
@@ -352,9 +362,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
         return tenant.getAccountCount() - userNumber > 0;
     }
 
-    /**
-     * 校验有效期
-     */
+    /** 校验有效期 */
     @Override
     public boolean checkExpireTime(String tenantId) {
         SysTenantVo tenant = SpringUtils.getAopProxy(this).queryByTenantId(tenantId);
@@ -366,68 +374,79 @@ public class SysTenantServiceImpl implements ISysTenantService {
         return new Date().before(tenant.getExpireTime());
     }
 
-    /**
-     * 同步租户套餐
-     */
+    /** 同步租户套餐 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTenantPackage(String tenantId, Long packageId) {
         SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
-        List<SysRole> roles = roleMapper.selectList(
-            new LambdaQueryWrapper<SysRole>().eq(SysRole::getTenantId, tenantId));
+        List<SysRole> roles =
+                roleMapper.selectList(
+                        new LambdaQueryWrapper<SysRole>().eq(SysRole::getTenantId, tenantId));
         List<Long> roleIds = new ArrayList<>(roles.size() - 1);
         List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
-        roles.forEach(item -> {
-            if (TenantConstants.TENANT_ADMIN_ROLE_KEY.equals(item.getRoleKey())) {
-                List<SysRoleMenu> roleMenus = new ArrayList<>(menuIds.size());
-                menuIds.forEach(menuId -> {
-                    SysRoleMenu roleMenu = new SysRoleMenu();
-                    roleMenu.setRoleId(item.getRoleId());
-                    roleMenu.setMenuId(menuId);
-                    roleMenus.add(roleMenu);
+        roles.forEach(
+                item -> {
+                    if (TenantConstants.TENANT_ADMIN_ROLE_KEY.equals(item.getRoleKey())) {
+                        List<SysRoleMenu> roleMenus = new ArrayList<>(menuIds.size());
+                        menuIds.forEach(
+                                menuId -> {
+                                    SysRoleMenu roleMenu = new SysRoleMenu();
+                                    roleMenu.setRoleId(item.getRoleId());
+                                    roleMenu.setMenuId(menuId);
+                                    roleMenus.add(roleMenu);
+                                });
+                        roleMenuMapper.delete(
+                                new LambdaQueryWrapper<SysRoleMenu>()
+                                        .eq(SysRoleMenu::getRoleId, item.getRoleId()));
+                        roleMenuMapper.insertBatch(roleMenus);
+                    } else {
+                        roleIds.add(item.getRoleId());
+                    }
                 });
-                roleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, item.getRoleId()));
-                roleMenuMapper.insertBatch(roleMenus);
-            } else {
-                roleIds.add(item.getRoleId());
-            }
-        });
         if (!roleIds.isEmpty()) {
             roleMenuMapper.delete(
-                new LambdaQueryWrapper<SysRoleMenu>().in(SysRoleMenu::getRoleId, roleIds).notIn(!menuIds.isEmpty(), SysRoleMenu::getMenuId, menuIds));
+                    new LambdaQueryWrapper<SysRoleMenu>()
+                            .in(SysRoleMenu::getRoleId, roleIds)
+                            .notIn(!menuIds.isEmpty(), SysRoleMenu::getMenuId, menuIds));
         }
         return true;
     }
 
-    /**
-     * 同步租户字典
-     */
+    /** 同步租户字典 */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void syncTenantDict() {
         // 查询超管 所有字典数据
         List<SysDictType> dictTypeList = new ArrayList<>();
         List<SysDictData> dictDataList = new ArrayList<>();
-        TenantHelper.ignore(() -> {
-            dictTypeList.addAll(dictTypeMapper.selectList());
-            dictDataList.addAll(dictDataMapper.selectList());
-        });
+        TenantHelper.ignore(
+                () -> {
+                    dictTypeList.addAll(dictTypeMapper.selectList());
+                    dictDataList.addAll(dictDataMapper.selectList());
+                });
         // 所有租户字典类型
-        Map<String, List<SysDictType>> dictTypeMap = StreamUtils.groupByKey(dictTypeList, TenantEntity::getTenantId);
+        Map<String, List<SysDictType>> dictTypeMap =
+                StreamUtils.groupByKey(dictTypeList, TenantEntity::getTenantId);
         // 所有租户字典数据
-        Map<String, Map<String, List<SysDictData>>> dictDataMap = StreamUtils.groupBy2Key(dictDataList, TenantEntity::getTenantId, SysDictData::getDictType);
+        Map<String, Map<String, List<SysDictData>>> dictDataMap =
+                StreamUtils.groupBy2Key(
+                        dictDataList, TenantEntity::getTenantId, SysDictData::getDictType);
 
         // 默认租户字典类型列表
         List<SysDictType> defaultDictTypeList = dictTypeMap.get(TenantConstants.DEFAULT_TENANT_ID);
         // 默认租户字典数据
-        Map<String, List<SysDictData>> defaultDictDataMap = dictDataMap.get(TenantConstants.DEFAULT_TENANT_ID);
+        Map<String, List<SysDictData>> defaultDictDataMap =
+                dictDataMap.get(TenantConstants.DEFAULT_TENANT_ID);
 
         // 获取所有租户编号
-        List<String> tenantIds = baseMapper.selectObjs(
-            new LambdaQueryWrapper<SysTenant>().select(SysTenant::getTenantId)
-                .eq(SysTenant::getStatus, SystemConstants.NORMAL), x -> {
-                return Convert.toStr(x);
-            });
+        List<String> tenantIds =
+                baseMapper.selectObjs(
+                        new LambdaQueryWrapper<SysTenant>()
+                                .select(SysTenant::getTenantId)
+                                .eq(SysTenant::getStatus, SystemConstants.NORMAL),
+                        x -> {
+                            return Convert.toStr(x);
+                        });
         // 待入库的字典类型和字典数据
         List<SysDictType> saveTypeList = new ArrayList<>();
         List<SysDictData> saveDataList = new ArrayList<>();
@@ -442,21 +461,23 @@ public class SysTenantServiceImpl implements ISysTenantService {
             // 根据默认租户的字典类型进行数据同步
             for (SysDictType dictType : defaultDictTypeList) {
                 // 获取当前租户的字典类型列表
-                List<String> typeList = StreamUtils.toList(dictTypeMap.get(tenantId), SysDictType::getDictType);
+                List<String> typeList =
+                        StreamUtils.toList(dictTypeMap.get(tenantId), SysDictType::getDictType);
                 // 根据字典类型获取默认租户的字典数据
-                List<SysDictData> defaultDictDataList = defaultDictDataMap.get(dictType.getDictType());
+                List<SysDictData> defaultDictDataList =
+                        defaultDictDataMap.get(dictType.getDictType());
                 // 排除不需要同步的字典数据
                 Set<String> excludeDictDataSet = CollUtil.newHashSet();
                 // 处理 存在type不存在data 的情况
                 if (typeList.contains(dictType.getDictType())) {
                     // 获取租户字典数据
                     Optional.ofNullable(dictDataMap.get(tenantId))
-                        // 获取租户当前字典类型的字典数据
-                        .map(tenantDictDataMap -> tenantDictDataMap.get(dictType.getDictType()))
-                        // 保存字典数据项的字典键值，用于判断数据是否需要同步
-                        .map(data -> StreamUtils.toSet(data, SysDictData::getDictValue))
-                        // 添加到排除集合中
-                        .ifPresent(excludeDictDataSet::addAll);
+                            // 获取租户当前字典类型的字典数据
+                            .map(tenantDictDataMap -> tenantDictDataMap.get(dictType.getDictType()))
+                            // 保存字典数据项的字典键值，用于判断数据是否需要同步
+                            .map(data -> StreamUtils.toSet(data, SysDictData::getDictValue))
+                            // 添加到排除集合中
+                            .ifPresent(excludeDictDataSet::addAll);
                 } else {
                     // 同步字典类型
                     SysDictType type = BeanUtil.toBean(dictType, SysDictType.class);
@@ -493,22 +514,21 @@ public class SysTenantServiceImpl implements ISysTenantService {
                 }
             }
         }
-        TenantHelper.ignore(() -> {
-            if (CollUtil.isNotEmpty(saveTypeList)) {
-                dictTypeMapper.insertBatch(saveTypeList);
-            }
-            if (CollUtil.isNotEmpty(saveDataList)) {
-                dictDataMapper.insertBatch(saveDataList);
-            }
-        });
+        TenantHelper.ignore(
+                () -> {
+                    if (CollUtil.isNotEmpty(saveTypeList)) {
+                        dictTypeMapper.insertBatch(saveTypeList);
+                    }
+                    if (CollUtil.isNotEmpty(saveDataList)) {
+                        dictDataMapper.insertBatch(saveDataList);
+                    }
+                });
         for (String tenantId : syncTenantIds) {
             TenantHelper.dynamic(tenantId, () -> CacheUtils.clear(CacheNames.SYS_DICT));
         }
     }
 
-    /**
-     * 同步租户参数配置
-     */
+    /** 同步租户参数配置 */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void syncTenantConfig() {
@@ -516,17 +536,21 @@ public class SysTenantServiceImpl implements ISysTenantService {
         List<SysConfig> configList = TenantHelper.ignore(() -> configMapper.selectList());
 
         // 所有租户参数配置
-        Map<String, List<SysConfig>> configMap = StreamUtils.groupByKey(configList, TenantEntity::getTenantId);
+        Map<String, List<SysConfig>> configMap =
+                StreamUtils.groupByKey(configList, TenantEntity::getTenantId);
 
         // 默认租户字典类型列表
         List<SysConfig> defaultConfigList = configMap.get(TenantConstants.DEFAULT_TENANT_ID);
 
         // 获取所有租户编号
-        List<String> tenantIds = baseMapper.selectObjs(
-            new LambdaQueryWrapper<SysTenant>().select(SysTenant::getTenantId)
-                .eq(SysTenant::getStatus, SystemConstants.NORMAL), x -> {
-                return Convert.toStr(x);
-            });
+        List<String> tenantIds =
+                baseMapper.selectObjs(
+                        new LambdaQueryWrapper<SysTenant>()
+                                .select(SysTenant::getTenantId)
+                                .eq(SysTenant::getStatus, SystemConstants.NORMAL),
+                        x -> {
+                            return Convert.toStr(x);
+                        });
         // 待入库的字典类型和字典数据
         List<SysConfig> saveConfigList = new ArrayList<>();
         // 待同步的租户编号（用于清除对于租户的字典缓存）
@@ -540,7 +564,8 @@ public class SysTenantServiceImpl implements ISysTenantService {
             // 根据默认租户的字典类型进行数据同步
             for (SysConfig config : defaultConfigList) {
                 // 获取当前租户的字典类型列表
-                List<String> typeList = StreamUtils.toList(configMap.get(tenantId), SysConfig::getConfigKey);
+                List<String> typeList =
+                        StreamUtils.toList(configMap.get(tenantId), SysConfig::getConfigKey);
                 if (!typeList.contains(config.getConfigKey())) {
                     SysConfig type = BeanUtil.toBean(config, SysConfig.class);
                     type.setConfigId(null);
@@ -552,14 +577,14 @@ public class SysTenantServiceImpl implements ISysTenantService {
                 }
             }
         }
-        TenantHelper.ignore(() -> {
-            if (CollUtil.isNotEmpty(saveConfigList)) {
-                configMapper.insertBatch(saveConfigList);
-            }
-        });
+        TenantHelper.ignore(
+                () -> {
+                    if (CollUtil.isNotEmpty(saveConfigList)) {
+                        configMapper.insertBatch(saveConfigList);
+                    }
+                });
         for (String tenantId : syncTenantIds) {
             TenantHelper.dynamic(tenantId, () -> CacheUtils.clear(CacheNames.SYS_CONFIG));
         }
     }
-
 }

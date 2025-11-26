@@ -49,16 +49,18 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",       // 注解（元数据）
-                    "**/core/ExcelListener.class",    // 接口
-                    "**/core/ExcelResult.class",      // 接口
-                    "**/handler/**",          // Handler（重度依赖POI/FastExcel）
-                    "**/*Application.class"   // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/annotation/**", // 注解（元数据）
+                        "**/core/ExcelListener.class", // 接口
+                        "**/core/ExcelResult.class", // 接口
+                        "**/handler/**", // Handler（重度依赖POI/FastExcel）
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

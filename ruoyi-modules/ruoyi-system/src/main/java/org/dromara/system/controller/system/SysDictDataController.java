@@ -2,26 +2,25 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.web.core.BaseController;
 import org.dromara.common.excel.utils.ExcelUtil;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysDictDataBo;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.service.ISysDictDataService;
 import org.dromara.system.service.ISysDictTypeService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 数据字典信息
@@ -37,18 +36,14 @@ public class SysDictDataController extends BaseController {
     private final ISysDictDataService dictDataService;
     private final ISysDictTypeService dictTypeService;
 
-    /**
-     * 查询字典数据列表
-     */
+    /** 查询字典数据列表 */
     @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
     public TableDataInfo<SysDictDataVo> list(SysDictDataBo dictData, PageQuery pageQuery) {
         return dictDataService.selectPageDictDataList(dictData, pageQuery);
     }
 
-    /**
-     * 导出字典数据列表
-     */
+    /** 导出字典数据列表 */
     @Log(title = "字典数据", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:dict:export")
     @PostMapping("/export")
@@ -82,9 +77,7 @@ public class SysDictDataController extends BaseController {
         return R.ok(data);
     }
 
-    /**
-     * 新增字典类型
-     */
+    /** 新增字典类型 */
     @SaCheckPermission("system:dict:add")
     @Log(title = "字典数据", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -97,9 +90,7 @@ public class SysDictDataController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 修改保存字典类型
-     */
+    /** 修改保存字典类型 */
     @SaCheckPermission("system:dict:edit")
     @Log(title = "字典数据", businessType = BusinessType.UPDATE)
     @RepeatSubmit()

@@ -1,5 +1,6 @@
 package org.dromara.system.dubbo;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -10,8 +11,6 @@ import org.dromara.system.domain.bo.SysSocialBo;
 import org.dromara.system.domain.vo.SysSocialVo;
 import org.dromara.system.service.ISysSocialService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 社会化关系服务
@@ -79,5 +78,4 @@ public class RemoteSocialServiceImpl implements RemoteSocialService {
     public Boolean deleteWithValidById(Long socialId) {
         return sysSocialService.deleteWithValidById(socialId);
     }
-
 }

@@ -1,13 +1,12 @@
 package org.dromara.demo.service;
 
+import java.util.Collection;
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.demo.domain.TestDemo;
 import org.dromara.demo.domain.bo.TestDemoBo;
 import org.dromara.demo.domain.vo.TestDemoVo;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * 测试单表Service接口
@@ -24,19 +23,13 @@ public interface ITestDemoService {
      */
     TestDemoVo queryById(Long id);
 
-    /**
-     * 查询列表
-     */
+    /** 查询列表 */
     TableDataInfo<TestDemoVo> queryPageList(TestDemoBo bo, PageQuery pageQuery);
 
-    /**
-     * 自定义分页查询
-     */
+    /** 自定义分页查询 */
     TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery);
 
-    /**
-     * 查询列表
-     */
+    /** 查询列表 */
     List<TestDemoVo> queryList(TestDemoBo bo);
 
     /**
@@ -58,14 +51,12 @@ public interface ITestDemoService {
     /**
      * 校验并删除数据
      *
-     * @param ids     主键集合
+     * @param ids 主键集合
      * @param isValid 是否校验,true-删除前校验,false-不校验
      * @return
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
 
-    /**
-     * 批量保存
-     */
+    /** 批量保存 */
     Boolean saveBatch(List<TestDemo> list);
 }

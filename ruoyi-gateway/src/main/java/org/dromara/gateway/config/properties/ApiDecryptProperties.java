@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * api解密属性配置类
+ *
  * @author wdhcr
  */
 @Data
@@ -15,14 +16,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "api-decrypt")
 public class ApiDecryptProperties {
 
-    /**
-     * 加密开关
-     */
+    /** 加密开关 */
     private Boolean enabled;
 
-    /**
-     * 头部标识
-     */
+    /** 头部标识 */
     private String headerFlag;
-
 }

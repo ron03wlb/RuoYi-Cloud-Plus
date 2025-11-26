@@ -1,7 +1,11 @@
 package org.dromara.common.core.validate.dicts;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import java.util.Set;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.service.DictService;
 import org.junit.jupiter.api.DisplayName;
@@ -9,11 +13,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 /**
  * DictPatternValidator 集成测试
@@ -23,15 +22,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("DictPatternValidator 集成测试")
 class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired
-    private Validator validator;
+    @Autowired private Validator validator;
 
-    @MockBean
-    private DictService dictService;
+    @MockBean private DictService dictService;
 
-    /**
-     * 测试用的DTO类
-     */
+    /** 测试用的DTO类 */
     static class UserDto {
         @DictPattern(dictType = "sys_user_sex", separator = ",", message = "性别字典值无效")
         private String sex;
@@ -64,8 +59,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该通过验证 - 当字典值存在于字典中")
         void shouldPassValidation_WhenDictValueExists() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "0", ","))
-                .thenReturn("男");
+            when(dictService.getDictLabel("sys_user_sex", "0", ",")).thenReturn("男");
 
             UserDto user = new UserDto();
             user.setSex("0");
@@ -75,8 +69,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .isEmpty();
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .isEmpty();
             verify(dictService).getDictLabel("sys_user_sex", "0", ",");
         }
 
@@ -84,10 +78,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该通过验证 - 多个字典值都存在")
         void shouldPassValidation_WhenAllDictValuesExist() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "1", ","))
-                .thenReturn("女");
-            when(dictService.getDictLabel("sys_user_status", "0", ","))
-                .thenReturn("正常");
+            when(dictService.getDictLabel("sys_user_sex", "1", ",")).thenReturn("女");
+            when(dictService.getDictLabel("sys_user_status", "0", ",")).thenReturn("正常");
 
             UserDto user = new UserDto();
             user.setSex("1");
@@ -106,13 +98,11 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该通过验证 - 字典值为数字字符串")
         void shouldPassValidation_WhenDictValueIsNumericString() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "0", ","))
-                .thenReturn("男");
-            when(dictService.getDictLabel("sys_user_status", "1", ","))
-                .thenReturn("停用");
+            when(dictService.getDictLabel("sys_user_sex", "0", ",")).thenReturn("男");
+            when(dictService.getDictLabel("sys_user_status", "1", ",")).thenReturn("停用");
 
             UserDto user = new UserDto();
-            user.setSex("0");  // 设置 sex 字段避免 null
+            user.setSex("0"); // 设置 sex 字段避免 null
             user.setStatus("1");
 
             // Act
@@ -120,8 +110,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
-                .isEmpty();
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
+                    .isEmpty();
             verify(dictService).getDictLabel("sys_user_status", "1", ",");
         }
     }
@@ -135,7 +125,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         void shouldFailValidation_WhenDictValueNotExists() {
             // Arrange
             when(dictService.getDictLabel("sys_user_sex", "99", ","))
-                .thenReturn(""); // 返回空字符串表示字典值不存在
+                    .thenReturn(""); // 返回空字符串表示字典值不存在
 
             UserDto user = new UserDto();
             user.setSex("99");
@@ -145,13 +135,14 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1)
-                .first()
-                .satisfies(v -> {
-                    assertThat(v.getMessage()).isEqualTo("性别字典值无效");
-                    assertThat(v.getInvalidValue()).isEqualTo("99");
-                });
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1)
+                    .first()
+                    .satisfies(
+                            v -> {
+                                assertThat(v.getMessage()).isEqualTo("性别字典值无效");
+                                assertThat(v.getInvalidValue()).isEqualTo("99");
+                            });
             verify(dictService).getDictLabel("sys_user_sex", "99", ",");
         }
 
@@ -159,8 +150,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该验证失败 - 当字典服务返回null")
         void shouldFailValidation_WhenDictServiceReturnsNull() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "invalid", ","))
-                .thenReturn(null);
+            when(dictService.getDictLabel("sys_user_sex", "invalid", ",")).thenReturn(null);
 
             UserDto user = new UserDto();
             user.setSex("invalid");
@@ -170,10 +160,10 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1)
-                .first()
-                .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1)
+                    .first()
+                    .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
             verify(dictService).getDictLabel("sys_user_sex", "invalid", ",");
         }
 
@@ -189,10 +179,10 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1)
-                .first()
-                .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1)
+                    .first()
+                    .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
             verifyNoInteractions(dictService);
         }
 
@@ -210,10 +200,10 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
             // Assert
             // null 值会触发验证失败（DictPatternValidator.isValid 返回 false）
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1)
-                .first()
-                .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1)
+                    .first()
+                    .satisfies(v -> assertThat(v.getMessage()).isEqualTo("性别字典值无效"));
             // DictService 不会被调用，因为 isBlank 检查在 DictService 调用之前
             verifyNoInteractions(dictService);
         }
@@ -230,8 +220,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1);
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1);
             verifyNoInteractions(dictService);
         }
     }
@@ -258,7 +248,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         void shouldUseCustomSeparator() {
             // Arrange
             when(dictService.getDictLabel("product_category", "electronics", ";"))
-                .thenReturn("电子产品");
+                    .thenReturn("电子产品");
 
             ProductDto product = new ProductDto();
             product.setCategory("electronics");
@@ -280,23 +270,20 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("用户性别字典验证")
         void shouldValidateUserSex() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "0", ","))
-                .thenReturn("男");
-            when(dictService.getDictLabel("sys_user_sex", "1", ","))
-                .thenReturn("女");
-            when(dictService.getDictLabel("sys_user_sex", "2", ","))
-                .thenReturn("未知");
+            when(dictService.getDictLabel("sys_user_sex", "0", ",")).thenReturn("男");
+            when(dictService.getDictLabel("sys_user_sex", "1", ",")).thenReturn("女");
+            when(dictService.getDictLabel("sys_user_sex", "2", ",")).thenReturn("未知");
 
             // Test valid values
-            for (String sex : new String[]{"0", "1", "2"}) {
+            for (String sex : new String[] {"0", "1", "2"}) {
                 UserDto user = new UserDto();
                 user.setSex(sex);
 
                 Set<ConstraintViolation<UserDto>> violations = validator.validate(user);
 
                 assertThat(violations)
-                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                    .isEmpty();
+                        .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                        .isEmpty();
             }
 
             verify(dictService, times(3)).getDictLabel(eq("sys_user_sex"), anyString(), eq(","));
@@ -306,30 +293,26 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("用户状态字典验证")
         void shouldValidateUserStatus() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "0", ","))
-                .thenReturn("男");
-            when(dictService.getDictLabel("sys_user_status", "0", ","))
-                .thenReturn("正常");
-            when(dictService.getDictLabel("sys_user_status", "1", ","))
-                .thenReturn("停用");
+            when(dictService.getDictLabel("sys_user_sex", "0", ",")).thenReturn("男");
+            when(dictService.getDictLabel("sys_user_status", "0", ",")).thenReturn("正常");
+            when(dictService.getDictLabel("sys_user_status", "1", ",")).thenReturn("停用");
 
             // Test valid status
             UserDto user1 = new UserDto();
             user1.setSex("0"); // 设置 sex 避免 null 验证失败
             user1.setStatus("0");
             assertThat(validator.validate(user1))
-                .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
-                .isEmpty();
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
+                    .isEmpty();
 
             // Test invalid status
-            when(dictService.getDictLabel("sys_user_status", "99", ","))
-                .thenReturn("");
+            when(dictService.getDictLabel("sys_user_status", "99", ",")).thenReturn("");
             UserDto user2 = new UserDto();
             user2.setSex("0"); // 设置 sex 避免 null 验证失败
             user2.setStatus("99");
             assertThat(validator.validate(user2))
-                .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
-                .hasSize(1);
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("status"))
+                    .hasSize(1);
         }
     }
 
@@ -341,8 +324,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确处理特殊字符字典值")
         void shouldHandleSpecialCharacters() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "A-1", ","))
-                .thenReturn("特殊-1");
+            when(dictService.getDictLabel("sys_user_sex", "A-1", ",")).thenReturn("特殊-1");
 
             UserDto user = new UserDto();
             user.setSex("A-1");
@@ -352,8 +334,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .isEmpty();
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .isEmpty();
             verify(dictService).getDictLabel("sys_user_sex", "A-1", ",");
         }
 
@@ -361,8 +343,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确处理中文字典值")
         void shouldHandleChineseCharacters() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "男", ","))
-                .thenReturn("男性");
+            when(dictService.getDictLabel("sys_user_sex", "男", ",")).thenReturn("男性");
 
             UserDto user = new UserDto();
             user.setSex("男");
@@ -372,8 +353,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .isEmpty();
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .isEmpty();
             verify(dictService).getDictLabel("sys_user_sex", "男", ",");
         }
 
@@ -382,8 +363,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         void shouldHandleLongDictValue() {
             // Arrange
             String longValue = "x".repeat(100);
-            when(dictService.getDictLabel("sys_user_sex", longValue, ","))
-                .thenReturn("");
+            when(dictService.getDictLabel("sys_user_sex", longValue, ",")).thenReturn("");
 
             UserDto user = new UserDto();
             user.setSex(longValue);
@@ -393,8 +373,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations)
-                .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
-                .hasSize(1);
+                    .filteredOn(v -> v.getPropertyPath().toString().equals("sex"))
+                    .hasSize(1);
             verify(dictService).getDictLabel("sys_user_sex", longValue, ",");
         }
     }
@@ -407,8 +387,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确读取dictType字段")
         void shouldReadDictTypeField() throws NoSuchFieldException {
             // Arrange
-            DictPattern annotation = UserDto.class.getDeclaredField("sex")
-                .getAnnotation(DictPattern.class);
+            DictPattern annotation =
+                    UserDto.class.getDeclaredField("sex").getAnnotation(DictPattern.class);
 
             // Assert
             assertThat(annotation).isNotNull();
@@ -419,8 +399,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确读取separator字段")
         void shouldReadSeparatorField() throws NoSuchFieldException {
             // Arrange
-            DictPattern annotation = UserDto.class.getDeclaredField("sex")
-                .getAnnotation(DictPattern.class);
+            DictPattern annotation =
+                    UserDto.class.getDeclaredField("sex").getAnnotation(DictPattern.class);
 
             // Assert
             assertThat(annotation).isNotNull();
@@ -431,8 +411,8 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确读取message字段")
         void shouldReadMessageField() throws NoSuchFieldException {
             // Arrange
-            DictPattern annotation = UserDto.class.getDeclaredField("sex")
-                .getAnnotation(DictPattern.class);
+            DictPattern annotation =
+                    UserDto.class.getDeclaredField("sex").getAnnotation(DictPattern.class);
 
             // Assert
             assertThat(annotation).isNotNull();
@@ -444,9 +424,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
     @DisplayName("7. 边界分支覆盖测试")
     class BranchCoverageTests {
 
-        /**
-         * 测试用DTO - separator为空字符串
-         */
+        /** 测试用DTO - separator为空字符串 */
         static class EmptySeparatorDto {
             @DictPattern(dictType = "sys_user_sex", separator = "", message = "字典值无效")
             private String field;
@@ -460,9 +438,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
             }
         }
 
-        /**
-         * 测试用DTO - separator为空白字符串
-         */
+        /** 测试用DTO - separator为空白字符串 */
         static class BlankSeparatorDto {
             @DictPattern(dictType = "sys_user_sex", separator = "   ", message = "字典值无效")
             private String field;
@@ -476,9 +452,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
             }
         }
 
-        /**
-         * 测试用DTO - dictType为空字符串
-         */
+        /** 测试用DTO - dictType为空字符串 */
         static class EmptyDictTypeDto {
             @DictPattern(dictType = "", separator = ",", message = "字典值无效")
             private String field;
@@ -492,9 +466,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
             }
         }
 
-        /**
-         * 测试用DTO - dictType为空白字符串
-         */
+        /** 测试用DTO - dictType为空白字符串 */
         static class BlankDictTypeDto {
             @DictPattern(dictType = "   ", separator = ",", message = "字典值无效")
             private String field;
@@ -513,8 +485,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         void shouldUseDefaultSeparator_WhenSeparatorIsEmpty() {
             // Arrange
             // 当 separator 为空时，应该使用默认的 "," 分隔符
-            when(dictService.getDictLabel("sys_user_sex", "0", ","))
-                .thenReturn("男");
+            when(dictService.getDictLabel("sys_user_sex", "0", ",")).thenReturn("男");
 
             EmptySeparatorDto dto = new EmptySeparatorDto();
             dto.setField("0");
@@ -532,8 +503,7 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该使用默认分隔符 - 当separator为空白字符串")
         void shouldUseDefaultSeparator_WhenSeparatorIsBlank() {
             // Arrange
-            when(dictService.getDictLabel("sys_user_sex", "1", ","))
-                .thenReturn("女");
+            when(dictService.getDictLabel("sys_user_sex", "1", ",")).thenReturn("女");
 
             BlankSeparatorDto dto = new BlankSeparatorDto();
             dto.setField("1");
@@ -559,8 +529,9 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations).hasSize(1);
-            assertThat(violations).first()
-                .satisfies(v -> assertThat(v.getMessage()).isEqualTo("字典值无效"));
+            assertThat(violations)
+                    .first()
+                    .satisfies(v -> assertThat(v.getMessage()).isEqualTo("字典值无效"));
             // DictService 不应该被调用
             verifyNoInteractions(dictService);
         }
@@ -577,8 +548,9 @@ class DictPatternValidatorIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(violations).hasSize(1);
-            assertThat(violations).first()
-                .satisfies(v -> assertThat(v.getMessage()).isEqualTo("字典值无效"));
+            assertThat(violations)
+                    .first()
+                    .satisfies(v -> assertThat(v.getMessage()).isEqualTo("字典值无效"));
             // DictService 不应该被调用
             verifyNoInteractions(dictService);
         }

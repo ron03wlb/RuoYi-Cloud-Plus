@@ -5,6 +5,10 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
 import com.baomidou.lock.annotation.Lock4j;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -20,11 +24,6 @@ import org.dromara.gen.service.IGenTableService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * 代码生成 操作处理
  *
@@ -38,9 +37,7 @@ public class GenController extends BaseController {
 
     private final IGenTableService genTableService;
 
-    /**
-     * 查询代码生成列表
-     */
+    /** 查询代码生成列表 */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/list")
     public TableDataInfo<GenTable> genList(GenTable genTable, PageQuery pageQuery) {
@@ -66,9 +63,7 @@ public class GenController extends BaseController {
         return R.ok(map);
     }
 
-    /**
-     * 查询数据库列表
-     */
+    /** 查询数据库列表 */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/db/list")
     public TableDataInfo<GenTable> dataList(GenTable genTable, PageQuery pageQuery) {
@@ -104,9 +99,7 @@ public class GenController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 修改保存代码生成业务
-     */
+    /** 修改保存代码生成业务 */
     @RepeatSubmit()
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
@@ -137,7 +130,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:preview")
     @GetMapping("/preview/{tableId}")
-    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId) throws IOException {
+    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId)
+            throws IOException {
         Map<String, String> dataMap = genTableService.previewCode(tableId);
         return R.ok(dataMap);
     }
@@ -150,7 +144,8 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:code")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/download/{tableId}")
-    public void download(HttpServletResponse response, @PathVariable("tableId") Long tableId) throws IOException {
+    public void download(HttpServletResponse response, @PathVariable("tableId") Long tableId)
+            throws IOException {
         byte[] data = genTableService.downloadCode(tableId);
         genCode(response, data);
     }
@@ -196,9 +191,7 @@ public class GenController extends BaseController {
         genCode(response, data);
     }
 
-    /**
-     * 生成zip文件
-     */
+    /** 生成zip文件 */
     private void genCode(HttpServletResponse response, byte[] data) throws IOException {
         response.reset();
         response.addHeader("Access-Control-Allow-Origin", "*");
@@ -209,12 +202,10 @@ public class GenController extends BaseController {
         IoUtil.write(response.getOutputStream(), false, data);
     }
 
-    /**
-     * 查询数据源名称列表
-     */
+    /** 查询数据源名称列表 */
     @SaCheckPermission("tool:gen:list")
     @GetMapping(value = "/getDataNames")
-    public R<Object> getCurrentDataSourceNameList(){
+    public R<Object> getCurrentDataSourceNameList() {
         return R.ok(DataBaseHelper.getDataSourceNameList());
     }
 }

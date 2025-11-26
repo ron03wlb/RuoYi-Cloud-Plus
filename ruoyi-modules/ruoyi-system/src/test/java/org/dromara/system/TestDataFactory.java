@@ -1,25 +1,24 @@
 package org.dromara.system;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import org.dromara.system.domain.*;
 import org.dromara.system.domain.bo.*;
 import org.dromara.system.domain.vo.*;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 /**
  * 测试数据工厂
- * <p>
- * 提供统一的测试数据创建方法，遵循工厂模式
- * </p>
  *
- * <p>设计原则:</p>
+ * <p>提供统一的测试数据创建方法，遵循工厂模式
+ *
+ * <p>设计原则:
+ *
  * <ul>
- *   <li>提供默认值，减少测试代码冗余</li>
- *   <li>提供参数化构造方法，支持自定义</li>
- *   <li>命名清晰，一看就懂</li>
- *   <li>数据符合业务规则</li>
+ *   <li>提供默认值，减少测试代码冗余
+ *   <li>提供参数化构造方法，支持自定义
+ *   <li>命名清晰，一看就懂
+ *   <li>数据符合业务规则
  * </ul>
  *
  * @author Test Team
@@ -30,9 +29,7 @@ public class TestDataFactory {
     // 用户相关测试数据
     // ====================
 
-    /**
-     * 创建测试用户（Entity）
-     */
+    /** 创建测试用户（Entity） */
     public static SysUser createUser(Long userId, String userName) {
         SysUser user = new SysUser();
         user.setUserId(userId);
@@ -47,9 +44,7 @@ public class TestDataFactory {
         return user;
     }
 
-    /**
-     * 创建测试用户 BO
-     */
+    /** 创建测试用户 BO */
     public static SysUserBo createUserBo(Long userId, String userName) {
         SysUserBo bo = new SysUserBo();
         bo.setUserId(userId);
@@ -62,9 +57,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试用户 VO
-     */
+    /** 创建测试用户 VO */
     public static SysUserVo createUserVo(Long userId, String userName) {
         SysUserVo vo = new SysUserVo();
         vo.setUserId(userId);
@@ -82,9 +75,7 @@ public class TestDataFactory {
     // 角色相关测试数据
     // ====================
 
-    /**
-     * 创建测试角色（Entity）
-     */
+    /** 创建测试角色（Entity） */
     public static SysRole createRole(Long roleId, String roleKey) {
         SysRole role = new SysRole();
         role.setRoleId(roleId);
@@ -98,9 +89,7 @@ public class TestDataFactory {
         return role;
     }
 
-    /**
-     * 创建测试角色 BO
-     */
+    /** 创建测试角色 BO */
     public static SysRoleBo createRoleBo(Long roleId, String roleKey) {
         SysRoleBo bo = new SysRoleBo();
         bo.setRoleId(roleId);
@@ -112,9 +101,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试角色 VO
-     */
+    /** 创建测试角色 VO */
     public static SysRoleVo createRoleVo(Long roleId, String roleKey) {
         SysRoleVo vo = new SysRoleVo();
         vo.setRoleId(roleId);
@@ -131,9 +118,7 @@ public class TestDataFactory {
     // 部门相关测试数据
     // ====================
 
-    /**
-     * 创建测试部门（Entity）
-     */
+    /** 创建测试部门（Entity） */
     public static SysDept createDept(Long deptId, String deptName) {
         SysDept dept = new SysDept();
         dept.setDeptId(deptId);
@@ -147,9 +132,7 @@ public class TestDataFactory {
         return dept;
     }
 
-    /**
-     * 创建测试部门 BO
-     */
+    /** 创建测试部门 BO */
     public static SysDeptBo createDeptBo(Long deptId, String deptName) {
         SysDeptBo bo = new SysDeptBo();
         bo.setDeptId(deptId);
@@ -160,9 +143,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试部门 VO
-     */
+    /** 创建测试部门 VO */
     public static SysDeptVo createDeptVo(Long deptId, String deptName) {
         SysDeptVo vo = new SysDeptVo();
         vo.setDeptId(deptId);
@@ -179,9 +160,7 @@ public class TestDataFactory {
     // 菜单相关测试数据
     // ====================
 
-    /**
-     * 创建测试菜单（Entity）
-     */
+    /** 创建测试菜单（Entity） */
     public static SysMenu createMenu(Long menuId, String menuName) {
         SysMenu menu = new SysMenu();
         menu.setMenuId(menuId);
@@ -196,9 +175,7 @@ public class TestDataFactory {
         return menu;
     }
 
-    /**
-     * 创建测试菜单 BO
-     */
+    /** 创建测试菜单 BO */
     public static SysMenuBo createMenuBo(Long menuId, String menuName) {
         SysMenuBo bo = new SysMenuBo();
         bo.setMenuId(menuId);
@@ -212,9 +189,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试菜单 VO
-     */
+    /** 创建测试菜单 VO */
     public static SysMenuVo createMenuVo(Long menuId, String menuName) {
         SysMenuVo vo = new SysMenuVo();
         vo.setMenuId(menuId);
@@ -233,9 +208,7 @@ public class TestDataFactory {
     // 岗位相关测试数据
     // ====================
 
-    /**
-     * 创建测试岗位（Entity）
-     */
+    /** 创建测试岗位（Entity） */
     public static SysPost createPost(Long postId, String postCode) {
         SysPost post = new SysPost();
         post.setPostId(postId);
@@ -247,9 +220,7 @@ public class TestDataFactory {
         return post;
     }
 
-    /**
-     * 创建测试岗位 VO
-     */
+    /** 创建测试岗位 VO */
     public static SysPostVo createPostVo(Long postId, String postCode) {
         SysPostVo vo = new SysPostVo();
         vo.setPostId(postId);
@@ -265,9 +236,7 @@ public class TestDataFactory {
     // 字典相关测试数据
     // ====================
 
-    /**
-     * 创建测试字典类型（Entity）
-     */
+    /** 创建测试字典类型（Entity） */
     public static SysDictType createDictType(Long dictId, String dictType) {
         SysDictType type = new SysDictType();
         type.setDictId(dictId);
@@ -277,9 +246,7 @@ public class TestDataFactory {
         return type;
     }
 
-    /**
-     * 创建测试字典数据（Entity）
-     */
+    /** 创建测试字典数据（Entity） */
     public static SysDictData createDictData(Long dictCode, String dictType, String dictValue) {
         SysDictData data = new SysDictData();
         data.setDictCode(dictCode);
@@ -295,9 +262,7 @@ public class TestDataFactory {
     // 客户端相关测试数据
     // ====================
 
-    /**
-     * 创建测试客户端（Entity）
-     */
+    /** 创建测试客户端（Entity） */
     public static SysClient createClient(Long id, String clientKey) {
         SysClient client = new SysClient();
         client.setId(id);
@@ -314,9 +279,7 @@ public class TestDataFactory {
         return client;
     }
 
-    /**
-     * 创建测试客户端 BO
-     */
+    /** 创建测试客户端 BO */
     public static SysClientBo createClientBo(Long id, String clientKey) {
         SysClientBo bo = new SysClientBo();
         bo.setId(id);
@@ -330,9 +293,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试客户端 VO
-     */
+    /** 创建测试客户端 VO */
     public static SysClientVo createClientVo(Long id, String clientKey) {
         SysClientVo vo = new SysClientVo();
         vo.setId(id);
@@ -352,9 +313,7 @@ public class TestDataFactory {
     // 社会化关系相关测试数据
     // ====================
 
-    /**
-     * 创建测试社会化关系（Entity）
-     */
+    /** 创建测试社会化关系（Entity） */
     public static SysSocial createSocial(Long id, Long userId, String source) {
         SysSocial social = new SysSocial();
         social.setId(id);
@@ -373,9 +332,7 @@ public class TestDataFactory {
         return social;
     }
 
-    /**
-     * 创建测试社会化关系 BO
-     */
+    /** 创建测试社会化关系 BO */
     public static SysSocialBo createSocialBo(Long id, Long userId, String source) {
         SysSocialBo bo = new SysSocialBo();
         bo.setId(id);
@@ -393,9 +350,7 @@ public class TestDataFactory {
         return bo;
     }
 
-    /**
-     * 创建测试社会化关系 VO
-     */
+    /** 创建测试社会化关系 VO */
     public static SysSocialVo createSocialVo(Long id, Long userId, String source) {
         SysSocialVo vo = new SysSocialVo();
         vo.setId(id);
@@ -418,25 +373,21 @@ public class TestDataFactory {
     // 通用列表创建方法
     // ====================
 
-    /**
-     * 创建用户列表
-     */
+    /** 创建用户列表 */
     public static List<SysUserVo> createUserList(int count) {
         return Arrays.asList(
-            createUserVo(1L, "testuser1"),
-            createUserVo(2L, "testuser2"),
-            createUserVo(3L, "testuser3")
-        ).subList(0, Math.min(count, 3));
+                        createUserVo(1L, "testuser1"),
+                        createUserVo(2L, "testuser2"),
+                        createUserVo(3L, "testuser3"))
+                .subList(0, Math.min(count, 3));
     }
 
-    /**
-     * 创建角色列表
-     */
+    /** 创建角色列表 */
     public static List<SysRoleVo> createRoleList(int count) {
         return Arrays.asList(
-            createRoleVo(1L, "admin"),
-            createRoleVo(2L, "user"),
-            createRoleVo(3L, "guest")
-        ).subList(0, Math.min(count, 3));
+                        createRoleVo(1L, "admin"),
+                        createRoleVo(2L, "user"),
+                        createRoleVo(3L, "guest"))
+                .subList(0, Math.min(count, 3));
     }
 }

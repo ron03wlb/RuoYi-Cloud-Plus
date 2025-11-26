@@ -1,6 +1,13 @@
 package org.dromara.resource.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.dev33.satoken.dao.SaTokenDao;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import javax.sql.DataSource;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.oss.core.OssClient;
@@ -20,75 +27,70 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * SysOssService 集成测试
- * <p>
- * 测试 OSS 文件存储服务的完整功能，包括文件上传、下载、查询、删除等操作
+ *
+ * <p>测试 OSS 文件存储服务的完整功能，包括文件上传、下载、查询、删除等操作
  *
  * <h3>P0 问题 - Bean 配置冲突极其复杂，需要架构级重构</h3>
- * <p>
- * 问题：Spring 容器启动时存在深层的 Bean 依赖冲突，无法通过简单配置解决
+ *
+ * <p>问题：Spring 容器启动时存在深层的 Bean 依赖冲突，无法通过简单配置解决
  *
  * <h4>历史尝试记录（9次尝试，全部失败）：</h4>
+ *
  * <ol>
- *   <li>方案1: 使用 {@code @TestConfiguration} + {@code @Primary} - 仍有 Bean 冲突 ❌</li>
- *   <li>方案2: 设置 {@code spring.main.allow-bean-definition-overriding=true} - 无效 ❌</li>
- *   <li>方案3: 创建轻量级启动类 {@link org.dromara.resource.TestResourceApplication}
- *       排除 Dubbo/Nacos - 缺少 TenantProperties Bean ❌</li>
- *   <li>方案4: 在 TestResourceConfig 中提供 TenantProperties Bean - 仍有 Sa-Token DAO 冲突 ❌</li>
- *   <li>方案5: 在 TestResourceConfig 中添加 @Primary SaTokenDao Bean - @Primary 不生效 ❌</li>
- *   <li>方案6: 禁用 TenantConfiguration（设置 enable=false）- 仍有 Sa-Token DAO 冲突 ❌</li>
- *   <li>方案7: 配置 Sa-Token 属性禁用 Redis 持久化 - 仍有 Bean 冲突 ❌</li>
- *   <li>方案8: 使用 {@code @MockBean} 替换冲突的 SaTokenDao -
- *       错误：{@code MockBean 期望单个 bean 但发现2个} ❌</li>
- *   <li>方案9: 使用 {@code @MockBean(name="...")} 指定替换特定的 bean - 仍有其他冲突 ❌</li>
+ *   <li>方案1: 使用 {@code @TestConfiguration} + {@code @Primary} - 仍有 Bean 冲突 ❌
+ *   <li>方案2: 设置 {@code spring.main.allow-bean-definition-overriding=true} - 无效 ❌
+ *   <li>方案3: 创建轻量级启动类 {@link org.dromara.resource.TestResourceApplication} 排除 Dubbo/Nacos - 缺少
+ *       TenantProperties Bean ❌
+ *   <li>方案4: 在 TestResourceConfig 中提供 TenantProperties Bean - 仍有 Sa-Token DAO 冲突 ❌
+ *   <li>方案5: 在 TestResourceConfig 中添加 @Primary SaTokenDao Bean - @Primary 不生效 ❌
+ *   <li>方案6: 禁用 TenantConfiguration（设置 enable=false）- 仍有 Sa-Token DAO 冲突 ❌
+ *   <li>方案7: 配置 Sa-Token 属性禁用 Redis 持久化 - 仍有 Bean 冲突 ❌
+ *   <li>方案8: 使用 {@code @MockBean} 替换冲突的 SaTokenDao - 错误：{@code MockBean 期望单个 bean 但发现2个} ❌
+ *   <li>方案9: 使用 {@code @MockBean(name="...")} 指定替换特定的 bean - 仍有其他冲突 ❌
  * </ol>
  *
  * <h4>根本原因分析：</h4>
- * <p>
- * Resource 模块存在深层的 Bean 依赖冲突链：
+ *
+ * <p>Resource 模块存在深层的 Bean 依赖冲突链：
+ *
  * <ul>
- *   <li><b>主要冲突</b>: {@code SaTokenDao} 类型有两个 Bean (无法通过 @MockBean 解决)</li>
- *   <li><b>依赖链</b>: MyBatis-Plus → Redis/Redisson → Sa-Token → Tenant → 拦截器 → 插件</li>
- *   <li><b>循环依赖</b>: 这些依赖之间有复杂的循环依赖和条件加载关系</li>
- *   <li><b>自动配置</b>: Spring Boot 的自动配置机制在测试环境触发了不必要的 Bean 注册</li>
+ *   <li><b>主要冲突</b>: {@code SaTokenDao} 类型有两个 Bean (无法通过 @MockBean 解决)
+ *   <li><b>依赖链</b>: MyBatis-Plus → Redis/Redisson → Sa-Token → Tenant → 拦截器 → 插件
+ *   <li><b>循环依赖</b>: 这些依赖之间有复杂的循环依赖和条件加载关系
+ *   <li><b>自动配置</b>: Spring Boot 的自动配置机制在测试环境触发了不必要的 Bean 注册
  * </ul>
  *
  * <h4>推荐解决方案（需要1-2天专项工作）：</h4>
+ *
  * <ol>
- *   <li><b>方案A（最推荐）</b>: 使用 {@code @DataJpaTest} 切片测试，仅加载数据层，完全避免 Web 层自动配置</li>
- *   <li><b>方案B（备选）</b>: 重新设计测试架构，使用单元测试而非集成测试，用 Mockito 完全 mock 所有依赖</li>
- *   <li><b>方案C（终极）</b>: 重构 Service 层架构，解耦 Sa-Token、Tenant等基础设施依赖</li>
+ *   <li><b>方案A（最推荐）</b>: 使用 {@code @DataJpaTest} 切片测试，仅加载数据层，完全避免 Web 层自动配置
+ *   <li><b>方案B（备选）</b>: 重新设计测试架构，使用单元测试而非集成测试，用 Mockito 完全 mock 所有依赖
+ *   <li><b>方案C（终极）</b>: 重构 Service 层架构，解耦 Sa-Token、Tenant等基础设施依赖
  * </ol>
  *
  * <h4>优先级：</h4>
+ *
  * <p>P0 - 但需要 1-2 天的专项工作来系统性解决，建议作为独立任务规划
  *
  * @author Lion Li
  * @since 2025-11-10
  */
-@Disabled("P0 - Bean 配置冲突极其复杂，需要架构级重构。\n" +
-    "已尝试9种方案均失败：包括 @TestConfiguration、@Primary、排除自动配置、@MockBean、@MockBean(name)。\n" +
-    "当前冲突：SaTokenDao 类型有2个 Bean，且存在复杂的依赖链。\n" +
-    "推荐：使用 @DataJpaTest 切片测试或重新设计测试架构。\n" +
-    "详细分析见类 JavaDoc。")
+@Disabled(
+        "P0 - Bean 配置冲突极其复杂，需要架构级重构。\n"
+                + "已尝试9种方案均失败：包括 @TestConfiguration、@Primary、排除自动配置、@MockBean、@MockBean(name)。\n"
+                + "当前冲突：SaTokenDao 类型有2个 Bean，且存在复杂的依赖链。\n"
+                + "推荐：使用 @DataJpaTest 切片测试或重新设计测试架构。\n"
+                + "详细分析见类 JavaDoc。")
 @SpringBootTest(
-    classes = org.dromara.resource.TestResourceApplication.class,
-    properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        // 禁用 Sa-Token 的 Redis 持久化，使用内存存储
-        "sa-token.alone-redis.enable=false",
-        "sa-token.dao-type=default"
-    }
-)
+        classes = org.dromara.resource.TestResourceApplication.class,
+        properties = {
+            "spring.main.allow-bean-definition-overriding=true",
+            // 禁用 Sa-Token 的 Redis 持久化，使用内存存储
+            "sa-token.alone-redis.enable=false",
+            "sa-token.dao-type=default"
+        })
 @Import(TestResourceConfig.class)
 @DisplayName("SysOssService 集成测试")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -99,12 +101,11 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Mock SaTokenDao 来避免 Bean 冲突
-     * <p>
-     * 这解决了 SaTokenDao 类型有2个 Bean 的冲突问题：
-     * - saTokenDao (来自某个自动配置)
-     * - cn.dev33.satoken.dao.SaTokenDaoForRedisTemplate (Redis 实现)
-     * <p>
-     * 使用 @MockBean(name = "...") 指定要替换的特定 bean
+     *
+     * <p>这解决了 SaTokenDao 类型有2个 Bean 的冲突问题： - saTokenDao (来自某个自动配置) -
+     * cn.dev33.satoken.dao.SaTokenDaoForRedisTemplate (Redis 实现)
+     *
+     * <p>使用 @MockBean(name = "...") 指定要替换的特定 bean
      */
     @MockBean(name = "saTokenDao")
     private SaTokenDao mockSaTokenDao1;
@@ -123,7 +124,8 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
         log.info("=== 初始化测试数据库 ===");
 
         // 创建 sys_oss 表
-        String createOssTable = """
+        String createOssTable =
+                """
             CREATE TABLE IF NOT EXISTS sys_oss (
                 oss_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '对象存储主键',
                 file_name VARCHAR(255) NOT NULL DEFAULT '' COMMENT '文件名',
@@ -141,7 +143,8 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             """;
 
         // 创建 sys_oss_config 表
-        String createOssConfigTable = """
+        String createOssConfigTable =
+                """
             CREATE TABLE IF NOT EXISTS sys_oss_config (
                 oss_config_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
                 config_key VARCHAR(20) NOT NULL DEFAULT '' COMMENT '配置key',
@@ -166,13 +169,16 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             """;
 
         // 插入 MinIO 测试配置
-        String insertMinioConfig = """
+        String insertMinioConfig =
+                """
             INSERT INTO sys_oss_config (config_key, access_key, secret_key, bucket_name, prefix, endpoint, domain, is_https, region, access_policy, status, remark)
             VALUES ('minio', 'minioadmin', 'minioadmin', 'test-bucket', '', '%s', '%s', 'N', '', '1', '0', 'MinIO测试配置')
             ON DUPLICATE KEY UPDATE endpoint = VALUES(endpoint), domain = VALUES(domain);
-            """.formatted(getMinioEndpoint(), getMinioUrl());
+          """
+                        .formatted(getMinioEndpoint(), getMinioUrl());
 
-        SqlScriptExecutor.executeSql(dataSource, createOssTable, createOssConfigTable, insertMinioConfig);
+        SqlScriptExecutor.executeSql(
+                dataSource, createOssTable, createOssConfigTable, insertMinioConfig);
 
         log.info("✅ 测试数据库初始化完成");
         log.info("   MinIO Endpoint: {}", getMinioEndpoint());
@@ -195,9 +201,7 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
         void shouldInjectSysOssService() {
             log.info("=== 验证服务注入 ===");
 
-            assertThat(sysOssService)
-                .as("SysOssService 应该被成功注入")
-                .isNotNull();
+            assertThat(sysOssService).as("SysOssService 应该被成功注入").isNotNull();
 
             log.info("✅ SysOssService 注入成功");
         }
@@ -212,9 +216,7 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             OssClient ossClient = OssFactory.instance("minio");
 
             // Assert
-            assertThat(ossClient)
-                .as("应该能够创建 OssClient 实例")
-                .isNotNull();
+            assertThat(ossClient).as("应该能够创建 OssClient 实例").isNotNull();
 
             log.info("✅ MinIO 连接成功");
         }
@@ -229,13 +231,9 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             boolean ossTableExists = SqlScriptExecutor.tableExists(dataSource, "sys_oss");
             boolean configTableExists = SqlScriptExecutor.tableExists(dataSource, "sys_oss_config");
 
-            assertThat(ossTableExists)
-                .as("sys_oss 表应该存在")
-                .isTrue();
+            assertThat(ossTableExists).as("sys_oss 表应该存在").isTrue();
 
-            assertThat(configTableExists)
-                .as("sys_oss_config 表应该存在")
-                .isTrue();
+            assertThat(configTableExists).as("sys_oss_config 表应该存在").isTrue();
 
             log.info("✅ 数据库表验证成功");
         }
@@ -253,42 +251,24 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
             // Arrange - 创建 mock multipart file
             byte[] content = "Hello, MinIO!".getBytes(StandardCharsets.UTF_8);
-            MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "test.txt",
-                "text/plain",
-                content
-            );
+            MockMultipartFile file =
+                    new MockMultipartFile("file", "test.txt", "text/plain", content);
 
             // Act - 上传文件
             SysOssVo result = sysOssService.upload(file);
 
             // Assert
-            assertThat(result)
-                .as("上传结果不应为空")
-                .isNotNull();
+            assertThat(result).as("上传结果不应为空").isNotNull();
 
-            assertThat(result.getOssId())
-                .as("应该生成 OSS ID")
-                .isNotNull()
-                .isGreaterThan(0L);
+            assertThat(result.getOssId()).as("应该生成 OSS ID").isNotNull().isGreaterThan(0L);
 
-            assertThat(result.getOriginalName())
-                .as("原始文件名应该正确")
-                .isEqualTo("test.txt");
+            assertThat(result.getOriginalName()).as("原始文件名应该正确").isEqualTo("test.txt");
 
-            assertThat(result.getFileSuffix())
-                .as("文件后缀应该正确")
-                .isEqualTo(".txt");
+            assertThat(result.getFileSuffix()).as("文件后缀应该正确").isEqualTo(".txt");
 
-            assertThat(result.getUrl())
-                .as("URL 应该不为空")
-                .isNotNull()
-                .isNotEmpty();
+            assertThat(result.getUrl()).as("URL 应该不为空").isNotNull().isNotEmpty();
 
-            assertThat(result.getService())
-                .as("服务商应该是 minio")
-                .isEqualTo("minio");
+            assertThat(result.getService()).as("服务商应该是 minio").isEqualTo("minio");
 
             log.info("✅ 文件上传成功");
             log.info("   OSS ID: {}", result.getOssId());
@@ -303,29 +283,25 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试上传后数据库记录 ===");
 
             // Arrange - 上传文件
-            MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "database-test.txt",
-                "text/plain",
-                "test content".getBytes(StandardCharsets.UTF_8)
-            );
+            MockMultipartFile file =
+                    new MockMultipartFile(
+                            "file",
+                            "database-test.txt",
+                            "text/plain",
+                            "test content".getBytes(StandardCharsets.UTF_8));
             SysOssVo uploadedFile = sysOssService.upload(file);
 
             // Act - 从数据库查询
             SysOssVo queriedFile = sysOssService.getById(uploadedFile.getOssId());
 
             // Assert
-            assertThat(queriedFile)
-                .as("应该能从数据库查询到文件")
-                .isNotNull();
+            assertThat(queriedFile).as("应该能从数据库查询到文件").isNotNull();
 
-            assertThat(queriedFile.getOssId())
-                .as("OSS ID 应该匹配")
-                .isEqualTo(uploadedFile.getOssId());
+            assertThat(queriedFile.getOssId()).as("OSS ID 应该匹配").isEqualTo(uploadedFile.getOssId());
 
             assertThat(queriedFile.getOriginalName())
-                .as("原始文件名应该匹配")
-                .isEqualTo("database-test.txt");
+                    .as("原始文件名应该匹配")
+                    .isEqualTo("database-test.txt");
 
             log.info("✅ 数据库记录查询成功");
         }
@@ -337,9 +313,18 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试不同文件类型上传 ===");
 
             // Arrange & Act - 上传不同类型的文件
-            MockMultipartFile txtFile = new MockMultipartFile("file", "test.txt", "text/plain", "txt content".getBytes());
-            MockMultipartFile jsonFile = new MockMultipartFile("file", "test.json", "application/json", "{\"key\":\"value\"}".getBytes());
-            MockMultipartFile xmlFile = new MockMultipartFile("file", "test.xml", "application/xml", "<root></root>".getBytes());
+            MockMultipartFile txtFile =
+                    new MockMultipartFile(
+                            "file", "test.txt", "text/plain", "txt content".getBytes());
+            MockMultipartFile jsonFile =
+                    new MockMultipartFile(
+                            "file",
+                            "test.json",
+                            "application/json",
+                            "{\"key\":\"value\"}".getBytes());
+            MockMultipartFile xmlFile =
+                    new MockMultipartFile(
+                            "file", "test.xml", "application/xml", "<root></root>".getBytes());
 
             SysOssVo txtResult = sysOssService.upload(txtFile);
             SysOssVo jsonResult = sysOssService.upload(jsonFile);
@@ -369,12 +354,12 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
             // Arrange - 上传多个文件
             for (int i = 1; i <= 5; i++) {
-                MockMultipartFile file = new MockMultipartFile(
-                    "file",
-                    "test-" + i + ".txt",
-                    "text/plain",
-                    ("content " + i).getBytes()
-                );
+                MockMultipartFile file =
+                        new MockMultipartFile(
+                                "file",
+                                "test-" + i + ".txt",
+                                "text/plain",
+                                ("content " + i).getBytes());
                 sysOssService.upload(file);
             }
 
@@ -386,17 +371,11 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             TableDataInfo<SysOssVo> result = sysOssService.queryPageList(bo, pageQuery);
 
             // Assert
-            assertThat(result)
-                .as("查询结果不应为空")
-                .isNotNull();
+            assertThat(result).as("查询结果不应为空").isNotNull();
 
-            assertThat(result.getRows())
-                .as("应该返回3条记录")
-                .hasSize(3);
+            assertThat(result.getRows()).as("应该返回3条记录").hasSize(3);
 
-            assertThat(result.getTotal())
-                .as("总记录数应该是5")
-                .isEqualTo(5);
+            assertThat(result.getTotal()).as("总记录数应该是5").isEqualTo(5);
 
             log.info("✅ 分页查询成功");
             log.info("   当前页: {}", result.getRows().size());
@@ -410,9 +389,18 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试文件名查询 ===");
 
             // Arrange - 上传测试文件
-            MockMultipartFile file1 = new MockMultipartFile("file", "report-2024.pdf", "application/pdf", "pdf content".getBytes());
-            MockMultipartFile file2 = new MockMultipartFile("file", "document-2024.docx", "application/vnd.openxmlformats", "docx content".getBytes());
-            MockMultipartFile file3 = new MockMultipartFile("file", "image-2024.png", "image/png", "png content".getBytes());
+            MockMultipartFile file1 =
+                    new MockMultipartFile(
+                            "file", "report-2024.pdf", "application/pdf", "pdf content".getBytes());
+            MockMultipartFile file2 =
+                    new MockMultipartFile(
+                            "file",
+                            "document-2024.docx",
+                            "application/vnd.openxmlformats",
+                            "docx content".getBytes());
+            MockMultipartFile file3 =
+                    new MockMultipartFile(
+                            "file", "image-2024.png", "image/png", "png content".getBytes());
 
             sysOssService.upload(file1);
             sysOssService.upload(file2);
@@ -428,9 +416,9 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(result.getRows())
-                .as("应该查询到3个包含 '2024' 的文件")
-                .hasSizeGreaterThanOrEqualTo(3)
-                .allMatch(vo -> vo.getOriginalName().contains("2024"));
+                    .as("应该查询到3个包含 '2024' 的文件")
+                    .hasSizeGreaterThanOrEqualTo(3)
+                    .allMatch(vo -> vo.getOriginalName().contains("2024"));
 
             log.info("✅ 文件名查询成功");
             log.info("   匹配记录数: {}", result.getRows().size());
@@ -443,9 +431,15 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试文件后缀查询 ===");
 
             // Arrange - 上传不同后缀的文件
-            sysOssService.upload(new MockMultipartFile("file", "file1.txt", "text/plain", "content1".getBytes()));
-            sysOssService.upload(new MockMultipartFile("file", "file2.txt", "text/plain", "content2".getBytes()));
-            sysOssService.upload(new MockMultipartFile("file", "file3.pdf", "application/pdf", "content3".getBytes()));
+            sysOssService.upload(
+                    new MockMultipartFile(
+                            "file", "file1.txt", "text/plain", "content1".getBytes()));
+            sysOssService.upload(
+                    new MockMultipartFile(
+                            "file", "file2.txt", "text/plain", "content2".getBytes()));
+            sysOssService.upload(
+                    new MockMultipartFile(
+                            "file", "file3.pdf", "application/pdf", "content3".getBytes()));
 
             // Act - 查询 .txt 文件
             SysOssBo bo = new SysOssBo();
@@ -457,9 +451,9 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(result.getRows())
-                .as("应该只查询到 .txt 文件")
-                .hasSizeGreaterThanOrEqualTo(2)
-                .allMatch(vo -> ".txt".equals(vo.getFileSuffix()));
+                    .as("应该只查询到 .txt 文件")
+                    .hasSizeGreaterThanOrEqualTo(2)
+                    .allMatch(vo -> ".txt".equals(vo.getFileSuffix()));
 
             log.info("✅ 文件后缀查询成功");
             log.info("   .txt 文件数: {}", result.getRows().size());
@@ -472,20 +466,31 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试批量ID查询 ===");
 
             // Arrange - 上传文件
-            SysOssVo file1 = sysOssService.upload(new MockMultipartFile("file", "batch1.txt", "text/plain", "content1".getBytes()));
-            SysOssVo file2 = sysOssService.upload(new MockMultipartFile("file", "batch2.txt", "text/plain", "content2".getBytes()));
-            SysOssVo file3 = sysOssService.upload(new MockMultipartFile("file", "batch3.txt", "text/plain", "content3".getBytes()));
+            SysOssVo file1 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "batch1.txt", "text/plain", "content1".getBytes()));
+            SysOssVo file2 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "batch2.txt", "text/plain", "content2".getBytes()));
+            SysOssVo file3 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "batch3.txt", "text/plain", "content3".getBytes()));
 
             // Act - 批量查询
-            Collection<Long> ids = Arrays.asList(file1.getOssId(), file2.getOssId(), file3.getOssId());
+            Collection<Long> ids =
+                    Arrays.asList(file1.getOssId(), file2.getOssId(), file3.getOssId());
             List<SysOssVo> result = sysOssService.listByIds(ids);
 
             // Assert
             assertThat(result)
-                .as("应该查询到3个文件")
-                .hasSize(3)
-                .extracting(SysOssVo::getOssId)
-                .containsExactlyInAnyOrder(file1.getOssId(), file2.getOssId(), file3.getOssId());
+                    .as("应该查询到3个文件")
+                    .hasSize(3)
+                    .extracting(SysOssVo::getOssId)
+                    .containsExactlyInAnyOrder(
+                            file1.getOssId(), file2.getOssId(), file3.getOssId());
 
             log.info("✅ 批量ID查询成功");
             log.info("   查询到的文件数: {}", result.size());
@@ -503,24 +508,24 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试删除单个文件 ===");
 
             // Arrange - 上传文件
-            SysOssVo uploadedFile = sysOssService.upload(
-                new MockMultipartFile("file", "delete-test.txt", "text/plain", "to be deleted".getBytes())
-            );
+            SysOssVo uploadedFile =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file",
+                                    "delete-test.txt",
+                                    "text/plain",
+                                    "to be deleted".getBytes()));
             Long ossId = uploadedFile.getOssId();
 
             // Act - 删除文件
             Boolean deleteResult = sysOssService.deleteWithValidByIds(Arrays.asList(ossId), false);
 
             // Assert
-            assertThat(deleteResult)
-                .as("删除操作应该成功")
-                .isTrue();
+            assertThat(deleteResult).as("删除操作应该成功").isTrue();
 
             // Verify - 验证文件已删除
             SysOssVo deletedFile = sysOssService.getById(ossId);
-            assertThat(deletedFile)
-                .as("删除后应该查询不到文件")
-                .isNull();
+            assertThat(deletedFile).as("删除后应该查询不到文件").isNull();
 
             log.info("✅ 文件删除成功");
         }
@@ -532,31 +537,39 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试批量删除文件 ===");
 
             // Arrange - 上传多个文件
-            SysOssVo file1 = sysOssService.upload(new MockMultipartFile("file", "delete1.txt", "text/plain", "content1".getBytes()));
-            SysOssVo file2 = sysOssService.upload(new MockMultipartFile("file", "delete2.txt", "text/plain", "content2".getBytes()));
-            SysOssVo file3 = sysOssService.upload(new MockMultipartFile("file", "delete3.txt", "text/plain", "content3".getBytes()));
+            SysOssVo file1 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "delete1.txt", "text/plain", "content1".getBytes()));
+            SysOssVo file2 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "delete2.txt", "text/plain", "content2".getBytes()));
+            SysOssVo file3 =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file", "delete3.txt", "text/plain", "content3".getBytes()));
 
-            Collection<Long> ids = Arrays.asList(file1.getOssId(), file2.getOssId(), file3.getOssId());
+            Collection<Long> ids =
+                    Arrays.asList(file1.getOssId(), file2.getOssId(), file3.getOssId());
 
             // Act - 批量删除
             Boolean deleteResult = sysOssService.deleteWithValidByIds(ids, false);
 
             // Assert
-            assertThat(deleteResult)
-                .as("批量删除应该成功")
-                .isTrue();
+            assertThat(deleteResult).as("批量删除应该成功").isTrue();
 
             // Verify - 验证所有文件已删除
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            Integer count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM sys_oss WHERE oss_id IN (?, ?, ?)",
-                Integer.class,
-                file1.getOssId(), file2.getOssId(), file3.getOssId()
-            );
+            Integer count =
+                    jdbcTemplate.queryForObject(
+                            "SELECT COUNT(*) FROM sys_oss WHERE oss_id IN (?, ?, ?)",
+                            Integer.class,
+                            file1.getOssId(),
+                            file2.getOssId(),
+                            file3.getOssId());
 
-            assertThat(count)
-                .as("数据库中不应该还有这些文件记录")
-                .isEqualTo(0);
+            assertThat(count).as("数据库中不应该还有这些文件记录").isEqualTo(0);
 
             log.info("✅ 批量删除成功");
             log.info("   删除文件数: {}", ids.size());
@@ -574,9 +587,13 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             log.info("=== 测试缓存功能 ===");
 
             // Arrange - 上传文件
-            SysOssVo uploadedFile = sysOssService.upload(
-                new MockMultipartFile("file", "cache-test.txt", "text/plain", "cached content".getBytes())
-            );
+            SysOssVo uploadedFile =
+                    sysOssService.upload(
+                            new MockMultipartFile(
+                                    "file",
+                                    "cache-test.txt",
+                                    "text/plain",
+                                    "cached content".getBytes()));
             Long ossId = uploadedFile.getOssId();
 
             // Act - 第一次查询（缓存 miss）
@@ -586,17 +603,11 @@ class SysOssServiceIntegrationTest extends BaseIntegrationTest {
             SysOssVo secondQuery = sysOssService.getById(ossId);
 
             // Assert
-            assertThat(firstQuery)
-                .as("第一次查询应该成功")
-                .isNotNull();
+            assertThat(firstQuery).as("第一次查询应该成功").isNotNull();
 
-            assertThat(secondQuery)
-                .as("第二次查询应该成功")
-                .isNotNull();
+            assertThat(secondQuery).as("第二次查询应该成功").isNotNull();
 
-            assertThat(secondQuery.getOssId())
-                .as("两次查询结果应该一致")
-                .isEqualTo(firstQuery.getOssId());
+            assertThat(secondQuery.getOssId()).as("两次查询结果应该一致").isEqualTo(firstQuery.getOssId());
 
             log.info("✅ 缓存功能正常");
             log.info("   注意: @Cacheable 应该在第二次查询时使用缓存");

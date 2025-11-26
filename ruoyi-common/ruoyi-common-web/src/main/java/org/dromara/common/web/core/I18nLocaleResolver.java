@@ -1,10 +1,9 @@
 package org.dromara.common.web.core;
 
-import org.springframework.web.servlet.LocaleResolver;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Locale;
+import org.springframework.web.servlet.LocaleResolver;
 
 /**
  * 获取请求头国际化信息
@@ -25,7 +24,8 @@ public class I18nLocaleResolver implements LocaleResolver {
     }
 
     @Override
-    public void setLocale(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
-
-    }
+    public void setLocale(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            Locale locale) {}
 }

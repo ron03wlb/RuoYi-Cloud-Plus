@@ -1,13 +1,12 @@
 package org.dromara.common.core.exception.base;
 
+import java.io.Serial;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.StringUtils;
-
-import java.io.Serial;
 
 /**
  * 基础异常
@@ -19,27 +18,18 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseException extends RuntimeException {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 所属模块
-     */
+    /** 所属模块 */
     private String module;
 
-    /**
-     * 错误码
-     */
+    /** 错误码 */
     private String code;
 
-    /**
-     * 错误码对应的参数
-     */
+    /** 错误码对应的参数 */
     private Object[] args;
 
-    /**
-     * 错误消息
-     */
+    /** 错误消息 */
     private String defaultMessage;
 
     public BaseException(String module, String code, Object[] args) {
@@ -69,5 +59,4 @@ public class BaseException extends RuntimeException {
         }
         return message;
     }
-
 }

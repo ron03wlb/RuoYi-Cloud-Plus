@@ -1,12 +1,11 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysDictTypeBo;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.domain.vo.SysDictTypeVo;
-
-import java.util.List;
 
 /**
  * 字典 业务层
@@ -18,11 +17,12 @@ public interface ISysDictTypeService {
     /**
      * 分页查询字典类型列表
      *
-     * @param dictType  查询条件
+     * @param dictType 查询条件
      * @param pageQuery 分页参数
      * @return 字典类型分页列表
      */
-    TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType, PageQuery pageQuery);
+    TableDataInfo<SysDictTypeVo> selectPageDictTypeList(
+            SysDictTypeBo dictType, PageQuery pageQuery);
 
     /**
      * 根据条件分页查询字典类型
@@ -70,9 +70,7 @@ public interface ISysDictTypeService {
      */
     void deleteDictTypeByIds(List<Long> dictIds);
 
-    /**
-     * 重置字典缓存数据
-     */
+    /** 重置字典缓存数据 */
     void resetDictCache();
 
     /**

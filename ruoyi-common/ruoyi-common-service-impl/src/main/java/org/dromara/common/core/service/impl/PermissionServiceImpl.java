@@ -1,12 +1,11 @@
 package org.dromara.common.core.service.impl;
 
+import java.util.Set;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.common.core.service.PermissionService;
 import org.dromara.system.api.RemotePermissionService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 /**
  * 权限服务
@@ -17,8 +16,7 @@ import java.util.Set;
 @Profile("!test")
 public class PermissionServiceImpl implements PermissionService {
 
-    @DubboReference
-    private RemotePermissionService remotePermissionService;
+    @DubboReference private RemotePermissionService remotePermissionService;
 
     @Override
     public Set<String> getRolePermission(Long userId) {
@@ -29,5 +27,4 @@ public class PermissionServiceImpl implements PermissionService {
     public Set<String> getMenuPermission(Long userId) {
         return remotePermissionService.getMenuPermission(userId);
     }
-
 }

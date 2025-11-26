@@ -28,5 +28,4 @@ public class BaseController {
     protected R<Void> toAjax(boolean result) {
         return result ? R.ok() : R.fail();
     }
-
 }

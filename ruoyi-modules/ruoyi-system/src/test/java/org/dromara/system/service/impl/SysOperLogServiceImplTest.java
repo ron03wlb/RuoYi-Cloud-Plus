@@ -1,6 +1,11 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.*;
 import org.dromara.system.domain.SysOperLog;
 import org.dromara.system.domain.bo.SysOperLogBo;
 import org.dromara.system.domain.vo.SysOperLogVo;
@@ -15,17 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 /**
  * SysOperLogServiceImpl 单元测试
  *
@@ -36,14 +30,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysOperLogServiceImpl 单元测试")
 class SysOperLogServiceImplTest {
 
-    @Mock
-    private SysOperLogMapper baseMapper;
+    @Mock private SysOperLogMapper baseMapper;
 
-    @InjectMocks
-    private SysOperLogServiceImpl operLogService;
+    @InjectMocks private SysOperLogServiceImpl operLogService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysOperLog>> wrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysOperLog>> wrapperCaptor;
 
     @Nested
     @DisplayName("1. 查询方法测试")
@@ -56,10 +47,10 @@ class SysOperLogServiceImplTest {
             SysOperLogBo queryBo = createOperLogBo(null, "系统管理员");
             queryBo.setOperName("系统管理员");
 
-            List<SysOperLogVo> expectedList = Arrays.asList(
-                createOperLogVo(1L, "新增用户", 0, "系统管理员"),
-                createOperLogVo(2L, "修改用户", 0, "系统管理员")
-            );
+            List<SysOperLogVo> expectedList =
+                    Arrays.asList(
+                            createOperLogVo(1L, "新增用户", 0, "系统管理员"),
+                            createOperLogVo(2L, "修改用户", 0, "系统管理员"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -67,10 +58,10 @@ class SysOperLogServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysOperLogVo::getOperName)
-                .containsOnly("系统管理员");
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysOperLogVo::getOperName)
+                    .containsOnly("系统管理员");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -82,18 +73,15 @@ class SysOperLogServiceImplTest {
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setTitle("用户管理");
 
-            List<SysOperLogVo> expectedList = Collections.singletonList(
-                createOperLogVo(1L, "用户管理", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Collections.singletonList(createOperLogVo(1L, "用户管理", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -105,19 +93,17 @@ class SysOperLogServiceImplTest {
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setBusinessType(1); // 新增
 
-            List<SysOperLogVo> expectedList = Arrays.asList(
-                createOperLogVo(1L, "新增用户", 0, "admin"),
-                createOperLogVo(2L, "新增角色", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Arrays.asList(
+                            createOperLogVo(1L, "新增用户", 0, "admin"),
+                            createOperLogVo(2L, "新增角色", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(2);
+            assertThat(result).isNotNull().hasSize(2);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -127,21 +113,19 @@ class SysOperLogServiceImplTest {
         void shouldReturnOperLogList_WhenQueryByBusinessTypes() {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "");
-            queryBo.setBusinessTypes(new Integer[]{1, 2}); // 新增和修改
+            queryBo.setBusinessTypes(new Integer[] {1, 2}); // 新增和修改
 
-            List<SysOperLogVo> expectedList = Arrays.asList(
-                createOperLogVo(1L, "新增用户", 0, "admin"),
-                createOperLogVo(2L, "修改用户", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Arrays.asList(
+                            createOperLogVo(1L, "新增用户", 0, "admin"),
+                            createOperLogVo(2L, "修改用户", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(2);
+            assertThat(result).isNotNull().hasSize(2);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -153,10 +137,10 @@ class SysOperLogServiceImplTest {
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setStatus(0); // 成功
 
-            List<SysOperLogVo> expectedList = Arrays.asList(
-                createOperLogVo(1L, "新增用户", 0, "admin"),
-                createOperLogVo(2L, "修改用户", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Arrays.asList(
+                            createOperLogVo(1L, "新增用户", 0, "admin"),
+                            createOperLogVo(2L, "修改用户", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -164,10 +148,10 @@ class SysOperLogServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysOperLogVo::getStatus)
-                .containsOnly(0);
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysOperLogVo::getStatus)
+                    .containsOnly(0);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -182,18 +166,15 @@ class SysOperLogServiceImplTest {
             params.put("endTime", new Date());
             queryBo.setParams(params);
 
-            List<SysOperLogVo> expectedList = Collections.singletonList(
-                createOperLogVo(1L, "新增用户", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Collections.singletonList(createOperLogVo(1L, "新增用户", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -208,18 +189,15 @@ class SysOperLogServiceImplTest {
             queryBo.setBusinessType(1);
             queryBo.setStatus(0);
 
-            List<SysOperLogVo> expectedList = Collections.singletonList(
-                createOperLogVo(1L, "用户管理", 0, "admin")
-            );
+            List<SysOperLogVo> expectedList =
+                    Collections.singletonList(createOperLogVo(1L, "用户管理", 0, "admin"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -229,15 +207,14 @@ class SysOperLogServiceImplTest {
         void shouldReturnEmptyList_WhenNoOperLogMatch() {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "不存在的操作人");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -256,14 +233,13 @@ class SysOperLogServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .extracting(
-                    SysOperLogVo::getOperId,
-                    SysOperLogVo::getTitle,
-                    SysOperLogVo::getStatus,
-                    SysOperLogVo::getOperName
-                )
-                .containsExactly(operId, "新增用户", 0, "admin");
+                    .isNotNull()
+                    .extracting(
+                            SysOperLogVo::getOperId,
+                            SysOperLogVo::getTitle,
+                            SysOperLogVo::getStatus,
+                            SysOperLogVo::getOperName)
+                    .containsExactly(operId, "新增用户", 0, "admin");
 
             verify(baseMapper, times(1)).selectVoById(operId);
         }
@@ -286,11 +262,9 @@ class SysOperLogServiceImplTest {
 
     /**
      * 注意: 无法测试分页方法
-     * <p>
-     * <b>selectPageOperLogList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
-     * </p>
+     *
+     * <p><b>selectPageOperLogList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
      */
-
     @Nested
     @DisplayName("2. 删除方法测试")
     class DeleteMethodsTests {
@@ -369,12 +343,10 @@ class SysOperLogServiceImplTest {
 
     /**
      * 注意: 无法测试 CRUD 相关方法
-     * <p>
-     * <b>insertOperlog()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
+     *
+     * <p><b>insertOperlog()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
      * 需要 mockito-inline 或集成测试环境才能测试这个方法
-     * </p>
      */
-
     @Nested
     @DisplayName("3. 边界条件测试")
     class BoundaryTests {
@@ -415,15 +387,14 @@ class SysOperLogServiceImplTest {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setOperName("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -434,15 +405,14 @@ class SysOperLogServiceImplTest {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setTitle("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -452,16 +422,15 @@ class SysOperLogServiceImplTest {
         void shouldHandleEmptyBusinessTypesArray() {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "");
-            queryBo.setBusinessTypes(new Integer[]{});
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            queryBo.setBusinessTypes(new Integer[] {});
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -472,15 +441,14 @@ class SysOperLogServiceImplTest {
             // Arrange
             SysOperLogBo queryBo = createOperLogBo(null, "");
             queryBo.setParams(new HashMap<>()); // 使用空HashMap而不是null
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysOperLogVo> result = operLogService.selectOperLogList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -488,9 +456,7 @@ class SysOperLogServiceImplTest {
 
     // ==================== Factory Methods ====================
 
-    /**
-     * 创建测试用 SysOperLogBo 业务对象
-     */
+    /** 创建测试用 SysOperLogBo 业务对象 */
     private static SysOperLogBo createOperLogBo(Long operId, String operName) {
         SysOperLogBo operLogBo = new SysOperLogBo();
         operLogBo.setOperId(operId);
@@ -510,10 +476,9 @@ class SysOperLogServiceImplTest {
         return operLogBo;
     }
 
-    /**
-     * 创建测试用 SysOperLogVo 视图对象
-     */
-    private static SysOperLogVo createOperLogVo(Long operId, String title, Integer status, String operName) {
+    /** 创建测试用 SysOperLogVo 视图对象 */
+    private static SysOperLogVo createOperLogVo(
+            Long operId, String title, Integer status, String operName) {
         SysOperLogVo operLogVo = new SysOperLogVo();
         operLogVo.setOperId(operId);
         operLogVo.setTenantId("000000");

@@ -20,11 +20,10 @@ import org.dromara.common.json.utils.JsonUtils;
 @Slf4j
 public class AuthGiteaRequest extends AuthDefaultRequest {
 
-    public static final String SERVER_URL = SpringUtils.getProperty("justauth.type.gitea.server-url");
+    public static final String SERVER_URL =
+            SpringUtils.getProperty("justauth.type.gitea.server-url");
 
-    /**
-     * 设定归属域
-     */
+    /** 设定归属域 */
     public AuthGiteaRequest(AuthConfig config) {
         super(config, AuthGiteaSource.GITEA);
     }
@@ -56,12 +55,13 @@ public class AuthGiteaRequest extends AuthDefaultRequest {
 
     @Override
     protected String doPostAuthorizationCode(String code) {
-        HttpRequest request = HttpRequest.post(source.accessToken())
-                .form("client_id", config.getClientId())
-                .form("client_secret", config.getClientSecret())
-                .form("grant_type", "authorization_code")
-                .form("code", code)
-                .form("redirect_uri", config.getRedirectUri());
+        HttpRequest request =
+                HttpRequest.post(source.accessToken())
+                        .form("client_id", config.getClientId())
+                        .form("client_secret", config.getClientSecret())
+                        .form("grant_type", "authorization_code")
+                        .form("code", code)
+                        .form("redirect_uri", config.getRedirectUri());
         HttpResponse response = request.execute();
         return response.body();
     }
@@ -88,5 +88,4 @@ public class AuthGiteaRequest extends AuthDefaultRequest {
                 .source(source.toString())
                 .build();
     }
-
 }

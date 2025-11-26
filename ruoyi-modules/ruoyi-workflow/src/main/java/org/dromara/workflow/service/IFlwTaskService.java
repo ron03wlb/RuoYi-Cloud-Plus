@@ -1,5 +1,6 @@
 package org.dromara.workflow.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.api.domain.vo.RemoteUserVo;
@@ -12,8 +13,6 @@ import org.dromara.workflow.api.domain.RemoteStartProcessReturn;
 import org.dromara.workflow.domain.bo.*;
 import org.dromara.workflow.domain.vo.FlowHisTaskVo;
 import org.dromara.workflow.domain.vo.FlowTaskVo;
-
-import java.util.List;
 
 /**
  * 任务 服务层
@@ -41,7 +40,7 @@ public interface IFlwTaskService {
     /**
      * 添加抄送人
      *
-     * @param task         任务信息
+     * @param task 任务信息
      * @param flowCopyList 抄送人
      */
     void setCopy(Task task, List<FlowCopyBo> flowCopyList);
@@ -50,7 +49,7 @@ public interface IFlwTaskService {
      * 查询当前用户的待办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<FlowTaskVo> pageByTaskWait(FlowTaskBo flowTaskBo, PageQuery pageQuery);
@@ -59,7 +58,7 @@ public interface IFlwTaskService {
      * 查询当前租户所有待办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<FlowHisTaskVo> pageByTaskFinish(FlowTaskBo flowTaskBo, PageQuery pageQuery);
@@ -68,7 +67,7 @@ public interface IFlwTaskService {
      * 查询待办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<FlowTaskVo> pageByAllTaskWait(FlowTaskBo flowTaskBo, PageQuery pageQuery);
@@ -77,7 +76,7 @@ public interface IFlwTaskService {
      * 查询已办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<FlowHisTaskVo> pageByAllTaskFinish(FlowTaskBo flowTaskBo, PageQuery pageQuery);
@@ -86,7 +85,7 @@ public interface IFlwTaskService {
      * 查询当前用户的抄送
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<FlowTaskVo> pageByTaskCopy(FlowTaskBo flowTaskBo, PageQuery pageQuery);
@@ -95,7 +94,7 @@ public interface IFlwTaskService {
      * 修改任务办理人
      *
      * @param taskIdList 任务id
-     * @param userId     用户id
+     * @param userId 用户id
      * @return 结果
      */
     boolean updateAssignee(List<Long> taskIdList, String userId);
@@ -111,8 +110,8 @@ public interface IFlwTaskService {
     /**
      * 获取可驳回的前置节点
      *
-     * @param taskId       任务id
-     * @param nowNodeCode  当前节点
+     * @param taskId 任务id
+     * @param nowNodeCode 当前节点
      * @return 结果
      */
     List<Node> getBackTaskNode(Long taskId, String nowNodeCode);
@@ -184,8 +183,9 @@ public interface IFlwTaskService {
     /**
      * 任务操作
      *
-     * @param bo            参数
-     * @param taskOperation 操作类型，委派 delegateTask、转办 transferTask、加签 addSignature、减签 reductionSignature
+     * @param bo 参数
+     * @param taskOperation 操作类型，委派 delegateTask、转办 transferTask、加签 addSignature、减签
+     *     reductionSignature
      * @return 结果
      */
     boolean taskOperation(TaskOperationBo bo, String taskOperation);
@@ -201,7 +201,7 @@ public interface IFlwTaskService {
     /**
      * 按照节点编码查询节点
      *
-     * @param nodeCode     节点编码
+     * @param nodeCode 节点编码
      * @param definitionId 流程定义id
      * @return 节点
      */

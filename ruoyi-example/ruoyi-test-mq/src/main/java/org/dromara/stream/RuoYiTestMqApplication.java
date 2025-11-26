@@ -6,6 +6,7 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 
 /**
  * SpringBoot-MQ 案例项目
+ *
  * @author Lion Li
  */
 @SpringBootApplication
@@ -20,5 +21,4 @@ public class RuoYiTestMqApplication {
         application.run(args);
         System.out.println("(♥◠‿◠)ﾉﾞ  MQ案例模块启动成功   ლ(´ڡ`ლ)ﾞ  ");
     }
-
 }

@@ -8,6 +8,4 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
  * @author Lion Li
  */
 @AutoConfiguration
-public class SeataConfiguration {
-
-}
+public class SeataConfiguration {}

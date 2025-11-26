@@ -10,6 +10,4 @@ import org.dromara.gen.domain.GenTableColumn;
  * @author Lion Li
  */
 @InterceptorIgnore(dataPermission = "true", tenantLine = "true")
-public interface GenTableColumnMapper extends BaseMapperPlus<GenTableColumn, GenTableColumn> {
-
-}
+public interface GenTableColumnMapper extends BaseMapperPlus<GenTableColumn, GenTableColumn> {}

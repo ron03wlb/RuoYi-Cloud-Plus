@@ -15,6 +15,4 @@ public enum CopySettingEnum implements NodeExtEnum {
     private final String label;
     private final String value;
     private final boolean selected;
-
 }
-

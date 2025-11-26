@@ -1,12 +1,11 @@
 package org.dromara.gen.service;
 
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.gen.domain.GenTable;
 import org.dromara.gen.domain.GenTableColumn;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 业务 服务层
@@ -43,7 +42,7 @@ public interface IGenTableService {
      * 查询据库列表
      *
      * @param tableNames 表名称组
-     * @param dataName   数据源名称
+     * @param dataName 数据源名称
      * @return 数据库表集合
      */
     List<GenTable> selectDbTableListByNames(String[] tableNames, String dataName);
@@ -81,7 +80,7 @@ public interface IGenTableService {
      * 导入表结构
      *
      * @param tableList 导入表列表
-     * @param dataName  数据源名称
+     * @param dataName 数据源名称
      */
     void importGenTable(List<GenTable> tableList, String dataName);
 
@@ -89,7 +88,7 @@ public interface IGenTableService {
      * 根据表名称查询列信息
      *
      * @param tableName 表名称
-     * @param dataName  数据源名称
+     * @param dataName 数据源名称
      * @return 列信息
      */
     List<GenTableColumn> selectDbTableColumnsByName(String tableName, String dataName);

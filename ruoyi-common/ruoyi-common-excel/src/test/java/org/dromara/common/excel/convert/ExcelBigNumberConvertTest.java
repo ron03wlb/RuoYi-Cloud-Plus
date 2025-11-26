@@ -1,10 +1,13 @@
 package org.dromara.common.excel.convert;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.idev.excel.enums.CellDataTypeEnum;
 import cn.idev.excel.metadata.GlobalConfiguration;
 import cn.idev.excel.metadata.data.ReadCellData;
 import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
+import java.math.BigDecimal;
 import org.dromara.common.excel.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,16 +17,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 
-import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 /**
  * ExcelBigNumberConvert (大数值转换器) 单元测试
- * <p>
- * 用途: 处理 Excel 中超过 15 位的大数值，防止精度丢失
- * 核心逻辑: 超过 15 位的 Long 转为字符串，否则保持数值类型
+ *
+ * <p>用途: 处理 Excel 中超过 15 位的大数值，防止精度丢失 核心逻辑: 超过 15 位的 Long 转为字符串，否则保持数值类型
  *
  * @author Test Team
  */
@@ -32,11 +29,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
 
     private ExcelBigNumberConvert converter;
 
-    @Mock
-    private ExcelContentProperty contentProperty;
+    @Mock private ExcelContentProperty contentProperty;
 
-    @Mock
-    private GlobalConfiguration globalConfiguration;
+    @Mock private GlobalConfiguration globalConfiguration;
 
     @BeforeEach
     void setUp() {
@@ -80,7 +75,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             cellData.setData("123456789");
 
             // Act
-            Long result = converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
+            Long result =
+                    converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result).isEqualTo(123456789L);
@@ -94,7 +90,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             cellData.setData("12345678901234567890");
 
             // Act
-            Long result = converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
+            Long result =
+                    converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result).isNotNull();
@@ -108,7 +105,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             cellData.setData("0");
 
             // Act
-            Long result = converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
+            Long result =
+                    converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result).isEqualTo(0L);
@@ -122,7 +120,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             cellData.setData("-123456");
 
             // Act
-            Long result = converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
+            Long result =
+                    converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result).isEqualTo(-123456L);
@@ -144,7 +143,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long smallNumber = 123456789L; // 9位
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(smallNumber, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(
+                                smallNumber, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -159,7 +160,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long fifteenDigits = 123456789012345L; // 正好15位
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(fifteenDigits, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(
+                                fifteenDigits, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -173,7 +176,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long zero = 0L;
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(zero, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(zero, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -187,7 +191,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long negativeNumber = -123456L;
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(negativeNumber, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(
+                                negativeNumber, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -205,7 +211,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long sixteenDigits = 1234567890123456L; // 16位
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(sixteenDigits, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(
+                                sixteenDigits, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getData()).isInstanceOf(String.class);
@@ -219,7 +227,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long eighteenDigits = 123456789012345678L; // 18位
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(eighteenDigits, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(
+                                eighteenDigits, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getData()).isInstanceOf(String.class);
@@ -233,7 +243,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
                 Long maxLong = Long.MAX_VALUE; // 19位
 
                 // Act
-                WriteCellData<Object> result = converter.convertToExcelData(maxLong, contentProperty, globalConfiguration);
+                WriteCellData<Object> result =
+                        converter.convertToExcelData(maxLong, contentProperty, globalConfiguration);
 
                 // Assert
                 assertThat(result.getData()).isInstanceOf(String.class);
@@ -247,27 +258,29 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
     class BoundaryValueTests {
 
         @ParameterizedTest
-        @ValueSource(longs = {
-            1L,                      // 1位
-            10L,                     // 2位
-            100L,                    // 3位
-            1000L,                   // 4位
-            10000L,                  // 5位
-            100000L,                 // 6位
-            1000000L,                // 7位
-            10000000L,               // 8位
-            100000000L,              // 9位
-            1000000000L,             // 10位
-            10000000000L,            // 11位
-            100000000000L,           // 12位
-            1000000000000L,          // 13位
-            10000000000000L,         // 14位
-            100000000000000L         // 15位 - 边界值
-        })
+        @ValueSource(
+                longs = {
+                    1L, // 1位
+                    10L, // 2位
+                    100L, // 3位
+                    1000L, // 4位
+                    10000L, // 5位
+                    100000L, // 6位
+                    1000000L, // 7位
+                    10000000L, // 8位
+                    100000000L, // 9位
+                    1000000000L, // 10位
+                    10000000000L, // 11位
+                    100000000000L, // 12位
+                    1000000000000L, // 13位
+                    10000000000000L, // 14位
+                    100000000000000L // 15位 - 边界值
+                })
         @DisplayName("15位及以下的数字应该保持为 NUMBER 类型")
         void shouldKeepNumbersUpTo15DigitsAsNumber(Long number) {
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(number, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(number, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -275,17 +288,19 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(longs = {
-            1000000000000000L,       // 16位 - 刚好超过边界
-            10000000000000000L,      // 17位
-            100000000000000000L,     // 18位
-            1000000000000000000L,    // 19位
-            9223372036854775807L     // Long.MAX_VALUE (19位)
-        })
+        @ValueSource(
+                longs = {
+                    1000000000000000L, // 16位 - 刚好超过边界
+                    10000000000000000L, // 17位
+                    100000000000000000L, // 18位
+                    1000000000000000000L, // 19位
+                    9223372036854775807L // Long.MAX_VALUE (19位)
+                })
         @DisplayName("16位及以上的数字应该转换为 STRING")
         void shouldConvertNumbersOver15DigitsToString(Long number) {
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(number, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(number, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getData()).isInstanceOf(String.class);
@@ -304,7 +319,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             Long userId = 1234567890123L; // 13位
 
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(userId, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(userId, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -317,7 +333,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             Long idCardNumber = 110101199003071234L; // 18位
 
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(idCardNumber, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(
+                            idCardNumber, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getData()).isInstanceOf(String.class);
@@ -331,7 +349,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             Long phoneNumber = 13800138000L; // 11位
 
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(phoneNumber, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(phoneNumber, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getType()).isEqualTo(CellDataTypeEnum.NUMBER);
@@ -345,7 +364,8 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             cellData.setData("110101199003071234");
 
             // Act
-            Long result = converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
+            Long result =
+                    converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result).isNotNull();
@@ -363,7 +383,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             Long originalNumber = 1234567890123456L;
 
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(originalNumber, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(
+                            originalNumber, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getData()).isEqualTo("1234567890123456");
@@ -378,7 +400,9 @@ class ExcelBigNumberConvertTest extends BaseUnitTest {
             Long originalNumber = 123456789012345678L;
 
             // Act
-            WriteCellData<Object> result = converter.convertToExcelData(originalNumber, contentProperty, globalConfiguration);
+            WriteCellData<Object> result =
+                    converter.convertToExcelData(
+                            originalNumber, contentProperty, globalConfiguration);
 
             // Assert
             assertThat(result.getData()).isEqualTo("123456789012345678");

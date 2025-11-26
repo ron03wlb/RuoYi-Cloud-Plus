@@ -8,6 +8,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.enums.BusinessStatusEnum;
@@ -33,9 +35,6 @@ import org.dromara.workflow.service.WorkflowService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 请假Service业务层处理
@@ -65,17 +64,13 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
         return false;
     }
 
-    /**
-     * 查询请假
-     */
+    /** 查询请假 */
     @Override
     public TestLeaveVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
-    /**
-     * 查询请假列表
-     */
+    /** 查询请假列表 */
     @Override
     public TableDataInfo<TestLeaveVo> queryPageList(TestLeaveBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TestLeave> lqw = buildQueryWrapper(bo);
@@ -83,9 +78,7 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
         return TableDataInfo.build(result);
     }
 
-    /**
-     * 查询请假列表
-     */
+    /** 查询请假列表 */
     @Override
     public List<TestLeaveVo> queryList(TestLeaveBo bo) {
         LambdaQueryWrapper<TestLeave> lqw = buildQueryWrapper(bo);
@@ -94,16 +87,17 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
 
     private LambdaQueryWrapper<TestLeave> buildQueryWrapper(TestLeaveBo bo) {
         LambdaQueryWrapper<TestLeave> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getLeaveType()), TestLeave::getLeaveType, bo.getLeaveType());
+        lqw.eq(
+                StringUtils.isNotBlank(bo.getLeaveType()),
+                TestLeave::getLeaveType,
+                bo.getLeaveType());
         lqw.ge(bo.getStartLeaveDays() != null, TestLeave::getLeaveDays, bo.getStartLeaveDays());
         lqw.le(bo.getEndLeaveDays() != null, TestLeave::getLeaveDays, bo.getEndLeaveDays());
         lqw.orderByDesc(BaseEntity::getCreateTime);
         return lqw;
     }
 
-    /**
-     * 新增请假
-     */
+    /** 新增请假 */
     @Override
     public TestLeaveVo insertByBo(TestLeaveBo bo) {
         long day = DateUtil.betweenDay(bo.getStartDate(), bo.getEndDate(), true);
@@ -139,7 +133,8 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
 
             RemoteStartProcess startProcess = new RemoteStartProcess();
             startProcess.setBusinessId(leave.getId().toString());
-            startProcess.setFlowCode(StringUtils.isEmpty(bo.getFlowCode()) ? "leave1" : bo.getFlowCode());
+            startProcess.setFlowCode(
+                    StringUtils.isEmpty(bo.getFlowCode()) ? "leave1" : bo.getFlowCode());
             startProcess.setVariables(bo.getParams());
             // 后端发起 如果没有登录用户 比如定时任务 可以手动设置一个处理人id
             // startProcess.setHandler("0");
@@ -152,9 +147,7 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
         return MapstructUtils.convert(leave, TestLeaveVo.class);
     }
 
-    /**
-     * 修改请假
-     */
+    /** 修改请假 */
     @Override
     public TestLeaveVo updateByBo(TestLeaveBo bo) {
         TestLeave update = MapstructUtils.convert(bo, TestLeave.class);
@@ -162,9 +155,7 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
         return MapstructUtils.convert(update, TestLeaveVo.class);
     }
 
-    /**
-     * 批量删除请假
-     */
+    /** 批量删除请假 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(List<Long> ids) {
@@ -173,46 +164,47 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
     }
 
     /**
-     * 总体流程监听(例如: 草稿，撤销，退回，作废，终止，已完成等)
-     * 正常使用只需#processEvent.flowCode=='leave1'
+     * 总体流程监听(例如: 草稿，撤销，退回，作废，终止，已完成等) 正常使用只需#processEvent.flowCode=='leave1'
      * 示例为了方便则使用startsWith匹配了全部示例key
      *
      * @param processEvent 参数
      */
     @EventListener(condition = "#processEvent.flowCode.startsWith('leave')")
     public void processHandler(ProcessEvent processEvent) {
-        TenantHelper.dynamic(processEvent.getTenantId(), () -> {
-            log.info("当前任务执行了{}", processEvent.toString());
-            TestLeave testLeave = baseMapper.selectById(Convert.toLong(processEvent.getBusinessId()));
-            testLeave.setStatus(processEvent.getStatus());
-            // 用于例如审批附件 审批意见等 存储到业务表内 自行根据业务实现存储流程
-            Map<String, Object> params = processEvent.getParams();
-            if (MapUtil.isNotEmpty(params)) {
-                // 历史任务扩展(通常为附件)
-                String hisTaskExt = Convert.toStr(params.get("hisTaskExt"));
-                // 办理人
-                String handler = Convert.toStr(params.get("handler"));
-                // 办理意见
-                String message = Convert.toStr(params.get("message"));
-            }
-            if (processEvent.getSubmit()) {
-                if (StringUtils.isBlank(testLeave.getApplyCode())) {
-                    String businessCode = MapUtil.getStr(params, FlowConstant.BUSINESS_CODE, StrUtil.EMPTY);
-                    testLeave.setApplyCode(businessCode);
-                }
-                testLeave.setStatus(BusinessStatusEnum.WAITING.getStatus());
-            }
-            baseMapper.updateById(testLeave);
-        });
+        TenantHelper.dynamic(
+                processEvent.getTenantId(),
+                () -> {
+                    log.info("当前任务执行了{}", processEvent.toString());
+                    TestLeave testLeave =
+                            baseMapper.selectById(Convert.toLong(processEvent.getBusinessId()));
+                    testLeave.setStatus(processEvent.getStatus());
+                    // 用于例如审批附件 审批意见等 存储到业务表内 自行根据业务实现存储流程
+                    Map<String, Object> params = processEvent.getParams();
+                    if (MapUtil.isNotEmpty(params)) {
+                        // 历史任务扩展(通常为附件)
+                        String hisTaskExt = Convert.toStr(params.get("hisTaskExt"));
+                        // 办理人
+                        String handler = Convert.toStr(params.get("handler"));
+                        // 办理意见
+                        String message = Convert.toStr(params.get("message"));
+                    }
+                    if (processEvent.getSubmit()) {
+                        if (StringUtils.isBlank(testLeave.getApplyCode())) {
+                            String businessCode =
+                                    MapUtil.getStr(
+                                            params, FlowConstant.BUSINESS_CODE, StrUtil.EMPTY);
+                            testLeave.setApplyCode(businessCode);
+                        }
+                        testLeave.setStatus(BusinessStatusEnum.WAITING.getStatus());
+                    }
+                    baseMapper.updateById(testLeave);
+                });
     }
 
     /**
-     * 执行任务创建监听(也代表上一条任务完成事件)
-     * 示例：也可通过  @EventListener(condition = "#processTaskEvent.flowCode=='leave1'")进行判断
-     * 在方法中判断流程节点key
-     * if ("xxx".equals(processTaskEvent.getNodeCode())) {
-     * //执行业务逻辑
-     * }
+     * 执行任务创建监听(也代表上一条任务完成事件) 示例：也可通过 @EventListener(condition =
+     * "#processTaskEvent.flowCode=='leave1'")进行判断 在方法中判断流程节点key if
+     * ("xxx".equals(processTaskEvent.getNodeCode())) { //执行业务逻辑 }
      *
      * @param processTaskEvent 参数
      */
@@ -222,22 +214,22 @@ public class TestLeaveServiceImpl implements ITestLeaveService {
     }
 
     /**
-     * 监听删除流程事件
-     * 正常使用只需#processDeleteEvent.flowCode=='leave1'
-     * 示例为了方便则使用startsWith匹配了全部示例key
+     * 监听删除流程事件 正常使用只需#processDeleteEvent.flowCode=='leave1' 示例为了方便则使用startsWith匹配了全部示例key
      *
      * @param processDeleteEvent 参数
      */
     @EventListener(condition = "#processDeleteEvent.flowCode.startsWith('leave')")
     public void processDeleteHandler(ProcessDeleteEvent processDeleteEvent) {
-        TenantHelper.dynamic(processDeleteEvent.getTenantId(), () -> {
-            log.info("监听删除流程事件，当前任务执行了{}", processDeleteEvent.toString());
-            TestLeave testLeave = baseMapper.selectById(Long.valueOf(processDeleteEvent.getBusinessId()));
-            if (ObjectUtil.isNull(testLeave)) {
-                return;
-            }
-            baseMapper.deleteById(testLeave.getId());
-        });
+        TenantHelper.dynamic(
+                processDeleteEvent.getTenantId(),
+                () -> {
+                    log.info("监听删除流程事件，当前任务执行了{}", processDeleteEvent.toString());
+                    TestLeave testLeave =
+                            baseMapper.selectById(Long.valueOf(processDeleteEvent.getBusinessId()));
+                    if (ObjectUtil.isNull(testLeave)) {
+                        return;
+                    }
+                    baseMapper.deleteById(testLeave.getId());
+                });
     }
-
 }

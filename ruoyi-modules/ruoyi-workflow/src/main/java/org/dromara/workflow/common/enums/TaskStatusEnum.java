@@ -1,12 +1,11 @@
 package org.dromara.workflow.common.enums;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * 任务状态枚举
@@ -17,78 +16,53 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum TaskStatusEnum {
 
-    /**
-     * 撤销
-     */
+    /** 撤销 */
     CANCEL("cancel", "撤销"),
 
-    /**
-     * 通过
-     */
+    /** 通过 */
     PASS("pass", "通过"),
 
-    /**
-     * 待审核
-     */
+    /** 待审核 */
     WAITING("waiting", "待审核"),
 
-    /**
-     * 作废
-     */
+    /** 作废 */
     INVALID("invalid", "作废"),
 
-    /**
-     * 退回
-     */
+    /** 退回 */
     BACK("back", "退回"),
 
-    /**
-     * 终止
-     */
+    /** 终止 */
     TERMINATION("termination", "终止"),
 
-    /**
-     * 转办
-     */
+    /** 转办 */
     TRANSFER("transfer", "转办"),
 
-    /**
-     * 委托
-     */
+    /** 委托 */
     DEPUTE("depute", "委托"),
 
-    /**
-     * 抄送
-     */
+    /** 抄送 */
     COPY("copy", "抄送"),
 
-    /**
-     * 加签
-     */
+    /** 加签 */
     SIGN("sign", "加签"),
 
-    /**
-     * 减签
-     */
+    /** 减签 */
     SIGN_OFF("sign_off", "减签"),
 
-    /**
-     * 超时
-     */
+    /** 超时 */
     TIMEOUT("timeout", "超时");
 
-    /**
-     * 状态
-     */
+    /** 状态 */
     private final String status;
 
-    /**
-     * 描述
-     */
+    /** 描述 */
     private final String desc;
 
-    private static final Map<String, String> STATUS_DESC_MAP = Arrays.stream(values())
-        .collect(Collectors.toConcurrentMap(TaskStatusEnum::getStatus, TaskStatusEnum::getDesc));
+    private static final Map<String, String> STATUS_DESC_MAP =
+            Arrays.stream(values())
+                    .collect(
+                            Collectors.toConcurrentMap(
+                                    TaskStatusEnum::getStatus, TaskStatusEnum::getDesc));
 
     /**
      * 任务业务状态
@@ -109,6 +83,4 @@ public enum TaskStatusEnum {
     public static boolean isPassOrBack(String status) {
         return PASS.getStatus().equals(status) || BACK.getStatus().equals(status);
     }
-
 }
-

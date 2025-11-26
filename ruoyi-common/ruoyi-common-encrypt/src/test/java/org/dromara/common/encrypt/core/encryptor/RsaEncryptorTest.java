@@ -1,5 +1,9 @@
 package org.dromara.common.encrypt.core.encryptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Map;
 import org.dromara.common.encrypt.core.EncryptContext;
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
@@ -10,10 +14,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * RsaEncryptor (RSA加密器) 单元测试
@@ -72,8 +72,8 @@ class RsaEncryptorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> new RsaEncryptor(ctx))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA公私钥均需要提供");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA公私钥均需要提供");
         }
 
         @Test
@@ -86,8 +86,8 @@ class RsaEncryptorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> new RsaEncryptor(ctx))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA公私钥均需要提供");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA公私钥均需要提供");
         }
 
         @Test
@@ -100,8 +100,8 @@ class RsaEncryptorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> new RsaEncryptor(ctx))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA公私钥均需要提供");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA公私钥均需要提供");
         }
 
         @Test
@@ -114,8 +114,8 @@ class RsaEncryptorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> new RsaEncryptor(ctx))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA公私钥均需要提供");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA公私钥均需要提供");
         }
     }
 
@@ -296,7 +296,7 @@ class RsaEncryptorTest {
 
             // Act & Assert - 用另一个密钥对的私钥解密应该失败
             assertThatThrownBy(() -> anotherEncryptor.decrypt(encrypted))
-                .isInstanceOf(RuntimeException.class);
+                    .isInstanceOf(RuntimeException.class);
         }
     }
 
@@ -533,9 +533,9 @@ class RsaEncryptorTest {
 
             // Assert
             assertThat(keyPair1.get(EncryptUtils.PUBLIC_KEY))
-                .isNotEqualTo(keyPair2.get(EncryptUtils.PUBLIC_KEY));
+                    .isNotEqualTo(keyPair2.get(EncryptUtils.PUBLIC_KEY));
             assertThat(keyPair1.get(EncryptUtils.PRIVATE_KEY))
-                .isNotEqualTo(keyPair2.get(EncryptUtils.PRIVATE_KEY));
+                    .isNotEqualTo(keyPair2.get(EncryptUtils.PRIVATE_KEY));
         }
     }
 }

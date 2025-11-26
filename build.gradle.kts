@@ -10,6 +10,8 @@ plugins {
     id("java")
     // Spring Boot 插件（仅声明，不应用到根项目）
     alias(libs.plugins.spring.boot) apply false
+    // Spotless 代码格式化插件
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 // ===========================================
@@ -56,10 +58,11 @@ subprojects {
             // 编译参数
             options.compilerArgs.addAll(
                 listOf(
-                    "-parameters",  // 保留参数名（Spring 需要）
+                    // 保留参数名（Spring 需要）
+                    "-parameters",
                     "-Xlint:unchecked",
-                    "-Xlint:deprecation"
-                )
+                    "-Xlint:deprecation",
+                ),
             )
 
             // 注解处理器配置（重要：顺序很关键！）
@@ -78,7 +81,7 @@ subprojects {
             // 测试 JVM 参数
             jvmArgs = listOf(
                 "-Xmx1024m",
-                "-XX:MaxMetaspaceSize=256m"
+                "-XX:MaxMetaspaceSize=256m",
             )
 
             // 测试日志
@@ -151,7 +154,7 @@ subprojects {
                     "nacos.password" to (findProperty("nacosPassword")?.toString() ?: "nacos"),
                     "nacos.namespace" to (findProperty("nacosNamespace")?.toString() ?: ""),
                     "nacos.discovery.group" to (findProperty("nacosDiscoveryGroup")?.toString() ?: "DEFAULT_GROUP"),
-                    "nacos.config.group" to (findProperty("nacosConfigGroup")?.toString() ?: "DEFAULT_GROUP")
+                    "nacos.config.group" to (findProperty("nacosConfigGroup")?.toString() ?: "DEFAULT_GROUP"),
                 )
 
                 // 使用 filter 而不是 expand 来实现部分替换
@@ -159,7 +162,7 @@ subprojects {
                     var result = line
                     props.forEach { (key, value) ->
                         result = result.replace("\${$key}", value)
-                        result = result.replace("@$key@", value)  // 支持 Maven 风格的 @key@ 占位符
+                        result = result.replace("@$key@", value) // 支持 Maven 风格的 @key@ 占位符
                     }
                     result
                 }
@@ -191,7 +194,7 @@ subprojects {
             add("implementation", platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"))
             add(
                 "testImplementation",
-                platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+                platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"),
             )
 
             // Hutool BOM
@@ -227,7 +230,6 @@ subprojects {
             testImplementation("org.springframework.boot:spring-boot-starter-test")
             testImplementation("org.junit.jupiter:junit-jupiter")
             testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
         }
 
         // Javadoc 配置
@@ -237,6 +239,78 @@ subprojects {
                 charset("UTF-8")
                 (this as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
             }
+        }
+    }
+}
+
+// ===========================================
+// Spotless 代码格式化配置
+// ===========================================
+
+// 应用 Spotless 到所有子项目
+allprojects {
+    apply(plugin = "com.diffplug.spotless")
+
+    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+        // Java 格式化 (Google Java Format)
+        java {
+            target("src/**/*.java")
+            targetExclude("**/build/**", "**/target/**", "**/.gradle/**")
+
+            // 使用 Google Java Format
+            googleJavaFormat("1.19.2").aosp().reflowLongStrings()
+
+            // 导入顺序
+            importOrder()
+            removeUnusedImports()
+
+            // 行尾空格
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+
+        // Gradle Kotlin DSL 格式化
+        kotlinGradle {
+            target("*.gradle.kts", "**/*.gradle.kts")
+            targetExclude("**/build/**")
+            ktlint("1.0.1").editorConfigOverride(
+                mapOf(
+                    // 禁用行内注释位置检查（对于参数列表中的注释过于严格）
+                    "ktlint_standard_discouraged-comment-location" to "disabled",
+                ),
+            )
+        }
+
+        // XML 格式化（简化版，仅处理空白字符）
+        format("xml") {
+            target("src/**/*.xml")
+            targetExclude("**/build/**", "**/target/**")
+            // 只做基本的空白字符处理，不进行复杂的格式化
+            trimTrailingWhitespace()
+            endWithNewline()
+            // 统一缩进为 2 空格
+            replaceRegex("XML indentation", "\t", "  ")
+        }
+
+        // YAML 格式化（简化版，仅处理空白字符）
+        format("yaml") {
+            target("src/**/*.yml", "src/**/*.yaml", "*.yml", "*.yaml")
+            targetExclude("**/build/**", "**/target/**")
+            // 只做基本的空白字符处理，不进行复杂的格式化
+            trimTrailingWhitespace()
+            endWithNewline()
+            // 统一缩进为 2 空格
+            replaceRegex("YAML indentation", "\t", "  ")
+        }
+    }
+}
+
+// 自动在构建时运行 spotlessApply
+subprojects {
+    // 只对应用了 Java 插件的项目添加 spotlessApply 依赖
+    plugins.withId("java") {
+        tasks.named("compileJava") {
+            dependsOn("spotlessApply")
         }
     }
 }
@@ -286,10 +360,10 @@ println(
     ║                                                           ║
     ║       RuoYi-Cloud-Plus Gradle Build Configuration        ║
     ║                                                           ║
-    ║   Version: ${version}                                   ║
+    ║   Version: $version                                   ║
     ║   Java: ${JavaVersion.current()}                                         ║
     ║   Gradle: ${gradle.gradleVersion}                                    ║
     ║                                                           ║
     ╚═══════════════════════════════════════════════════════════╝
-""".trimIndent()
+    """.trimIndent(),
 )

@@ -1,5 +1,8 @@
 package org.dromara.common.satoken.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
@@ -14,25 +17,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 /**
  * SaTokenExceptionHandler 测试
- * <p>
- * 测试 Sa-Token 异常处理器
- * </p>
+ *
+ * <p>测试 Sa-Token 异常处理器
  *
  * @author Test Team
  */
 @DisplayName("SaTokenExceptionHandler 测试")
 class SaTokenExceptionHandlerTest extends BaseUnitTest {
 
-    @InjectMocks
-    private SaTokenExceptionHandler handler;
+    @InjectMocks private SaTokenExceptionHandler handler;
 
-    @Mock
-    private HttpServletRequest request;
+    @Mock private HttpServletRequest request;
 
     private static final String TEST_URI = "/api/test";
 
@@ -117,12 +114,9 @@ class SaTokenExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该返回401状态码和认证失败消息")
         void shouldReturn401ForNotLogin() {
             // Arrange
-            NotLoginException exception = NotLoginException.newInstance(
-                "user",
-                NotLoginException.NOT_TOKEN,
-                "未提供Token",
-                null
-            );
+            NotLoginException exception =
+                    NotLoginException.newInstance(
+                            "user", NotLoginException.NOT_TOKEN, "未提供Token", null);
 
             // Act
             R<Void> result = handler.handleNotLoginException(exception, request);
@@ -137,12 +131,9 @@ class SaTokenExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理Token过期异常")
         void shouldHandleTokenExpiredException() {
             // Arrange
-            NotLoginException exception = NotLoginException.newInstance(
-                "user",
-                NotLoginException.TOKEN_TIMEOUT,
-                "Token已过期",
-                null
-            );
+            NotLoginException exception =
+                    NotLoginException.newInstance(
+                            "user", NotLoginException.TOKEN_TIMEOUT, "Token已过期", null);
 
             // Act
             R<Void> result = handler.handleNotLoginException(exception, request);
@@ -157,12 +148,9 @@ class SaTokenExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理Token被顶下线异常")
         void shouldHandleTokenBeReplacedException() {
             // Arrange
-            NotLoginException exception = NotLoginException.newInstance(
-                "user",
-                NotLoginException.BE_REPLACED,
-                "Token已被顶下线",
-                null
-            );
+            NotLoginException exception =
+                    NotLoginException.newInstance(
+                            "user", NotLoginException.BE_REPLACED, "Token已被顶下线", null);
 
             // Act
             R<Void> result = handler.handleNotLoginException(exception, request);
@@ -196,12 +184,9 @@ class SaTokenExceptionHandlerTest extends BaseUnitTest {
         void shouldHandleSpecialCharactersInURI() {
             // Arrange
             when(request.getRequestURI()).thenReturn("/api/test?id=123&name=测试");
-            NotLoginException exception = NotLoginException.newInstance(
-                "user",
-                NotLoginException.NOT_TOKEN,
-                "未提供Token",
-                null
-            );
+            NotLoginException exception =
+                    NotLoginException.newInstance(
+                            "user", NotLoginException.NOT_TOKEN, "未提供Token", null);
 
             // Act
             R<Void> result = handler.handleNotLoginException(exception, request);

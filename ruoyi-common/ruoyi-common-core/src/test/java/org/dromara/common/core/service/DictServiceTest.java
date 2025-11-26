@@ -1,13 +1,12 @@
 package org.dromara.common.core.service;
 
-import org.dromara.common.core.BaseUnitTest;
-import org.dromara.common.core.utils.StringUtils;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.dromara.common.core.BaseUnitTest;
+import org.dromara.common.core.utils.StringUtils;
+import org.junit.jupiter.api.Test;
 
 /**
  * DictService 接口默认方法单元测试
@@ -16,9 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class DictServiceTest extends BaseUnitTest {
 
-    /**
-     * 测试用的 DictService 实现
-     */
+    /** 测试用的 DictService 实现 */
     private static class TestDictServiceImpl implements DictService {
         @Override
         public String getDictLabel(String dictType, String dictValue, String separator) {
@@ -155,12 +152,13 @@ class DictServiceTest extends BaseUnitTest {
 
         // Act
         String resultWithDefault = dictService.getDictLabel(dictType, dictValue);
-        String resultWithComma = dictService.getDictLabel(dictType, dictValue, StringUtils.SEPARATOR);
+        String resultWithComma =
+                dictService.getDictLabel(dictType, dictValue, StringUtils.SEPARATOR);
 
         // Assert
         assertThat(resultWithDefault)
-            .as("默认方法应使用 StringUtils.SEPARATOR 作为分隔符")
-            .isEqualTo(resultWithComma);
+                .as("默认方法应使用 StringUtils.SEPARATOR 作为分隔符")
+                .isEqualTo(resultWithComma);
     }
 
     // ========== getAllDictByDictType 实现方法测试 ==========
@@ -174,10 +172,7 @@ class DictServiceTest extends BaseUnitTest {
         Map<String, String> result = dictService.getAllDictByDictType(dictType);
 
         // Assert
-        assertThat(result)
-            .hasSize(2)
-            .containsEntry("0", "男")
-            .containsEntry("1", "女");
+        assertThat(result).hasSize(2).containsEntry("0", "男").containsEntry("1", "女");
     }
 
     @Test

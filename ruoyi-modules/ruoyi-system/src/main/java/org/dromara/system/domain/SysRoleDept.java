@@ -10,20 +10,14 @@ import lombok.Data;
  *
  * @author Lion Li
  */
-
 @Data
 @TableName("sys_role_dept")
 public class SysRoleDept {
 
-    /**
-     * 角色ID
-     */
+    /** 角色ID */
     @TableId(type = IdType.INPUT)
     private Long roleId;
 
-    /**
-     * 部门ID
-     */
+    /** 部门ID */
     private Long deptId;
-
 }

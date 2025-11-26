@@ -1,5 +1,7 @@
 package org.dromara.common.dubbo.config;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.dromara.common.core.utils.StringUtils;
 import org.springframework.beans.BeansException;
@@ -7,9 +9,6 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.core.Ordered;
-
-import java.net.Inet6Address;
-import java.net.InetAddress;
 
 /**
  * dubbo自定义IP注入(避免IP不正确问题)
@@ -35,7 +34,8 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
      * @throws BeansException 如果在处理过程中发生错误
      */
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+            throws BeansException {
         String property = System.getProperty(CommonConstants.DubboProperty.DUBBO_IP_TO_REGISTRY);
         if (StringUtils.isNotBlank(property)) {
             return;
@@ -51,7 +51,8 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
                 String ipv6AddressString = address.getHostAddress();
                 if (ipv6AddressString.contains("%")) {
                     // 去掉可能存在的范围 ID
-                    ipv6AddressString = ipv6AddressString.substring(0, ipv6AddressString.indexOf("%"));
+                    ipv6AddressString =
+                            ipv6AddressString.substring(0, ipv6AddressString.indexOf("%"));
                 }
                 ip = ipv6AddressString;
             } else {

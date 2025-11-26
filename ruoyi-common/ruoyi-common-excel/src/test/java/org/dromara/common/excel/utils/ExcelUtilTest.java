@@ -1,5 +1,7 @@
 package org.dromara.common.excel.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.excel.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -7,16 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * ExcelUtil (Excel工具类) 单元测试
- * <p>
- * 用途: 提供 Excel 导入导出的工具方法
- * 测试范围: 仅测试不依赖外部资源的纯工具方法
- * - convertByExp(): 根据表达式转换值
- * - reverseByExp(): 根据表达式反向转换值
- * - encodingFilename(): 编码文件名
+ *
+ * <p>用途: 提供 Excel 导入导出的工具方法 测试范围: 仅测试不依赖外部资源的纯工具方法 - convertByExp(): 根据表达式转换值 - reverseByExp():
+ * 根据表达式反向转换值 - encodingFilename(): 编码文件名
  *
  * @author Test Team
  */
@@ -357,7 +354,7 @@ class ExcelUtilTest extends BaseUnitTest {
 
             // Assert
             assertThat(uuid).matches("^[a-f0-9]{32}$");
-            assertThat(uuid).doesNotContain("-");  // fastSimpleUUID 不包含破折号
+            assertThat(uuid).doesNotContain("-"); // fastSimpleUUID 不包含破折号
         }
     }
 
@@ -477,7 +474,7 @@ class ExcelUtilTest extends BaseUnitTest {
         void shouldHandleValueWithSeparator() {
             // Arrange
             String propertyValue = "0,1";
-            String converterExp = "0=北京,上海,1=广州,深圳,2=其他";  // 标签中包含逗号
+            String converterExp = "0=北京,上海,1=广州,深圳,2=其他"; // 标签中包含逗号
             String separator = ",";
 
             // Act
@@ -499,7 +496,7 @@ class ExcelUtilTest extends BaseUnitTest {
             String result = ExcelUtil.reverseByExp(propertyValue, converterExp, separator);
 
             // Assert
-            assertThat(result).isEqualTo("0,1");  // 应该去除尾部逗号
+            assertThat(result).isEqualTo("0,1"); // 应该去除尾部逗号
         }
     }
 }

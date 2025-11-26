@@ -1,11 +1,10 @@
 package org.dromara.common.tenant.core;
 
+import java.time.Duration;
+import java.util.List;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.core.dao.PlusSaTokenDao;
-
-import java.time.Duration;
-import java.util.List;
 
 /**
  * SaToken 认证数据持久层 适配多租户
@@ -24,9 +23,7 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         super.set(GlobalConstants.GLOBAL_REDIS_KEY + key, value, timeout);
     }
 
-    /**
-     * 修修改指定key-value键值对 (过期时间不变)
-     */
+    /** 修修改指定key-value键值对 (过期时间不变) */
     @Override
     public void update(String key, String value) {
         long expire = getTimeout(key);
@@ -37,25 +34,19 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         this.set(key, value, expire);
     }
 
-    /**
-     * 删除Value
-     */
+    /** 删除Value */
     @Override
     public void delete(String key) {
         super.delete(GlobalConstants.GLOBAL_REDIS_KEY + key);
     }
 
-    /**
-     * 获取Value的剩余存活时间 (单位: 秒)
-     */
+    /** 获取Value的剩余存活时间 (单位: 秒) */
     @Override
     public long getTimeout(String key) {
         return super.getTimeout(GlobalConstants.GLOBAL_REDIS_KEY + key);
     }
 
-    /**
-     * 修改Value的剩余存活时间 (单位: 秒)
-     */
+    /** 修改Value的剩余存活时间 (单位: 秒) */
     @Override
     public void updateTimeout(String key, long timeout) {
         // 判断是否想要设置为永久
@@ -72,10 +63,7 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         RedisUtils.expire(GlobalConstants.GLOBAL_REDIS_KEY + key, Duration.ofSeconds(timeout));
     }
 
-
-    /**
-     * 获取Object，如无返空
-     */
+    /** 获取Object，如无返空 */
     @Override
     public Object getObject(String key) {
         return super.getObject(GlobalConstants.GLOBAL_REDIS_KEY + key);
@@ -92,17 +80,13 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         return super.getObject(GlobalConstants.GLOBAL_REDIS_KEY + key, classType);
     }
 
-    /**
-     * 写入Object，并设定存活时间 (单位: 秒)
-     */
+    /** 写入Object，并设定存活时间 (单位: 秒) */
     @Override
     public void setObject(String key, Object object, long timeout) {
         super.setObject(GlobalConstants.GLOBAL_REDIS_KEY + key, object, timeout);
     }
 
-    /**
-     * 更新Object (过期时间不变)
-     */
+    /** 更新Object (过期时间不变) */
     @Override
     public void updateObject(String key, Object object) {
         long expire = getObjectTimeout(key);
@@ -113,25 +97,19 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         this.setObject(key, object, expire);
     }
 
-    /**
-     * 删除Object
-     */
+    /** 删除Object */
     @Override
     public void deleteObject(String key) {
         super.deleteObject(GlobalConstants.GLOBAL_REDIS_KEY + key);
     }
 
-    /**
-     * 获取Object的剩余存活时间 (单位: 秒)
-     */
+    /** 获取Object的剩余存活时间 (单位: 秒) */
     @Override
     public long getObjectTimeout(String key) {
         return super.getObjectTimeout(GlobalConstants.GLOBAL_REDIS_KEY + key);
     }
 
-    /**
-     * 修改Object的剩余存活时间 (单位: 秒)
-     */
+    /** 修改Object的剩余存活时间 (单位: 秒) */
     @Override
     public void updateObjectTimeout(String key, long timeout) {
         // 判断是否想要设置为永久
@@ -148,11 +126,11 @@ public class TenantSaTokenDao extends PlusSaTokenDao {
         RedisUtils.expire(GlobalConstants.GLOBAL_REDIS_KEY + key, Duration.ofSeconds(timeout));
     }
 
-    /**
-     * 搜索数据
-     */
+    /** 搜索数据 */
     @Override
-    public List<String> searchData(String prefix, String keyword, int start, int size, boolean sortType) {
-        return super.searchData(GlobalConstants.GLOBAL_REDIS_KEY + prefix, keyword, start, size, sortType);
+    public List<String> searchData(
+            String prefix, String keyword, int start, int size, boolean sortType) {
+        return super.searchData(
+                GlobalConstants.GLOBAL_REDIS_KEY + prefix, keyword, start, size, sortType);
     }
 }

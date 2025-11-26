@@ -17,10 +17,6 @@ import com.aizuda.snailjob.server.common.handler.InstanceManager;
 import com.aizuda.snailjob.template.datasource.persistence.po.ServerNode;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +25,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * 服务端注册
@@ -41,7 +40,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ServerRegister extends AbstractRegister {
     public static final String BEAN_NAME = "serverRegister";
-    private final ScheduledExecutorService serverRegisterNode = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "server-register-node"));
+    private final ScheduledExecutorService serverRegisterNode =
+            Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "server-register-node"));
     public static final int DELAY_TIME = 30;
     public static final String CURRENT_CID;
     public static final String GROUP_NAME = "DEFAULT_SERVER";
@@ -74,7 +74,9 @@ public class ServerRegister extends AbstractRegister {
         }
         context.setHostIp(serverHost);
         context.setHostPort(systemProperties.getServerPort());
-        context.setContextPath(Optional.ofNullable(serverProperties.getServlet().getContextPath()).orElse(StrUtil.EMPTY));
+        context.setContextPath(
+                Optional.ofNullable(serverProperties.getServlet().getContextPath())
+                        .orElse(StrUtil.EMPTY));
         context.setNamespaceId(NAMESPACE_ID);
         context.setExtAttrs(JsonUtil.toJsonString(serverNodeExtAttrs));
     }
@@ -90,27 +92,32 @@ public class ServerRegister extends AbstractRegister {
         return Boolean.TRUE;
     }
 
-
     @Override
     protected void afterProcessor(final ServerNode serverNode) {
         try {
             // 同步当前POD消费的组的节点信息
             // netty的client只会注册到一个服务端，若组分配的和client连接的不是一个POD则会导致当前POD没有其他客户端的注册信息
-            ConcurrentMap<String /*groupName*/, Set<String>/*namespaceId*/> allConsumerGroupName = CacheConsumerGroup.getAllConsumerGroupName();
+            ConcurrentMap<String /*groupName*/, Set<String> /*namespaceId*/> allConsumerGroupName =
+                    CacheConsumerGroup.getAllConsumerGroupName();
             if (CollUtil.isNotEmpty(allConsumerGroupName)) {
-                Set<String> namespaceIdSets = StreamUtils.toSetByFlatMap(allConsumerGroupName.values(), Set::stream);
+                Set<String> namespaceIdSets =
+                        StreamUtils.toSetByFlatMap(allConsumerGroupName.values(), Set::stream);
                 if (CollUtil.isEmpty(namespaceIdSets)) {
                     return;
                 }
 
-                List<ServerNode> serverNodes = serverNodeMapper.selectList(
-                        new LambdaQueryWrapper<ServerNode>()
-                                .eq(ServerNode::getNodeType, NodeTypeEnum.CLIENT.getType())
-                                .in(ServerNode::getNamespaceId, namespaceIdSets)
-                                .in(ServerNode::getGroupName, allConsumerGroupName.keySet()));
+                List<ServerNode> serverNodes =
+                        serverNodeMapper.selectList(
+                                new LambdaQueryWrapper<ServerNode>()
+                                        .eq(ServerNode::getNodeType, NodeTypeEnum.CLIENT.getType())
+                                        .in(ServerNode::getNamespaceId, namespaceIdSets)
+                                        .in(
+                                                ServerNode::getGroupName,
+                                                allConsumerGroupName.keySet()));
                 for (final ServerNode node : serverNodes) {
                     // 刷新全量本地缓存
-                    instanceManager.registerOrUpdate(RegisterNodeInfoConverter.INSTANCE.toRegisterNodeInfo(node));
+                    instanceManager.registerOrUpdate(
+                            RegisterNodeInfoConverter.INSTANCE.toRegisterNodeInfo(node));
                     // 刷新过期时间
                     CacheConsumerGroup.addOrUpdate(node.getGroupName(), node.getNamespaceId());
                 }
@@ -129,14 +136,17 @@ public class ServerRegister extends AbstractRegister {
     public void start() {
         SnailJobLog.LOCAL.info("ServerRegister start");
 
-        serverRegisterNode.scheduleAtFixedRate(() -> {
-            try {
-                this.register(new RegisterContext());
-            } catch (Exception e) {
-                SnailJobLog.LOCAL.error("Server-side registration failed", e);
-            }
-        }, 0, DELAY_TIME * 2 / 3, TimeUnit.SECONDS);
-
+        serverRegisterNode.scheduleAtFixedRate(
+                () -> {
+                    try {
+                        this.register(new RegisterContext());
+                    } catch (Exception e) {
+                        SnailJobLog.LOCAL.error("Server-side registration failed", e);
+                    }
+                },
+                0,
+                DELAY_TIME * 2 / 3,
+                TimeUnit.SECONDS);
     }
 
     @Override

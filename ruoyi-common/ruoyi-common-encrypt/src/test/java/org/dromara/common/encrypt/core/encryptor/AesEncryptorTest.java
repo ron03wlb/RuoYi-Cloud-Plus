@@ -1,5 +1,7 @@
 package org.dromara.common.encrypt.core.encryptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.encrypt.core.EncryptContext;
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * AesEncryptor (AES加密器) 单元测试

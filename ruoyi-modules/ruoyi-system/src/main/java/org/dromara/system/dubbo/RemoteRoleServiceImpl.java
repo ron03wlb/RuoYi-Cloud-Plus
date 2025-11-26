@@ -2,6 +2,9 @@ package org.dromara.system.dubbo;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.utils.StreamUtils;
@@ -9,10 +12,6 @@ import org.dromara.system.api.RemoteRoleService;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.mapper.SysRoleMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 角色服务
@@ -37,12 +36,11 @@ public class RemoteRoleServiceImpl implements RemoteRoleService {
         if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptyMap();
         }
-        List<SysRole> list = roleMapper.selectList(
-            new LambdaQueryWrapper<SysRole>()
-                .select(SysRole::getRoleId, SysRole::getRoleName)
-                .in(SysRole::getRoleId, roleIds)
-        );
+        List<SysRole> list =
+                roleMapper.selectList(
+                        new LambdaQueryWrapper<SysRole>()
+                                .select(SysRole::getRoleId, SysRole::getRoleName)
+                                .in(SysRole::getRoleId, roleIds));
         return StreamUtils.toMap(list, SysRole::getRoleId, SysRole::getRoleName);
     }
-
 }

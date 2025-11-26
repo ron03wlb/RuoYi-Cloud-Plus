@@ -151,18 +151,27 @@ tasks.named<JacocoReport>("jacocoTestReport") {
     }
 
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/RuoYiAuthApplication.class",  // 排除启动类
-                    "**/domain/**",                    // 排除 POJO
-                    "**/form/**",                      // 排除表单类
-                    "**/enums/**",                     // 排除枚举类
-                    "**/config/**",                    // 排除配置类
-                    "**/properties/**",                // 排除属性类
-                    "**/listener/**"                   // 排除监听器
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        // 排除启动类
+                        "**/RuoYiAuthApplication.class",
+                        // 排除 POJO
+                        "**/domain/**",
+                        // 排除表单类
+                        "**/form/**",
+                        // 排除枚举类
+                        "**/enums/**",
+                        // 排除配置类
+                        "**/config/**",
+                        // 排除属性类
+                        "**/properties/**",
+                        // 排除监听器
+                        "**/listener/**",
+                    )
+                }
+            },
+        ),
     )
 }

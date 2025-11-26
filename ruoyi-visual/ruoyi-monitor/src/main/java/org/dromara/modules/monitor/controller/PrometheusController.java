@@ -1,17 +1,16 @@
 package org.dromara.modules.monitor.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 对接 prometheus
@@ -23,12 +22,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/actuator/prometheus")
 public class PrometheusController {
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+    @Autowired private DiscoveryClient discoveryClient;
 
-    /**
-     * 从注册中心获取所有服务组装成 prometheus 的数据结构
-     */
+    /** 从注册中心获取所有服务组装成 prometheus 的数据结构 */
     @GetMapping("/sd")
     public List<Map<String, Object>> sd() {
         List<String> services = discoveryClient.getServices();
@@ -38,7 +34,10 @@ public class PrometheusController {
         List<Map<String, Object>> list = new ArrayList<>();
         for (String service : services) {
             List<ServiceInstance> instances = discoveryClient.getInstances(service);
-            List<String> targets = instances.stream().map(i -> i.getHost() + ":" + i.getPort()).collect(Collectors.toList());
+            List<String> targets =
+                    instances.stream()
+                            .map(i -> i.getHost() + ":" + i.getPort())
+                            .collect(Collectors.toList());
 
             Map<String, String> labels = new HashMap<>(2);
             // 数据来源(区分异地使用)
@@ -67,5 +66,4 @@ public class PrometheusController {
         log.info("[prometheus] alert =>" + message);
         return ResponseEntity.ok().build();
     }
-
 }

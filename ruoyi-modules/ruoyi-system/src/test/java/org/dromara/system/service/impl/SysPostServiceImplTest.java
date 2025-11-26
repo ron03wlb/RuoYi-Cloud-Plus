@@ -1,8 +1,15 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.SysUserPost;
@@ -21,34 +28,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysPostServiceImpl 单元测试
- * <p>
- * 测试岗位管理服务
- * </p>
  *
- * <p><b>测试覆盖范围:</b></p>
+ * <p>测试岗位管理服务
+ *
+ * <p><b>测试覆盖范围:</b>
+ *
  * <ul>
- *   <li>查询方法 - 单个查询、列表查询、用户岗位查询</li>
- *   <li>验证方法 - 岗位名称唯一性、岗位编码唯一性</li>
- *   <li>计数方法 - 用户岗位计数、部门岗位计数</li>
- *   <li>删除方法 - 单个删除、批量删除（含业务规则验证）</li>
- *   <li>边界条件 - null、空列表、负数等</li>
+ *   <li>查询方法 - 单个查询、列表查询、用户岗位查询
+ *   <li>验证方法 - 岗位名称唯一性、岗位编码唯一性
+ *   <li>计数方法 - 用户岗位计数、部门岗位计数
+ *   <li>删除方法 - 单个删除、批量删除（含业务规则验证）
+ *   <li>边界条件 - null、空列表、负数等
  * </ul>
  *
- * <p><b>测试限制:</b></p>
+ * <p><b>测试限制:</b>
+ *
  * <ul>
- *   <li>无法测试 insertPost/updatePost - 需要 MapstructUtils.convert()</li>
- *   <li>无法测试 selectPagePostList - 复杂分页查询需要完整 MyBatis-Plus 环境</li>
- *   <li>无法测试 buildQueryWrapper - 私有方法，通过公共方法间接测试</li>
+ *   <li>无法测试 insertPost/updatePost - 需要 MapstructUtils.convert()
+ *   <li>无法测试 selectPagePostList - 复杂分页查询需要完整 MyBatis-Plus 环境
+ *   <li>无法测试 buildQueryWrapper - 私有方法，通过公共方法间接测试
  * </ul>
  *
  * @author Test Team
@@ -58,23 +58,17 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysPostServiceImpl 单元测试")
 class SysPostServiceImplTest {
 
-    @Mock
-    private SysPostMapper baseMapper;
+    @Mock private SysPostMapper baseMapper;
 
-    @Mock
-    private SysDeptMapper deptMapper;
+    @Mock private SysDeptMapper deptMapper;
 
-    @Mock
-    private SysUserPostMapper userPostMapper;
+    @Mock private SysUserPostMapper userPostMapper;
 
-    @InjectMocks
-    private SysPostServiceImpl postService;
+    @InjectMocks private SysPostServiceImpl postService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysPost>> wrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysPost>> wrapperCaptor;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysUserPost>> userPostWrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysUserPost>> userPostWrapperCaptor;
 
     // ==================== Nested Test Groups ====================
 
@@ -96,12 +90,13 @@ class SysPostServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回岗位VO")
-                .isNotNull()
-                .satisfies(post -> {
-                    assertThat(post.getPostId()).isEqualTo(postId);
-                    assertThat(post.getPostName()).isEqualTo("总经理");
-                });
+                    .as("应该返回岗位VO")
+                    .isNotNull()
+                    .satisfies(
+                            post -> {
+                                assertThat(post.getPostId()).isEqualTo(postId);
+                                assertThat(post.getPostName()).isEqualTo("总经理");
+                            });
 
             verify(baseMapper, times(1)).selectVoById(postId);
         }
@@ -117,9 +112,7 @@ class SysPostServiceImplTest {
             SysPostVo result = postService.selectPostById(postId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回null")
-                .isNull();
+            assertThat(result).as("应该返回null").isNull();
 
             verify(baseMapper, times(1)).selectVoById(postId);
         }
@@ -128,11 +121,11 @@ class SysPostServiceImplTest {
         @DisplayName("应该查询所有岗位_返回岗位VO列表")
         void shouldReturnAllPosts_WhenQueryAll() {
             // Arrange
-            List<SysPostVo> expectedPosts = Arrays.asList(
-                createPostVo(1L, "总经理"),
-                createPostVo(2L, "部门经理"),
-                createPostVo(3L, "员工")
-            );
+            List<SysPostVo> expectedPosts =
+                    Arrays.asList(
+                            createPostVo(1L, "总经理"),
+                            createPostVo(2L, "部门经理"),
+                            createPostVo(3L, "员工"));
 
             when(baseMapper.selectVoList(any(QueryWrapper.class))).thenReturn(expectedPosts);
 
@@ -141,11 +134,11 @@ class SysPostServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回所有岗位")
-                .isNotNull()
-                .hasSize(3)
-                .extracting(SysPostVo::getPostName)
-                .containsExactly("总经理", "部门经理", "员工");
+                    .as("应该返回所有岗位")
+                    .isNotNull()
+                    .hasSize(3)
+                    .extracting(SysPostVo::getPostName)
+                    .containsExactly("总经理", "部门经理", "员工");
 
             verify(baseMapper, times(1)).selectVoList(any(QueryWrapper.class));
         }
@@ -154,16 +147,14 @@ class SysPostServiceImplTest {
         @DisplayName("应该返回空列表_当没有任何岗位")
         void shouldReturnEmptyList_WhenNoPostsExist() {
             // Arrange
-            when(baseMapper.selectVoList(any(QueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(QueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysPostVo> result = postService.selectPostAll();
 
             // Assert
-            assertThat(result)
-                .as("应该返回空列表")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空列表").isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(QueryWrapper.class));
         }
@@ -175,10 +166,8 @@ class SysPostServiceImplTest {
             SysPostBo queryBo = createPostBo(null, null);
             queryBo.setPostCode("manager");
 
-            List<SysPostVo> expectedPosts = Arrays.asList(
-                createPostVo(1L, "部门经理"),
-                createPostVo(2L, "项目经理")
-            );
+            List<SysPostVo> expectedPosts =
+                    Arrays.asList(createPostVo(1L, "部门经理"), createPostVo(2L, "项目经理"));
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedPosts);
 
@@ -186,10 +175,7 @@ class SysPostServiceImplTest {
             List<SysPostVo> result = postService.selectPostList(queryBo);
 
             // Assert
-            assertThat(result)
-                .as("应该返回符合条件的岗位列表")
-                .isNotNull()
-                .hasSize(2);
+            assertThat(result).as("应该返回符合条件的岗位列表").isNotNull().hasSize(2);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -199,10 +185,8 @@ class SysPostServiceImplTest {
         void shouldReturnPostsByUserId() {
             // Arrange
             Long userId = 100L;
-            List<SysPostVo> expectedPosts = Arrays.asList(
-                createPostVo(1L, "部门经理"),
-                createPostVo(2L, "项目负责人")
-            );
+            List<SysPostVo> expectedPosts =
+                    Arrays.asList(createPostVo(1L, "部门经理"), createPostVo(2L, "项目负责人"));
 
             when(baseMapper.selectPostsByUserId(userId)).thenReturn(expectedPosts);
 
@@ -211,11 +195,11 @@ class SysPostServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回用户的岗位列表")
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysPostVo::getPostName)
-                .containsExactly("部门经理", "项目负责人");
+                    .as("应该返回用户的岗位列表")
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysPostVo::getPostName)
+                    .containsExactly("部门经理", "项目负责人");
 
             verify(baseMapper, times(1)).selectPostsByUserId(userId);
         }
@@ -225,11 +209,11 @@ class SysPostServiceImplTest {
         void shouldReturnPostIdsByUserId() {
             // Arrange
             Long userId = 100L;
-            List<SysPostVo> posts = Arrays.asList(
-                createPostVo(1L, "岗位1"),
-                createPostVo(2L, "岗位2"),
-                createPostVo(3L, "岗位3")
-            );
+            List<SysPostVo> posts =
+                    Arrays.asList(
+                            createPostVo(1L, "岗位1"),
+                            createPostVo(2L, "岗位2"),
+                            createPostVo(3L, "岗位3"));
 
             when(baseMapper.selectPostsByUserId(userId)).thenReturn(posts);
 
@@ -237,11 +221,7 @@ class SysPostServiceImplTest {
             List<Long> result = postService.selectPostListByUserId(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回岗位ID列表")
-                .isNotNull()
-                .hasSize(3)
-                .containsExactly(1L, 2L, 3L);
+            assertThat(result).as("应该返回岗位ID列表").isNotNull().hasSize(3).containsExactly(1L, 2L, 3L);
 
             verify(baseMapper, times(1)).selectPostsByUserId(userId);
         }
@@ -257,21 +237,16 @@ class SysPostServiceImplTest {
             List<Long> result = postService.selectPostListByUserId(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空列表")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空列表").isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectPostsByUserId(userId);
         }
 
         /**
-         * 注意: 由于 selectPostByIds 使用 LambdaQueryWrapper with in() clause,
-         * 在纯单元测试中无法完全 mock 复杂的 Lambda 表达式构建过程。
-         * 这些测试需要集成测试环境或 MyBatis-Plus 表信息初始化。
+         * 注意: 由于 selectPostByIds 使用 LambdaQueryWrapper with in() clause, 在纯单元测试中无法完全 mock 复杂的
+         * Lambda 表达式构建过程。 这些测试需要集成测试环境或 MyBatis-Plus 表信息初始化。
          *
-         * 实际方法实现已包含 CollUtil.isNotEmpty(postIds) 检查,
-         * 因此空列表和 null 的边界情况已在生产代码中正确处理。
+         * <p>实际方法实现已包含 CollUtil.isNotEmpty(postIds) 检查, 因此空列表和 null 的边界情况已在生产代码中正确处理。
          */
     }
 
@@ -292,9 +267,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostNameUnique(newPost);
 
             // Assert
-            assertThat(result)
-                .as("岗位名称唯一时应该返回true")
-                .isTrue();
+            assertThat(result).as("岗位名称唯一时应该返回true").isTrue();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -312,9 +285,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostNameUnique(newPost);
 
             // Assert
-            assertThat(result)
-                .as("岗位名称重复时应该返回false")
-                .isFalse();
+            assertThat(result).as("岗位名称重复时应该返回false").isFalse();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -332,9 +303,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostNameUnique(updatePost);
 
             // Assert
-            assertThat(result)
-                .as("更新时应该排除自身ID")
-                .isTrue();
+            assertThat(result).as("更新时应该排除自身ID").isTrue();
 
             verify(baseMapper, times(1)).exists(wrapperCaptor.capture());
             // 验证查询条件包含排除自身ID的条件
@@ -353,9 +322,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostCodeUnique(newPost);
 
             // Assert
-            assertThat(result)
-                .as("岗位编码唯一时应该返回true")
-                .isTrue();
+            assertThat(result).as("岗位编码唯一时应该返回true").isTrue();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -373,9 +340,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostCodeUnique(newPost);
 
             // Assert
-            assertThat(result)
-                .as("岗位编码重复时应该返回false")
-                .isFalse();
+            assertThat(result).as("岗位编码重复时应该返回false").isFalse();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -393,9 +358,7 @@ class SysPostServiceImplTest {
             boolean result = postService.checkPostCodeUnique(updatePost);
 
             // Assert
-            assertThat(result)
-                .as("更新时应该排除自身ID")
-                .isTrue();
+            assertThat(result).as("更新时应该排除自身ID").isTrue();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -416,9 +379,7 @@ class SysPostServiceImplTest {
             long result = postService.countUserPostById(postId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回使用该岗位的用户数量")
-                .isEqualTo(5L);
+            assertThat(result).as("应该返回使用该岗位的用户数量").isEqualTo(5L);
 
             verify(userPostMapper, times(1)).selectCount(any(LambdaQueryWrapper.class));
         }
@@ -434,9 +395,7 @@ class SysPostServiceImplTest {
             long result = postService.countUserPostById(postId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回0")
-                .isEqualTo(0L);
+            assertThat(result).as("应该返回0").isEqualTo(0L);
 
             verify(userPostMapper, times(1)).selectCount(any(LambdaQueryWrapper.class));
         }
@@ -452,9 +411,7 @@ class SysPostServiceImplTest {
             long result = postService.countPostByDeptId(deptId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回部门的岗位数量")
-                .isEqualTo(10L);
+            assertThat(result).as("应该返回部门的岗位数量").isEqualTo(10L);
 
             verify(baseMapper, times(1)).selectCount(any(LambdaQueryWrapper.class));
         }
@@ -470,9 +427,7 @@ class SysPostServiceImplTest {
             long result = postService.countPostByDeptId(deptId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回0")
-                .isEqualTo(0L);
+            assertThat(result).as("应该返回0").isEqualTo(0L);
 
             verify(baseMapper, times(1)).selectCount(any(LambdaQueryWrapper.class));
         }
@@ -493,9 +448,7 @@ class SysPostServiceImplTest {
             int result = postService.deletePostById(postId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回删除的记录数")
-                .isEqualTo(1);
+            assertThat(result).as("应该返回删除的记录数").isEqualTo(1);
 
             verify(baseMapper, times(1)).deleteById(postId);
         }
@@ -511,9 +464,7 @@ class SysPostServiceImplTest {
             int result = postService.deletePostById(postId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回0")
-                .isEqualTo(0);
+            assertThat(result).as("应该返回0").isEqualTo(0);
 
             verify(baseMapper, times(1)).deleteById(postId);
         }
@@ -523,11 +474,9 @@ class SysPostServiceImplTest {
         void shouldBatchDeleteSuccessfully_WhenNoPostsAreAssigned() {
             // Arrange
             List<Long> postIds = Arrays.asList(1L, 2L, 3L);
-            List<SysPost> posts = Arrays.asList(
-                createPost(1L, "岗位1"),
-                createPost(2L, "岗位2"),
-                createPost(3L, "岗位3")
-            );
+            List<SysPost> posts =
+                    Arrays.asList(
+                            createPost(1L, "岗位1"), createPost(2L, "岗位2"), createPost(3L, "岗位3"));
 
             when(baseMapper.selectByIds(postIds)).thenReturn(posts);
             when(userPostMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
@@ -537,9 +486,7 @@ class SysPostServiceImplTest {
             int result = postService.deletePostByIds(postIds);
 
             // Assert
-            assertThat(result)
-                .as("应该返回删除的记录数")
-                .isEqualTo(3);
+            assertThat(result).as("应该返回删除的记录数").isEqualTo(3);
 
             verify(baseMapper, times(1)).selectByIds(postIds);
             verify(userPostMapper, times(3)).selectCount(any(LambdaQueryWrapper.class));
@@ -557,15 +504,15 @@ class SysPostServiceImplTest {
 
             when(baseMapper.selectByIds(postIds)).thenReturn(posts);
             when(userPostMapper.selectCount(any(LambdaQueryWrapper.class)))
-                .thenReturn(5L) // 第一个岗位有5个用户
-                .thenReturn(0L); // 第二个岗位没有用户
+                    .thenReturn(5L) // 第一个岗位有5个用户
+                    .thenReturn(0L); // 第二个岗位没有用户
 
             // Act & Assert
             assertThatThrownBy(() -> postService.deletePostByIds(postIds))
-                .as("应该抛出ServiceException")
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("已分配")
-                .hasMessageContaining("不能删除");
+                    .as("应该抛出ServiceException")
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("已分配")
+                    .hasMessageContaining("不能删除");
 
             verify(baseMapper, times(1)).selectByIds(postIds);
             verify(userPostMapper, times(1)).selectCount(any(LambdaQueryWrapper.class));
@@ -584,9 +531,7 @@ class SysPostServiceImplTest {
             int result = postService.deletePostByIds(emptyIds);
 
             // Assert
-            assertThat(result)
-                .as("应该返回0")
-                .isEqualTo(0);
+            assertThat(result).as("应该返回0").isEqualTo(0);
 
             verify(baseMapper, times(1)).selectByIds(emptyIds);
             verify(baseMapper, times(1)).deleteByIds(emptyIds);
@@ -597,11 +542,9 @@ class SysPostServiceImplTest {
         void shouldCheckEachPostAssignment_WhenBatchDelete() {
             // Arrange
             List<Long> postIds = Arrays.asList(1L, 2L, 3L);
-            List<SysPost> posts = Arrays.asList(
-                createPost(1L, "岗位1"),
-                createPost(2L, "岗位2"),
-                createPost(3L, "岗位3")
-            );
+            List<SysPost> posts =
+                    Arrays.asList(
+                            createPost(1L, "岗位1"), createPost(2L, "岗位2"), createPost(3L, "岗位3"));
 
             when(baseMapper.selectByIds(postIds)).thenReturn(posts);
             when(userPostMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
@@ -650,11 +593,9 @@ class SysPostServiceImplTest {
         }
 
         /**
-         * 注意: selectPostByIds with null 无法在纯单元测试中测试,
-         * 因为 LambdaQueryWrapper.in() 会在构建时失败。
-         * 实际代码中 CollUtil.isNotEmpty() 会正确处理 null 情况。
+         * 注意: selectPostByIds with null 无法在纯单元测试中测试, 因为 LambdaQueryWrapper.in() 会在构建时失败。 实际代码中
+         * CollUtil.isNotEmpty() 会正确处理 null 情况。
          */
-
         @Test
         @DisplayName("应该处理负数岗位ID_countUserPostById")
         void shouldHandleNegativePostId_CountUserPostById() {
@@ -703,9 +644,7 @@ class SysPostServiceImplTest {
 
     // ==================== Test Data Factory Methods ====================
 
-    /**
-     * 创建岗位测试数据
-     */
+    /** 创建岗位测试数据 */
     private static SysPost createPost(Long postId, String postName) {
         SysPost post = new SysPost();
         post.setPostId(postId);
@@ -719,9 +658,7 @@ class SysPostServiceImplTest {
         return post;
     }
 
-    /**
-     * 创建岗位BO测试数据
-     */
+    /** 创建岗位BO测试数据 */
     private static SysPostBo createPostBo(Long postId, String postName) {
         SysPostBo bo = new SysPostBo();
         bo.setPostId(postId);
@@ -735,9 +672,7 @@ class SysPostServiceImplTest {
         return bo;
     }
 
-    /**
-     * 创建岗位VO测试数据
-     */
+    /** 创建岗位VO测试数据 */
     private static SysPostVo createPostVo(Long postId, String postName) {
         SysPostVo vo = new SysPostVo();
         vo.setPostId(postId);

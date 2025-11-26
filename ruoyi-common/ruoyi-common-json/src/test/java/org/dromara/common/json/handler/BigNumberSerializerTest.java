@@ -1,7 +1,12 @@
 package org.dromara.common.json.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,17 +17,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
-import java.math.BigInteger;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 /**
  * BigNumberSerializer (大数字序列化器) 单元测试
- * <p>
- * 用途: 将超出 JavaScript Number 安全范围的数字序列化为字符串
- * JavaScript 安全整数范围: [-9007199254740991, 9007199254740991]
+ *
+ * <p>用途: 将超出 JavaScript Number 安全范围的数字序列化为字符串 JavaScript 安全整数范围: [-9007199254740991,
+ * 9007199254740991]
  *
  * @author Test Team
  */
@@ -31,11 +30,9 @@ class BigNumberSerializerTest {
 
     private BigNumberSerializer serializer;
 
-    @Mock
-    private JsonGenerator jsonGenerator;
+    @Mock private JsonGenerator jsonGenerator;
 
-    @Mock
-    private SerializerProvider serializerProvider;
+    @Mock private SerializerProvider serializerProvider;
 
     @BeforeEach
     void setUp() {
@@ -143,11 +140,12 @@ class BigNumberSerializerTest {
     class BoundaryTests {
 
         @ParameterizedTest
-        @ValueSource(longs = {
-            9007199254740990L,  // MAX_SAFE_INTEGER - 1 (边界内)
-            0L,                 // 零
-            -9007199254740990L  // MIN_SAFE_INTEGER + 1 (边界内)
-        })
+        @ValueSource(
+                longs = {
+                    9007199254740990L, // MAX_SAFE_INTEGER - 1 (边界内)
+                    0L, // 零
+                    -9007199254740990L // MIN_SAFE_INTEGER + 1 (边界内)
+                })
         @DisplayName("边界内的数字应该直接序列化")
         void shouldSerializeSafeIntegersAsNumbers(Long value) throws IOException {
             // Act
@@ -158,16 +156,17 @@ class BigNumberSerializerTest {
         }
 
         @ParameterizedTest
-        @ValueSource(longs = {
-            9007199254740991L,   // MAX_SAFE_INTEGER (边界,按实现应序列化为字符串)
-            9007199254740992L,   // MAX_SAFE_INTEGER + 1 (超出)
-            9007199254740993L,   // MAX_SAFE_INTEGER + 2
-            Long.MAX_VALUE,      // Long 最大值
-            -9007199254740991L,  // MIN_SAFE_INTEGER (边界,按实现应序列化为字符串)
-            -9007199254740992L,  // MIN_SAFE_INTEGER - 1 (超出)
-            -9007199254740993L,  // MIN_SAFE_INTEGER - 2
-            Long.MIN_VALUE       // Long 最小值
-        })
+        @ValueSource(
+                longs = {
+                    9007199254740991L, // MAX_SAFE_INTEGER (边界,按实现应序列化为字符串)
+                    9007199254740992L, // MAX_SAFE_INTEGER + 1 (超出)
+                    9007199254740993L, // MAX_SAFE_INTEGER + 2
+                    Long.MAX_VALUE, // Long 最大值
+                    -9007199254740991L, // MIN_SAFE_INTEGER (边界,按实现应序列化为字符串)
+                    -9007199254740992L, // MIN_SAFE_INTEGER - 1 (超出)
+                    -9007199254740993L, // MIN_SAFE_INTEGER - 2
+                    Long.MIN_VALUE // Long 最小值
+                })
         @DisplayName("边界外的数字应该序列化为字符串")
         void shouldSerializeUnsafeIntegersAsStrings(Long value) throws IOException {
             // Act
@@ -407,10 +406,7 @@ class BigNumberSerializerTest {
     class SymmetryTests {
 
         @ParameterizedTest
-        @CsvSource({
-            "1000, -1000",
-            "9007199254740990, -9007199254740990"
-        })
+        @CsvSource({"1000, -1000", "9007199254740990, -9007199254740990"})
         @DisplayName("安全范围内的正负数应该都序列化为数字")
         void shouldSerializeSymmetricSafeNumbers(Long positive, Long negative) throws IOException {
             // Act
@@ -428,7 +424,8 @@ class BigNumberSerializerTest {
             "10000000000000000, -10000000000000000"
         })
         @DisplayName("安全范围外的正负数应该都序列化为字符串")
-        void shouldSerializeSymmetricUnsafeNumbersAsStrings(Long positive, Long negative) throws IOException {
+        void shouldSerializeSymmetricUnsafeNumbersAsStrings(Long positive, Long negative)
+                throws IOException {
             // Act
             serializer.serialize(positive, jsonGenerator, serializerProvider);
             serializer.serialize(negative, jsonGenerator, serializerProvider);

@@ -12,28 +12,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DeviceType {
 
-    /**
-     * pc端
-     */
+    /** pc端 */
     PC("pc"),
 
-    /**
-     * app端
-     */
+    /** app端 */
     APP("app"),
 
-    /**
-     * 小程序端
-     */
+    /** 小程序端 */
     XCX("xcx"),
 
-    /**
-     * 第三方社交登录平台
-     */
+    /** 第三方社交登录平台 */
     SOCIAL("social");
 
-    /**
-     * 设备标识
-     */
+    /** 设备标识 */
     private final String device;
 }

@@ -5,16 +5,15 @@ import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.event.AnalysisEventListener;
 import cn.idev.excel.exception.ExcelAnalysisException;
 import cn.idev.excel.exception.ExcelDataConvertException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import java.util.Map;
+import java.util.Set;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.ValidatorUtils;
 import org.dromara.common.json.utils.JsonUtils;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Excel 导入监听
@@ -26,19 +25,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class DefaultExcelListener<T> extends AnalysisEventListener<T> implements ExcelListener<T> {
 
-    /**
-     * 是否Validator检验，默认为是
-     */
+    /** 是否Validator检验，默认为是 */
     private Boolean isValidate = Boolean.TRUE;
 
-    /**
-     * excel 表头数据
-     */
+    /** excel 表头数据 */
     private Map<Integer, String> headMap;
 
-    /**
-     * 导入回执
-     */
+    /** 导入回执 */
     private ExcelResult<T> excelResult;
 
     public DefaultExcelListener(boolean isValidate) {
@@ -50,7 +43,7 @@ public class DefaultExcelListener<T> extends AnalysisEventListener<T> implements
      * 处理异常
      *
      * @param exception ExcelDataConvertException
-     * @param context   Excel 上下文
+     * @param context Excel 上下文
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) throws Exception {
@@ -59,16 +52,26 @@ public class DefaultExcelListener<T> extends AnalysisEventListener<T> implements
             // 如果是某一个单元格的转换异常 能获取到具体行号
             Integer rowIndex = excelDataConvertException.getRowIndex();
             Integer columnIndex = excelDataConvertException.getColumnIndex();
-            errMsg = StrUtil.format("第{}行-第{}列-表头{}: 解析异常<br/>",
-                rowIndex + 1, columnIndex + 1, headMap.get(columnIndex));
+            errMsg =
+                    StrUtil.format(
+                            "第{}行-第{}列-表头{}: 解析异常<br/>",
+                            rowIndex + 1,
+                            columnIndex + 1,
+                            headMap.get(columnIndex));
             if (log.isDebugEnabled()) {
                 log.error(errMsg);
             }
         }
         if (exception instanceof ConstraintViolationException constraintViolationException) {
-            Set<ConstraintViolation<?>> constraintViolations = constraintViolationException.getConstraintViolations();
-            String constraintViolationsMsg = StreamUtils.join(constraintViolations, ConstraintViolation::getMessage, ", ");
-            errMsg = StrUtil.format("第{}行数据校验异常: {}", context.readRowHolder().getRowIndex() + 1, constraintViolationsMsg);
+            Set<ConstraintViolation<?>> constraintViolations =
+                    constraintViolationException.getConstraintViolations();
+            String constraintViolationsMsg =
+                    StreamUtils.join(constraintViolations, ConstraintViolation::getMessage, ", ");
+            errMsg =
+                    StrUtil.format(
+                            "第{}行数据校验异常: {}",
+                            context.readRowHolder().getRowIndex() + 1,
+                            constraintViolationsMsg);
             if (log.isDebugEnabled()) {
                 log.error(errMsg);
             }
@@ -100,5 +103,4 @@ public class DefaultExcelListener<T> extends AnalysisEventListener<T> implements
     public ExcelResult<T> getExcelResult() {
         return excelResult;
     }
-
 }

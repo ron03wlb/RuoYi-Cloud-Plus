@@ -1,9 +1,12 @@
 package org.dromara.auth.form;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.util.Set;
 import org.dromara.auth.AuthTestDataFactory;
 import org.dromara.auth.BaseUnitTest;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,15 +17,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * 登录表单验证测试
- * <p>
- * 测试所有登录表单的 Bean Validation 注解
- * </p>
+ *
+ * <p>测试所有登录表单的 Bean Validation 注解
  *
  * @author Test Team
  */
@@ -68,13 +66,13 @@ class LoginFormValidationTest extends BaseUnitTest {
 
             // Assert
             assertThat(violations)
-                .isNotEmpty()
-                .extracting(ConstraintViolation::getMessage)
-                .anyMatch(msg -> msg.contains("username") || msg.contains("blank"));
+                    .isNotEmpty()
+                    .extracting(ConstraintViolation::getMessage)
+                    .anyMatch(msg -> msg.contains("username") || msg.contains("blank"));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"a", "ab3456789012345678901234567890123"})  // 1个字符和33个字符
+        @ValueSource(strings = {"a", "ab3456789012345678901234567890123"}) // 1个字符和33个字符
         @DisplayName("用户名长度不符合要求 - 应该验证失败")
         void shouldFailValidationWhenUsernameLengthInvalid(String username) {
             // Arrange
@@ -86,9 +84,9 @@ class LoginFormValidationTest extends BaseUnitTest {
 
             // Assert
             assertThat(violations)
-                .isNotEmpty()
-                .extracting(ConstraintViolation::getMessage)
-                .anyMatch(msg -> msg.contains("length") || msg.contains("长度"));
+                    .isNotEmpty()
+                    .extracting(ConstraintViolation::getMessage)
+                    .anyMatch(msg -> msg.contains("length") || msg.contains("长度"));
         }
 
         @ParameterizedTest
@@ -105,13 +103,13 @@ class LoginFormValidationTest extends BaseUnitTest {
 
             // Assert
             assertThat(violations)
-                .isNotEmpty()
-                .extracting(ConstraintViolation::getMessage)
-                .anyMatch(msg -> msg.contains("password") || msg.contains("blank"));
+                    .isNotEmpty()
+                    .extracting(ConstraintViolation::getMessage)
+                    .anyMatch(msg -> msg.contains("password") || msg.contains("blank"));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1234", "1234567890123456789012345678901"})  // 4个字符和31个字符
+        @ValueSource(strings = {"1234", "1234567890123456789012345678901"}) // 4个字符和31个字符
         @DisplayName("密码长度不符合要求 - 应该验证失败")
         void shouldFailValidationWhenPasswordLengthInvalid(String password) {
             // Arrange
@@ -123,9 +121,9 @@ class LoginFormValidationTest extends BaseUnitTest {
 
             // Assert
             assertThat(violations)
-                .isNotEmpty()
-                .extracting(ConstraintViolation::getMessage)
-                .anyMatch(msg -> msg.contains("length") || msg.contains("长度"));
+                    .isNotEmpty()
+                    .extracting(ConstraintViolation::getMessage)
+                    .anyMatch(msg -> msg.contains("length") || msg.contains("长度"));
         }
 
         @Test
@@ -133,8 +131,8 @@ class LoginFormValidationTest extends BaseUnitTest {
         void shouldPassValidationWithMinimumLengths() {
             // Arrange
             PasswordLoginBody body = AuthTestDataFactory.createPasswordLoginBody();
-            body.setUsername("ab");        // 最小2位
-            body.setPassword("12345");     // 最小5位
+            body.setUsername("ab"); // 最小2位
+            body.setPassword("12345"); // 最小5位
 
             // Act
             Set<ConstraintViolation<PasswordLoginBody>> violations = validator.validate(body);
@@ -148,8 +146,8 @@ class LoginFormValidationTest extends BaseUnitTest {
         void shouldPassValidationWithMaximumLengths() {
             // Arrange
             PasswordLoginBody body = AuthTestDataFactory.createPasswordLoginBody();
-            body.setUsername("a".repeat(30));   // 最大30位
-            body.setPassword("1".repeat(30));   // 最大30位
+            body.setUsername("a".repeat(30)); // 最大30位
+            body.setPassword("1".repeat(30)); // 最大30位
 
             // Act
             Set<ConstraintViolation<PasswordLoginBody>> violations = validator.validate(body);
@@ -193,7 +191,14 @@ class LoginFormValidationTest extends BaseUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"invalid", "invalid@", "@example.com", "invalid@.com", "invalid..email@example.com"})
+        @ValueSource(
+                strings = {
+                    "invalid",
+                    "invalid@",
+                    "@example.com",
+                    "invalid@.com",
+                    "invalid..email@example.com"
+                })
         @DisplayName("邮箱格式不正确 - 应该验证失败")
         void shouldFailValidationWhenEmailFormatInvalid(String email) {
             // Arrange
@@ -205,18 +210,23 @@ class LoginFormValidationTest extends BaseUnitTest {
 
             // Assert
             assertThat(violations)
-                .isNotEmpty()
-                .extracting(ConstraintViolation::getMessage)
-                .anyMatch(msg -> msg.contains("email") || msg.contains("valid") || msg.contains("邮箱"));
+                    .isNotEmpty()
+                    .extracting(ConstraintViolation::getMessage)
+                    .anyMatch(
+                            msg ->
+                                    msg.contains("email")
+                                            || msg.contains("valid")
+                                            || msg.contains("邮箱"));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "user@example.com",
-            "user.name@example.com",
-            "user+tag@example.co.uk",
-            "user_123@sub.example.com"
-        })
+        @ValueSource(
+                strings = {
+                    "user@example.com",
+                    "user.name@example.com",
+                    "user+tag@example.co.uk",
+                    "user_123@sub.example.com"
+                })
         @DisplayName("各种有效的邮箱格式 - 应该通过验证")
         void shouldPassValidationWithVariousValidEmails(String email) {
             // Arrange

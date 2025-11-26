@@ -3,15 +3,13 @@ package org.dromara.workflow.domain.vo;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-import org.dromara.workflow.domain.FlowCategory;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import lombok.Data;
+import org.dromara.workflow.domain.FlowCategory;
 
 /**
  * 流程分类视图对象 wf_category
@@ -24,51 +22,33 @@ import java.util.List;
 @AutoMapper(target = FlowCategory.class)
 public class FlowCategoryVo implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 流程分类ID
-     */
+    /** 流程分类ID */
     @ExcelProperty(value = "流程分类ID")
     private Long categoryId;
 
-    /**
-     * 父级id
-     */
+    /** 父级id */
     private Long parentId;
 
-    /**
-     * 父类别名称
-     */
+    /** 父类别名称 */
     private String parentName;
 
-    /**
-     * 祖级列表
-     */
+    /** 祖级列表 */
     private String ancestors;
 
-    /**
-     * 流程分类名称
-     */
+    /** 流程分类名称 */
     @ExcelProperty(value = "流程分类名称")
     private String categoryName;
 
-    /**
-     * 显示顺序
-     */
+    /** 显示顺序 */
     @ExcelProperty(value = "显示顺序")
     private Long orderNum;
 
-    /**
-     * 创建时间
-     */
+    /** 创建时间 */
     @ExcelProperty(value = "创建时间")
     private Date createTime;
 
-    /**
-     * 子菜单
-     */
+    /** 子菜单 */
     private List<FlowCategoryVo> children = new ArrayList<>();
-
 }

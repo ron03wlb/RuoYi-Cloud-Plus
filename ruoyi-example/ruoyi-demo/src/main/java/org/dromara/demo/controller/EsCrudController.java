@@ -1,5 +1,6 @@
 package org.dromara.demo.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.demo.domain.Document;
@@ -7,8 +8,6 @@ import org.dromara.demo.esmapper.DocumentMapper;
 import org.dromara.easyes.core.conditions.select.LambdaEsQueryWrapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 搜索引擎 crud 演示案例
@@ -47,17 +46,13 @@ public class EsCrudController {
         return documentMapper.selectList(wrapper);
     }
 
-    /**
-     * 插入
-     */
+    /** 插入 */
     @PostMapping("/insert")
     public Integer insert(@RequestBody Document document) {
         return documentMapper.insert(document);
     }
 
-    /**
-     * 更新
-     */
+    /** 更新 */
     @PutMapping("/update")
     public R<Void> update(@RequestBody Document document) {
         // 测试更新 更新有两种情况 分别演示如下:
@@ -65,12 +60,12 @@ public class EsCrudController {
         documentMapper.updateById(document);
 
         // case2: id未知, 根据条件更新
-//        LambdaEsUpdateWrapper<Document> wrapper = new LambdaEsUpdateWrapper<>();
-//        wrapper.like(Document::getTitle, document.getTitle());
-//        Document document2 = new Document();
-//        document2.setTitle(document.getTitle());
-//        document2.setContent(document.getContent());
-//        documentMapper.update(document2, wrapper);
+        //        LambdaEsUpdateWrapper<Document> wrapper = new LambdaEsUpdateWrapper<>();
+        //        wrapper.like(Document::getTitle, document.getTitle());
+        //        Document document2 = new Document();
+        //        document2.setTitle(document.getTitle());
+        //        document2.setContent(document.getContent());
+        //        documentMapper.update(document2, wrapper);
 
         return R.ok();
     }
@@ -85,5 +80,4 @@ public class EsCrudController {
         // 测试删除数据 删除有两种情况:根据id删或根据条件删
         return R.ok(documentMapper.deleteById(id));
     }
-
 }

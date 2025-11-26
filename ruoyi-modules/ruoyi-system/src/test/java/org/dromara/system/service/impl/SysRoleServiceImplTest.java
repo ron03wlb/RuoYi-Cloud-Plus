@@ -1,13 +1,18 @@
 package org.dromara.system.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
-import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.BaseUnitTest;
@@ -16,7 +21,10 @@ import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;
 import org.dromara.system.domain.vo.SysRoleVo;
-import org.dromara.system.mapper.*;
+import org.dromara.system.mapper.SysRoleDeptMapper;
+import org.dromara.system.mapper.SysRoleMapper;
+import org.dromara.system.mapper.SysRoleMenuMapper;
+import org.dromara.system.mapper.SysUserRoleMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,30 +33,25 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysRoleServiceImpl 单元测试
- * <p>
- * 测试角色服务的核心业务逻辑
- * </p>
  *
- * <p>测试范围:</p>
+ * <p>测试角色服务的核心业务逻辑
+ *
+ * <p>测试范围:
+ *
  * <ul>
- *   <li>查询类方法 (selectRoleById, selectRolesByUserId, etc.)</li>
- *   <li>验证类方法 (checkRoleNameUnique, checkRoleKeyUnique, etc.)</li>
- *   <li>业务逻辑方法 (selectRolePermissionByUserId, selectRolesAuthByUserId)</li>
+ *   <li>查询类方法 (selectRoleById, selectRolesByUserId, etc.)
+ *   <li>验证类方法 (checkRoleNameUnique, checkRoleKeyUnique, etc.)
+ *   <li>业务逻辑方法 (selectRolePermissionByUserId, selectRolesAuthByUserId)
  * </ul>
  *
- * <p>测试策略:</p>
+ * <p>测试策略:
+ *
  * <ul>
- *   <li>使用 Mockito Mock 所有 Mapper 依赖</li>
- *   <li>重点测试业务逻辑，不测试框架功能</li>
- *   <li>跳过依赖 LoginHelper 和 MapstructUtils 的方法</li>
+ *   <li>使用 Mockito Mock 所有 Mapper 依赖
+ *   <li>重点测试业务逻辑，不测试框架功能
+ *   <li>跳过依赖 LoginHelper 和 MapstructUtils 的方法
  * </ul>
  *
  * @author Test Team
@@ -57,27 +60,20 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysRoleServiceImpl 单元测试")
 class SysRoleServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysRoleMapper baseMapper;
+    @Mock private SysRoleMapper baseMapper;
 
-    @Mock
-    private SysRoleMenuMapper roleMenuMapper;
+    @Mock private SysRoleMenuMapper roleMenuMapper;
 
-    @Mock
-    private SysUserRoleMapper userRoleMapper;
+    @Mock private SysUserRoleMapper userRoleMapper;
 
-    @Mock
-    private SysRoleDeptMapper roleDeptMapper;
+    @Mock private SysRoleDeptMapper roleDeptMapper;
 
-    @InjectMocks
-    private SysRoleServiceImpl roleService;
+    @InjectMocks private SysRoleServiceImpl roleService;
 
     /**
      * 初始化 MyBatis-Plus 表信息缓存
-     * <p>
-     * 在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存
-     * 这个方法在所有测试执行前初始化 SysRole 实体的表信息
-     * </p>
+     *
+     * <p>在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存 这个方法在所有测试执行前初始化 SysRole 实体的表信息
      */
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -137,13 +133,14 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldSelectRoleByIds() {
             // Arrange
             List<Long> roleIds = Arrays.asList(1L, 2L, 3L);
-            List<SysRoleVo> expectedRoles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user"),
-                TestDataFactory.createRoleVo(3L, "guest")
-            );
+            List<SysRoleVo> expectedRoles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"),
+                            TestDataFactory.createRoleVo(3L, "guest"));
 
-            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any())).thenReturn(expectedRoles);
+            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
+                    .thenReturn(expectedRoles);
 
             // Act
             List<SysRoleVo> result = roleService.selectRoleByIds(roleIds);
@@ -151,8 +148,9 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result).hasSize(3);
-            assertThat(result).extracting(SysRoleVo::getRoleKey)
-                .containsExactly("admin", "user", "guest");
+            assertThat(result)
+                    .extracting(SysRoleVo::getRoleKey)
+                    .containsExactly("admin", "user", "guest");
         }
 
         @Test
@@ -160,10 +158,10 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldSelectRolesByUserId() {
             // Arrange
             Long userId = 1L;
-            List<SysRoleVo> expectedRoles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> expectedRoles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
 
             when(baseMapper.selectRolesByUserId(userId)).thenReturn(expectedRoles);
 
@@ -173,8 +171,7 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result).hasSize(2);
-            assertThat(result).extracting(SysRoleVo::getRoleKey)
-                .containsExactly("admin", "user");
+            assertThat(result).extracting(SysRoleVo::getRoleKey).containsExactly("admin", "user");
 
             // Verify
             verify(baseMapper, times(1)).selectRolesByUserId(userId);
@@ -200,10 +197,10 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldSelectRoleListByUserId() {
             // Arrange
             Long userId = 1L;
-            List<SysRoleVo> roles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> roles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
 
             when(baseMapper.selectRolesByUserId(userId)).thenReturn(roles);
 
@@ -221,7 +218,8 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldSelectRoleAll() {
             // Arrange
             List<SysRoleVo> allRoles = TestDataFactory.createRoleList(3);
-            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any())).thenReturn(allRoles);
+            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
+                    .thenReturn(allRoles);
 
             // Act
             List<SysRoleVo> result = roleService.selectRoleAll();
@@ -272,12 +270,13 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             query.setRoleName("测试");
             query.setStatus("0");
 
-            List<SysRoleVo> expectedRoles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> expectedRoles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
 
-            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any())).thenReturn(expectedRoles);
+            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
+                    .thenReturn(expectedRoles);
 
             // Act
             List<SysRoleVo> result = roleService.selectRoleList(query);
@@ -299,15 +298,16 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             pageQuery.setPageSize(10);
 
             Page<SysRoleVo> mockPage = new Page<>();
-            List<SysRoleVo> roles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> roles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
             mockPage.setRecords(roles);
             mockPage.setTotal(2);
 
-            when(baseMapper.selectPageRoleList(any(Page.class), ArgumentMatchers.<Wrapper<SysRole>>any()))
-                .thenReturn(mockPage);
+            when(baseMapper.selectPageRoleList(
+                            any(Page.class), ArgumentMatchers.<Wrapper<SysRole>>any()))
+                    .thenReturn(mockPage);
 
             // Act
             TableDataInfo<SysRoleVo> result = roleService.selectPageRoleList(query, pageQuery);
@@ -316,8 +316,9 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             assertThat(result).isNotNull();
             assertThat(result.getRows()).hasSize(2);
             assertThat(result.getTotal()).isEqualTo(2);
-            assertThat(result.getRows()).extracting(SysRoleVo::getRoleKey)
-                .containsExactly("admin", "user");
+            assertThat(result.getRows())
+                    .extracting(SysRoleVo::getRoleKey)
+                    .containsExactly("admin", "user");
         }
     }
 
@@ -423,14 +424,16 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldCountUserRoleByRoleId() {
             // Arrange
             Long roleId = 1L;
-            when(userRoleMapper.selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any())).thenReturn(5L);
+            when(userRoleMapper.selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any()))
+                    .thenReturn(5L);
 
             // Act
             long result = roleService.countUserRoleByRoleId(roleId);
 
             // Assert
             assertThat(result).isEqualTo(5L);
-            verify(userRoleMapper, times(1)).selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any());
+            verify(userRoleMapper, times(1))
+                    .selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any());
         }
 
         @Test
@@ -438,7 +441,8 @@ class SysRoleServiceImplTest extends BaseUnitTest {
         void shouldReturnZeroWhenRoleHasNoUsers() {
             // Arrange
             Long roleId = 999L;
-            when(userRoleMapper.selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any())).thenReturn(0L);
+            when(userRoleMapper.selectCount(ArgumentMatchers.<Wrapper<SysUserRole>>any()))
+                    .thenReturn(0L);
 
             // Act
             long result = roleService.countUserRoleByRoleId(roleId);
@@ -463,20 +467,21 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             Long userId = 1L;
 
             // 用户已分配的角色
-            List<SysRoleVo> userRoles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> userRoles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
 
             // 系统所有角色
-            List<SysRoleVo> allRoles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user"),
-                TestDataFactory.createRoleVo(3L, "guest")
-            );
+            List<SysRoleVo> allRoles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"),
+                            TestDataFactory.createRoleVo(3L, "guest"));
 
             when(baseMapper.selectRolesByUserId(userId)).thenReturn(userRoles);
-            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any())).thenReturn(allRoles);
+            when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
+                    .thenReturn(allRoles);
 
             // Act
             List<SysRoleVo> result = roleService.selectRolesAuthByUserId(userId);
@@ -499,7 +504,7 @@ class SysRoleServiceImplTest extends BaseUnitTest {
 
             when(baseMapper.selectRolesByUserId(userId)).thenReturn(Collections.emptyList());
             when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
-                .thenReturn(TestDataFactory.createRoleList(3));
+                    .thenReturn(TestDataFactory.createRoleList(3));
 
             // Act
             List<SysRoleVo> result = roleService.selectRolesAuthByUserId(userId);
@@ -526,7 +531,7 @@ class SysRoleServiceImplTest extends BaseUnitTest {
             // Arrange
             List<Long> emptyRoleIds = Collections.emptyList();
             when(baseMapper.selectRoleList(ArgumentMatchers.<Wrapper<SysRole>>any()))
-                .thenReturn(Collections.emptyList());
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysRoleVo> result = roleService.selectRoleByIds(emptyRoleIds);

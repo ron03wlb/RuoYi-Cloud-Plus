@@ -16,5 +16,4 @@ public class RateLimiterConfig {
     public RateLimiterAspect rateLimiterAspect() {
         return new RateLimiterAspect();
     }
-
 }

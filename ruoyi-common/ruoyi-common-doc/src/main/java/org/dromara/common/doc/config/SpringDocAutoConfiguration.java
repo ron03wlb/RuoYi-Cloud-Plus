@@ -5,6 +5,10 @@ import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -27,8 +31,6 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import java.util.*;
-
 /**
  * 接口文档配置
  *
@@ -37,7 +39,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @AutoConfiguration(before = SpringDocConfiguration.class)
 @EnableConfigurationProperties(SpringDocProperties.class)
-@ConditionalOnProperty(name = "springdoc.api-docs.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+        name = "springdoc.api-docs.enabled",
+        havingValue = "true",
+        matchIfMissing = true)
 public class SpringDocAutoConfiguration {
 
     private final ServerProperties serverProperties;
@@ -79,21 +84,27 @@ public class SpringDocAutoConfiguration {
         return info;
     }
 
-    /**
-     * 自定义 openapi 处理器
-     */
+    /** 自定义 openapi 处理器 */
     @Bean
-    public OpenAPIService openApiBuilder(Optional<OpenAPI> openAPI,
-                                         SecurityService securityParser,
-                                         SpringDocConfigProperties springDocConfigProperties, PropertyResolverUtils propertyResolverUtils,
-                                         Optional<List<OpenApiBuilderCustomizer>> openApiBuilderCustomisers,
-                                         Optional<List<ServerBaseUrlCustomizer>> serverBaseUrlCustomisers, Optional<JavadocProvider> javadocProvider) {
-        return new OpenApiHandler(openAPI, securityParser, springDocConfigProperties, propertyResolverUtils, openApiBuilderCustomisers, serverBaseUrlCustomisers, javadocProvider);
+    public OpenAPIService openApiBuilder(
+            Optional<OpenAPI> openAPI,
+            SecurityService securityParser,
+            SpringDocConfigProperties springDocConfigProperties,
+            PropertyResolverUtils propertyResolverUtils,
+            Optional<List<OpenApiBuilderCustomizer>> openApiBuilderCustomisers,
+            Optional<List<ServerBaseUrlCustomizer>> serverBaseUrlCustomisers,
+            Optional<JavadocProvider> javadocProvider) {
+        return new OpenApiHandler(
+                openAPI,
+                securityParser,
+                springDocConfigProperties,
+                propertyResolverUtils,
+                openApiBuilderCustomisers,
+                serverBaseUrlCustomisers,
+                javadocProvider);
     }
 
-    /**
-     * 对已经生成好的 OpenApi 进行自定义操作
-     */
+    /** 对已经生成好的 OpenApi 进行自定义操作 */
     @Bean
     public OpenApiCustomizer openApiCustomizer() {
         // 对所有路径增加前置上下文路径
@@ -110,5 +121,4 @@ public class SpringDocAutoConfiguration {
             openApi.setPaths(newPaths);
         };
     }
-
 }

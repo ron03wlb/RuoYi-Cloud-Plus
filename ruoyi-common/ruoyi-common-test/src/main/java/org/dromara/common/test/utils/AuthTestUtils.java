@@ -2,24 +2,25 @@ package org.dromara.common.test.utils;
 
 import cn.dev33.satoken.context.mock.SaTokenContextMockUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 认证测试工具类
- * <p>
- * 提供集成测试中的认证相关工具方法，包括：
+ *
+ * <p>提供集成测试中的认证相关工具方法，包括：
+ *
  * <ul>
- *     <li>模拟用户登录</li>
- *     <li>生成测试 Token</li>
- *     <li>设置用户权限</li>
- *     <li>清除登录状态</li>
+ *   <li>模拟用户登录
+ *   <li>生成测试 Token
+ *   <li>设置用户权限
+ *   <li>清除登录状态
  * </ul>
  *
  * <h3>使用示例：</h3>
+ *
  * <pre>{@code
  * // 模拟用户登录
  * String token = AuthTestUtils.mockLogin(1L, "admin");
@@ -35,10 +36,8 @@ import java.util.Map;
  * }</pre>
  *
  * <h3>重要说明：</h3>
- * <p>
- * 本类使用 Sa-Token 的 Mock 上下文进行测试。所有需要使用 Sa-Token 功能的测试方法
- * 会自动初始化 Mock 上下文，无需手动初始化。
- * </p>
+ *
+ * <p>本类使用 Sa-Token 的 Mock 上下文进行测试。所有需要使用 Sa-Token 功能的测试方法 会自动初始化 Mock 上下文，无需手动初始化。
  *
  * @author Lion Li
  * @since 2025-11-09
@@ -47,16 +46,14 @@ public class AuthTestUtils {
 
     private static final Logger log = LoggerFactory.getLogger(AuthTestUtils.class);
 
-    /**
-     * 线程本地变量，标记当前线程是否已初始化 Mock 上下文
-     */
-    private static final ThreadLocal<Boolean> CONTEXT_INITIALIZED = ThreadLocal.withInitial(() -> false);
+    /** 线程本地变量，标记当前线程是否已初始化 Mock 上下文 */
+    private static final ThreadLocal<Boolean> CONTEXT_INITIALIZED =
+            ThreadLocal.withInitial(() -> false);
 
     /**
      * 确保 Sa-Token Mock 上下文已初始化
-     * <p>
-     * 使用 ThreadLocal 确保每个线程只初始化一次
-     * </p>
+     *
+     * <p>使用 ThreadLocal 确保每个线程只初始化一次
      */
     private static void ensureMockContext() {
         if (!CONTEXT_INITIALIZED.get()) {
@@ -72,9 +69,8 @@ public class AuthTestUtils {
 
     /**
      * 清除 Mock 上下文
-     * <p>
-     * 测试完成后应调用此方法清理上下文
-     * </p>
+     *
+     * <p>测试完成后应调用此方法清理上下文
      */
     public static void clearMockContext() {
         try {
@@ -89,7 +85,7 @@ public class AuthTestUtils {
     /**
      * 模拟用户登录
      *
-     * @param userId   用户ID
+     * @param userId 用户ID
      * @param username 用户名
      * @return Token字符串
      */
@@ -100,7 +96,7 @@ public class AuthTestUtils {
     /**
      * 模拟用户登录（带租户）
      *
-     * @param userId   用户ID
+     * @param userId 用户ID
      * @param username 用户名
      * @param tenantId 租户ID
      * @return Token字符串
@@ -143,7 +139,7 @@ public class AuthTestUtils {
     /**
      * 设置用户权限
      *
-     * @param userId      用户ID
+     * @param userId 用户ID
      * @param permissions 权限列表
      */
     public static void setPermissions(Long userId, String... permissions) {
@@ -159,7 +155,7 @@ public class AuthTestUtils {
      * 设置用户角色
      *
      * @param userId 用户ID
-     * @param roles  角色列表
+     * @param roles 角色列表
      */
     public static void setRoles(Long userId, String... roles) {
         ensureMockContext();
@@ -222,18 +218,14 @@ public class AuthTestUtils {
         StpUtil.logout(userId);
     }
 
-    /**
-     * 登出当前用户
-     */
+    /** 登出当前用户 */
     public static void logout() {
         ensureMockContext();
         log.debug("登出当前用户");
         StpUtil.logout();
     }
 
-    /**
-     * 清除所有登录状态
-     */
+    /** 清除所有登录状态 */
     public static void clearAll() {
         log.debug("清除所有登录状态");
         // 注意：Sa-Token 没有直接的清除所有Session的方法
@@ -288,7 +280,7 @@ public class AuthTestUtils {
     /**
      * 创建测试用的普通用户并登录
      *
-     * @param userId   用户ID
+     * @param userId 用户ID
      * @param username 用户名
      * @return Token字符串
      */

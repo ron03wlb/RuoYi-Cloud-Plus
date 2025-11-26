@@ -12,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
  *
  * @author Michelle.Chung
  */
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SysSocialVoConvert extends BaseMapper<SysSocialVo, RemoteSocialVo> {
-}
+@Mapper(
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface SysSocialVoConvert extends BaseMapper<SysSocialVo, RemoteSocialVo> {}

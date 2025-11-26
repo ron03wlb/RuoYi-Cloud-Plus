@@ -21,27 +21,24 @@ import org.dromara.workflow.domain.FlowCategory;
 @AutoMapper(target = FlowCategory.class, reverseConvertGenerate = false)
 public class FlowCategoryBo extends BaseEntity {
 
-    /**
-     * 流程分类ID
-     */
-    @NotNull(message = "流程分类ID不能为空", groups = { EditGroup.class })
+    /** 流程分类ID */
+    @NotNull(
+            message = "流程分类ID不能为空",
+            groups = {EditGroup.class})
     private Long categoryId;
 
-    /**
-     * 父流程分类id
-     */
-    @NotNull(message = "父流程分类id不能为空", groups = {AddGroup.class, EditGroup.class})
+    /** 父流程分类id */
+    @NotNull(
+            message = "父流程分类id不能为空",
+            groups = {AddGroup.class, EditGroup.class})
     private Long parentId;
 
-    /**
-     * 流程分类名称
-     */
-    @NotBlank(message = "流程分类名称不能为空", groups = {AddGroup.class, EditGroup.class})
+    /** 流程分类名称 */
+    @NotBlank(
+            message = "流程分类名称不能为空",
+            groups = {AddGroup.class, EditGroup.class})
     private String categoryName;
 
-    /**
-     * 显示顺序
-     */
+    /** 显示顺序 */
     private Long orderNum;
-
 }

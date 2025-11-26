@@ -11,5 +11,4 @@ import java.io.IOException;
 public interface WriteOutSubscriber<T> {
 
     void writeTo(T out) throws IOException;
-
 }

@@ -1,6 +1,14 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.system.domain.SysConfig;
@@ -17,15 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 /**
  * SysConfigServiceImpl 单元测试
  *
@@ -36,14 +35,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysConfigServiceImpl 单元测试")
 class SysConfigServiceImplTest {
 
-    @Mock
-    private SysConfigMapper baseMapper;
+    @Mock private SysConfigMapper baseMapper;
 
-    @InjectMocks
-    private SysConfigServiceImpl configService;
+    @InjectMocks private SysConfigServiceImpl configService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysConfig>> wrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysConfig>> wrapperCaptor;
 
     @Nested
     @DisplayName("1. 查询方法测试")
@@ -56,10 +52,12 @@ class SysConfigServiceImplTest {
             SysConfigBo queryBo = createConfigBo(null, "用户管理");
             queryBo.setConfigName("用户管理");
 
-            List<SysConfigVo> expectedList = Arrays.asList(
-                createConfigVo(1L, "用户管理-注册开关", "sys.account.registerUser", "true", "N"),
-                createConfigVo(2L, "用户管理-验证码开关", "sys.account.captchaEnabled", "true", "N")
-            );
+            List<SysConfigVo> expectedList =
+                    Arrays.asList(
+                            createConfigVo(
+                                    1L, "用户管理-注册开关", "sys.account.registerUser", "true", "N"),
+                            createConfigVo(
+                                    2L, "用户管理-验证码开关", "sys.account.captchaEnabled", "true", "N"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -67,10 +65,10 @@ class SysConfigServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysConfigVo::getConfigName)
-                .allMatch(name -> name.contains("用户管理"));
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysConfigVo::getConfigName)
+                    .allMatch(name -> name.contains("用户管理"));
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -82,10 +80,20 @@ class SysConfigServiceImplTest {
             SysConfigBo queryBo = createConfigBo(null, "");
             queryBo.setConfigType(SystemConstants.YES);
 
-            List<SysConfigVo> expectedList = Arrays.asList(
-                createConfigVo(1L, "主框架页-默认皮肤", "sys.index.skinName", "skin-blue", SystemConstants.YES),
-                createConfigVo(2L, "用户管理-账号初始密码", "sys.user.initPassword", "123456", SystemConstants.YES)
-            );
+            List<SysConfigVo> expectedList =
+                    Arrays.asList(
+                            createConfigVo(
+                                    1L,
+                                    "主框架页-默认皮肤",
+                                    "sys.index.skinName",
+                                    "skin-blue",
+                                    SystemConstants.YES),
+                            createConfigVo(
+                                    2L,
+                                    "用户管理-账号初始密码",
+                                    "sys.user.initPassword",
+                                    "123456",
+                                    SystemConstants.YES));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -93,10 +101,10 @@ class SysConfigServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysConfigVo::getConfigType)
-                .containsOnly(SystemConstants.YES);
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysConfigVo::getConfigType)
+                    .containsOnly(SystemConstants.YES);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -108,9 +116,10 @@ class SysConfigServiceImplTest {
             SysConfigBo queryBo = createConfigBo(null, "");
             queryBo.setConfigKey("sys.account");
 
-            List<SysConfigVo> expectedList = Collections.singletonList(
-                createConfigVo(1L, "用户管理-注册开关", "sys.account.registerUser", "false", "N")
-            );
+            List<SysConfigVo> expectedList =
+                    Collections.singletonList(
+                            createConfigVo(
+                                    1L, "用户管理-注册开关", "sys.account.registerUser", "false", "N"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -118,10 +127,10 @@ class SysConfigServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(1)
-                .extracting(SysConfigVo::getConfigKey)
-                .allMatch(key -> key.contains("sys.account"));
+                    .isNotNull()
+                    .hasSize(1)
+                    .extracting(SysConfigVo::getConfigKey)
+                    .allMatch(key -> key.contains("sys.account"));
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -131,15 +140,14 @@ class SysConfigServiceImplTest {
         void shouldReturnEmptyList_WhenNoConfigsMatch() {
             // Arrange
             SysConfigBo queryBo = createConfigBo(null, "不存在的配置");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysConfigVo> result = configService.selectConfigList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -153,18 +161,17 @@ class SysConfigServiceImplTest {
             queryBo.setConfigType("N");
             queryBo.setConfigKey("sys.user");
 
-            List<SysConfigVo> expectedList = Collections.singletonList(
-                createConfigVo(1L, "用户管理-账号初始密码", "sys.user.initPassword", "123456", "N")
-            );
+            List<SysConfigVo> expectedList =
+                    Collections.singletonList(
+                            createConfigVo(
+                                    1L, "用户管理-账号初始密码", "sys.user.initPassword", "123456", "N"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysConfigVo> result = configService.selectConfigList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -174,8 +181,8 @@ class SysConfigServiceImplTest {
         void shouldReturnConfigVo_WhenQueryById() {
             // Arrange
             Long configId = 1L;
-            SysConfigVo expectedConfig = createConfigVo(configId, "用户管理-注册开关",
-                "sys.account.registerUser", "true", "N");
+            SysConfigVo expectedConfig =
+                    createConfigVo(configId, "用户管理-注册开关", "sys.account.registerUser", "true", "N");
 
             when(baseMapper.selectVoById(configId)).thenReturn(expectedConfig);
 
@@ -184,14 +191,13 @@ class SysConfigServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .extracting(
-                    SysConfigVo::getConfigId,
-                    SysConfigVo::getConfigName,
-                    SysConfigVo::getConfigKey,
-                    SysConfigVo::getConfigValue
-                )
-                .containsExactly(configId, "用户管理-注册开关", "sys.account.registerUser", "true");
+                    .isNotNull()
+                    .extracting(
+                            SysConfigVo::getConfigId,
+                            SysConfigVo::getConfigName,
+                            SysConfigVo::getConfigKey,
+                            SysConfigVo::getConfigValue)
+                    .containsExactly(configId, "用户管理-注册开关", "sys.account.registerUser", "true");
 
             verify(baseMapper, times(1)).selectVoById(configId);
         }
@@ -224,9 +230,7 @@ class SysConfigServiceImplTest {
             String result = configService.selectConfigByKey(configKey);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEqualTo("true");
+            assertThat(result).isNotNull().isEqualTo("true");
 
             verify(baseMapper, times(1)).selectOne(any(LambdaQueryWrapper.class));
         }
@@ -242,9 +246,7 @@ class SysConfigServiceImplTest {
             String result = configService.selectConfigByKey(nonExistentKey);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectOne(any(LambdaQueryWrapper.class));
         }
@@ -252,12 +254,10 @@ class SysConfigServiceImplTest {
 
     /**
      * 注意: 无法测试分页和特殊方法
-     * <p>
-     * <b>selectPageConfigList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
+     *
+     * <p><b>selectPageConfigList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
      * <b>selectRegisterEnabled</b> - 使用 TenantHelper.dynamic()，需要 Spring 上下文和租户配置<br>
-     * </p>
      */
-
     @Nested
     @DisplayName("2. 验证方法测试")
     class ValidationMethodsTests {
@@ -343,10 +343,15 @@ class SysConfigServiceImplTest {
         void shouldThrowException_WhenDeletingBuiltInConfig() {
             // Arrange
             List<Long> configIds = Arrays.asList(1L, 2L);
-            SysConfig builtInConfig = createConfig(1L, "主框架页-默认皮肤",
-                "sys.index.skinName", "skin-blue", SystemConstants.YES);
-            SysConfig normalConfig = createConfig(2L, "用户自定义参数",
-                "custom.config.key", "custom-value", "N");
+            SysConfig builtInConfig =
+                    createConfig(
+                            1L,
+                            "主框架页-默认皮肤",
+                            "sys.index.skinName",
+                            "skin-blue",
+                            SystemConstants.YES);
+            SysConfig normalConfig =
+                    createConfig(2L, "用户自定义参数", "custom.config.key", "custom-value", "N");
 
             List<SysConfig> configs = Arrays.asList(builtInConfig, normalConfig);
 
@@ -354,10 +359,10 @@ class SysConfigServiceImplTest {
 
             // Act & Assert
             assertThatThrownBy(() -> configService.deleteConfigByIds(configIds))
-                .as("应该抛出ServiceException")
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("内置参数")
-                .hasMessageContaining("不能删除");
+                    .as("应该抛出ServiceException")
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("内置参数")
+                    .hasMessageContaining("不能删除");
 
             verify(baseMapper, times(1)).selectByIds(configIds);
             verify(baseMapper, never()).deleteByIds(any()); // 不应该执行删除操作
@@ -368,12 +373,11 @@ class SysConfigServiceImplTest {
         void shouldThrowOnFirstBuiltInConfig_WhenMultipleBuiltInConfigs() {
             // Arrange
             List<Long> configIds = Arrays.asList(1L, 2L, 3L);
-            SysConfig builtIn1 = createConfig(1L, "内置参数1",
-                "sys.config.key1", "value1", SystemConstants.YES);
-            SysConfig normalConfig = createConfig(2L, "普通参数",
-                "custom.key", "value", "N");
-            SysConfig builtIn2 = createConfig(3L, "内置参数2",
-                "sys.config.key2", "value2", SystemConstants.YES);
+            SysConfig builtIn1 =
+                    createConfig(1L, "内置参数1", "sys.config.key1", "value1", SystemConstants.YES);
+            SysConfig normalConfig = createConfig(2L, "普通参数", "custom.key", "value", "N");
+            SysConfig builtIn2 =
+                    createConfig(3L, "内置参数2", "sys.config.key2", "value2", SystemConstants.YES);
 
             List<SysConfig> configs = Arrays.asList(builtIn1, normalConfig, builtIn2);
 
@@ -381,9 +385,9 @@ class SysConfigServiceImplTest {
 
             // Act & Assert
             assertThatThrownBy(() -> configService.deleteConfigByIds(configIds))
-                .as("应该在第一个内置参数时抛出异常")
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("sys.config.key1"); // 应该是第一个内置参数的key
+                    .as("应该在第一个内置参数时抛出异常")
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("sys.config.key1"); // 应该是第一个内置参数的key
 
             verify(baseMapper, times(1)).selectByIds(configIds);
             verify(baseMapper, never()).deleteByIds(any());
@@ -392,17 +396,14 @@ class SysConfigServiceImplTest {
 
     /**
      * 注意: 无法测试 CRUD 相关方法和缓存方法
-     * <p>
-     * <b>insertConfig()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
+     *
+     * <p><b>insertConfig()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
      * <b>updateConfig()</b> - 使用 MapstructUtils.convert() + CacheUtils.evict()，需要静态方法 mock<br>
      * <b>deleteConfigByIds() 成功路径</b> - 调用 CacheUtils.evict()，需要 Spring 上下文<br>
      * <b>resetConfigCache()</b> - 调用 CacheUtils.clear()，需要 Spring 上下文<br>
-     *
      * @CachePut 和 @Cacheable 注解需要 Spring AOP 代理才能生效<br>
      * 需要 mockito-inline 或集成测试环境才能测试这些方法
-     * </p>
      */
-
     @Nested
     @DisplayName("4. 边界条件测试")
     class BoundaryTests {
@@ -433,9 +434,7 @@ class SysConfigServiceImplTest {
             String result = configService.selectConfigByKey(nullConfigKey);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty(); // 返回空字符串而不是 null
+            assertThat(result).isNotNull().isEmpty(); // 返回空字符串而不是 null
 
             verify(baseMapper, times(1)).selectOne(any(LambdaQueryWrapper.class));
         }
@@ -451,9 +450,7 @@ class SysConfigServiceImplTest {
             String result = configService.selectConfigByKey(emptyConfigKey);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectOne(any(LambdaQueryWrapper.class));
         }
@@ -476,11 +473,13 @@ class SysConfigServiceImplTest {
 
     // ==================== Factory Methods ====================
 
-    /**
-     * 创建测试用 SysConfig 实体
-     */
-    private static SysConfig createConfig(Long configId, String configName, String configKey,
-                                          String configValue, String configType) {
+    /** 创建测试用 SysConfig 实体 */
+    private static SysConfig createConfig(
+            Long configId,
+            String configName,
+            String configKey,
+            String configValue,
+            String configType) {
         SysConfig config = new SysConfig();
         config.setConfigId(configId);
         config.setConfigName(configName);
@@ -491,9 +490,7 @@ class SysConfigServiceImplTest {
         return config;
     }
 
-    /**
-     * 创建测试用 SysConfigBo 业务对象
-     */
+    /** 创建测试用 SysConfigBo 业务对象 */
     private static SysConfigBo createConfigBo(Long configId, String configName) {
         SysConfigBo configBo = new SysConfigBo();
         configBo.setConfigId(configId);
@@ -505,11 +502,13 @@ class SysConfigServiceImplTest {
         return configBo;
     }
 
-    /**
-     * 创建测试用 SysConfigVo 视图对象
-     */
-    private static SysConfigVo createConfigVo(Long configId, String configName, String configKey,
-                                              String configValue, String configType) {
+    /** 创建测试用 SysConfigVo 视图对象 */
+    private static SysConfigVo createConfigVo(
+            Long configId,
+            String configName,
+            String configKey,
+            String configValue,
+            String configType) {
         SysConfigVo configVo = new SysConfigVo();
         configVo.setConfigId(configId);
         configVo.setConfigName(configName);

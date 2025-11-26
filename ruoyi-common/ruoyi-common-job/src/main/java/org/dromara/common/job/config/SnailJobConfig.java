@@ -8,6 +8,7 @@ import com.aizuda.snailjob.client.common.appender.SnailLogbackAppender;
 import com.aizuda.snailjob.client.common.event.SnailChannelReconnectEvent;
 import com.aizuda.snailjob.client.common.event.SnailClientStartingEvent;
 import com.aizuda.snailjob.client.starter.EnableSnailJob;
+import java.util.List;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.job.config.properties.SnailJobServerProperties;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,6 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.List;
 
 /**
  * 启动定时任务
@@ -35,10 +34,8 @@ import java.util.List;
 @EnableSnailJob
 public class SnailJobConfig {
 
-    @Autowired
-    private SnailJobServerProperties properties;
-    @Autowired
-    private DiscoveryClient discoveryClient;
+    @Autowired private SnailJobServerProperties properties;
+    @Autowired private DiscoveryClient discoveryClient;
 
     @EventListener(SnailClientStartingEvent.class)
     public void onStarting(SnailClientStartingEvent event) {
@@ -74,5 +71,4 @@ public class SnailJobConfig {
         Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(ca);
     }
-
 }

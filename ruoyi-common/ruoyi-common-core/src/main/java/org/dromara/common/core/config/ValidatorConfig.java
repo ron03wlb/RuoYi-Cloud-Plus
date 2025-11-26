@@ -1,14 +1,13 @@
 package org.dromara.common.core.config;
 
 import jakarta.validation.Validator;
+import java.util.Properties;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import java.util.Properties;
 
 /**
  * 校验框架配置类
@@ -18,9 +17,7 @@ import java.util.Properties;
 @AutoConfiguration(before = ValidationAutoConfiguration.class)
 public class ValidatorConfig {
 
-    /**
-     * 配置校验框架 快速失败模式
-     */
+    /** 配置校验框架 快速失败模式 */
     @Bean
     public Validator validator(MessageSource messageSource) {
         try (LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean()) {
@@ -37,5 +34,4 @@ public class ValidatorConfig {
             return factoryBean.getValidator();
         }
     }
-
 }

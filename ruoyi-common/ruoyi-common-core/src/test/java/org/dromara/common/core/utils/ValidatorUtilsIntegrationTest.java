@@ -1,24 +1,23 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * ValidatorUtils 集成测试
@@ -28,9 +27,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 @DisplayName("ValidatorUtils 集成测试")
 class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
 
-    /**
-     * 简单用户测试对象
-     */
+    /** 简单用户测试对象 */
     static class SimpleUser {
         @NotNull(message = "用户名不能为空")
         @Size(min = 3, max = 20, message = "用户名长度必须在3-20之间")
@@ -80,11 +77,11 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
         }
     }
 
-    /**
-     * 带分组校验的用户对象
-     */
+    /** 带分组校验的用户对象 */
     static class GroupUser {
-        @NotNull(groups = {AddGroup.class, EditGroup.class}, message = "用户名不能为空")
+        @NotNull(
+                groups = {AddGroup.class, EditGroup.class},
+                message = "用户名不能为空")
         private String username;
 
         @NotNull(groups = AddGroup.class, message = "密码不能为空")
@@ -118,9 +115,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
         }
     }
 
-    /**
-     * 嵌套校验对象
-     */
+    /** 嵌套校验对象 */
     static class NestedUser {
         @NotNull(message = "用户名不能为空")
         private String username;
@@ -170,9 +165,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
         }
     }
 
-    /**
-     * 集合校验对象
-     */
+    /** 集合校验对象 */
     static class UserWithRoles {
         @NotNull(message = "用户名不能为空")
         private String username;
@@ -198,13 +191,11 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
         }
     }
 
-    /**
-     * 辅助方法：从异常中提取约束违规消息
-     */
+    /** 辅助方法：从异常中提取约束违规消息 */
     private Set<String> extractViolationMessages(ConstraintViolationException exception) {
         return exception.getConstraintViolations().stream()
-            .map(ConstraintViolation::getMessage)
-            .collect(Collectors.toSet());
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toSet());
     }
 
     @Nested
@@ -222,8 +213,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
             user.setAge(25);
 
             // Act & Assert
-            assertThat(catchThrowable(() -> ValidatorUtils.validate(user)))
-                .isNull(); // 校验通过，无异常
+            assertThat(catchThrowable(() -> ValidatorUtils.validate(user))).isNull(); // 校验通过，无异常
         }
 
         @Test
@@ -382,7 +372,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
 
             // Act & Assert
             assertThat(catchThrowable(() -> ValidatorUtils.validate(user, AddGroup.class)))
-                .isNull();
+                    .isNull();
         }
 
         @Test
@@ -413,7 +403,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
 
             // Act & Assert
             assertThat(catchThrowable(() -> ValidatorUtils.validate(user, EditGroup.class)))
-                .isNull();
+                    .isNull();
         }
 
         @Test
@@ -442,7 +432,9 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
             // 缺少 password 和 id
 
             // Act
-            Throwable thrown = catchThrowable(() -> ValidatorUtils.validate(user, AddGroup.class, EditGroup.class));
+            Throwable thrown =
+                    catchThrowable(
+                            () -> ValidatorUtils.validate(user, AddGroup.class, EditGroup.class));
 
             // Assert
             assertThat(thrown).isInstanceOf(ConstraintViolationException.class);
@@ -460,7 +452,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
 
             // Act & Assert
             assertThat(catchThrowable(() -> ValidatorUtils.validate(user)))
-                .isNull(); // 无分组时，分组约束不生效
+                    .isNull(); // 无分组时，分组约束不生效
         }
     }
 
@@ -481,8 +473,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
             user.setAddress(address);
 
             // Act & Assert
-            assertThat(catchThrowable(() -> ValidatorUtils.validate(user)))
-                .isNull();
+            assertThat(catchThrowable(() -> ValidatorUtils.validate(user))).isNull();
         }
 
         @Test
@@ -536,8 +527,7 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
             user.setRoles(Arrays.asList("admin", "user"));
 
             // Act & Assert
-            assertThat(catchThrowable(() -> ValidatorUtils.validate(user)))
-                .isNull();
+            assertThat(catchThrowable(() -> ValidatorUtils.validate(user))).isNull();
         }
 
         @Test
@@ -580,8 +570,10 @@ class ValidatorUtilsIntegrationTest extends BaseIntegrationTest {
             // Arrange
             UserWithRoles user = new UserWithRoles();
             user.setUsername("testuser");
-            user.setRoles(Arrays.asList("role1", "role2", "role3", "role4", "role5",
-                "role6", "role7", "role8", "role9", "role10", "role11")); // 11个角色
+            user.setRoles(
+                    Arrays.asList(
+                            "role1", "role2", "role3", "role4", "role5", "role6", "role7", "role8",
+                            "role9", "role10", "role11")); // 11个角色
 
             // Act
             Throwable thrown = catchThrowable(() -> ValidatorUtils.validate(user));

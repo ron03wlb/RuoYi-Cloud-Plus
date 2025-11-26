@@ -149,32 +149,34 @@ tasks.jacocoTestReport {
     }
 
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    // 排除配置类
-                    "**/config/**",
-                    "**/configuration/**",
-                    // 排除启动类
-                    "**/*Application.class",
-                    // 排除 DTO/VO/BO
-                    "**/domain/**",
-                    "**/bo/**",
-                    "**/vo/**",
-                    "**/dto/**",
-                    // 排除 Mapper XML
-                    "**/mapper/**/*Mapper.class",
-                    // 排除 Controller (后续可以用 MockMvc 测试)
-                    "**/controller/**",
-                    // 排除 Dubbo 实现 (需要 Dubbo 上下文)
-                    "**/dubbo/**",
-                    // 排除监听器
-                    "**/listener/**",
-                    // 排除转换器
-                    "**/convert/**"
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        // 排除配置类
+                        "**/config/**",
+                        "**/configuration/**",
+                        // 排除启动类
+                        "**/*Application.class",
+                        // 排除 DTO/VO/BO
+                        "**/domain/**",
+                        "**/bo/**",
+                        "**/vo/**",
+                        "**/dto/**",
+                        // 排除 Mapper XML
+                        "**/mapper/**/*Mapper.class",
+                        // 排除 Controller (后续可以用 MockMvc 测试)
+                        "**/controller/**",
+                        // 排除 Dubbo 实现 (需要 Dubbo 上下文)
+                        "**/dubbo/**",
+                        // 排除监听器
+                        "**/listener/**",
+                        // 排除转换器
+                        "**/convert/**",
+                    )
+                }
+            },
+        ),
     )
 }
 

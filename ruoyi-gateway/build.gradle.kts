@@ -75,7 +75,7 @@ dependencies {
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     // 添加 JVM 参数禁用 Nacos 默认日志配置
     jvmArgs = listOf(
-        "-Dnacos.logging.default.config.enabled=false"
+        "-Dnacos.logging.default.config.enabled=false",
     )
 }
 
@@ -141,7 +141,7 @@ jib {
             "-Djava.security.egd=file:/dev/./urandom",
             "-Dfile.encoding=UTF-8",
             "-Duser.timezone=Asia/Shanghai",
-            "-Dnacos.logging.default.config.enabled=false"
+            "-Dnacos.logging.default.config.enabled=false",
         )
 
         // 暴露端口
@@ -150,7 +150,7 @@ jib {
         // 环境变量
         environment = mapOf(
             "SPRING_OUTPUT_ANSI_ENABLED" to "ALWAYS",
-            "TZ" to "Asia/Shanghai"
+            "TZ" to "Asia/Shanghai",
         )
 
         // 容器启动用户
@@ -167,8 +167,8 @@ jib {
             mapOf(
                 "maintainer" to "RuoYi-Cloud-Plus",
                 "version" to version.toString(),
-                "description" to "RuoYi Gateway Service"
-            )
+                "description" to "RuoYi Gateway Service",
+            ),
         )
     }
 

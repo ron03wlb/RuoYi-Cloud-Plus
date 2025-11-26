@@ -14,16 +14,11 @@ import org.dromara.common.core.domain.model.LoginBody;
 @EqualsAndHashCode(callSuper = true)
 public class SmsLoginBody extends LoginBody {
 
-    /**
-     * 手机号
-     */
+    /** 手机号 */
     @NotBlank(message = "{user.phonenumber.not.blank}")
     private String phonenumber;
 
-    /**
-     * 短信code
-     */
+    /** 短信code */
     @NotBlank(message = "{sms.code.not.blank}")
     private String smsCode;
-
 }

@@ -8,13 +8,11 @@ import cn.idev.excel.metadata.GlobalConfiguration;
 import cn.idev.excel.metadata.data.ReadCellData;
 import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
+import java.math.BigDecimal;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
-
 /**
- * 大数值转换
- * Excel 数值长度位15位 大于15位的数值转换位字符串
+ * 大数值转换 Excel 数值长度位15位 大于15位的数值转换位字符串
  *
  * @author Lion Li
  */
@@ -32,12 +30,18 @@ public class ExcelBigNumberConvert implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public Long convertToJavaData(
+            ReadCellData<?> cellData,
+            ExcelContentProperty contentProperty,
+            GlobalConfiguration globalConfiguration) {
         return Convert.toLong(cellData.getData());
     }
 
     @Override
-    public WriteCellData<Object> convertToExcelData(Long object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<Object> convertToExcelData(
+            Long object,
+            ExcelContentProperty contentProperty,
+            GlobalConfiguration globalConfiguration) {
         if (ObjectUtil.isNull(object)) {
             object = 0L;
         }
@@ -56,5 +60,4 @@ public class ExcelBigNumberConvert implements Converter<Long> {
         cellData.setNumberValue(bigDecimal);
         return cellData;
     }
-
 }

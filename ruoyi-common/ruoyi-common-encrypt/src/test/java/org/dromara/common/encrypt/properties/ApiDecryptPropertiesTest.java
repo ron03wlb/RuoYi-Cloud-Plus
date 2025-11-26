@@ -1,12 +1,12 @@
 package org.dromara.common.encrypt.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * {@link ApiDecryptProperties} 单元测试
@@ -76,8 +76,8 @@ class ApiDecryptPropertiesTest {
         @Test
         @DisplayName("应该有@ConfigurationProperties注解")
         void shouldHaveConfigurationPropertiesAnnotation() {
-            ConfigurationProperties annotation = ApiDecryptProperties.class
-                .getAnnotation(ConfigurationProperties.class);
+            ConfigurationProperties annotation =
+                    ApiDecryptProperties.class.getAnnotation(ConfigurationProperties.class);
 
             assertThat(annotation).isNotNull();
             assertThat(annotation.prefix()).isEqualTo("api-decrypt");
@@ -251,8 +251,8 @@ class ApiDecryptPropertiesTest {
         @Test
         @DisplayName("配置前缀应该是api-decrypt")
         void configurationPrefixShouldBeApiDecrypt() {
-            ConfigurationProperties annotation = ApiDecryptProperties.class
-                .getAnnotation(ConfigurationProperties.class);
+            ConfigurationProperties annotation =
+                    ApiDecryptProperties.class.getAnnotation(ConfigurationProperties.class);
 
             assertThat(annotation.prefix()).isEqualTo("api-decrypt");
         }

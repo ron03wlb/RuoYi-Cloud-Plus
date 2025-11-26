@@ -5,16 +5,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 租户测试工具类
- * <p>
- * 提供集成测试中的租户相关工具方法，包括：
+ *
+ * <p>提供集成测试中的租户相关工具方法，包括：
+ *
  * <ul>
- *     <li>设置当前租户</li>
- *     <li>切换租户</li>
- *     <li>清除租户上下文</li>
- *     <li>验证租户隔离</li>
+ *   <li>设置当前租户
+ *   <li>切换租户
+ *   <li>清除租户上下文
+ *   <li>验证租户隔离
  * </ul>
  *
  * <h3>使用示例：</h3>
+ *
  * <pre>{@code
  * // 设置租户1
  * TenantTestUtils.setTenant("000000");
@@ -43,24 +45,16 @@ public class TenantTestUtils {
 
     private static final Logger log = LoggerFactory.getLogger(TenantTestUtils.class);
 
-    /**
-     * 租户上下文线程变量
-     */
+    /** 租户上下文线程变量 */
     private static final ThreadLocal<String> TENANT_CONTEXT = new ThreadLocal<>();
 
-    /**
-     * 默认主租户ID
-     */
+    /** 默认主租户ID */
     public static final String DEFAULT_TENANT_ID = "000000";
 
-    /**
-     * 测试租户1 ID
-     */
+    /** 测试租户1 ID */
     public static final String TEST_TENANT_1_ID = "000001";
 
-    /**
-     * 测试租户2 ID
-     */
+    /** 测试租户2 ID */
     public static final String TEST_TENANT_2_ID = "000002";
 
     /**
@@ -82,23 +76,17 @@ public class TenantTestUtils {
         }
     }
 
-    /**
-     * 设置为主租户
-     */
+    /** 设置为主租户 */
     public static void setDefaultTenant() {
         setTenant(DEFAULT_TENANT_ID);
     }
 
-    /**
-     * 设置为测试租户1
-     */
+    /** 设置为测试租户1 */
     public static void setTestTenant1() {
         setTenant(TEST_TENANT_1_ID);
     }
 
-    /**
-     * 设置为测试租户2
-     */
+    /** 设置为测试租户2 */
     public static void setTestTenant2() {
         setTenant(TEST_TENANT_2_ID);
     }
@@ -112,9 +100,7 @@ public class TenantTestUtils {
         return TENANT_CONTEXT.get();
     }
 
-    /**
-     * 清除租户上下文
-     */
+    /** 清除租户上下文 */
     public static void clear() {
         log.debug("清除租户上下文");
         TENANT_CONTEXT.remove();
@@ -123,9 +109,9 @@ public class TenantTestUtils {
     /**
      * 在指定租户上下文中执行操作
      *
-     * @param tenantId  租户ID
+     * @param tenantId 租户ID
      * @param operation 要执行的操作
-     * @param <T>       返回值类型
+     * @param <T> 返回值类型
      * @return 操作结果
      */
     public static <T> T executeInTenant(String tenantId, TenantOperation<T> operation) {
@@ -152,34 +138,36 @@ public class TenantTestUtils {
     /**
      * 在指定租户上下文中执行操作（无返回值）
      *
-     * @param tenantId  租户ID
+     * @param tenantId 租户ID
      * @param operation 要执行的操作
      */
     public static void executeInTenant(String tenantId, TenantOperationVoid operation) {
-        executeInTenant(tenantId, () -> {
-            operation.execute();
-            return null;
-        });
+        executeInTenant(
+                tenantId,
+                () -> {
+                    operation.execute();
+                    return null;
+                });
     }
 
     /**
      * 验证租户隔离
-     * <p>
-     * 在两个不同租户下执行相同操作，验证结果是否隔离
      *
-     * @param tenant1Id  租户1 ID
-     * @param tenant2Id  租户2 ID
+     * <p>在两个不同租户下执行相同操作，验证结果是否隔离
+     *
+     * @param tenant1Id 租户1 ID
+     * @param tenant2Id 租户2 ID
      * @param operation1 租户1的操作
      * @param operation2 租户2的操作（通常与operation1相同）
-     * @param validator  验证器，用于验证两个租户的结果是否隔离
-     * @param <T>        操作返回值类型
+     * @param validator 验证器，用于验证两个租户的结果是否隔离
+     * @param <T> 操作返回值类型
      */
     public static <T> void verifyTenantIsolation(
-        String tenant1Id,
-        String tenant2Id,
-        TenantOperation<T> operation1,
-        TenantOperation<T> operation2,
-        TenantIsolationValidator<T> validator) {
+            String tenant1Id,
+            String tenant2Id,
+            TenantOperation<T> operation1,
+            TenantOperation<T> operation2,
+            TenantIsolationValidator<T> validator) {
 
         log.debug("验证租户隔离: tenant1={}, tenant2={}", tenant1Id, tenant2Id);
 
@@ -198,7 +186,7 @@ public class TenantTestUtils {
     /**
      * 模拟多租户用户登录
      *
-     * @param userId   用户ID
+     * @param userId 用户ID
      * @param username 用户名
      * @param tenantId 租户ID
      * @return Token字符串
@@ -218,9 +206,7 @@ public class TenantTestUtils {
         T execute();
     }
 
-    /**
-     * 租户操作接口（无返回值）
-     */
+    /** 租户操作接口（无返回值） */
     @FunctionalInterface
     public interface TenantOperationVoid {
         void execute();

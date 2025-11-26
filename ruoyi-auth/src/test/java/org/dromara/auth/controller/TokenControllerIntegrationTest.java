@@ -1,10 +1,16 @@
 package org.dromara.auth.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 import org.dromara.auth.AuthTestDataFactory;
 import org.dromara.auth.BaseIntegrationTestWithContainers;
 import org.dromara.auth.form.PasswordLoginBody;
 import org.dromara.auth.form.RegisterBody;
-import org.dromara.auth.service.SysLoginService;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.system.api.RemoteClientService;
 import org.dromara.system.api.RemoteConfigService;
@@ -19,23 +25,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 /**
  * TokenController 集成测试
- * <p>
- * 测试认证控制器的核心功能
- * </p>
  *
- * <p>TODO: 当前因 RedissonClient 依赖问题暂时禁用</p>
- * <p>问题: ruoyi-common-redis 模块强依赖 Redisson,即使排除自动配置后仍有Bean需要注入 RedissonClient</p>
- * <p>解决方案: 需要重构 ruoyi-common-redis 模块,使 Redisson 变为可选依赖</p>
- * <p>参考: docs/PHASE2-AUTH-TESTING-FINAL-REPORT.md</p>
+ * <p>测试认证控制器的核心功能
+ *
+ * <p>TODO: 当前因 RedissonClient 依赖问题暂时禁用
+ *
+ * <p>问题: ruoyi-common-redis 模块强依赖 Redisson,即使排除自动配置后仍有Bean需要注入 RedissonClient
+ *
+ * <p>解决方案: 需要重构 ruoyi-common-redis 模块,使 Redisson 变为可选依赖
+ *
+ * <p>参考: docs/PHASE2-AUTH-TESTING-FINAL-REPORT.md
  *
  * @author Test Team
  */
@@ -43,17 +44,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("TokenController 集成测试")
 class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
 
-    @Autowired
-    private RemoteClientService remoteClientService;
+    @Autowired private RemoteClientService remoteClientService;
 
-    @Autowired
-    private RemoteConfigService remoteConfigService;
+    @Autowired private RemoteConfigService remoteConfigService;
 
-    @Autowired
-    private RemoteTenantService remoteTenantService;
+    @Autowired private RemoteTenantService remoteTenantService;
 
-    @Autowired
-    private RemoteUserService remoteUserService;
+    @Autowired private RemoteUserService remoteUserService;
 
     private RemoteClientVo mockClient;
     private RemoteTenantVo mockTenant;
@@ -63,13 +60,11 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
     public void baseSetUp() {
         // 设置默认的 mock 客户端
         mockClient = AuthTestDataFactory.createClientVo();
-        when(remoteClientService.queryByClientId(anyString()))
-            .thenReturn(mockClient);
+        when(remoteClientService.queryByClientId(anyString())).thenReturn(mockClient);
 
         // 设置默认的 mock 租户
         mockTenant = AuthTestDataFactory.createTenantVo();
-        when(remoteTenantService.queryByTenantId(anyString()))
-            .thenReturn(mockTenant);
+        when(remoteTenantService.queryByTenantId(anyString())).thenReturn(mockTenant);
     }
 
     @Nested
@@ -83,16 +78,16 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             PasswordLoginBody loginBody = AuthTestDataFactory.createPasswordLoginBody();
             loginBody.setClientId("invalid_client_id");
 
-            when(remoteClientService.queryByClientId("invalid_client_id"))
-                .thenReturn(null);
+            when(remoteClientService.queryByClientId("invalid_client_id")).thenReturn(null);
 
             // Act & Assert
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.msg").exists());
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(500))
+                    .andExpect(jsonPath("$.msg").exists());
         }
 
         @Test
@@ -102,16 +97,16 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             PasswordLoginBody loginBody = AuthTestDataFactory.createPasswordLoginBody();
             RemoteClientVo disabledClient = AuthTestDataFactory.createDisabledClientVo();
 
-            when(remoteClientService.queryByClientId(anyString()))
-                .thenReturn(disabledClient);
+            when(remoteClientService.queryByClientId(anyString())).thenReturn(disabledClient);
 
             // Act & Assert
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.msg").exists());
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(500))
+                    .andExpect(jsonPath("$.msg").exists());
         }
 
         @Test
@@ -122,15 +117,15 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             loginBody.setGrantType("invalid_grant_type");
 
             RemoteClientVo client = AuthTestDataFactory.createClientVo("web", "password");
-            when(remoteClientService.queryByClientId(anyString()))
-                .thenReturn(client);
+            when(remoteClientService.queryByClientId(anyString())).thenReturn(client);
 
             // Act & Assert
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(500));
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(500));
         }
 
         @Test
@@ -141,10 +136,11 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             // 不设置任何字段
 
             // Act & Assert
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isBadRequest());
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isBadRequest());
         }
     }
 
@@ -157,16 +153,15 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldLogoutSuccessfully() throws Exception {
             // Act & Assert
             mockMvc.perform(post("/logout"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200));
         }
 
         @Test
         @DisplayName("登出应该调用 SysLoginService.logout()")
         void shouldCallLogoutService() throws Exception {
             // Act
-            mockMvc.perform(post("/logout"))
-                .andExpect(status().isOk());
+            mockMvc.perform(post("/logout")).andExpect(status().isOk());
 
             // Verify (implicit - no exception means logout was called)
         }
@@ -182,16 +177,16 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             // Arrange
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
 
-            when(remoteConfigService.selectRegisterEnabled(anyString()))
-                .thenReturn(false);
+            when(remoteConfigService.selectRegisterEnabled(anyString())).thenReturn(false);
 
             // Act & Assert
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(registerBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.msg").value("当前系统没有开启注册功能！"));
+            mockMvc.perform(
+                            post("/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(registerBody)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(500))
+                    .andExpect(jsonPath("$.msg").value("当前系统没有开启注册功能！"));
         }
 
         @Test
@@ -200,15 +195,15 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             // Arrange
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
 
-            when(remoteConfigService.selectRegisterEnabled(anyString()))
-                .thenReturn(true);
+            when(remoteConfigService.selectRegisterEnabled(anyString())).thenReturn(true);
 
             // Act & Assert
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(registerBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200));
+            mockMvc.perform(
+                            post("/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(registerBody)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200));
         }
 
         @Test
@@ -218,14 +213,14 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             RegisterBody registerBody = new RegisterBody();
             // 不设置必填字段
 
-            when(remoteConfigService.selectRegisterEnabled(anyString()))
-                .thenReturn(true);
+            when(remoteConfigService.selectRegisterEnabled(anyString())).thenReturn(true);
 
             // Act & Assert
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(registerBody)))
-                .andExpect(status().isBadRequest());
+            mockMvc.perform(
+                            post("/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(registerBody)))
+                    .andExpect(status().isBadRequest());
         }
     }
 
@@ -242,10 +237,10 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
 
             // Act & Assert
             mockMvc.perform(get("/tenant/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data").exists())
-                .andExpect(jsonPath("$.data.tenantEnabled").exists());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.data").exists())
+                    .andExpect(jsonPath("$.data.tenantEnabled").exists());
         }
 
         @Test
@@ -256,8 +251,8 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
 
             // Act & Assert
             mockMvc.perform(get("/tenant/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.tenantEnabled").isBoolean());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.tenantEnabled").isBoolean());
         }
     }
 
@@ -273,16 +268,14 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             // Note: remoteSocialService needs to be mocked if available
 
             // Act & Assert
-            mockMvc.perform(delete("/unlock/{socialId}", socialId))
-                .andExpect(status().isOk());
+            mockMvc.perform(delete("/unlock/{socialId}", socialId)).andExpect(status().isOk());
         }
 
         @Test
         @DisplayName("取消授权 - 应该接受有效的 socialId")
         void shouldAcceptValidSocialId() throws Exception {
             // Act & Assert
-            mockMvc.perform(delete("/unlock/{socialId}", 123L))
-                .andExpect(status().isOk());
+            mockMvc.perform(delete("/unlock/{socialId}", 123L)).andExpect(status().isOk());
         }
     }
 
@@ -295,24 +288,23 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
         void loginShouldAcceptPost() throws Exception {
             PasswordLoginBody loginBody = AuthTestDataFactory.createPasswordLoginBody();
 
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isOk());
         }
 
         @Test
         @DisplayName("登录端点不应该接受 GET 请求")
         void loginShouldNotAcceptGet() throws Exception {
-            mockMvc.perform(get("/login"))
-                .andExpect(status().isMethodNotAllowed());
+            mockMvc.perform(get("/login")).andExpect(status().isMethodNotAllowed());
         }
 
         @Test
         @DisplayName("登出端点应该接受 POST 请求")
         void logoutShouldAcceptPost() throws Exception {
-            mockMvc.perform(post("/logout"))
-                .andExpect(status().isOk());
+            mockMvc.perform(post("/logout")).andExpect(status().isOk());
         }
 
         @Test
@@ -321,10 +313,11 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
             when(remoteConfigService.selectRegisterEnabled(anyString())).thenReturn(true);
 
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(registerBody)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            post("/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(registerBody)))
+                    .andExpect(status().isOk());
         }
     }
 
@@ -337,10 +330,11 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
         void loginShouldRequireJsonContentType() throws Exception {
             PasswordLoginBody loginBody = AuthTestDataFactory.createPasswordLoginBody();
 
-            mockMvc.perform(post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(loginBody)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(loginBody)))
+                    .andExpect(status().isOk());
         }
 
         @Test
@@ -349,10 +343,11 @@ class TokenControllerIntegrationTest extends BaseIntegrationTestWithContainers {
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
             when(remoteConfigService.selectRegisterEnabled(anyString())).thenReturn(true);
 
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonUtils.toJsonString(registerBody)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            post("/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(JsonUtils.toJsonString(registerBody)))
+                    .andExpect(status().isOk());
         }
     }
 }

@@ -1,5 +1,9 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,11 +15,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * ServletUtils 集成测试
@@ -267,7 +266,10 @@ class ServletUtilsIntegrationTest extends BaseIntegrationTest {
             Map<String, String[]> result = ServletUtils.getParams(request);
 
             // Assert
-            assertThat(result).isInstanceOf(java.util.Collections.unmodifiableMap(new java.util.HashMap<>()).getClass());
+            assertThat(result)
+                    .isInstanceOf(
+                            java.util.Collections.unmodifiableMap(new java.util.HashMap<>())
+                                    .getClass());
         }
 
         @Test
@@ -328,7 +330,8 @@ class ServletUtilsIntegrationTest extends BaseIntegrationTest {
             // Arrange
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
-            RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request, response));
+            RequestContextHolder.setRequestAttributes(
+                    new ServletRequestAttributes(request, response));
 
             // Act
             MockHttpServletResponse result = (MockHttpServletResponse) ServletUtils.getResponse();

@@ -1,9 +1,8 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.system.domain.bo.SysSocialBo;
 import org.dromara.system.domain.vo.SysSocialVo;
-
-import java.util.List;
 
 /**
  * 社会化关系Service接口
@@ -67,5 +66,4 @@ public interface ISysSocialService {
      * @return 返回包含SysSocial和用户信息的SysSocialVo对象列表
      */
     List<SysSocialVo> selectByAuthId(String authId);
-
 }

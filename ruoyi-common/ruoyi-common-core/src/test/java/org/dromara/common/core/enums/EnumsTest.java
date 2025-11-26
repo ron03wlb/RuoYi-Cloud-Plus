@@ -1,5 +1,8 @@
 package org.dromara.common.core.enums;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.dromara.common.core.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -7,12 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 /**
- * 枚举类综合单元测试
- * 包含 DeviceType, UserStatus, FormatsType, UserType, LoginType
+ * 枚举类综合单元测试 包含 DeviceType, UserStatus, FormatsType, UserType, LoginType
  *
  * @author Test Team
  */
@@ -65,12 +64,9 @@ class EnumsTest extends BaseUnitTest {
         void shouldGetAllValues() {
             DeviceType[] values = DeviceType.values();
 
-            assertThat(values).containsExactly(
-                DeviceType.PC,
-                DeviceType.APP,
-                DeviceType.XCX,
-                DeviceType.SOCIAL
-            );
+            assertThat(values)
+                    .containsExactly(
+                            DeviceType.PC, DeviceType.APP, DeviceType.XCX, DeviceType.SOCIAL);
         }
     }
 
@@ -174,11 +170,7 @@ class EnumsTest extends BaseUnitTest {
         }
 
         @ParameterizedTest
-        @CsvSource({
-            "YYYYMM, yyyyMM",
-            "YYYYMMDD, yyyyMMdd",
-            "YYYYMMDDHHMMSS, yyyyMMddHHmmss"
-        })
+        @CsvSource({"YYYYMM, yyyyMM", "YYYYMMDD, yyyyMMdd", "YYYYMMDDHHMMSS, yyyyMMddHHmmss"})
         @DisplayName("无分隔符格式验证")
         void shouldDefineCompactFormats(String enumName, String format) {
             FormatsType formatsType = FormatsType.valueOf(enumName);
@@ -223,15 +215,16 @@ class EnumsTest extends BaseUnitTest {
         @DisplayName("getFormatsType() - 应该对无法匹配的字符串抛出异常")
         void shouldThrowExceptionForUnmatchedString() {
             assertThatThrownBy(() -> FormatsType.getFormatsType("invalid format"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("'FormatsType' not found By");
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("'FormatsType' not found By");
         }
 
         @Test
         @DisplayName("getter - 应该返回正确的时间格式")
         void shouldGetTimeFormat() {
             assertThat(FormatsType.YYYY_MM_DD.getTimeFormat()).isEqualTo("yyyy-MM-dd");
-            assertThat(FormatsType.YYYY_MM_DD_HH_MM_SS.getTimeFormat()).isEqualTo("yyyy-MM-dd HH:mm:ss");
+            assertThat(FormatsType.YYYY_MM_DD_HH_MM_SS.getTimeFormat())
+                    .isEqualTo("yyyy-MM-dd HH:mm:ss");
         }
     }
 
@@ -279,8 +272,8 @@ class EnumsTest extends BaseUnitTest {
         @DisplayName("getUserType() - 应该对无法匹配的字符串抛出异常")
         void shouldThrowExceptionForUnmatchedString() {
             assertThatThrownBy(() -> UserType.getUserType("invalid_user_type"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("'UserType' not found By");
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("'UserType' not found By");
         }
 
         @Test
@@ -305,27 +298,26 @@ class EnumsTest extends BaseUnitTest {
         @DisplayName("PASSWORD - 密码登录")
         void shouldDefinePasswordLogin() {
             assertThat(LoginType.PASSWORD.getRetryLimitExceed())
-                .isEqualTo("user.password.retry.limit.exceed");
+                    .isEqualTo("user.password.retry.limit.exceed");
             assertThat(LoginType.PASSWORD.getRetryLimitCount())
-                .isEqualTo("user.password.retry.limit.count");
+                    .isEqualTo("user.password.retry.limit.count");
         }
 
         @Test
         @DisplayName("SMS - 短信登录")
         void shouldDefineSmsLogin() {
             assertThat(LoginType.SMS.getRetryLimitExceed())
-                .isEqualTo("sms.code.retry.limit.exceed");
-            assertThat(LoginType.SMS.getRetryLimitCount())
-                .isEqualTo("sms.code.retry.limit.count");
+                    .isEqualTo("sms.code.retry.limit.exceed");
+            assertThat(LoginType.SMS.getRetryLimitCount()).isEqualTo("sms.code.retry.limit.count");
         }
 
         @Test
         @DisplayName("EMAIL - 邮箱登录")
         void shouldDefineEmailLogin() {
             assertThat(LoginType.EMAIL.getRetryLimitExceed())
-                .isEqualTo("email.code.retry.limit.exceed");
+                    .isEqualTo("email.code.retry.limit.exceed");
             assertThat(LoginType.EMAIL.getRetryLimitCount())
-                .isEqualTo("email.code.retry.limit.count");
+                    .isEqualTo("email.code.retry.limit.count");
         }
 
         @Test
@@ -340,12 +332,9 @@ class EnumsTest extends BaseUnitTest {
         void shouldGetAllLoginTypes() {
             LoginType[] values = LoginType.values();
 
-            assertThat(values).containsExactly(
-                LoginType.PASSWORD,
-                LoginType.SMS,
-                LoginType.EMAIL,
-                LoginType.XCX
-            );
+            assertThat(values)
+                    .containsExactly(
+                            LoginType.PASSWORD, LoginType.SMS, LoginType.EMAIL, LoginType.XCX);
         }
 
         @Test

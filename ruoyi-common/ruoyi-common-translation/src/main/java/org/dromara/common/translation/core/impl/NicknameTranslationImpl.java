@@ -2,11 +2,11 @@ package org.dromara.common.translation.core.impl;
 
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.context.annotation.Profile;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.constant.TransConstant;
 import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.system.api.RemoteUserService;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 用户昵称翻译实现
@@ -18,8 +18,7 @@ import org.dromara.system.api.RemoteUserService;
 @Profile("!test")
 public class NicknameTranslationImpl implements TranslationInterface<String> {
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
     public String translation(Object key, String other) {

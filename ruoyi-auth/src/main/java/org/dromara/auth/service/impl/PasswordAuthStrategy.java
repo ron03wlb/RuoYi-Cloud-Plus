@@ -1,8 +1,8 @@
 package org.dromara.auth.service.impl;
 
-import cn.hutool.crypto.digest.BCrypt;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import cn.hutool.crypto.digest.BCrypt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -42,8 +42,7 @@ public class PasswordAuthStrategy implements IAuthStrategy {
 
     private final SysLoginService loginService;
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
     public LoginVo login(String body, RemoteClientVo client) {
@@ -59,11 +58,18 @@ public class PasswordAuthStrategy implements IAuthStrategy {
         if (captchaProperties.getEnabled()) {
             validateCaptcha(tenantId, username, code, uuid);
         }
-        LoginUser loginUser = TenantHelper.dynamic(tenantId, () -> {
-            LoginUser user = remoteUserService.getUserInfo(username, tenantId);
-            loginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> !BCrypt.checkpw(password, user.getPassword()));
-            return user;
-        });
+        LoginUser loginUser =
+                TenantHelper.dynamic(
+                        tenantId,
+                        () -> {
+                            LoginUser user = remoteUserService.getUserInfo(username, tenantId);
+                            loginService.checkLogin(
+                                    LoginType.PASSWORD,
+                                    tenantId,
+                                    username,
+                                    () -> !BCrypt.checkpw(password, user.getPassword()));
+                            return user;
+                        });
         loginUser.setClientKey(client.getClientKey());
         loginUser.setDeviceType(client.getDeviceType());
         SaLoginParameter model = new SaLoginParameter();
@@ -87,21 +93,28 @@ public class PasswordAuthStrategy implements IAuthStrategy {
      * 校验验证码
      *
      * @param username 用户名
-     * @param code     验证码
-     * @param uuid     唯一标识
+     * @param code 验证码
+     * @param uuid 唯一标识
      */
     private void validateCaptcha(String tenantId, String username, String code, String uuid) {
         String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + StringUtils.blankToDefault(uuid, "");
         String captcha = RedisUtils.getCacheObject(verifyKey);
         RedisUtils.deleteObject(verifyKey);
         if (captcha == null) {
-            loginService.recordLogininfor(tenantId, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            loginService.recordLogininfor(
+                    tenantId,
+                    username,
+                    Constants.LOGIN_FAIL,
+                    MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         if (!StringUtils.equalsIgnoreCase(code, captcha)) {
-            loginService.recordLogininfor(tenantId, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error"));
+            loginService.recordLogininfor(
+                    tenantId,
+                    username,
+                    Constants.LOGIN_FAIL,
+                    MessageUtils.message("user.jcaptcha.error"));
             throw new CaptchaException();
         }
     }
-
 }

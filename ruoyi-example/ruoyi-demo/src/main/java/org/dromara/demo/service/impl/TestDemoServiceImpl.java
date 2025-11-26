@@ -4,6 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -13,12 +17,7 @@ import org.dromara.demo.domain.bo.TestDemoBo;
 import org.dromara.demo.domain.vo.TestDemoVo;
 import org.dromara.demo.mapper.TestDemoMapper;
 import org.dromara.demo.service.ITestDemoService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 测试单表Service业务层处理
@@ -44,9 +43,7 @@ public class TestDemoServiceImpl implements ITestDemoService {
         return TableDataInfo.build(result);
     }
 
-    /**
-     * 自定义分页查询
-     */
+    /** 自定义分页查询 */
     @Override
     public TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
@@ -64,8 +61,11 @@ public class TestDemoServiceImpl implements ITestDemoService {
         LambdaQueryWrapper<TestDemo> lqw = Wrappers.lambdaQuery();
         lqw.like(StringUtils.isNotBlank(bo.getTestKey()), TestDemo::getTestKey, bo.getTestKey());
         lqw.eq(StringUtils.isNotBlank(bo.getValue()), TestDemo::getValue, bo.getValue());
-        lqw.between(params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
-            TestDemo::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
+        lqw.between(
+                params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
+                TestDemo::getCreateTime,
+                params.get("beginCreateTime"),
+                params.get("endCreateTime"));
         lqw.orderByAsc(TestDemo::getId);
         return lqw;
     }
@@ -94,7 +94,7 @@ public class TestDemoServiceImpl implements ITestDemoService {
      * @param entity 实体类数据
      */
     private void validEntityBeforeSave(TestDemo entity) {
-        //TODO 做一些数据校验,如唯一约束
+        // TODO 做一些数据校验,如唯一约束
     }
 
     @Override

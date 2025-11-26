@@ -1,5 +1,7 @@
 package org.dromara.common.encrypt.core.encryptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.encrypt.core.EncryptContext;
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
@@ -10,11 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.*;
-
 /**
- * Sm4Encryptor (SM4加密器) 单元测试
- * SM4是中国国家密码管理局发布的对称加密算法
+ * Sm4Encryptor (SM4加密器) 单元测试 SM4是中国国家密码管理局发布的对称加密算法
  *
  * @author Test Team
  */
@@ -238,8 +237,7 @@ class Sm4EncryptorTest {
         @DisplayName("SM4密钥应该是16字节")
         void shouldVerifyKeyLength() {
             // Assert
-            assertThat(SM4_KEY).hasSize(16)
-                .describedAs("SM4 requires 16-byte (128-bit) key");
+            assertThat(SM4_KEY).hasSize(16).describedAs("SM4 requires 16-byte (128-bit) key");
         }
     }
 
@@ -487,8 +485,9 @@ class Sm4EncryptorTest {
             String key = "0123456789abcdef"; // 128 bits
 
             // Assert
-            assertThat(key.getBytes()).hasSize(16)
-                .describedAs("SM4 uses 128-bit block cipher with 128-bit key");
+            assertThat(key.getBytes())
+                    .hasSize(16)
+                    .describedAs("SM4 uses 128-bit block cipher with 128-bit key");
         }
 
         @Test
@@ -514,13 +513,7 @@ class Sm4EncryptorTest {
         @DisplayName("SM4作为国密算法应该支持中文处理")
         void shouldSupportChineseCharactersAsNationalStandard() {
             // Arrange - 测试各种中文场景
-            String[] chineseTexts = {
-                "中国加密标准",
-                "国家密码管理局",
-                "商用密码算法",
-                "信息安全保密",
-                "电子政务系统"
-            };
+            String[] chineseTexts = {"中国加密标准", "国家密码管理局", "商用密码算法", "信息安全保密", "电子政务系统"};
 
             // Act & Assert
             for (String text : chineseTexts) {

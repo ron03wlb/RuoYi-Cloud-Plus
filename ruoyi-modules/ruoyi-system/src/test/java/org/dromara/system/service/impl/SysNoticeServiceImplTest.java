@@ -1,6 +1,13 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.dromara.system.domain.SysNotice;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysNoticeBo;
@@ -18,14 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 /**
  * SysNoticeServiceImpl 单元测试
  *
@@ -36,20 +35,15 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysNoticeServiceImpl 单元测试")
 class SysNoticeServiceImplTest {
 
-    @Mock
-    private SysNoticeMapper baseMapper;
+    @Mock private SysNoticeMapper baseMapper;
 
-    @Mock
-    private SysUserMapper userMapper;
+    @Mock private SysUserMapper userMapper;
 
-    @InjectMocks
-    private SysNoticeServiceImpl noticeService;
+    @InjectMocks private SysNoticeServiceImpl noticeService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysNotice>> noticeWrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysNotice>> noticeWrapperCaptor;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysUser>> userWrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysUser>> userWrapperCaptor;
 
     @Nested
     @DisplayName("1. 查询方法测试")
@@ -62,10 +56,10 @@ class SysNoticeServiceImplTest {
             SysNoticeBo queryBo = createNoticeBo(null, "系统维护");
             queryBo.setNoticeTitle("系统维护");
 
-            List<SysNoticeVo> expectedList = Arrays.asList(
-                createNoticeVo(1L, "系统维护通知", "1", "0"),
-                createNoticeVo(2L, "系统维护公告", "2", "0")
-            );
+            List<SysNoticeVo> expectedList =
+                    Arrays.asList(
+                            createNoticeVo(1L, "系统维护通知", "1", "0"),
+                            createNoticeVo(2L, "系统维护公告", "2", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -73,10 +67,10 @@ class SysNoticeServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysNoticeVo::getNoticeTitle)
-                .allMatch(title -> title.contains("系统维护"));
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysNoticeVo::getNoticeTitle)
+                    .allMatch(title -> title.contains("系统维护"));
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -88,10 +82,10 @@ class SysNoticeServiceImplTest {
             SysNoticeBo queryBo = createNoticeBo(null, "");
             queryBo.setNoticeType("1"); // 通知类型
 
-            List<SysNoticeVo> expectedList = Arrays.asList(
-                createNoticeVo(1L, "系统维护通知", "1", "0"),
-                createNoticeVo(2L, "版本更新通知", "1", "0")
-            );
+            List<SysNoticeVo> expectedList =
+                    Arrays.asList(
+                            createNoticeVo(1L, "系统维护通知", "1", "0"),
+                            createNoticeVo(2L, "版本更新通知", "1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -99,10 +93,10 @@ class SysNoticeServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysNoticeVo::getNoticeType)
-                .containsOnly("1");
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysNoticeVo::getNoticeType)
+                    .containsOnly("1");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -120,18 +114,15 @@ class SysNoticeServiceImplTest {
 
             when(userMapper.selectVoOne(any(LambdaQueryWrapper.class))).thenReturn(foundUser);
 
-            List<SysNoticeVo> expectedList = Collections.singletonList(
-                createNoticeVo(1L, "管理员发布的通知", "1", "0")
-            );
+            List<SysNoticeVo> expectedList =
+                    Collections.singletonList(createNoticeVo(1L, "管理员发布的通知", "1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysNoticeVo> result = noticeService.selectNoticeList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(userMapper, times(1)).selectVoOne(any(LambdaQueryWrapper.class));
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
@@ -145,15 +136,14 @@ class SysNoticeServiceImplTest {
             queryBo.setCreateByName("nonexistent");
 
             when(userMapper.selectVoOne(any(LambdaQueryWrapper.class))).thenReturn(null);
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysNoticeVo> result = noticeService.selectNoticeList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(userMapper, times(1)).selectVoOne(any(LambdaQueryWrapper.class));
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
@@ -164,15 +154,14 @@ class SysNoticeServiceImplTest {
         void shouldReturnEmptyList_WhenNoNoticesMatch() {
             // Arrange
             SysNoticeBo queryBo = createNoticeBo(null, "不存在的公告");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysNoticeVo> result = noticeService.selectNoticeList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -191,14 +180,13 @@ class SysNoticeServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .extracting(
-                    SysNoticeVo::getNoticeId,
-                    SysNoticeVo::getNoticeTitle,
-                    SysNoticeVo::getNoticeType,
-                    SysNoticeVo::getStatus
-                )
-                .containsExactly(noticeId, "系统维护通知", "1", "0");
+                    .isNotNull()
+                    .extracting(
+                            SysNoticeVo::getNoticeId,
+                            SysNoticeVo::getNoticeTitle,
+                            SysNoticeVo::getNoticeType,
+                            SysNoticeVo::getStatus)
+                    .containsExactly(noticeId, "系统维护通知", "1", "0");
 
             verify(baseMapper, times(1)).selectVoById(noticeId);
         }
@@ -226,18 +214,15 @@ class SysNoticeServiceImplTest {
             queryBo.setNoticeTitle("系统通知");
             queryBo.setNoticeType("1");
 
-            List<SysNoticeVo> expectedList = Collections.singletonList(
-                createNoticeVo(1L, "系统通知", "1", "0")
-            );
+            List<SysNoticeVo> expectedList =
+                    Collections.singletonList(createNoticeVo(1L, "系统通知", "1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysNoticeVo> result = noticeService.selectNoticeList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -245,11 +230,9 @@ class SysNoticeServiceImplTest {
 
     /**
      * 注意: 无法测试分页方法
-     * <p>
-     * <b>selectPageNoticeList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
-     * </p>
+     *
+     * <p><b>selectPageNoticeList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
      */
-
     @Nested
     @DisplayName("2. 删除方法测试")
     class DeleteMethodsTests {
@@ -332,13 +315,11 @@ class SysNoticeServiceImplTest {
 
     /**
      * 注意: 无法测试 CRUD 相关方法
-     * <p>
-     * <b>insertNotice()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
+     *
+     * <p><b>insertNotice()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
      * <b>updateNotice()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
      * 需要 mockito-inline 或集成测试环境才能测试这些方法
-     * </p>
      */
-
     @Nested
     @DisplayName("3. 边界条件测试")
     class BoundaryTests {
@@ -394,15 +375,14 @@ class SysNoticeServiceImplTest {
             // Arrange
             SysNoticeBo queryBo = createNoticeBo(null, "");
             queryBo.setNoticeTitle("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysNoticeVo> result = noticeService.selectNoticeList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -410,9 +390,7 @@ class SysNoticeServiceImplTest {
 
     // ==================== Factory Methods ====================
 
-    /**
-     * 创建测试用 SysNoticeBo 业务对象
-     */
+    /** 创建测试用 SysNoticeBo 业务对象 */
     private static SysNoticeBo createNoticeBo(Long noticeId, String noticeTitle) {
         SysNoticeBo noticeBo = new SysNoticeBo();
         noticeBo.setNoticeId(noticeId);
@@ -424,10 +402,9 @@ class SysNoticeServiceImplTest {
         return noticeBo;
     }
 
-    /**
-     * 创建测试用 SysNoticeVo 视图对象
-     */
-    private static SysNoticeVo createNoticeVo(Long noticeId, String noticeTitle, String noticeType, String status) {
+    /** 创建测试用 SysNoticeVo 视图对象 */
+    private static SysNoticeVo createNoticeVo(
+            Long noticeId, String noticeTitle, String noticeType, String status) {
         SysNoticeVo noticeVo = new SysNoticeVo();
         noticeVo.setNoticeId(noticeId);
         noticeVo.setNoticeTitle(noticeTitle);

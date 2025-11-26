@@ -1,6 +1,12 @@
 package org.dromara.common.websocket.utils;
 
+import static org.dromara.common.websocket.constant.WebSocketConstants.WEB_SOCKET_TOPIC;
+
 import cn.hutool.core.collection.CollUtil;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +17,6 @@ import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
-import static org.dromara.common.websocket.constant.WebSocketConstants.WEB_SOCKET_TOPIC;
 
 /**
  * WebSocket工具类
@@ -32,7 +31,7 @@ public class WebSocketUtils {
      * 向指定的WebSocket会话发送消息
      *
      * @param sessionKey 要发送消息的用户id
-     * @param message    要发送的消息内容
+     * @param message 要发送的消息内容
      */
     public static void sendMessage(Long sessionKey, String message) {
         WebSocketSession session = WebSocketSessionHolder.getSessions(sessionKey);
@@ -68,10 +67,16 @@ public class WebSocketUtils {
             WebSocketMessageDto broadcastMessage = new WebSocketMessageDto();
             broadcastMessage.setMessage(webSocketMessage.getMessage());
             broadcastMessage.setSessionKeys(unsentSessionKeys);
-            RedisUtils.publish(WEB_SOCKET_TOPIC, broadcastMessage, consumer -> {
-                log.info("WebSocket发送主题订阅消息topic:{} session keys:{} message:{}",
-                    WEB_SOCKET_TOPIC, unsentSessionKeys, webSocketMessage.getMessage());
-            });
+            RedisUtils.publish(
+                    WEB_SOCKET_TOPIC,
+                    broadcastMessage,
+                    consumer -> {
+                        log.info(
+                                "WebSocket发送主题订阅消息topic:{} session keys:{} message:{}",
+                                WEB_SOCKET_TOPIC,
+                                unsentSessionKeys,
+                                webSocketMessage.getMessage());
+                    });
         }
     }
 
@@ -83,9 +88,12 @@ public class WebSocketUtils {
     public static void publishAll(String message) {
         WebSocketMessageDto broadcastMessage = new WebSocketMessageDto();
         broadcastMessage.setMessage(message);
-        RedisUtils.publish(WEB_SOCKET_TOPIC, broadcastMessage, consumer -> {
-            log.info("WebSocket发送主题订阅消息topic:{} message:{}", WEB_SOCKET_TOPIC, message);
-        });
+        RedisUtils.publish(
+                WEB_SOCKET_TOPIC,
+                broadcastMessage,
+                consumer -> {
+                    log.info("WebSocket发送主题订阅消息topic:{} message:{}", WEB_SOCKET_TOPIC, message);
+                });
     }
 
     /**
@@ -113,7 +121,8 @@ public class WebSocketUtils {
      * @param session WebSocket会话
      * @param message 要发送的WebSocket消息对象
      */
-    private synchronized static void sendMessage(WebSocketSession session, WebSocketMessage<?> message) {
+    private static synchronized void sendMessage(
+            WebSocketSession session, WebSocketMessage<?> message) {
         if (session == null || !session.isOpen()) {
             log.warn("[send] session会话已经关闭");
         } else {

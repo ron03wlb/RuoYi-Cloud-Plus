@@ -1,13 +1,12 @@
 package org.dromara.common.websocket.holder;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * WebSocketSession 用于保存当前所有在线的会话信息
@@ -23,7 +22,7 @@ public class WebSocketSessionHolder {
      * 将WebSocket会话添加到用户会话Map中
      *
      * @param sessionKey 会话键，用于检索会话
-     * @param session    要添加的WebSocket会话
+     * @param session 要添加的WebSocket会话
      */
     public static void addSession(Long sessionKey, WebSocketSession session) {
         removeSession(sessionKey);

@@ -6,13 +6,9 @@ package org.dromara.common.log.enums;
  * @author ruoyi
  */
 public enum BusinessStatus {
-    /**
-     * 成功
-     */
+    /** 成功 */
     SUCCESS,
 
-    /**
-     * 失败
-     */
+    /** 失败 */
     FAIL,
 }

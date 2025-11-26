@@ -89,14 +89,16 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",      // 注解类
-                    "**/config/**",           // 配置类（Spring配置）
-                    "**/*Application.class"   // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/annotation/**", // 注解类
+                        "**/config/**", // 配置类（Spring配置）
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

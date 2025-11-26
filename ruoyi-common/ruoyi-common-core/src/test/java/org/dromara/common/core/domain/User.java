@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
  */
 public class User implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Long id;
     private String username;
@@ -20,8 +19,7 @@ public class User implements Serializable {
     private Integer age;
     private LocalDateTime createTime;
 
-    public User() {
-    }
+    public User() {}
 
     public User(Long id, String username, String email, Integer age, LocalDateTime createTime) {
         this.id = id;

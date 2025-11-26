@@ -2,14 +2,13 @@ package org.dromara.common.core.utils;
 
 import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.net.NetUtil;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.utils.regex.RegexUtils;
-
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * 增强网络相关工具类
@@ -36,9 +35,10 @@ public class NetUtils extends NetUtil {
     }
 
     /**
-     * 判断IPv6地址是否为内网地址
-     * <br><br>
+     * 判断IPv6地址是否为内网地址 <br>
+     * <br>
      * 以下地址将归类为本地地址，如有业务场景有需要，请根据需求自行处理：
+     *
      * <pre>
      * 通配符地址 0:0:0:0:0:0:0:0
      * 链路本地地址 fe80::/10
@@ -58,9 +58,9 @@ public class NetUtils extends NetUtil {
                 // isLoopbackAddress 判断是否为环回地址，与IPv4的 127.0.0.1 同理，用于表示本机
                 // isSiteLocalAddress 判断是否为本地站点地址，IPv6唯一本地地址（Unique Local Addresses，简称ULA）
                 if (inet6Address.isAnyLocalAddress()
-                    || inet6Address.isLinkLocalAddress()
-                    || inet6Address.isLoopbackAddress()
-                    || inet6Address.isSiteLocalAddress()) {
+                        || inet6Address.isLinkLocalAddress()
+                        || inet6Address.isLoopbackAddress()
+                        || inet6Address.isSiteLocalAddress()) {
                     return true;
                 }
             }
@@ -80,5 +80,4 @@ public class NetUtils extends NetUtil {
     public static boolean isIPv4(String ip) {
         return RegexUtils.isMatch(PatternPool.IPV4, ip);
     }
-
 }

@@ -1,16 +1,16 @@
 package org.dromara.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * 测试基础设施验证测试
- * <p>
- * 验证测试框架和基础设施是否正常工作
- * </p>
+ *
+ * <p>验证测试框架和基础设施是否正常工作
  *
  * @author Test Team
  */
@@ -27,12 +27,7 @@ class AuthTestInfrastructureSmokeTest extends BaseUnitTest {
     @Test
     @DisplayName("验证 AssertJ 正常工作")
     void testAssertJWorks() {
-        assertThat("test")
-            .isNotNull()
-            .isNotEmpty()
-            .hasSize(4)
-            .startsWith("te")
-            .endsWith("st");
+        assertThat("test").isNotNull().isNotEmpty().hasSize(4).startsWith("te").endsWith("st");
     }
 
     @Test

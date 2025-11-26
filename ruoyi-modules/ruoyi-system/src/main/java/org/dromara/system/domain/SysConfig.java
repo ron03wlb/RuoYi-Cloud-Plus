@@ -11,41 +11,27 @@ import org.dromara.common.tenant.core.TenantEntity;
  *
  * @author Lion Li
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_config")
 public class SysConfig extends TenantEntity {
 
-    /**
-     * 参数主键
-     */
+    /** 参数主键 */
     @TableId(value = "config_id")
     private Long configId;
 
-    /**
-     * 参数名称
-     */
+    /** 参数名称 */
     private String configName;
 
-    /**
-     * 参数键名
-     */
+    /** 参数键名 */
     private String configKey;
 
-    /**
-     * 参数键值
-     */
+    /** 参数键值 */
     private String configValue;
 
-    /**
-     * 系统内置（Y是 N否）
-     */
+    /** 系统内置（Y是 N否） */
     private String configType;
 
-    /**
-     * 备注
-     */
+    /** 备注 */
     private String remark;
-
 }

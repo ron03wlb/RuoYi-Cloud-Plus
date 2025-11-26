@@ -2,27 +2,30 @@ package org.dromara.common.core.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
  * 测试数据工厂
- * <p>
- * 提供统一的测试数据生成方法,用于创建各种测试场景所需的数据
- * </p>
  *
- * <p>主要功能:</p>
+ * <p>提供统一的测试数据生成方法,用于创建各种测试场景所需的数据
+ *
+ * <p>主要功能:
+ *
  * <ul>
- *   <li>随机字符串生成</li>
- *   <li>随机数字生成</li>
- *   <li>随机日期时间生成</li>
- *   <li>随机集合生成</li>
- *   <li>边界值生成</li>
+ *   <li>随机字符串生成
+ *   <li>随机数字生成
+ *   <li>随机日期时间生成
+ *   <li>随机集合生成
+ *   <li>边界值生成
  * </ul>
  *
- * <p>使用示例:</p>
+ * <p>使用示例:
+ *
  * <pre>{@code
  * // 生成随机字符串
  * String name = TestDataFactory.randomString(10);
@@ -41,7 +44,8 @@ import java.util.stream.IntStream;
  */
 public class TestDataFactory {
 
-    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String ALPHANUMERIC =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final String ALPHABETIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final String NUMERIC = "0123456789";
     private static final String CHINESE_SURNAMES = "赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张";
@@ -87,7 +91,7 @@ public class TestDataFactory {
     /**
      * 从指定字符集生成随机字符串
      *
-     * @param length  字符串长度
+     * @param length 字符串长度
      * @param charset 字符集
      * @return 随机字符串
      */
@@ -194,29 +198,23 @@ public class TestDataFactory {
         long minDay = oneYearAgo.toLocalDate().toEpochDay();
         long maxDay = now.toLocalDate().toEpochDay();
         long randomDay = random.nextLong(minDay, maxDay);
-        return LocalDate.ofEpochDay(randomDay).atTime(
-            random.nextInt(0, 24),
-            random.nextInt(0, 60),
-            random.nextInt(0, 60)
-        );
+        return LocalDate.ofEpochDay(randomDay)
+                .atTime(random.nextInt(0, 24), random.nextInt(0, 60), random.nextInt(0, 60));
     }
 
     /**
      * 生成指定范围内的随机日期时间
      *
      * @param start 开始时间
-     * @param end   结束时间
+     * @param end 结束时间
      * @return 随机日期时间
      */
     public static LocalDateTime randomDateTime(LocalDateTime start, LocalDateTime end) {
         long startEpochDay = start.toLocalDate().toEpochDay();
         long endEpochDay = end.toLocalDate().toEpochDay();
         long randomDay = random.nextLong(startEpochDay, endEpochDay + 1);
-        return LocalDate.ofEpochDay(randomDay).atTime(
-            random.nextInt(0, 24),
-            random.nextInt(0, 60),
-            random.nextInt(0, 60)
-        );
+        return LocalDate.ofEpochDay(randomDay)
+                .atTime(random.nextInt(0, 24), random.nextInt(0, 60), random.nextInt(0, 60));
     }
 
     /**
@@ -233,23 +231,21 @@ public class TestDataFactory {
     /**
      * 生成随机列表
      *
-     * @param size      列表大小
+     * @param size 列表大小
      * @param generator 元素生成器
-     * @param <T>       元素类型
+     * @param <T> 元素类型
      * @return 随机列表
      */
     public static <T> List<T> randomList(int size, java.util.function.Supplier<T> generator) {
-        return IntStream.range(0, size)
-            .mapToObj(i -> generator.get())
-            .collect(Collectors.toList());
+        return IntStream.range(0, size).mapToObj(i -> generator.get()).collect(Collectors.toList());
     }
 
     /**
      * 生成随机集合
      *
-     * @param size      集合大小
+     * @param size 集合大小
      * @param generator 元素生成器
-     * @param <T>       元素类型
+     * @param <T> 元素类型
      * @return 随机集合
      */
     public static <T> Set<T> randomSet(int size, java.util.function.Supplier<T> generator) {
@@ -264,7 +260,7 @@ public class TestDataFactory {
      * 从数组中随机选择一个元素
      *
      * @param elements 元素数组
-     * @param <T>      元素类型
+     * @param <T> 元素类型
      * @return 随机元素
      */
     @SafeVarargs
@@ -279,7 +275,7 @@ public class TestDataFactory {
      * 从列表中随机选择一个元素
      *
      * @param list 列表
-     * @param <T>  元素类型
+     * @param <T> 元素类型
      * @return 随机元素
      */
     public static <T> T randomElement(List<T> list) {
@@ -372,245 +368,260 @@ public class TestDataFactory {
      *
      * 如需使用这些方法，应将它们移动到 ruoyi-system 模块的测试代码中。
      */
-//     // ==================== 菜单测试数据生成 ====================
-// 
-//     /**
-//      * 创建菜单测试数据
-//      *
-//      * @param menuId   菜单ID
-//      * @param menuName 菜单名称
-//      * @return SysMenu
-//      */
-//     public static org.dromara.system.domain.SysMenu createMenu(Long menuId, String menuName) {
-//         org.dromara.system.domain.SysMenu menu = new org.dromara.system.domain.SysMenu();
-//         menu.setMenuId(menuId);
-//         menu.setMenuName(menuName);
-//         menu.setParentId(0L);
-//         menu.setOrderNum(menuId != null ? menuId.intValue() : 0);
-//         menu.setPath("/" + menuName.toLowerCase());
-//         menu.setComponent("system/" + menuName.toLowerCase());
-//         menu.setMenuType("C"); // C菜单 M目录 F按钮
-//         menu.setVisible("0"); // 0显示 1隐藏
-//         menu.setStatus("0"); // 0正常 1停用
-//         menu.setIsFrame("1"); // 0是外链 1否
-//         menu.setIsCache("0"); // 0缓存 1不缓存
-//         menu.setPerms("system:" + menuName.toLowerCase() + ":list");
-//         menu.setIcon("system");
-//         return menu;
-//     }
-// 
-//     /**
-//      * 创建菜单BO测试数据
-//      *
-//      * @param menuId   菜单ID
-//      * @param menuName 菜单名称
-//      * @return SysMenuBo
-//      */
-//     public static org.dromara.system.domain.bo.SysMenuBo createMenuBo(Long menuId, String menuName) {
-//         org.dromara.system.domain.bo.SysMenuBo bo = new org.dromara.system.domain.bo.SysMenuBo();
-//         bo.setMenuId(menuId);
-//         bo.setMenuName(menuName);
-//         bo.setParentId(0L);
-//         bo.setOrderNum(menuId != null ? menuId.intValue() : 0);
-//         bo.setPath("/" + menuName.toLowerCase());
-//         bo.setComponent("system/" + menuName.toLowerCase());
-//         bo.setMenuType("C");
-//         bo.setVisible("0");
-//         bo.setStatus("0");
-//         bo.setIsFrame("1");
-//         bo.setIsCache("0");
-//         bo.setPerms("system:" + menuName.toLowerCase() + ":list");
-//         bo.setIcon("system");
-//         return bo;
-//     }
-// 
-//     /**
-//      * 创建菜单VO测试数据
-//      *
-//      * @param menuId   菜单ID
-//      * @param menuName 菜单名称
-//      * @return SysMenuVo
-//      */
-//     public static org.dromara.system.domain.vo.SysMenuVo createMenuVo(Long menuId, String menuName) {
-//         org.dromara.system.domain.vo.SysMenuVo vo = new org.dromara.system.domain.vo.SysMenuVo();
-//         vo.setMenuId(menuId);
-//         vo.setMenuName(menuName);
-//         vo.setParentId(0L);
-//         vo.setOrderNum(menuId != null ? menuId.intValue() : 0);
-//         vo.setPath("/" + menuName.toLowerCase());
-//         vo.setComponent("system/" + menuName.toLowerCase());
-//         vo.setMenuType("C");
-//         vo.setVisible("0");
-//         vo.setStatus("0");
-//         vo.setIsFrame("1");
-//         vo.setIsCache("0");
-//         vo.setPerms("system:" + menuName.toLowerCase() + ":list");
-//         vo.setIcon("system");
-//         return vo;
-//     }
-// 
-//     /**
-//      * 创建菜单列表测试数据
-//      *
-//      * @param count 菜单数量
-//      * @return List<SysMenu>
-//      */
-//     public static List<org.dromara.system.domain.SysMenu> createMenuList(int count) {
-//         return IntStream.rangeClosed(1, count)
-//             .mapToObj(i -> createMenu((long) i, "菜单" + i))
-//             .collect(Collectors.toList());
-//     }
-// 
-//     // ==================== 部门测试数据生成 ====================
-// 
-//     /**
-//      * 创建部门测试数据
-//      *
-//      * @param deptId   部门ID
-//      * @param deptName 部门名称
-//      * @return SysDept
-//      */
-//     public static org.dromara.system.domain.SysDept createDept(Long deptId, String deptName) {
-//         org.dromara.system.domain.SysDept dept = new org.dromara.system.domain.SysDept();
-//         dept.setDeptId(deptId);
-//         dept.setDeptName(deptName);
-//         dept.setParentId(0L);
-//         dept.setOrderNum(deptId != null ? deptId.intValue() : 0);
-//         dept.setLeader(1L);
-//         dept.setPhone("13800138000");
-//         dept.setEmail("dept@example.com");
-//         dept.setStatus("0"); // 0正常 1停用
-//         dept.setDelFlag("0"); // 0存在 1删除
-//         dept.setAncestors("0");
-//         return dept;
-//     }
-// 
-//     /**
-//      * 创建部门BO测试数据
-//      *
-//      * @param deptId   部门ID
-//      * @param deptName 部门名称
-//      * @return SysDeptBo
-//      */
-//     public static org.dromara.system.domain.bo.SysDeptBo createDeptBo(Long deptId, String deptName) {
-//         org.dromara.system.domain.bo.SysDeptBo bo = new org.dromara.system.domain.bo.SysDeptBo();
-//         bo.setDeptId(deptId);
-//         bo.setDeptName(deptName);
-//         bo.setParentId(0L);
-//         bo.setOrderNum(deptId != null ? deptId.intValue() : 0);
-//         bo.setLeader(1L);
-//         bo.setPhone("13800138000");
-//         bo.setEmail("dept@example.com");
-//         bo.setStatus("0");
-//         return bo;
-//     }
-// 
-//     /**
-//      * 创建部门VO测试数据
-//      *
-//      * @param deptId   部门ID
-//      * @param deptName 部门名称
-//      * @return SysDeptVo
-//      */
-//     public static org.dromara.system.domain.vo.SysDeptVo createDeptVo(Long deptId, String deptName) {
-//         org.dromara.system.domain.vo.SysDeptVo vo = new org.dromara.system.domain.vo.SysDeptVo();
-//         vo.setDeptId(deptId);
-//         vo.setDeptName(deptName);
-//         vo.setParentId(0L);
-//         vo.setOrderNum(deptId != null ? deptId.intValue() : 0);
-//         vo.setLeader(1L);
-//         vo.setPhone("13800138000");
-//         vo.setEmail("dept@example.com");
-//         vo.setStatus("0");
-//         vo.setAncestors("0");
-//         return vo;
-//     }
-// 
-//     /**
-//      * 创建部门列表测试数据
-//      *
-//      * @param count 部门数量
-//      * @return List<SysDept>
-//      */
-//     public static List<org.dromara.system.domain.SysDept> createDeptList(int count) {
-//         return IntStream.rangeClosed(1, count)
-//             .mapToObj(i -> createDept((long) i, "部门" + i))
-//             .collect(Collectors.toList());
-//     }
-// 
-//     // ==================== 岗位测试数据生成 ====================
-// 
-//     /**
-//      * 创建岗位测试数据
-//      *
-//      * @param postId   岗位ID
-//      * @param postName 岗位名称
-//      * @return SysPost
-//      */
-//     public static org.dromara.system.domain.SysPost createPost(Long postId, String postName) {
-//         org.dromara.system.domain.SysPost post = new org.dromara.system.domain.SysPost();
-//         post.setPostId(postId);
-//         post.setPostName(postName);
-//         post.setPostCode("post_" + postId);
-//         post.setPostSort(postId != null ? postId.intValue() : 0);
-//         post.setDeptId(1L);
-//         post.setPostCategory("category_" + postId);
-//         post.setStatus("0"); // 0正常 1停用
-//         post.setRemark("岗位备注");
-//         return post;
-//     }
-// 
-//     /**
-//      * 创建岗位BO测试数据
-//      *
-//      * @param postId   岗位ID
-//      * @param postName 岗位名称
-//      * @return SysPostBo
-//      */
-//     public static org.dromara.system.domain.bo.SysPostBo createPostBo(Long postId, String postName) {
-//         org.dromara.system.domain.bo.SysPostBo bo = new org.dromara.system.domain.bo.SysPostBo();
-//         bo.setPostId(postId);
-//         bo.setPostName(postName);
-//         bo.setPostCode("post_" + postId);
-//         bo.setPostSort(postId != null ? postId.intValue() : 0);
-//         bo.setDeptId(1L);
-//         bo.setPostCategory("category_" + postId);
-//         bo.setStatus("0");
-//         bo.setRemark("岗位备注");
-//         return bo;
-//     }
-// 
-//     /**
-//      * 创建岗位VO测试数据
-//      *
-//      * @param postId   岗位ID
-//      * @param postName 岗位名称
-//      * @return SysPostVo
-//      */
-//     public static org.dromara.system.domain.vo.SysPostVo createPostVo(Long postId, String postName) {
-//         org.dromara.system.domain.vo.SysPostVo vo = new org.dromara.system.domain.vo.SysPostVo();
-//         vo.setPostId(postId);
-//         vo.setPostName(postName);
-//         vo.setPostCode("post_" + postId);
-//         vo.setPostSort(postId != null ? postId.intValue() : 0);
-//         vo.setDeptId(1L);
-//         vo.setPostCategory("category_" + postId);
-//         vo.setStatus("0");
-//         vo.setRemark("岗位备注");
-//         vo.setDeptName("测试部门");
-//         return vo;
-//     }
-// 
-//     /**
-//      * 创建岗位列表测试数据
-//      *
-//      * @param count 岗位数量
-//      * @return List<SysPost>
-//      */
-//     public static List<org.dromara.system.domain.SysPost> createPostList(int count) {
-//         return IntStream.rangeClosed(1, count)
-//             .mapToObj(i -> createPost((long) i, "岗位" + i))
-//             .collect(Collectors.toList());
-//     }
-// }
+    //     // ==================== 菜单测试数据生成 ====================
+    //
+    //     /**
+    //      * 创建菜单测试数据
+    //      *
+    //      * @param menuId   菜单ID
+    //      * @param menuName 菜单名称
+    //      * @return SysMenu
+    //      */
+    //     public static org.dromara.system.domain.SysMenu createMenu(Long menuId, String menuName)
+    // {
+    //         org.dromara.system.domain.SysMenu menu = new org.dromara.system.domain.SysMenu();
+    //         menu.setMenuId(menuId);
+    //         menu.setMenuName(menuName);
+    //         menu.setParentId(0L);
+    //         menu.setOrderNum(menuId != null ? menuId.intValue() : 0);
+    //         menu.setPath("/" + menuName.toLowerCase());
+    //         menu.setComponent("system/" + menuName.toLowerCase());
+    //         menu.setMenuType("C"); // C菜单 M目录 F按钮
+    //         menu.setVisible("0"); // 0显示 1隐藏
+    //         menu.setStatus("0"); // 0正常 1停用
+    //         menu.setIsFrame("1"); // 0是外链 1否
+    //         menu.setIsCache("0"); // 0缓存 1不缓存
+    //         menu.setPerms("system:" + menuName.toLowerCase() + ":list");
+    //         menu.setIcon("system");
+    //         return menu;
+    //     }
+    //
+    //     /**
+    //      * 创建菜单BO测试数据
+    //      *
+    //      * @param menuId   菜单ID
+    //      * @param menuName 菜单名称
+    //      * @return SysMenuBo
+    //      */
+    //     public static org.dromara.system.domain.bo.SysMenuBo createMenuBo(Long menuId, String
+    // menuName) {
+    //         org.dromara.system.domain.bo.SysMenuBo bo = new
+    // org.dromara.system.domain.bo.SysMenuBo();
+    //         bo.setMenuId(menuId);
+    //         bo.setMenuName(menuName);
+    //         bo.setParentId(0L);
+    //         bo.setOrderNum(menuId != null ? menuId.intValue() : 0);
+    //         bo.setPath("/" + menuName.toLowerCase());
+    //         bo.setComponent("system/" + menuName.toLowerCase());
+    //         bo.setMenuType("C");
+    //         bo.setVisible("0");
+    //         bo.setStatus("0");
+    //         bo.setIsFrame("1");
+    //         bo.setIsCache("0");
+    //         bo.setPerms("system:" + menuName.toLowerCase() + ":list");
+    //         bo.setIcon("system");
+    //         return bo;
+    //     }
+    //
+    //     /**
+    //      * 创建菜单VO测试数据
+    //      *
+    //      * @param menuId   菜单ID
+    //      * @param menuName 菜单名称
+    //      * @return SysMenuVo
+    //      */
+    //     public static org.dromara.system.domain.vo.SysMenuVo createMenuVo(Long menuId, String
+    // menuName) {
+    //         org.dromara.system.domain.vo.SysMenuVo vo = new
+    // org.dromara.system.domain.vo.SysMenuVo();
+    //         vo.setMenuId(menuId);
+    //         vo.setMenuName(menuName);
+    //         vo.setParentId(0L);
+    //         vo.setOrderNum(menuId != null ? menuId.intValue() : 0);
+    //         vo.setPath("/" + menuName.toLowerCase());
+    //         vo.setComponent("system/" + menuName.toLowerCase());
+    //         vo.setMenuType("C");
+    //         vo.setVisible("0");
+    //         vo.setStatus("0");
+    //         vo.setIsFrame("1");
+    //         vo.setIsCache("0");
+    //         vo.setPerms("system:" + menuName.toLowerCase() + ":list");
+    //         vo.setIcon("system");
+    //         return vo;
+    //     }
+    //
+    //     /**
+    //      * 创建菜单列表测试数据
+    //      *
+    //      * @param count 菜单数量
+    //      * @return List<SysMenu>
+    //      */
+    //     public static List<org.dromara.system.domain.SysMenu> createMenuList(int count) {
+    //         return IntStream.rangeClosed(1, count)
+    //             .mapToObj(i -> createMenu((long) i, "菜单" + i))
+    //             .collect(Collectors.toList());
+    //     }
+    //
+    //     // ==================== 部门测试数据生成 ====================
+    //
+    //     /**
+    //      * 创建部门测试数据
+    //      *
+    //      * @param deptId   部门ID
+    //      * @param deptName 部门名称
+    //      * @return SysDept
+    //      */
+    //     public static org.dromara.system.domain.SysDept createDept(Long deptId, String deptName)
+    // {
+    //         org.dromara.system.domain.SysDept dept = new org.dromara.system.domain.SysDept();
+    //         dept.setDeptId(deptId);
+    //         dept.setDeptName(deptName);
+    //         dept.setParentId(0L);
+    //         dept.setOrderNum(deptId != null ? deptId.intValue() : 0);
+    //         dept.setLeader(1L);
+    //         dept.setPhone("13800138000");
+    //         dept.setEmail("dept@example.com");
+    //         dept.setStatus("0"); // 0正常 1停用
+    //         dept.setDelFlag("0"); // 0存在 1删除
+    //         dept.setAncestors("0");
+    //         return dept;
+    //     }
+    //
+    //     /**
+    //      * 创建部门BO测试数据
+    //      *
+    //      * @param deptId   部门ID
+    //      * @param deptName 部门名称
+    //      * @return SysDeptBo
+    //      */
+    //     public static org.dromara.system.domain.bo.SysDeptBo createDeptBo(Long deptId, String
+    // deptName) {
+    //         org.dromara.system.domain.bo.SysDeptBo bo = new
+    // org.dromara.system.domain.bo.SysDeptBo();
+    //         bo.setDeptId(deptId);
+    //         bo.setDeptName(deptName);
+    //         bo.setParentId(0L);
+    //         bo.setOrderNum(deptId != null ? deptId.intValue() : 0);
+    //         bo.setLeader(1L);
+    //         bo.setPhone("13800138000");
+    //         bo.setEmail("dept@example.com");
+    //         bo.setStatus("0");
+    //         return bo;
+    //     }
+    //
+    //     /**
+    //      * 创建部门VO测试数据
+    //      *
+    //      * @param deptId   部门ID
+    //      * @param deptName 部门名称
+    //      * @return SysDeptVo
+    //      */
+    //     public static org.dromara.system.domain.vo.SysDeptVo createDeptVo(Long deptId, String
+    // deptName) {
+    //         org.dromara.system.domain.vo.SysDeptVo vo = new
+    // org.dromara.system.domain.vo.SysDeptVo();
+    //         vo.setDeptId(deptId);
+    //         vo.setDeptName(deptName);
+    //         vo.setParentId(0L);
+    //         vo.setOrderNum(deptId != null ? deptId.intValue() : 0);
+    //         vo.setLeader(1L);
+    //         vo.setPhone("13800138000");
+    //         vo.setEmail("dept@example.com");
+    //         vo.setStatus("0");
+    //         vo.setAncestors("0");
+    //         return vo;
+    //     }
+    //
+    //     /**
+    //      * 创建部门列表测试数据
+    //      *
+    //      * @param count 部门数量
+    //      * @return List<SysDept>
+    //      */
+    //     public static List<org.dromara.system.domain.SysDept> createDeptList(int count) {
+    //         return IntStream.rangeClosed(1, count)
+    //             .mapToObj(i -> createDept((long) i, "部门" + i))
+    //             .collect(Collectors.toList());
+    //     }
+    //
+    //     // ==================== 岗位测试数据生成 ====================
+    //
+    //     /**
+    //      * 创建岗位测试数据
+    //      *
+    //      * @param postId   岗位ID
+    //      * @param postName 岗位名称
+    //      * @return SysPost
+    //      */
+    //     public static org.dromara.system.domain.SysPost createPost(Long postId, String postName)
+    // {
+    //         org.dromara.system.domain.SysPost post = new org.dromara.system.domain.SysPost();
+    //         post.setPostId(postId);
+    //         post.setPostName(postName);
+    //         post.setPostCode("post_" + postId);
+    //         post.setPostSort(postId != null ? postId.intValue() : 0);
+    //         post.setDeptId(1L);
+    //         post.setPostCategory("category_" + postId);
+    //         post.setStatus("0"); // 0正常 1停用
+    //         post.setRemark("岗位备注");
+    //         return post;
+    //     }
+    //
+    //     /**
+    //      * 创建岗位BO测试数据
+    //      *
+    //      * @param postId   岗位ID
+    //      * @param postName 岗位名称
+    //      * @return SysPostBo
+    //      */
+    //     public static org.dromara.system.domain.bo.SysPostBo createPostBo(Long postId, String
+    // postName) {
+    //         org.dromara.system.domain.bo.SysPostBo bo = new
+    // org.dromara.system.domain.bo.SysPostBo();
+    //         bo.setPostId(postId);
+    //         bo.setPostName(postName);
+    //         bo.setPostCode("post_" + postId);
+    //         bo.setPostSort(postId != null ? postId.intValue() : 0);
+    //         bo.setDeptId(1L);
+    //         bo.setPostCategory("category_" + postId);
+    //         bo.setStatus("0");
+    //         bo.setRemark("岗位备注");
+    //         return bo;
+    //     }
+    //
+    //     /**
+    //      * 创建岗位VO测试数据
+    //      *
+    //      * @param postId   岗位ID
+    //      * @param postName 岗位名称
+    //      * @return SysPostVo
+    //      */
+    //     public static org.dromara.system.domain.vo.SysPostVo createPostVo(Long postId, String
+    // postName) {
+    //         org.dromara.system.domain.vo.SysPostVo vo = new
+    // org.dromara.system.domain.vo.SysPostVo();
+    //         vo.setPostId(postId);
+    //         vo.setPostName(postName);
+    //         vo.setPostCode("post_" + postId);
+    //         vo.setPostSort(postId != null ? postId.intValue() : 0);
+    //         vo.setDeptId(1L);
+    //         vo.setPostCategory("category_" + postId);
+    //         vo.setStatus("0");
+    //         vo.setRemark("岗位备注");
+    //         vo.setDeptName("测试部门");
+    //         return vo;
+    //     }
+    //
+    //     /**
+    //      * 创建岗位列表测试数据
+    //      *
+    //      * @param count 岗位数量
+    //      * @return List<SysPost>
+    //      */
+    //     public static List<org.dromara.system.domain.SysPost> createPostList(int count) {
+    //         return IntStream.rangeClosed(1, count)
+    //             .mapToObj(i -> createPost((long) i, "岗位" + i))
+    //             .collect(Collectors.toList());
+    //     }
+    // }
 }

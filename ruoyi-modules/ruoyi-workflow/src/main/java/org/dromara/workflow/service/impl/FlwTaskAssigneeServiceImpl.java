@@ -6,6 +6,8 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -30,9 +32,6 @@ import org.dromara.workflow.service.IFlwSpelService;
 import org.dromara.workflow.service.IFlwTaskAssigneeService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * 流程设计器-获取办理人权限设置列表
  *
@@ -46,16 +45,11 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
 
     private static final String DEFAULT_GROUP_NAME = "默认分组";
 
-    @DubboReference
-    private RemoteTaskAssigneeService remoteTaskAssigneeService;
-    @DubboReference
-    private RemoteUserService remoteUserService;
-    @DubboReference
-    private RemoteDeptService remoteDeptService;
-    @DubboReference
-    private RemoteRoleService remoteRoleService;
-    @DubboReference
-    private RemotePostService remotePostService;
+    @DubboReference private RemoteTaskAssigneeService remoteTaskAssigneeService;
+    @DubboReference private RemoteUserService remoteUserService;
+    @DubboReference private RemoteDeptService remoteDeptService;
+    @DubboReference private RemoteRoleService remoteRoleService;
+    @DubboReference private RemotePostService remotePostService;
 
     private final IFlwSpelService spelService;
 
@@ -107,7 +101,9 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
             Pair<TaskAssigneeEnum, String> parsed = this.parseStorageId(storageId);
             parsedMap.put(storageId, parsed);
             if (parsed != null) {
-                typeIdMap.computeIfAbsent(parsed.getKey(), k -> new ArrayList<>()).add(parsed.getValue());
+                typeIdMap
+                        .computeIfAbsent(parsed.getKey(), k -> new ArrayList<>())
+                        .add(parsed.getValue());
             }
         }
 
@@ -116,20 +112,24 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         typeIdMap.forEach((type, ids) -> nameMap.put(type, this.getNamesByType(type, ids)));
         // 组装返回结果，保持原始顺序
         return parsedMap.entrySet().stream()
-            .map(entry -> {
-                String storageId = entry.getKey();
-                Pair<TaskAssigneeEnum, String> parsed = entry.getValue();
-                String handlerName = (parsed == null) ? null
-                    : nameMap.getOrDefault(parsed.getKey(), Collections.emptyMap())
-                    .get(parsed.getValue());
-                return new HandlerFeedBackVo(storageId, handlerName);
-            }).toList();
+                .map(
+                        entry -> {
+                            String storageId = entry.getKey();
+                            Pair<TaskAssigneeEnum, String> parsed = entry.getValue();
+                            String handlerName =
+                                    (parsed == null)
+                                            ? null
+                                            : nameMap.getOrDefault(
+                                                            parsed.getKey(), Collections.emptyMap())
+                                                    .get(parsed.getValue());
+                            return new HandlerFeedBackVo(storageId, handlerName);
+                        })
+                .toList();
     }
 
-    /**
-     * 根据任务办理类型查询对应的数据
-     */
-    private RemoteTaskAssigneeVo fetchTaskAssigneeData(TaskAssigneeEnum type, RemoteTaskAssigneeBo taskQuery) {
+    /** 根据任务办理类型查询对应的数据 */
+    private RemoteTaskAssigneeVo fetchTaskAssigneeData(
+            TaskAssigneeEnum type, RemoteTaskAssigneeBo taskQuery) {
         return switch (type) {
             case USER -> remoteTaskAssigneeService.selectUsersByTaskAssigneeList(taskQuery);
             case ROLE -> remoteTaskAssigneeService.selectRolesByTaskAssigneeList(taskQuery);
@@ -139,9 +139,7 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         };
     }
 
-    /**
-     * 根据任务办理类型获取部门数据
-     */
+    /** 根据任务办理类型获取部门数据 */
     private List<RemoteDeptVo> fetchDeptData(TaskAssigneeEnum type) {
         if (type.needsDeptService()) {
             return remoteDeptService.selectDeptsByList();
@@ -152,7 +150,7 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
     /**
      * 获取权限分组名称
      *
-     * @param type      任务分配人枚举
+     * @param type 任务分配人枚举
      * @param groupName 权限分组
      * @return 权限分组名称
      */
@@ -166,31 +164,32 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         return DEFAULT_GROUP_NAME;
     }
 
-    /**
-     * 构建部门树状结构
-     */
+    /** 构建部门树状结构 */
     private TreeFunDto<RemoteDeptVo> buildDeptTree(List<RemoteDeptVo> depts) {
         return new TreeFunDto<>(depts)
-            .setId(dept -> Convert.toStr(dept.getDeptId()))
-            .setName(RemoteDeptVo::getDeptName)
-            .setParentId(dept -> Convert.toStr(dept.getParentId()));
+                .setId(dept -> Convert.toStr(dept.getDeptId()))
+                .setName(RemoteDeptVo::getDeptName)
+                .setParentId(dept -> Convert.toStr(dept.getParentId()));
     }
 
-    /**
-     * 构建任务办理人数据
-     */
-    private HandlerFunDto<RemoteTaskAssigneeVo.TaskHandler> buildHandlerData(RemoteTaskAssigneeVo dto, TaskAssigneeEnum type) {
+    /** 构建任务办理人数据 */
+    private HandlerFunDto<RemoteTaskAssigneeVo.TaskHandler> buildHandlerData(
+            RemoteTaskAssigneeVo dto, TaskAssigneeEnum type) {
         return new HandlerFunDto<>(dto.getList(), dto.getTotal())
-            .setStorageId(assignee -> type.getCode() + assignee.getStorageId())
-            .setHandlerCode(assignee -> StringUtils.blankToDefault(assignee.getHandlerCode(), "无"))
-            .setHandlerName(assignee -> StringUtils.blankToDefault(assignee.getHandlerName(), "无"))
-            .setGroupName(assignee -> this.getGroupName(type, assignee.getGroupName()))
-            .setCreateTime(assignee -> DateUtils.parseDateToStr(FormatsType.YYYY_MM_DD_HH_MM_SS, assignee.getCreateTime()));
+                .setStorageId(assignee -> type.getCode() + assignee.getStorageId())
+                .setHandlerCode(
+                        assignee -> StringUtils.blankToDefault(assignee.getHandlerCode(), "无"))
+                .setHandlerName(
+                        assignee -> StringUtils.blankToDefault(assignee.getHandlerName(), "无"))
+                .setGroupName(assignee -> this.getGroupName(type, assignee.getGroupName()))
+                .setCreateTime(
+                        assignee ->
+                                DateUtils.parseDateToStr(
+                                        FormatsType.YYYY_MM_DD_HH_MM_SS, assignee.getCreateTime()));
     }
 
     /**
-     * 批量解析多个存储标识符（storageIds），按类型分类并合并查询用户列表
-     * 输入格式支持多个以逗号分隔的标识（如 "user:123,role:456,789"）
+     * 批量解析多个存储标识符（storageIds），按类型分类并合并查询用户列表 输入格式支持多个以逗号分隔的标识（如 "user:123,role:456,789"）
      * 会自动去重返回结果，非法格式的标识将被忽略
      *
      * @param storageIds 多个存储标识符字符串（逗号分隔）
@@ -205,24 +204,24 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         for (String storageId : storageIds.split(StringUtils.SEPARATOR)) {
             Pair<TaskAssigneeEnum, String> parsed = this.parseStorageId(storageId);
             if (parsed != null) {
-                typeIdMap.computeIfAbsent(parsed.getKey(), k -> new ArrayList<>()).add(parsed.getValue());
+                typeIdMap
+                        .computeIfAbsent(parsed.getKey(), k -> new ArrayList<>())
+                        .add(parsed.getValue());
             }
         }
         return typeIdMap.entrySet().stream()
-            .flatMap(entry -> this.getUsersByType(entry.getKey(), entry.getValue()).stream())
-            .distinct()
-            .toList();
+                .flatMap(entry -> this.getUsersByType(entry.getKey(), entry.getValue()).stream())
+                .distinct()
+                .toList();
     }
 
     /**
      * 根据指定的任务分配类型（TaskAssigneeEnum）和 ID 列表，获取对应的用户信息列表
      *
      * @param type 任务分配类型，表示用户、角色、部门或其他（TaskAssigneeEnum 枚举值）
-     * @param ids  与指定分配类型关联的 ID 列表（例如用户ID、角色ID、部门ID等）
-     * @return 返回包含用户信息的列表。如果类型为用户（USER），则通过用户ID列表查询；
-     * 如果类型为角色（ROLE），则通过角色ID列表查询；
-     * 如果类型为部门（DEPT），则通过部门ID列表查询；
-     * 如果类型为岗位（POST）或无法识别的类型，则返回空列表
+     * @param ids 与指定分配类型关联的 ID 列表（例如用户ID、角色ID、部门ID等）
+     * @return 返回包含用户信息的列表。如果类型为用户（USER），则通过用户ID列表查询； 如果类型为角色（ROLE），则通过角色ID列表查询；
+     *     如果类型为部门（DEPT），则通过部门ID列表查询； 如果类型为岗位（POST）或无法识别的类型，则返回空列表
      */
     private List<RemoteUserVo> getUsersByType(TaskAssigneeEnum type, List<String> ids) {
         if (type == TaskAssigneeEnum.SPEL) {
@@ -242,7 +241,7 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
      * 根据任务分配类型和对应 ID 列表，批量查询名称映射关系
      *
      * @param type 分配类型（用户、角色、部门、岗位）
-     * @param ids  ID 列表（如用户ID、角色ID等）
+     * @param ids ID 列表（如用户ID、角色ID等）
      * @return 返回 Map，其中 key 为 ID，value 为对应的名称
      */
     private Map<String, String> getNamesByType(TaskAssigneeEnum type, List<String> ids) {
@@ -251,22 +250,19 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         }
 
         List<Long> longIds = StreamUtils.toList(ids, Convert::toLong);
-        Map<Long, String> rawMap = switch (type) {
-            case USER -> remoteUserService.selectUserNamesByIds(longIds);
-            case ROLE -> remoteRoleService.selectRoleNamesByIds(longIds);
-            case DEPT -> remoteDeptService.selectDeptNamesByIds(longIds);
-            case POST -> remotePostService.selectPostNamesByIds(longIds);
-            default -> Collections.emptyMap();
-        };
+        Map<Long, String> rawMap =
+                switch (type) {
+                    case USER -> remoteUserService.selectUserNamesByIds(longIds);
+                    case ROLE -> remoteRoleService.selectRoleNamesByIds(longIds);
+                    case DEPT -> remoteDeptService.selectDeptNamesByIds(longIds);
+                    case POST -> remotePostService.selectPostNamesByIds(longIds);
+                    default -> Collections.emptyMap();
+                };
         if (MapUtil.isEmpty(rawMap)) {
             return Collections.emptyMap();
         }
-        return rawMap.entrySet()
-            .stream()
-            .collect(Collectors.toMap(
-                e -> Convert.toStr(e.getKey()),
-                Map.Entry::getValue
-            ));
+        return rawMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> Convert.toStr(e.getKey()), Map.Entry::getValue));
     }
 
     /**
@@ -295,5 +291,4 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
             return null;
         }
     }
-
 }

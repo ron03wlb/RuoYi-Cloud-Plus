@@ -44,15 +44,21 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",           // 注解（元数据）
-                    "**/core/SensitiveService.class", // 接口
-                    "**/handler/**",              // Handler（依赖Spring + Jackson）
-                    "**/*Application.class"       // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        // 注解（元数据）
+                        "**/annotation/**",
+                        // 接口
+                        "**/core/SensitiveService.class",
+                        // Handler（依赖Spring + Jackson）
+                        "**/handler/**",
+                        // 主程序
+                        "**/*Application.class",
+                    )
+                }
+            },
+        ),
     )
 }

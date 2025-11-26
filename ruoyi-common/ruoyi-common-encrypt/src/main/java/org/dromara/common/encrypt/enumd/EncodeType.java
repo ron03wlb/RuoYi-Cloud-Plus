@@ -8,19 +8,12 @@ package org.dromara.common.encrypt.enumd;
  */
 public enum EncodeType {
 
-    /**
-     * 默认使用yml配置
-     */
+    /** 默认使用yml配置 */
     DEFAULT,
 
-    /**
-     * base64编码
-     */
+    /** base64编码 */
     BASE64,
 
-    /**
-     * 16进制编码
-     */
+    /** 16进制编码 */
     HEX;
-
 }

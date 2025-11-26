@@ -22,13 +22,11 @@ public class ApiDecryptAutoConfiguration {
 
     @Bean
     @FilterRegistration(
-        name = "cryptoFilter",
-        urlPatterns = "/*",
-        order = FilterRegistrationBean.HIGHEST_PRECEDENCE,
-        dispatcherTypes = DispatcherType.REQUEST
-    )
+            name = "cryptoFilter",
+            urlPatterns = "/*",
+            order = FilterRegistrationBean.HIGHEST_PRECEDENCE,
+            dispatcherTypes = DispatcherType.REQUEST)
     public CryptoFilter cryptoFilter(ApiDecryptProperties properties) {
         return new CryptoFilter(properties);
     }
-
 }

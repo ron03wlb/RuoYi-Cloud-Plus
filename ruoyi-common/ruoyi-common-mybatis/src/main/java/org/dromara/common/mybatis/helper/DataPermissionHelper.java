@@ -7,15 +7,14 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.dromara.common.core.utils.reflect.ReflectUtils;
-import org.dromara.common.mybatis.annotation.DataPermission;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.dromara.common.core.utils.reflect.ReflectUtils;
+import org.dromara.common.mybatis.annotation.DataPermission;
 
 /**
  * 数据权限助手
@@ -29,14 +28,16 @@ public class DataPermissionHelper {
 
     public static final String DATA_PERMISSION_KEY = "data:permission";
 
-    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE = new TransmittableThreadLocal<Stack<Integer>>() {
-        @Override
-        protected Stack<Integer> initialValue() {
-            return new Stack<>();
-        }
-    };
+    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE =
+            new TransmittableThreadLocal<Stack<Integer>>() {
+                @Override
+                protected Stack<Integer> initialValue() {
+                    return new Stack<>();
+                }
+            };
 
-    private static final TransmittableThreadLocal<DataPermission> PERMISSION_CACHE = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<DataPermission> PERMISSION_CACHE =
+            new TransmittableThreadLocal<>();
 
     /**
      * 获取当前执行mapper权限注解
@@ -50,15 +51,13 @@ public class DataPermissionHelper {
     /**
      * 设置当前执行mapper权限注解
      *
-     * @param dataPermission   数据权限注解
+     * @param dataPermission 数据权限注解
      */
     public static void setPermission(DataPermission dataPermission) {
         PERMISSION_CACHE.set(dataPermission);
     }
 
-    /**
-     * 删除当前执行mapper权限注解
-     */
+    /** 删除当前执行mapper权限注解 */
     public static void removePermission() {
         PERMISSION_CACHE.remove();
     }
@@ -78,7 +77,7 @@ public class DataPermissionHelper {
     /**
      * 向上下文中设置指定键的变量值
      *
-     * @param key   要设置的变量的键
+     * @param key 要设置的变量的键
      * @param value 要设置的变量值
      */
     public static void setVariable(String key, Object value) {
@@ -109,7 +108,10 @@ public class DataPermissionHelper {
     }
 
     private static IgnoreStrategy getIgnoreStrategy() {
-        Object ignoreStrategyLocal = ReflectUtils.getStaticFieldValue(ReflectUtils.getField(InterceptorIgnoreHelper.class, "IGNORE_STRATEGY_LOCAL"));
+        Object ignoreStrategyLocal =
+                ReflectUtils.getStaticFieldValue(
+                        ReflectUtils.getField(
+                                InterceptorIgnoreHelper.class, "IGNORE_STRATEGY_LOCAL"));
         if (ignoreStrategyLocal instanceof ThreadLocal<?> IGNORE_STRATEGY_LOCAL) {
             if (IGNORE_STRATEGY_LOCAL.get() instanceof IgnoreStrategy ignoreStrategy) {
                 return ignoreStrategy;
@@ -118,9 +120,7 @@ public class DataPermissionHelper {
         return null;
     }
 
-    /**
-     * 开启忽略数据权限(开启后需手动调用 {@link #disableIgnore()} 关闭)
-     */
+    /** 开启忽略数据权限(开启后需手动调用 {@link #disableIgnore()} 关闭) */
     public static void enableIgnore() {
         IgnoreStrategy ignoreStrategy = getIgnoreStrategy();
         if (ObjectUtil.isNull(ignoreStrategy)) {
@@ -132,17 +132,16 @@ public class DataPermissionHelper {
         reentrantStack.push(reentrantStack.size() + 1);
     }
 
-    /**
-     * 关闭忽略数据权限
-     */
+    /** 关闭忽略数据权限 */
     public static void disableIgnore() {
         IgnoreStrategy ignoreStrategy = getIgnoreStrategy();
         if (ObjectUtil.isNotNull(ignoreStrategy)) {
-            boolean noOtherIgnoreStrategy = !Boolean.TRUE.equals(ignoreStrategy.getDynamicTableName())
-                && !Boolean.TRUE.equals(ignoreStrategy.getBlockAttack())
-                && !Boolean.TRUE.equals(ignoreStrategy.getIllegalSql())
-                && !Boolean.TRUE.equals(ignoreStrategy.getTenantLine())
-                && CollectionUtil.isEmpty(ignoreStrategy.getOthers());
+            boolean noOtherIgnoreStrategy =
+                    !Boolean.TRUE.equals(ignoreStrategy.getDynamicTableName())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getBlockAttack())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getIllegalSql())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getTenantLine())
+                            && CollectionUtil.isEmpty(ignoreStrategy.getOthers());
             Stack<Integer> reentrantStack = REENTRANT_IGNORE.get();
             boolean empty = reentrantStack.isEmpty() || reentrantStack.pop() == 1;
             if (noOtherIgnoreStrategy && empty) {
@@ -150,7 +149,6 @@ public class DataPermissionHelper {
             } else if (empty) {
                 ignoreStrategy.setDataPermission(false);
             }
-
         }
     }
 
@@ -181,5 +179,4 @@ public class DataPermissionHelper {
             disableIgnore();
         }
     }
-
 }

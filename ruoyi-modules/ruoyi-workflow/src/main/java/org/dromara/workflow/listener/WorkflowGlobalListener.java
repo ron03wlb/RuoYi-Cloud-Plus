@@ -5,6 +5,10 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -31,11 +35,6 @@ import org.dromara.workflow.service.IFlwNodeExtService;
 import org.dromara.workflow.service.IFlwTaskService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * 全局任务办理监听
  *
@@ -53,8 +52,7 @@ public class WorkflowGlobalListener implements GlobalListener {
     private final IFlwCommonService flwCommonService;
     private final IFlwNodeExtService nodeExtService;
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     /**
      * 创建监听器，任务创建时执行
@@ -62,9 +60,7 @@ public class WorkflowGlobalListener implements GlobalListener {
      * @param listenerVariable 监听器变量
      */
     @Override
-    public void create(ListenerVariable listenerVariable) {
-
-    }
+    public void create(ListenerVariable listenerVariable) {}
 
     /**
      * 开始监听器，任务开始办理时执行
@@ -79,13 +75,16 @@ public class WorkflowGlobalListener implements GlobalListener {
             NodeExtVo nodeExt = nodeExtService.parseNodeExt(ext, variable);
             Set<String> copyList = nodeExt.getCopySettings();
             if (CollUtil.isNotEmpty(copyList)) {
-                List<FlowCopyBo> list = StreamUtils.toList(copyList, x -> {
-                    FlowCopyBo bo = new FlowCopyBo();
-                    Long id = Convert.toLong(x);
-                    bo.setUserId(id);
-                    bo.setUserName(remoteUserService.selectUserNameById(id));
-                    return bo;
-                });
+                List<FlowCopyBo> list =
+                        StreamUtils.toList(
+                                copyList,
+                                x -> {
+                                    FlowCopyBo bo = new FlowCopyBo();
+                                    Long id = Convert.toLong(x);
+                                    bo.setUserId(id);
+                                    bo.setUserName(remoteUserService.selectUserNameById(id));
+                                    return bo;
+                                });
                 variable.put(FlowConstant.FLOW_COPY_LIST, list);
             }
             if (CollUtil.isNotEmpty(nodeExt.getVariables())) {
@@ -109,7 +108,8 @@ public class WorkflowGlobalListener implements GlobalListener {
         String applyNodeCode = flwCommonService.applyNodeCode(definition.getId());
         for (Task flowTask : nextTasks) {
             // 如果办理或者退回并行存在需要指定办理人，则直接覆盖办理人
-            if (variable.containsKey(flowTask.getNodeCode()) && TaskStatusEnum.isPassOrBack(flowParams.getHisStatus())) {
+            if (variable.containsKey(flowTask.getNodeCode())
+                    && TaskStatusEnum.isPassOrBack(flowParams.getHisStatus())) {
                 String userIds = variable.get(flowTask.getNodeCode()).toString();
                 flowTask.setPermissionList(List.of(userIds.split(StringUtils.SEPARATOR)));
                 variable.remove(flowTask.getNodeCode());
@@ -144,31 +144,43 @@ public class WorkflowGlobalListener implements GlobalListener {
             params.put("message", flowParams.getMessage());
             variable = flowParams.getVariable();
         }
-        //申请人提交事件
+        // 申请人提交事件
         Boolean submit = MapUtil.getBool(variable, FlowConstant.SUBMIT);
         if (submit != null && submit) {
-            flowProcessEventHandler.processHandler(definition.getFlowCode(), instance, instance.getFlowStatus(), variable, true);
+            flowProcessEventHandler.processHandler(
+                    definition.getFlowCode(), instance, instance.getFlowStatus(), variable, true);
         } else {
             // 判断流程状态（发布：撤销，退回，作废，终止，已完成事件）
             String status = determineFlowStatus(instance);
             if (StringUtils.isNotBlank(status)) {
-                flowProcessEventHandler.processHandler(definition.getFlowCode(), instance, status, params, false);
+                flowProcessEventHandler.processHandler(
+                        definition.getFlowCode(), instance, status, params, false);
             }
             if (!BusinessStatusEnum.initialState(instance.getFlowStatus())) {
-                if (task != null && CollUtil.isNotEmpty(nextTasks) && nextTasks.size() == 1
-                    && flwCommonService.applyNodeCode(definition.getId()).equals(nextTasks.get(0).getNodeCode())) {
+                if (task != null
+                        && CollUtil.isNotEmpty(nextTasks)
+                        && nextTasks.size() == 1
+                        && flwCommonService
+                                .applyNodeCode(definition.getId())
+                                .equals(nextTasks.get(0).getNodeCode())) {
                     // 如果为画线指定驳回 线条指定为驳回 驳回得节点为申请人节点 则修改流程状态为退回
-                    flowProcessEventHandler.processHandler(definition.getFlowCode(), instance, BusinessStatusEnum.BACK.getStatus(), params, false);
+                    flowProcessEventHandler.processHandler(
+                            definition.getFlowCode(),
+                            instance,
+                            BusinessStatusEnum.BACK.getStatus(),
+                            params,
+                            false);
                     // 修改流程实例状态
                     instance.setFlowStatus(BusinessStatusEnum.BACK.getStatus());
                     FlowEngine.insService().updateById(instance);
                 }
             }
         }
-        //发布任务事件
+        // 发布任务事件
         if (CollUtil.isNotEmpty(nextTasks)) {
             for (Task nextTask : nextTasks) {
-                flowProcessEventHandler.processTaskHandler(definition.getFlowCode(), instance, nextTask.getId(), params);
+                flowProcessEventHandler.processTaskHandler(
+                        definition.getFlowCode(), instance, nextTask.getId(), params);
             }
         }
         if (ObjectUtil.isNull(flowParams)) {
@@ -183,21 +195,25 @@ public class WorkflowGlobalListener implements GlobalListener {
         }
 
         if (variable.containsKey(FlowConstant.FLOW_COPY_LIST)) {
-            List<FlowCopyBo> flowCopyList = MapUtil.get(variable, FlowConstant.FLOW_COPY_LIST, new TypeReference<>() {});
+            List<FlowCopyBo> flowCopyList =
+                    MapUtil.get(variable, FlowConstant.FLOW_COPY_LIST, new TypeReference<>() {});
             // 添加抄送人
             flwTaskService.setCopy(task, flowCopyList);
         }
         if (variable.containsKey(FlowConstant.MESSAGE_TYPE)) {
-            List<String> messageType = MapUtil.get(variable, FlowConstant.MESSAGE_TYPE, new TypeReference<>() {});
+            List<String> messageType =
+                    MapUtil.get(variable, FlowConstant.MESSAGE_TYPE, new TypeReference<>() {});
             String notice = MapUtil.getStr(variable, FlowConstant.MESSAGE_NOTICE);
-            flwCommonService.sendMessage(definition.getFlowName(), instance.getId(), messageType, notice);
+            flwCommonService.sendMessage(
+                    definition.getFlowName(), instance.getId(), messageType, notice);
         }
-        FlowEngine.insService().removeVariables(instance.getId(),
-            FlowConstant.FLOW_COPY_LIST,
-            FlowConstant.MESSAGE_TYPE,
-            FlowConstant.MESSAGE_NOTICE,
-            FlowConstant.SUBMIT
-        );
+        FlowEngine.insService()
+                .removeVariables(
+                        instance.getId(),
+                        FlowConstant.FLOW_COPY_LIST,
+                        FlowConstant.MESSAGE_TYPE,
+                        FlowConstant.MESSAGE_NOTICE,
+                        FlowConstant.SUBMIT);
     }
 
     /**
@@ -223,5 +239,4 @@ public class WorkflowGlobalListener implements GlobalListener {
             return null;
         }
     }
-
 }

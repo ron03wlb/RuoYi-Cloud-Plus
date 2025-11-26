@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
@@ -20,8 +21,6 @@ import org.dromara.system.service.ISysDictDataService;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * 字典 业务层处理
  *
@@ -36,12 +35,13 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
     /**
      * 分页查询字典数据列表
      *
-     * @param dictData  查询条件
+     * @param dictData 查询条件
      * @param pageQuery 分页参数
      * @return 字典数据分页列表
      */
     @Override
-    public TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataBo dictData, PageQuery pageQuery) {
+    public TableDataInfo<SysDictDataVo> selectPageDictDataList(
+            SysDictDataBo dictData, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictData> lqw = buildQueryWrapper(dictData);
         Page<SysDictDataVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(page);
@@ -62,8 +62,14 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
     private LambdaQueryWrapper<SysDictData> buildQueryWrapper(SysDictDataBo bo) {
         LambdaQueryWrapper<SysDictData> lqw = Wrappers.lambdaQuery();
         lqw.eq(bo.getDictSort() != null, SysDictData::getDictSort, bo.getDictSort());
-        lqw.like(StringUtils.isNotBlank(bo.getDictLabel()), SysDictData::getDictLabel, bo.getDictLabel());
-        lqw.eq(StringUtils.isNotBlank(bo.getDictType()), SysDictData::getDictType, bo.getDictType());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getDictLabel()),
+                SysDictData::getDictLabel,
+                bo.getDictLabel());
+        lqw.eq(
+                StringUtils.isNotBlank(bo.getDictType()),
+                SysDictData::getDictType,
+                bo.getDictType());
         lqw.orderByAsc(SysDictData::getDictSort, SysDictData::getDictCode);
         return lqw;
     }
@@ -71,17 +77,19 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
     /**
      * 根据字典类型和字典键值查询字典数据信息
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictValue 字典键值
      * @return 字典标签
      */
     @Override
     public String selectDictLabel(String dictType, String dictValue) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
-                .select(SysDictData::getDictLabel)
-                .eq(SysDictData::getDictType, dictType)
-                .eq(SysDictData::getDictValue, dictValue))
-            .getDictLabel();
+        return baseMapper
+                .selectOne(
+                        new LambdaQueryWrapper<SysDictData>()
+                                .select(SysDictData::getDictLabel)
+                                .eq(SysDictData::getDictType, dictType)
+                                .eq(SysDictData::getDictValue, dictValue))
+                .getDictLabel();
     }
 
     /**
@@ -149,11 +157,15 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
      */
     @Override
     public boolean checkDictDataUnique(SysDictDataBo dict) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysDictData>()
-            .eq(SysDictData::getDictType, dict.getDictType())
-            .eq(SysDictData::getDictValue, dict.getDictValue())
-            .ne(ObjectUtil.isNotNull(dict.getDictCode()), SysDictData::getDictCode, dict.getDictCode()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<SysDictData>()
+                                .eq(SysDictData::getDictType, dict.getDictType())
+                                .eq(SysDictData::getDictValue, dict.getDictValue())
+                                .ne(
+                                        ObjectUtil.isNotNull(dict.getDictCode()),
+                                        SysDictData::getDictCode,
+                                        dict.getDictCode()));
         return !exist;
     }
-
 }

@@ -8,6 +8,4 @@ import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
  * @author Lion Li
  */
 @LoadBalancerClients(defaultConfiguration = CustomLoadBalanceClientConfiguration.class)
-public class CustomLoadBalanceAutoConfiguration {
-
-}
+public class CustomLoadBalanceAutoConfiguration {}

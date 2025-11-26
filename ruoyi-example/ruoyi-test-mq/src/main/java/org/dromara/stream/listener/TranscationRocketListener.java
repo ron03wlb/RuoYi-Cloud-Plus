@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author xbhog
  * @date 2024/06/01 17:05
- **/
+ */
 @Slf4j
 @Component
 @RocketMQTransactionListener
@@ -21,7 +21,7 @@ public class TranscationRocketListener implements RocketMQLocalTransactionListen
         log.info("执行本地事务");
         String tag = String.valueOf(message.getHeaders().get("rocketmq_TAGS"));
         if ("TAG-1".equals(tag)) {
-            //这里只讲TAGA消息提交，状态为可执行
+            // 这里只讲TAGA消息提交，状态为可执行
             log.info("【监听器】这里是校验TAG-1;提交状态:COMMIT");
             return RocketMQLocalTransactionState.COMMIT;
         } else if ("TAG-2".equals(tag)) {
@@ -40,5 +40,4 @@ public class TranscationRocketListener implements RocketMQLocalTransactionListen
         log.info("【监听器】检查本地交易===>{}", message);
         return RocketMQLocalTransactionState.COMMIT;
     }
-
 }

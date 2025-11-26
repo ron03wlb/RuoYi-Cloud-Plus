@@ -9,10 +9,9 @@ import java.io.Serial;
  */
 public class FileSizeLimitExceededException extends FileException {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     public FileSizeLimitExceededException(long defaultMaxSize) {
-        super("upload.exceed.maxSize", new Object[]{defaultMaxSize});
+        super("upload.exceed.maxSize", new Object[] {defaultMaxSize});
     }
 }

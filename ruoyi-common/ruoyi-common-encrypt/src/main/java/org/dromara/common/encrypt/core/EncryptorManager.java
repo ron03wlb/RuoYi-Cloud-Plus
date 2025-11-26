@@ -2,6 +2,13 @@ package org.dromara.common.encrypt.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
@@ -17,14 +24,6 @@ import org.springframework.core.type.ClassMetadata;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 /**
  * 加密管理类
  *
@@ -35,14 +34,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class EncryptorManager {
 
-    /**
-     * 缓存加密器
-     */
+    /** 缓存加密器 */
     Map<Integer, IEncryptor> encryptorMap = new ConcurrentHashMap<>();
 
-    /**
-     * 类加密字段缓存
-     */
+    /** 类加密字段缓存 */
     Map<Class<?>, Set<Field>> fieldCache = new ConcurrentHashMap<>();
 
     /**
@@ -54,10 +49,7 @@ public class EncryptorManager {
         scanEncryptClasses(typeAliasesPackage);
     }
 
-
-    /**
-     * 获取类加密字段缓存
-     */
+    /** 获取类加密字段缓存 */
     public Set<Field> getFieldCache(Class<?> sourceClazz) {
         return ObjectUtils.notNullGetter(fieldCache, f -> f.get(sourceClazz));
     }
@@ -72,7 +64,8 @@ public class EncryptorManager {
         if (encryptorMap.containsKey(key)) {
             return encryptorMap.get(key);
         }
-        IEncryptor encryptor = ReflectUtil.newInstance(encryptContext.getAlgorithm().getClazz(), encryptContext);
+        IEncryptor encryptor =
+                ReflectUtil.newInstance(encryptContext.getAlgorithm().getClazz(), encryptContext);
         encryptorMap.put(key, encryptor);
         return encryptor;
     }
@@ -89,7 +82,7 @@ public class EncryptorManager {
     /**
      * 根据配置进行加密。会进行本地缓存对应的算法和对应的秘钥信息。
      *
-     * @param value          待加密的值
+     * @param value 待加密的值
      * @param encryptContext 加密相关的配置信息
      */
     public String encrypt(String value, EncryptContext encryptContext) {
@@ -104,7 +97,7 @@ public class EncryptorManager {
     /**
      * 根据配置进行解密
      *
-     * @param value          待解密的值
+     * @param value 待解密的值
      * @param encryptContext 加密相关的配置信息
      */
     public String decrypt(String value, EncryptContext encryptContext) {
@@ -116,20 +109,22 @@ public class EncryptorManager {
         return encryptor.decrypt(str);
     }
 
-    /**
-     * 通过 typeAliasesPackage 设置的扫描包 扫描缓存实体
-     */
+    /** 通过 typeAliasesPackage 设置的扫描包 扫描缓存实体 */
     private void scanEncryptClasses(String typeAliasesPackage) {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         CachingMetadataReaderFactory factory = new CachingMetadataReaderFactory();
-        String[] packagePatternArray = StringUtils.splitPreserveAllTokens(typeAliasesPackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+        String[] packagePatternArray =
+                StringUtils.splitPreserveAllTokens(
+                        typeAliasesPackage,
+                        ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
         String classpath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
         try {
             for (String packagePattern : packagePatternArray) {
                 String path = ClassUtils.convertClassNameToResourcePath(packagePattern);
                 Resource[] resources = resolver.getResources(classpath + path + "/*.class");
                 for (Resource resource : resources) {
-                    ClassMetadata classMetadata = factory.getMetadataReader(resource).getClassMetadata();
+                    ClassMetadata classMetadata =
+                            factory.getMetadataReader(resource).getClassMetadata();
                     Class<?> clazz = Resources.classForName(classMetadata.getClassName());
                     Set<Field> encryptFieldSet = getEncryptFieldSetFromClazz(clazz);
                     if (CollUtil.isNotEmpty(encryptFieldSet)) {
@@ -142,9 +137,7 @@ public class EncryptorManager {
         }
     }
 
-    /**
-     * 获得一个类的加密字段集合
-     */
+    /** 获得一个类的加密字段集合 */
     private Set<Field> getEncryptFieldSetFromClazz(Class<?> clazz) {
         Set<Field> fieldSet = new HashSet<>();
         // 判断clazz如果是接口,内部类,匿名类就直接返回
@@ -156,13 +149,16 @@ public class EncryptorManager {
             fieldSet.addAll(Arrays.asList(fields));
             clazz = clazz.getSuperclass();
         }
-        fieldSet = fieldSet.stream().filter(field ->
-                field.isAnnotationPresent(EncryptField.class) && field.getType() == String.class)
-            .collect(Collectors.toSet());
+        fieldSet =
+                fieldSet.stream()
+                        .filter(
+                                field ->
+                                        field.isAnnotationPresent(EncryptField.class)
+                                                && field.getType() == String.class)
+                        .collect(Collectors.toSet());
         for (Field field : fieldSet) {
             field.setAccessible(true);
         }
         return fieldSet;
     }
-
 }

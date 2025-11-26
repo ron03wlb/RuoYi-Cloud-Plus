@@ -1,10 +1,10 @@
 package org.dromara.common.core.exception;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * SseException 异常类测试
@@ -149,9 +149,8 @@ class SseExceptionTest {
         @DisplayName("应该支持链式调用")
         void shouldSupportMethodChaining() {
             // Act
-            SseException exception = new SseException()
-                .setMessage("SSE连接错误")
-                .setDetailMessage("客户端网络不稳定");
+            SseException exception =
+                    new SseException().setMessage("SSE连接错误").setDetailMessage("客户端网络不稳定");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("SSE连接错误");
@@ -189,11 +188,12 @@ class SseExceptionTest {
         @DisplayName("应该支持多次链式调用")
         void shouldSupportMultipleChainedCalls() {
             // Act
-            SseException exception = new SseException()
-                .setMessage("第一次消息")
-                .setDetailMessage("第一次详情")
-                .setMessage("第二次消息")
-                .setDetailMessage("第二次详情");
+            SseException exception =
+                    new SseException()
+                            .setMessage("第一次消息")
+                            .setDetailMessage("第一次详情")
+                            .setMessage("第二次消息")
+                            .setDetailMessage("第二次详情");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("第二次消息");
@@ -219,22 +219,24 @@ class SseExceptionTest {
         @DisplayName("应该能够抛出并捕获异常")
         void shouldThrowAndCatchException() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw new SseException("SSE异常", 1001);
-            })
-                .isInstanceOf(SseException.class)
-                .hasMessage("SSE异常");
+            assertThatThrownBy(
+                            () -> {
+                                throw new SseException("SSE异常", 1001);
+                            })
+                    .isInstanceOf(SseException.class)
+                    .hasMessage("SSE异常");
         }
 
         @Test
         @DisplayName("应该能够作为 RuntimeException 捕获")
         void shouldCatchAsRuntimeException() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw new SseException("运行时异常");
-            })
-                .isInstanceOf(RuntimeException.class)
-                .isInstanceOf(SseException.class);
+            assertThatThrownBy(
+                            () -> {
+                                throw new SseException("运行时异常");
+                            })
+                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(SseException.class);
         }
 
         @Test
@@ -244,15 +246,17 @@ class SseExceptionTest {
             SseException exception = new SseException(1001, "连接失败", "网络超时");
 
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw exception;
-            })
-                .satisfies(e -> {
-                    SseException sse = (SseException) e;
-                    assertThat(sse.getCode()).isEqualTo(1001);
-                    assertThat(sse.getMessage()).isEqualTo("连接失败");
-                    assertThat(sse.getDetailMessage()).isEqualTo("网络超时");
-                });
+            assertThatThrownBy(
+                            () -> {
+                                throw exception;
+                            })
+                    .satisfies(
+                            e -> {
+                                SseException sse = (SseException) e;
+                                assertThat(sse.getCode()).isEqualTo(1001);
+                                assertThat(sse.getMessage()).isEqualTo("连接失败");
+                                assertThat(sse.getDetailMessage()).isEqualTo("网络超时");
+                            });
         }
     }
 
@@ -312,10 +316,7 @@ class SseExceptionTest {
             SseException exception = new SseException(longMessage);
 
             // Assert
-            assertThat(exception.getMessage())
-                .hasSize(2000)
-                .startsWith("AAA")
-                .endsWith("AAA");
+            assertThat(exception.getMessage()).hasSize(2000).startsWith("AAA").endsWith("AAA");
         }
 
         @Test
@@ -326,10 +327,10 @@ class SseExceptionTest {
 
             // Assert
             assertThat(exception.getMessage())
-                .contains("😀")
-                .contains("©")
-                .contains("®")
-                .contains("™");
+                    .contains("😀")
+                    .contains("©")
+                    .contains("®")
+                    .contains("™");
         }
 
         @Test
@@ -384,9 +385,8 @@ class SseExceptionTest {
         @DisplayName("消息推送失败场景")
         void shouldHandleMessagePushFailure() {
             // Act
-            SseException exception = new SseException()
-                .setMessage("消息推送失败")
-                .setDetailMessage("网络I/O异常");
+            SseException exception =
+                    new SseException().setMessage("消息推送失败").setDetailMessage("网络I/O异常");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("消息推送失败");
@@ -409,8 +409,9 @@ class SseExceptionTest {
         @DisplayName("SSE连接数超限场景")
         void shouldHandleConnectionLimitExceeded() {
             // Act
-            SseException exception = new SseException("SSE连接数已达上限", 1004)
-                .setDetailMessage("当前连接数: 1000, 最大连接数: 1000");
+            SseException exception =
+                    new SseException("SSE连接数已达上限", 1004)
+                            .setDetailMessage("当前连接数: 1000, 最大连接数: 1000");
 
             // Assert
             assertThat(exception.getCode()).isEqualTo(1004);
@@ -451,12 +452,19 @@ class SseExceptionTest {
         @DisplayName("应该有 serialVersionUID")
         void shouldHaveSerialVersionUID() {
             // Assert
-            assertThatNoException().isThrownBy(() -> {
-                java.lang.reflect.Field field = SseException.class.getDeclaredField("serialVersionUID");
-                assertThat(field.getType()).isEqualTo(long.class);
-                assertThat(java.lang.reflect.Modifier.isStatic(field.getModifiers())).isTrue();
-                assertThat(java.lang.reflect.Modifier.isFinal(field.getModifiers())).isTrue();
-            });
+            assertThatNoException()
+                    .isThrownBy(
+                            () -> {
+                                java.lang.reflect.Field field =
+                                        SseException.class.getDeclaredField("serialVersionUID");
+                                assertThat(field.getType()).isEqualTo(long.class);
+                                assertThat(
+                                                java.lang.reflect.Modifier.isStatic(
+                                                        field.getModifiers()))
+                                        .isTrue();
+                                assertThat(java.lang.reflect.Modifier.isFinal(field.getModifiers()))
+                                        .isTrue();
+                            });
         }
     }
 
@@ -521,9 +529,9 @@ class SseExceptionTest {
 
             // Assert
             assertThat(toString)
-                .contains("code=200")
-                .contains("message=成功")
-                .contains("detailMessage=操作完成");
+                    .contains("code=200")
+                    .contains("message=成功")
+                    .contains("detailMessage=操作完成");
         }
 
         @Test
@@ -537,9 +545,9 @@ class SseExceptionTest {
 
             // Assert
             assertThat(toString)
-                .contains("code=null")
-                .contains("message=null")
-                .contains("detailMessage=null");
+                    .contains("code=null")
+                    .contains("message=null")
+                    .contains("detailMessage=null");
         }
     }
 
@@ -551,9 +559,7 @@ class SseExceptionTest {
         @DisplayName("应该支持完整的异常创建和使用流程")
         void shouldSupportCompleteExceptionFlow() {
             // Act
-            SseException exception = new SseException()
-                .setMessage("初始消息")
-                .setDetailMessage("初始详情");
+            SseException exception = new SseException().setMessage("初始消息").setDetailMessage("初始详情");
 
             exception.setCode(1001);
             exception.setMessage("更新后的消息");
@@ -571,35 +577,38 @@ class SseExceptionTest {
             SseException original = new SseException(500, "原始错误", "堆栈信息");
 
             // Act & Assert
-            assertThatThrownBy(() -> {
-                try {
-                    throw original;
-                } catch (SseException e) {
-                    throw e.setMessage("重新抛出: " + e.getMessage());
-                }
-            })
-                .isInstanceOf(SseException.class)
-                .hasMessageContaining("重新抛出");
+            assertThatThrownBy(
+                            () -> {
+                                try {
+                                    throw original;
+                                } catch (SseException e) {
+                                    throw e.setMessage("重新抛出: " + e.getMessage());
+                                }
+                            })
+                    .isInstanceOf(SseException.class)
+                    .hasMessageContaining("重新抛出");
         }
 
         @Test
         @DisplayName("应该支持异常包装")
         void shouldSupportExceptionWrapping() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                try {
-                    throw new RuntimeException("底层异常");
-                } catch (RuntimeException e) {
-                    throw new SseException("SSE层异常", 500)
-                        .setDetailMessage("原因: " + e.getMessage());
-                }
-            })
-                .isInstanceOf(SseException.class)
-                .hasMessage("SSE层异常")
-                .satisfies(ex -> {
-                    SseException sse = (SseException) ex;
-                    assertThat(sse.getDetailMessage()).contains("底层异常");
-                });
+            assertThatThrownBy(
+                            () -> {
+                                try {
+                                    throw new RuntimeException("底层异常");
+                                } catch (RuntimeException e) {
+                                    throw new SseException("SSE层异常", 500)
+                                            .setDetailMessage("原因: " + e.getMessage());
+                                }
+                            })
+                    .isInstanceOf(SseException.class)
+                    .hasMessage("SSE层异常")
+                    .satisfies(
+                            ex -> {
+                                SseException sse = (SseException) ex;
+                                assertThat(sse.getDetailMessage()).contains("底层异常");
+                            });
         }
     }
 }

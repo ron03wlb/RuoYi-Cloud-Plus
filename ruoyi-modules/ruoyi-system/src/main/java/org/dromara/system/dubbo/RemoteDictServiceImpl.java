@@ -1,5 +1,6 @@
 package org.dromara.system.dubbo;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -10,8 +11,6 @@ import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.domain.vo.SysDictTypeVo;
 import org.dromara.system.service.ISysDictTypeService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 字典服务
@@ -42,5 +41,4 @@ public class RemoteDictServiceImpl implements RemoteDictService {
         List<SysDictDataVo> list = sysDictTypeService.selectDictDataByType(dictType);
         return MapstructUtils.convert(list, RemoteDictDataVo.class);
     }
-
 }

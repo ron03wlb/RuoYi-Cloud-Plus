@@ -1,10 +1,9 @@
 package org.dromara.system.api.model;
 
+import java.io.Serial;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.io.Serial;
 
 /**
  * 小程序登录用户身份权限
@@ -16,12 +15,8 @@ import java.io.Serial;
 @NoArgsConstructor
 public class XcxLoginUser extends LoginUser {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * openid
-     */
+    /** openid */
     private String openid;
-
 }

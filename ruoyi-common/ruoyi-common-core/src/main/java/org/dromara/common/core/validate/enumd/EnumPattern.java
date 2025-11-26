@@ -1,15 +1,14 @@
 package org.dromara.common.core.validate.enumd;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 自定义枚举校验
@@ -24,15 +23,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {EnumPatternValidator.class})
 public @interface EnumPattern {
 
-    /**
-     * 需要校验的枚举类型
-     */
+    /** 需要校验的枚举类型 */
     Class<? extends Enum<?>> type();
 
-    /**
-     * 枚举类型校验值字段名称
-     * 需确保该字段实现了 getter 方法
-     */
+    /** 枚举类型校验值字段名称 需确保该字段实现了 getter 方法 */
     String fieldName();
 
     String message() default "输入值不在枚举范围内";
@@ -47,5 +41,4 @@ public @interface EnumPattern {
     @interface List {
         EnumPattern[] value();
     }
-
 }

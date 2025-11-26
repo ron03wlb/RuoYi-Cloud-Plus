@@ -1,5 +1,8 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.config.TestBeansConfig.TestService;
 import org.junit.jupiter.api.DisplayName;
@@ -8,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * SpringUtils 集成测试
@@ -82,8 +82,8 @@ class SpringUtilsIntegrationTest extends BaseIntegrationTest {
         void shouldThrowExceptionWhenBeanNotExists() {
             // Act & Assert
             assertThatThrownBy(() -> SpringUtils.isSingleton("nonExistentBean"))
-                .isInstanceOf(NoSuchBeanDefinitionException.class)
-                .hasMessageContaining("nonExistentBean");
+                    .isInstanceOf(NoSuchBeanDefinitionException.class)
+                    .hasMessageContaining("nonExistentBean");
         }
 
         @Test
@@ -124,8 +124,8 @@ class SpringUtilsIntegrationTest extends BaseIntegrationTest {
         void shouldThrowExceptionWhenBeanNotExists() {
             // Act & Assert
             assertThatThrownBy(() -> SpringUtils.getType("nonExistentBean"))
-                .isInstanceOf(NoSuchBeanDefinitionException.class)
-                .hasMessageContaining("nonExistentBean");
+                    .isInstanceOf(NoSuchBeanDefinitionException.class)
+                    .hasMessageContaining("nonExistentBean");
         }
 
         @Test

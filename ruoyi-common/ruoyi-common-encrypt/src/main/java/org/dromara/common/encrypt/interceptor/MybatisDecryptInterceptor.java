@@ -3,6 +3,9 @@ package org.dromara.common.encrypt.interceptor;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
+import java.lang.reflect.Field;
+import java.sql.Statement;
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
@@ -16,10 +19,6 @@ import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
 import org.dromara.common.encrypt.properties.EncryptorProperties;
 
-import java.lang.reflect.Field;
-import java.sql.Statement;
-import java.util.*;
-
 /**
  * 出参解密拦截器
  *
@@ -27,10 +26,11 @@ import java.util.*;
  * @version 4.6.0
  */
 @Slf4j
-@Intercepts({@Signature(
-    type = ResultSetHandler.class,
-    method = "handleResultSets",
-    args = {Statement.class})
+@Intercepts({
+    @Signature(
+            type = ResultSetHandler.class,
+            method = "handleResultSets",
+            args = {Statement.class})
 })
 @AllArgsConstructor
 public class MybatisDecryptInterceptor implements Interceptor {
@@ -42,7 +42,8 @@ public class MybatisDecryptInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         // 开始进行参数解密
         ResultSetHandler resultSetHandler = (ResultSetHandler) invocation.getTarget();
-        Field parameterHandlerField = resultSetHandler.getClass().getDeclaredField("parameterHandler");
+        Field parameterHandlerField =
+                resultSetHandler.getClass().getDeclaredField("parameterHandler");
         parameterHandlerField.setAccessible(true);
         Object target = parameterHandlerField.get(resultSetHandler);
         if (target instanceof ParameterHandler parameterHandler) {
@@ -74,12 +75,13 @@ public class MybatisDecryptInterceptor implements Interceptor {
             return;
         }
         if (sourceObject instanceof List<?> list) {
-            if(CollUtil.isEmpty(list)) {
+            if (CollUtil.isEmpty(list)) {
                 return;
             }
             // 判断第一个元素是否含有注解。如果没有直接返回，提高效率
             Object firstItem = list.get(0);
-            if (ObjectUtil.isNull(firstItem) || CollUtil.isEmpty(encryptorManager.getFieldCache(firstItem.getClass()))) {
+            if (ObjectUtil.isNull(firstItem)
+                    || CollUtil.isEmpty(encryptorManager.getFieldCache(firstItem.getClass()))) {
                 return;
             }
             list.forEach(this::decryptHandler);
@@ -87,12 +89,14 @@ public class MybatisDecryptInterceptor implements Interceptor {
         }
         // 不在缓存中的类,就是没有加密注解的类(当然也有可能是typeAliasesPackage写错)
         Set<Field> fields = encryptorManager.getFieldCache(sourceObject.getClass());
-        if(ObjectUtil.isNull(fields)){
+        if (ObjectUtil.isNull(fields)) {
             return;
         }
         try {
             for (Field field : fields) {
-                field.set(sourceObject, this.decryptField(Convert.toStr(field.get(sourceObject)), field));
+                field.set(
+                        sourceObject,
+                        this.decryptField(Convert.toStr(field.get(sourceObject)), field));
             }
         } catch (Exception e) {
             log.error("处理解密字段时出错", e);
@@ -112,11 +116,26 @@ public class MybatisDecryptInterceptor implements Interceptor {
         }
         EncryptField encryptField = field.getAnnotation(EncryptField.class);
         EncryptContext encryptContext = new EncryptContext();
-        encryptContext.setAlgorithm(encryptField.algorithm() == AlgorithmType.DEFAULT ? defaultProperties.getAlgorithm() : encryptField.algorithm());
-        encryptContext.setEncode(encryptField.encode() == EncodeType.DEFAULT ? defaultProperties.getEncode() : encryptField.encode());
-        encryptContext.setPassword(StringUtils.isBlank(encryptField.password()) ? defaultProperties.getPassword() : encryptField.password());
-        encryptContext.setPrivateKey(StringUtils.isBlank(encryptField.privateKey()) ? defaultProperties.getPrivateKey() : encryptField.privateKey());
-        encryptContext.setPublicKey(StringUtils.isBlank(encryptField.publicKey()) ? defaultProperties.getPublicKey() : encryptField.publicKey());
+        encryptContext.setAlgorithm(
+                encryptField.algorithm() == AlgorithmType.DEFAULT
+                        ? defaultProperties.getAlgorithm()
+                        : encryptField.algorithm());
+        encryptContext.setEncode(
+                encryptField.encode() == EncodeType.DEFAULT
+                        ? defaultProperties.getEncode()
+                        : encryptField.encode());
+        encryptContext.setPassword(
+                StringUtils.isBlank(encryptField.password())
+                        ? defaultProperties.getPassword()
+                        : encryptField.password());
+        encryptContext.setPrivateKey(
+                StringUtils.isBlank(encryptField.privateKey())
+                        ? defaultProperties.getPrivateKey()
+                        : encryptField.privateKey());
+        encryptContext.setPublicKey(
+                StringUtils.isBlank(encryptField.publicKey())
+                        ? defaultProperties.getPublicKey()
+                        : encryptField.publicKey());
         return this.encryptorManager.decrypt(value, encryptContext);
     }
 
@@ -126,7 +145,5 @@ public class MybatisDecryptInterceptor implements Interceptor {
     }
 
     @Override
-    public void setProperties(Properties properties) {
-
-    }
+    public void setProperties(Properties properties) {}
 }

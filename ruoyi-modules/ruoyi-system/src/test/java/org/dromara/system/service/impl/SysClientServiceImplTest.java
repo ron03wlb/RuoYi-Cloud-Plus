@@ -1,11 +1,18 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -22,33 +29,26 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysClientServiceImpl 单元测试
- * <p>
- * 测试客户端管理服务的核心业务逻辑
- * </p>
  *
- * <p>测试范围:</p>
+ * <p>测试客户端管理服务的核心业务逻辑
+ *
+ * <p>测试范围:
+ *
  * <ul>
- *   <li>查询类方法 (queryById, queryByClientId, queryPageList, queryList)</li>
- *   <li>状态更新方法 (updateClientStatus)</li>
- *   <li>删除方法 (deleteWithValidByIds)</li>
+ *   <li>查询类方法 (queryById, queryByClientId, queryPageList, queryList)
+ *   <li>状态更新方法 (updateClientStatus)
+ *   <li>删除方法 (deleteWithValidByIds)
  * </ul>
  *
- * <p>测试策略:</p>
+ * <p>测试策略:
+ *
  * <ul>
- *   <li>使用 Mockito Mock SysClientMapper 依赖</li>
- *   <li>重点测试业务逻辑：grantType分割、缓存注解触发</li>
- *   <li>验证 Mapper 方法调用和参数</li>
- *   <li>跳过insertByBo/updateByBo方法（需要Spring上下文支持MapstructUtils）</li>
+ *   <li>使用 Mockito Mock SysClientMapper 依赖
+ *   <li>重点测试业务逻辑：grantType分割、缓存注解触发
+ *   <li>验证 Mapper 方法调用和参数
+ *   <li>跳过insertByBo/updateByBo方法（需要Spring上下文支持MapstructUtils）
  * </ul>
  *
  * @author Test Team
@@ -57,18 +57,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysClientServiceImpl 单元测试")
 class SysClientServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysClientMapper baseMapper;
+    @Mock private SysClientMapper baseMapper;
 
-    @InjectMocks
-    private SysClientServiceImpl clientService;
+    @InjectMocks private SysClientServiceImpl clientService;
 
     /**
      * 初始化 MyBatis-Plus 表信息缓存
-     * <p>
-     * 在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存
-     * 这个方法在所有测试执行前初始化 SysClient 实体的表信息
-     * </p>
+     *
+     * <p>在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存 这个方法在所有测试执行前初始化 SysClient 实体的表信息
      */
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -161,7 +157,8 @@ class SysClientServiceImplTest extends BaseUnitTest {
             page.setRecords(Arrays.asList(vo1, vo2));
             page.setTotal(2);
 
-            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class))).thenReturn(page);
+            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class)))
+                    .thenReturn(page);
 
             // Act
             TableDataInfo<SysClientVo> result = clientService.queryPageList(bo, pageQuery);
@@ -171,13 +168,16 @@ class SysClientServiceImplTest extends BaseUnitTest {
             assertThat(result.getRows()).hasSize(2);
             assertThat(result.getTotal()).isEqualTo(2);
             // 验证每个记录都有grantTypeList
-            result.getRows().forEach(client -> {
-                assertThat(client.getGrantTypeList()).isNotNull();
-                assertThat(client.getGrantTypeList()).isNotEmpty();
-            });
+            result.getRows()
+                    .forEach(
+                            client -> {
+                                assertThat(client.getGrantTypeList()).isNotNull();
+                                assertThat(client.getGrantTypeList()).isNotEmpty();
+                            });
 
             // Verify
-            verify(baseMapper, times(1)).selectVoPage(any(Page.class), any(LambdaQueryWrapper.class));
+            verify(baseMapper, times(1))
+                    .selectVoPage(any(Page.class), any(LambdaQueryWrapper.class));
         }
 
         @Test
@@ -190,7 +190,8 @@ class SysClientServiceImplTest extends BaseUnitTest {
             SysClientVo vo1 = TestDataFactory.createClientVo(1L, "key1");
             SysClientVo vo2 = TestDataFactory.createClientVo(2L, "key2");
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(vo1, vo2));
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Arrays.asList(vo1, vo2));
 
             // Act
             List<SysClientVo> result = clientService.queryList(bo);
@@ -208,7 +209,8 @@ class SysClientServiceImplTest extends BaseUnitTest {
         void shouldReturnEmptyListWhenNoResults() {
             // Arrange
             SysClientBo bo = new SysClientBo();
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysClientVo> result = clientService.queryList(bo);
@@ -334,9 +336,8 @@ class SysClientServiceImplTest extends BaseUnitTest {
             bo.setClientKey("mobile_app");
             bo.setStatus("0");
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(
-                Arrays.asList(TestDataFactory.createClientVo(1L, "mobile_app"))
-            );
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Arrays.asList(TestDataFactory.createClientVo(1L, "mobile_app")));
 
             // Act
             List<SysClientVo> result = clientService.queryList(bo);
@@ -377,7 +378,8 @@ class SysClientServiceImplTest extends BaseUnitTest {
 
             // Assert
             assertThat(result.getGrantTypeList()).hasSize(3);
-            assertThat(result.getGrantTypeList()).containsExactly("password", "refresh_token", "client_credentials");
+            assertThat(result.getGrantTypeList())
+                    .containsExactly("password", "refresh_token", "client_credentials");
         }
     }
 
@@ -395,12 +397,11 @@ class SysClientServiceImplTest extends BaseUnitTest {
             // Arrange
             SysClientBo bo = new SysClientBo(); // 所有字段为null
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(
-                Arrays.asList(
-                    TestDataFactory.createClientVo(1L, "key1"),
-                    TestDataFactory.createClientVo(2L, "key2")
-                )
-            );
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(
+                            Arrays.asList(
+                                    TestDataFactory.createClientVo(1L, "key1"),
+                                    TestDataFactory.createClientVo(2L, "key2")));
 
             // Act
             List<SysClientVo> result = clientService.queryList(bo);

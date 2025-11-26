@@ -6,11 +6,11 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.service.DictService;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.web.core.BaseController;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.resource.api.RemoteMessageService;
 import org.dromara.system.domain.bo.SysNoticeBo;
 import org.dromara.system.domain.vo.SysNoticeVo;
@@ -32,12 +32,9 @@ public class SysNoticeController extends BaseController {
     private final ISysNoticeService noticeService;
     private final DictService dictService;
 
-    @DubboReference
-    private RemoteMessageService remoteMessageService;
+    @DubboReference private RemoteMessageService remoteMessageService;
 
-    /**
-     * 获取通知公告列表
-     */
+    /** 获取通知公告列表 */
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
     public TableDataInfo<SysNoticeVo> list(SysNoticeBo notice, PageQuery pageQuery) {
@@ -55,9 +52,7 @@ public class SysNoticeController extends BaseController {
         return R.ok(noticeService.selectNoticeById(noticeId));
     }
 
-    /**
-     * 新增通知公告
-     */
+    /** 新增通知公告 */
     @SaCheckPermission("system:notice:add")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -72,9 +67,7 @@ public class SysNoticeController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 修改通知公告
-     */
+    /** 修改通知公告 */
     @SaCheckPermission("system:notice:edit")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @RepeatSubmit()

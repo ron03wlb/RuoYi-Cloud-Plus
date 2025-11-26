@@ -13,7 +13,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-
 /**
  * 跨域配置
  *
@@ -22,39 +21,29 @@ import reactor.core.publisher.Mono;
 @Component
 public class WebCorsFilter implements WebFilter, Ordered {
 
-    /**
-     * 这里为支持的请求头，如果有自定义的header字段请自己添加
-     */
+    /** 这里为支持的请求头，如果有自定义的header字段请自己添加 */
     private static final String ALLOWED_HEADERS =
-        "X-Requested-With, Content-Language, Content-Type, " +
-        "Authorization, clientid, credential, X-XSRF-TOKEN, " +
-        "isToken, token, Admin-Token, App-Token, Encrypt-Key, isEncrypt";
+            "X-Requested-With, Content-Language, Content-Type, "
+                    + "Authorization, clientid, credential, X-XSRF-TOKEN, "
+                    + "isToken, token, Admin-Token, App-Token, Encrypt-Key, isEncrypt";
 
-    /**
-     * 允许的请求方法
-     */
+    /** 允许的请求方法 */
     private static final String ALLOWED_METHODS = "GET,POST,PUT,DELETE,OPTIONS,HEAD";
 
-    /**
-     * 允许的请求来源，使用 * 表示允许任何来源
-     */
+    /** 允许的请求来源，使用 * 表示允许任何来源 */
     private static final String ALLOWED_ORIGIN = "*";
 
-    /**
-     * 允许前端访问的响应头，使用 * 表示允许任何响应头
-     */
+    /** 允许前端访问的响应头，使用 * 表示允许任何响应头 */
     private static final String ALLOWED_EXPOSE = "*";
 
-    /**
-     * 预检请求的缓存时间，单位为秒（此处设置为 5 小时）
-     */
+    /** 预检请求的缓存时间，单位为秒（此处设置为 5 小时） */
     private static final String MAX_AGE = "18000L";
 
     /**
      * 实现跨域配置的 Web 过滤器
      *
      * @param exchange ServerWebExchange 对象，表示一次 Web 交换
-     * @param chain    WebFilterChain 对象，表示一组 Web 过滤器链
+     * @param chain WebFilterChain 对象，表示一组 Web 过滤器链
      * @return Mono<Void> 表示异步的过滤器链处理结果
      */
     @Override

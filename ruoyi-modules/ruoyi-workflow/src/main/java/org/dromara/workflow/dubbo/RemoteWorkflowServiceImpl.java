@@ -1,5 +1,7 @@
 package org.dromara.workflow.dubbo;
 
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.workflow.api.RemoteWorkflowService;
@@ -8,15 +10,7 @@ import org.dromara.workflow.api.domain.RemoteStartProcess;
 import org.dromara.workflow.api.domain.RemoteStartProcessReturn;
 import org.dromara.workflow.service.WorkflowService;
 
-import java.util.List;
-import java.util.Map;
-
-/**
- * RemoteWorkflowServiceImpl
- *
- * @Author ZETA
- * @Date 2024/6/3
- */
+/** RemoteWorkflowServiceImpl @Author ZETA @Date 2024/6/3 */
 @DubboService
 @RequiredArgsConstructor
 public class RemoteWorkflowServiceImpl implements RemoteWorkflowService {
@@ -68,11 +62,10 @@ public class RemoteWorkflowServiceImpl implements RemoteWorkflowService {
         return workflowService.completeTask(completeTask);
     }
 
-
     /**
      * 办理任务
      *
-     * @param taskId  任务ID
+     * @param taskId 任务ID
      * @param message 办理意见
      * @return 结果
      */
@@ -91,5 +84,4 @@ public class RemoteWorkflowServiceImpl implements RemoteWorkflowService {
     public boolean startCompleteTask(RemoteStartProcess startProcess) {
         return workflowService.startCompleteTask(startProcess);
     }
-
 }

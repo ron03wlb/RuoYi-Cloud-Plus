@@ -1,21 +1,19 @@
 package org.dromara.common.web.config.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.dromara.common.web.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * XssProperties (XSS配置属性) 单元测试
- * <p>
- * 用途: XSS防护配置属性
- * 测试范围: 属性设置、默认值、集合操作
+ *
+ * <p>用途: XSS防护配置属性 测试范围: 属性设置、默认值、集合操作
  *
  * @author Test Team
  */
@@ -64,9 +62,9 @@ class XssPropertiesTest extends BaseUnitTest {
 
             // Assert
             assertThat(properties.getExcludeUrls())
-                .isNotNull()
-                .hasSize(2)
-                .containsExactly("/api/public", "/api/upload");
+                    .isNotNull()
+                    .hasSize(2)
+                    .containsExactly("/api/public", "/api/upload");
         }
 
         @Test
@@ -80,9 +78,7 @@ class XssPropertiesTest extends BaseUnitTest {
             properties.setExcludeUrls(urls);
 
             // Assert
-            assertThat(properties.getExcludeUrls())
-                .isNotNull()
-                .isEmpty();
+            assertThat(properties.getExcludeUrls()).isNotNull().isEmpty();
         }
     }
 
@@ -107,9 +103,7 @@ class XssPropertiesTest extends BaseUnitTest {
             XssProperties properties = new XssProperties();
 
             // Assert
-            assertThat(properties.getExcludeUrls())
-                .isNotNull()
-                .isEmpty();
+            assertThat(properties.getExcludeUrls()).isNotNull().isEmpty();
         }
     }
 
@@ -128,9 +122,7 @@ class XssPropertiesTest extends BaseUnitTest {
             properties.getExcludeUrls().add("/api/test2");
 
             // Assert
-            assertThat(properties.getExcludeUrls())
-                .hasSize(2)
-                .contains("/api/test1", "/api/test2");
+            assertThat(properties.getExcludeUrls()).hasSize(2).contains("/api/test1", "/api/test2");
         }
 
         @Test
@@ -145,9 +137,7 @@ class XssPropertiesTest extends BaseUnitTest {
             properties.getExcludeUrls().remove("/api/test1");
 
             // Assert
-            assertThat(properties.getExcludeUrls())
-                .hasSize(1)
-                .containsExactly("/api/test2");
+            assertThat(properties.getExcludeUrls()).hasSize(1).containsExactly("/api/test2");
         }
 
         @Test
@@ -185,8 +175,8 @@ class XssPropertiesTest extends BaseUnitTest {
             // Assert
             assertThat(properties.getEnabled()).isTrue();
             assertThat(properties.getExcludeUrls())
-                .hasSize(3)
-                .contains("/system/upload", "/api/public/*", "/webhook/*");
+                    .hasSize(3)
+                    .contains("/system/upload", "/api/public/*", "/webhook/*");
         }
 
         @Test
@@ -251,8 +241,8 @@ class XssPropertiesTest extends BaseUnitTest {
 
             // Assert
             assertThat(properties.getExcludeUrls())
-                .hasSize(3)
-                .contains("/api/test?param=value", "/api/test#fragment", "/api/test/**");
+                    .hasSize(3)
+                    .contains("/api/test?param=value", "/api/test#fragment", "/api/test/**");
         }
 
         @Test
@@ -267,8 +257,8 @@ class XssPropertiesTest extends BaseUnitTest {
 
             // Assert - List允许重复
             assertThat(properties.getExcludeUrls())
-                .hasSize(2)
-                .containsExactly("/api/test", "/api/test");
+                    .hasSize(2)
+                    .containsExactly("/api/test", "/api/test");
         }
     }
 }

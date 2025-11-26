@@ -15,5 +15,4 @@ public class SnailJobServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(com.aizuda.snailjob.server.SnailJobServerApplication.class, args);
     }
-
 }

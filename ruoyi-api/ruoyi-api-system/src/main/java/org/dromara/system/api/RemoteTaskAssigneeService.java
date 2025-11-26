@@ -41,5 +41,4 @@ public interface RemoteTaskAssigneeService {
      * @return 办理人
      */
     RemoteTaskAssigneeVo selectUsersByTaskAssigneeList(RemoteTaskAssigneeBo taskQuery);
-
 }

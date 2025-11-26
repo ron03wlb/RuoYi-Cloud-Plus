@@ -1,8 +1,8 @@
 package org.dromara.common.tenant.core;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
  * 租户基类
@@ -13,9 +13,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TenantEntity extends BaseEntity {
 
-    /**
-     * 租户编号
-     */
+    /** 租户编号 */
     private String tenantId;
-
 }

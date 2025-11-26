@@ -1,21 +1,19 @@
 package org.dromara.common.tenant.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.dromara.common.tenant.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * TenantProperties 测试
- * <p>
- * 测试租户配置属性类
- * </p>
+ *
+ * <p>测试租户配置属性类
  *
  * @author Test Team
  */
@@ -92,7 +90,8 @@ class TenantPropertiesTest extends BaseUnitTest {
 
             // Assert
             assertThat(properties.getExcludes()).hasSize(3);
-            assertThat(properties.getExcludes()).containsExactly("sys_config", "sys_dict_data", "sys_dict_type");
+            assertThat(properties.getExcludes())
+                    .containsExactly("sys_config", "sys_dict_data", "sys_dict_type");
         }
 
         @Test
@@ -152,13 +151,9 @@ class TenantPropertiesTest extends BaseUnitTest {
         void shouldSupportMultipleExcludes() {
             // Arrange
             TenantProperties properties = new TenantProperties();
-            List<String> excludes = Arrays.asList(
-                "sys_config",
-                "sys_dict_data",
-                "sys_dict_type",
-                "sys_menu",
-                "sys_role"
-            );
+            List<String> excludes =
+                    Arrays.asList(
+                            "sys_config", "sys_dict_data", "sys_dict_type", "sys_menu", "sys_role");
 
             // Act
             properties.setExcludes(excludes);
@@ -205,15 +200,15 @@ class TenantPropertiesTest extends BaseUnitTest {
         void shouldConfigureSystemTableExcludes() {
             // Arrange
             TenantProperties properties = new TenantProperties();
-            List<String> systemTables = Arrays.asList(
-                "sys_config",
-                "sys_dict_data",
-                "sys_dict_type",
-                "sys_menu",
-                "sys_dept",
-                "sys_role",
-                "sys_user"
-            );
+            List<String> systemTables =
+                    Arrays.asList(
+                            "sys_config",
+                            "sys_dict_data",
+                            "sys_dict_type",
+                            "sys_menu",
+                            "sys_dept",
+                            "sys_role",
+                            "sys_user");
 
             // Act
             properties.setEnable(true);
@@ -339,12 +334,8 @@ class TenantPropertiesTest extends BaseUnitTest {
         void shouldHandleExcludesWithDuplicates() {
             // Arrange
             TenantProperties properties = new TenantProperties();
-            List<String> excludes = Arrays.asList(
-                "sys_config",
-                "sys_dict_data",
-                "sys_config",
-                "sys_dict_data"
-            );
+            List<String> excludes =
+                    Arrays.asList("sys_config", "sys_dict_data", "sys_config", "sys_dict_data");
 
             // Act
             properties.setExcludes(excludes);
@@ -375,12 +366,9 @@ class TenantPropertiesTest extends BaseUnitTest {
         void shouldHandleTableNamesWithSpecialCharacters() {
             // Arrange
             TenantProperties properties = new TenantProperties();
-            List<String> excludes = Arrays.asList(
-                "sys_config",
-                "表名_中文",
-                "table-with-dash",
-                "table_with_underscore"
-            );
+            List<String> excludes =
+                    Arrays.asList(
+                            "sys_config", "表名_中文", "table-with-dash", "table_with_underscore");
 
             // Act
             properties.setExcludes(excludes);
@@ -398,9 +386,10 @@ class TenantPropertiesTest extends BaseUnitTest {
         @DisplayName("应该有ConfigurationProperties注解")
         void shouldHaveConfigurationPropertiesAnnotation() {
             // Act
-            boolean hasAnnotation = TenantProperties.class.isAnnotationPresent(
-                org.springframework.boot.context.properties.ConfigurationProperties.class
-            );
+            boolean hasAnnotation =
+                    TenantProperties.class.isAnnotationPresent(
+                            org.springframework.boot.context.properties.ConfigurationProperties
+                                    .class);
 
             // Assert
             assertThat(hasAnnotation).isTrue();
@@ -411,9 +400,9 @@ class TenantPropertiesTest extends BaseUnitTest {
         void shouldHaveTenantPrefix() {
             // Act
             org.springframework.boot.context.properties.ConfigurationProperties annotation =
-                TenantProperties.class.getAnnotation(
-                    org.springframework.boot.context.properties.ConfigurationProperties.class
-                );
+                    TenantProperties.class.getAnnotation(
+                            org.springframework.boot.context.properties.ConfigurationProperties
+                                    .class);
 
             // Assert
             assertThat(annotation).isNotNull();

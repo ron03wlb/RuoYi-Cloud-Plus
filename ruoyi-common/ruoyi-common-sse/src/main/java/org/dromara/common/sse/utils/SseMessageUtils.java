@@ -16,7 +16,8 @@ import org.dromara.common.sse.dto.SseMessageDto;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SseMessageUtils {
 
-    private final static Boolean SSE_ENABLE = SpringUtils.getProperty("sse.enabled", Boolean.class, true);
+    private static final Boolean SSE_ENABLE =
+            SpringUtils.getProperty("sse.enabled", Boolean.class, true);
     private static SseEmitterManager MANAGER;
 
     static {
@@ -28,7 +29,7 @@ public class SseMessageUtils {
     /**
      * 向指定的SSE会话发送消息
      *
-     * @param userId  要发送消息的用户id
+     * @param userId 要发送消息的用户id
      * @param message 要发送的消息内容
      */
     public static void sendMessage(Long userId, String message) {
@@ -74,11 +75,8 @@ public class SseMessageUtils {
         MANAGER.publishAll(message);
     }
 
-    /**
-     * 是否开启
-     */
+    /** 是否开启 */
     public static Boolean isEnable() {
         return SSE_ENABLE;
     }
-
 }

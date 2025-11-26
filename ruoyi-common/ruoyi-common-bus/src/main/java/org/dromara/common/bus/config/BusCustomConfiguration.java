@@ -10,6 +10,4 @@ import org.springframework.cloud.bus.jackson.RemoteApplicationEventScan;
  */
 @AutoConfiguration
 @RemoteApplicationEventScan(basePackages = "${spring.cloud.bus.base-packages}")
-public class BusCustomConfiguration {
-
-}
+public class BusCustomConfiguration {}

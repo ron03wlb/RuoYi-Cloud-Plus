@@ -1,15 +1,14 @@
 package org.dromara.common.core.utils;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.dromara.common.core.enums.FormatsType;
-import org.dromara.common.core.exception.ServiceException;
-
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.dromara.common.core.enums.FormatsType;
+import org.dromara.common.core.exception.ServiceException;
 
 /**
  * 时间工具类
@@ -18,13 +17,22 @@ import java.util.concurrent.TimeUnit;
  */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     private static final String[] PARSE_PATTERNS = {
-        "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
-        "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
-        "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
+        "yyyy-MM-dd",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm",
+        "yyyy-MM",
+        "yyyy/MM/dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd HH:mm",
+        "yyyy/MM",
+        "yyyy.MM.dd",
+        "yyyy.MM.dd HH:mm:ss",
+        "yyyy.MM.dd HH:mm",
+        "yyyy.MM"
+    };
 
     @Deprecated
-    private DateUtils() {
-    }
+    private DateUtils() {}
 
     /**
      * 获取当前日期和时间
@@ -124,7 +132,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      * 将指定日期按照指定格式进行格式化
      *
      * @param format 要使用的日期时间格式，例如"YYYY-MM-DD HH:MM:SS"
-     * @param date   要格式化的日期对象
+     * @param date 要格式化的日期对象
      * @return 格式化后的日期时间字符串
      */
     public static String parseDateToStr(final FormatsType format, final Date date) {
@@ -135,7 +143,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      * 将指定格式的日期时间字符串转换为 Date 对象
      *
      * @param format 要解析的日期时间格式，例如"YYYY-MM-DD HH:MM:SS"
-     * @param ts     要解析的日期时间字符串
+     * @param ts 要解析的日期时间字符串
      * @return 解析后的 Date 对象
      * @throws RuntimeException 如果解析过程中发生异常
      */
@@ -178,8 +186,8 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      * 计算两个时间之间的时间差，并以指定单位返回（绝对值）
      *
      * @param start 起始时间
-     * @param end   结束时间
-     * @param unit  所需返回的时间单位（DAYS、HOURS、MINUTES、SECONDS、MILLISECONDS、MICROSECONDS、NANOSECONDS）
+     * @param end 结束时间
+     * @param unit 所需返回的时间单位（DAYS、HOURS、MINUTES、SECONDS、MILLISECONDS、MICROSECONDS、NANOSECONDS）
      * @return 时间差的绝对值，以指定单位表示
      */
     public static long difference(Date start, Date end, TimeUnit unit) {
@@ -270,11 +278,12 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      * 校验日期范围
      *
      * @param startDate 开始日期
-     * @param endDate   结束日期
-     * @param maxValue  最大时间跨度的限制值
-     * @param unit      时间跨度的单位，可选择 "DAYS"、"HOURS" 或 "MINUTES"
+     * @param endDate 结束日期
+     * @param maxValue 最大时间跨度的限制值
+     * @param unit 时间跨度的单位，可选择 "DAYS"、"HOURS" 或 "MINUTES"
      */
-    public static void validateDateRange(Date startDate, Date endDate, int maxValue, TimeUnit unit) {
+    public static void validateDateRange(
+            Date startDate, Date endDate, int maxValue, TimeUnit unit) {
         // 校验结束日期不能早于开始日期
         if (endDate.before(startDate)) {
             throw new ServiceException("结束日期不能早于开始日期");
@@ -284,17 +293,17 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         long diffInMillis = endDate.getTime() - startDate.getTime();
 
         // 根据单位转换时间跨度
-        long diff = switch (unit) {
-            case DAYS -> TimeUnit.MILLISECONDS.toDays(diffInMillis);
-            case HOURS -> TimeUnit.MILLISECONDS.toHours(diffInMillis);
-            case MINUTES -> TimeUnit.MILLISECONDS.toMinutes(diffInMillis);
-            default -> throw new IllegalArgumentException("不支持的时间单位");
-        };
+        long diff =
+                switch (unit) {
+                    case DAYS -> TimeUnit.MILLISECONDS.toDays(diffInMillis);
+                    case HOURS -> TimeUnit.MILLISECONDS.toHours(diffInMillis);
+                    case MINUTES -> TimeUnit.MILLISECONDS.toMinutes(diffInMillis);
+                    default -> throw new IllegalArgumentException("不支持的时间单位");
+                };
 
         // 校验时间跨度不超过最大限制
         if (diff > maxValue) {
             throw new ServiceException("最大时间跨度为 {} {}", maxValue, unit.toString().toLowerCase());
         }
     }
-
 }

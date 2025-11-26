@@ -19,8 +19,8 @@ import reactor.core.publisher.Mono;
 
 /**
  * 全局日志过滤器
- * <p>
- * 用于打印请求执行参数与响应时间等等
+ *
+ * <p>用于打印请求执行参数与响应时间等等
  *
  * @author Lion Li
  */
@@ -28,10 +28,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class GlobalLogFilter implements GlobalFilter, Ordered {
 
-    @Autowired
-    private CustomGatewayProperties customGatewayProperties;
-    @Autowired
-    private ApiDecryptProperties apiDecryptProperties;
+    @Autowired private CustomGatewayProperties customGatewayProperties;
+    @Autowired private ApiDecryptProperties apiDecryptProperties;
 
     private static final String START_TIME = "startTime";
 
@@ -47,7 +45,8 @@ public class GlobalLogFilter implements GlobalFilter, Ordered {
         // 打印请求参数
         if (WebFluxUtils.isJsonRequest(exchange)) {
             if (apiDecryptProperties.getEnabled()
-                && ObjectUtil.isNotNull(request.getHeaders().getFirst(apiDecryptProperties.getHeaderFlag()))) {
+                    && ObjectUtil.isNotNull(
+                            request.getHeaders().getFirst(apiDecryptProperties.getHeaderFlag()))) {
                 log.info("[PLUS]开始请求 => URL[{}],参数类型[encrypt]", url);
             } else {
                 String jsonParam = WebFluxUtils.resolveBodyFromCacheRequest(exchange);
@@ -64,13 +63,19 @@ public class GlobalLogFilter implements GlobalFilter, Ordered {
         }
 
         exchange.getAttributes().put(START_TIME, System.currentTimeMillis());
-        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            Long startTime = exchange.getAttribute(START_TIME);
-            if (startTime != null) {
-                long executeTime = (System.currentTimeMillis() - startTime);
-                log.info("[PLUS]结束请求 => URL[{}],耗时:[{}]毫秒", url, executeTime);
-            }
-        }));
+        return chain.filter(exchange)
+                .then(
+                        Mono.fromRunnable(
+                                () -> {
+                                    Long startTime = exchange.getAttribute(START_TIME);
+                                    if (startTime != null) {
+                                        long executeTime = (System.currentTimeMillis() - startTime);
+                                        log.info(
+                                                "[PLUS]结束请求 => URL[{}],耗时:[{}]毫秒",
+                                                url,
+                                                executeTime);
+                                    }
+                                }));
     }
 
     @Override
@@ -80,5 +85,4 @@ public class GlobalLogFilter implements GlobalFilter, Ordered {
         // return ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1;
         return Ordered.LOWEST_PRECEDENCE;
     }
-
 }

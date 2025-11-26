@@ -78,17 +78,19 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",      // 注解类
-                    "**/enums/**",            // 枚举类（已有测试覆盖）
-                    "**/config/**",           // 配置类
-                    "**/domain/**",           // POJO
-                    "**/model/**",
-                    "**/*Application.class"   // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/annotation/**", // 注解类
+                        "**/enums/**", // 枚举类（已有测试覆盖）
+                        "**/config/**", // 配置类
+                        "**/domain/**", // POJO
+                        "**/model/**",
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

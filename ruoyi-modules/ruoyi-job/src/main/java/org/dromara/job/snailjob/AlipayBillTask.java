@@ -6,15 +6,13 @@ import com.aizuda.snailjob.client.job.core.annotation.JobExecutor;
 import com.aizuda.snailjob.client.job.core.dto.JobArgs;
 import com.aizuda.snailjob.common.log.SnailJobLog;
 import com.aizuda.snailjob.model.dto.ExecuteResult;
+import java.math.BigDecimal;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.job.entity.BillDto;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 /**
- * DAG工作流任务-模拟支付宝账单任务
- * <a href="https://juejin.cn/post/7487860254114644019"></a>
+ * DAG工作流任务-模拟支付宝账单任务 <a href="https://juejin.cn/post/7487860254114644019"></a>
  *
  * @author 老马
  */
@@ -38,5 +36,4 @@ public class AlipayBillTask {
         SnailJobLog.REMOTE.info("上下文: {}", jobArgs.getWfContext());
         return ExecuteResult.success(billDto);
     }
-
 }

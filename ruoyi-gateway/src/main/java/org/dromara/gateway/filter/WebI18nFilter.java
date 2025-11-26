@@ -1,5 +1,6 @@
 package org.dromara.gateway.filter;
 
+import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.i18n.SimpleLocaleContext;
@@ -9,8 +10,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-
-import java.util.Locale;
 
 /**
  * 全局国际化处理
@@ -37,5 +36,4 @@ public class WebI18nFilter implements WebFilter, Ordered {
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
-
 }

@@ -1,9 +1,15 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import cn.hutool.core.lang.tree.Tree;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.system.BaseUnitTest;
 import org.dromara.system.TestDataFactory;
@@ -15,17 +21,13 @@ import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.mapper.SysDeptMapper;
 import org.dromara.system.mapper.SysRoleMapper;
 import org.dromara.system.mapper.SysUserMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 /**
  * SysDeptServiceImpl 单元测试
@@ -36,17 +38,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysDeptServiceImpl 单元测试")
 class SysDeptServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysDeptMapper baseMapper;
+    @Mock private SysDeptMapper baseMapper;
 
-    @Mock
-    private SysRoleMapper roleMapper;
+    @Mock private SysRoleMapper roleMapper;
 
-    @Mock
-    private SysUserMapper userMapper;
+    @Mock private SysUserMapper userMapper;
 
-    @InjectMocks
-    private SysDeptServiceImpl deptService;
+    @InjectMocks private SysDeptServiceImpl deptService;
 
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -72,7 +70,8 @@ class SysDeptServiceImplTest extends BaseUnitTest {
             parentDept.setDeptName("总公司");
 
             when(baseMapper.selectVoById(deptId)).thenReturn(dept);
-            when(baseMapper.selectVoOne(ArgumentMatchers.<Wrapper<SysDept>>any())).thenReturn(parentDept);
+            when(baseMapper.selectVoOne(ArgumentMatchers.<Wrapper<SysDept>>any()))
+                    .thenReturn(parentDept);
 
             // Act
             SysDeptVo result = deptService.selectDeptById(deptId);
@@ -107,13 +106,14 @@ class SysDeptServiceImplTest extends BaseUnitTest {
         void shouldSelectDeptByIds() {
             // Arrange
             List<Long> deptIds = Arrays.asList(1L, 2L, 3L);
-            List<SysDeptVo> expectedDepts = Arrays.asList(
-                TestDataFactory.createDeptVo(1L, "研发部"),
-                TestDataFactory.createDeptVo(2L, "市场部"),
-                TestDataFactory.createDeptVo(3L, "财务部")
-            );
+            List<SysDeptVo> expectedDepts =
+                    Arrays.asList(
+                            TestDataFactory.createDeptVo(1L, "研发部"),
+                            TestDataFactory.createDeptVo(2L, "市场部"),
+                            TestDataFactory.createDeptVo(3L, "财务部"));
 
-            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any())).thenReturn(expectedDepts);
+            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any()))
+                    .thenReturn(expectedDepts);
 
             // Act
             List<SysDeptVo> result = deptService.selectDeptByIds(deptIds);
@@ -155,12 +155,13 @@ class SysDeptServiceImplTest extends BaseUnitTest {
         void shouldSelectDeptList() {
             // Arrange
             SysDeptBo bo = TestDataFactory.createDeptBo(null, "研发");
-            List<SysDeptVo> expectedDepts = Arrays.asList(
-                TestDataFactory.createDeptVo(1L, "研发部"),
-                TestDataFactory.createDeptVo(2L, "研发一组")
-            );
+            List<SysDeptVo> expectedDepts =
+                    Arrays.asList(
+                            TestDataFactory.createDeptVo(1L, "研发部"),
+                            TestDataFactory.createDeptVo(2L, "研发一组"));
 
-            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any())).thenReturn(expectedDepts);
+            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any()))
+                    .thenReturn(expectedDepts);
 
             // Act
             List<SysDeptVo> result = deptService.selectDeptList(bo);
@@ -176,13 +177,14 @@ class SysDeptServiceImplTest extends BaseUnitTest {
         void shouldSelectDeptTreeList() {
             // Arrange
             SysDeptBo bo = TestDataFactory.createDeptBo(null, null);
-            List<SysDeptVo> depts = Arrays.asList(
-                createDeptVoWithParent(1L, "总公司", 0L),
-                createDeptVoWithParent(2L, "研发部", 1L),
-                createDeptVoWithParent(3L, "市场部", 1L)
-            );
+            List<SysDeptVo> depts =
+                    Arrays.asList(
+                            createDeptVoWithParent(1L, "总公司", 0L),
+                            createDeptVoWithParent(2L, "研发部", 1L),
+                            createDeptVoWithParent(3L, "市场部", 1L));
 
-            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any())).thenReturn(depts);
+            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any()))
+                    .thenReturn(depts);
 
             // Act
             List<Tree<Long>> result = deptService.selectDeptTreeList(bo);
@@ -321,12 +323,12 @@ class SysDeptServiceImplTest extends BaseUnitTest {
         @DisplayName("应该构建部门树选择结构")
         void shouldBuildDeptTreeSelect() {
             // Arrange
-            List<SysDeptVo> depts = Arrays.asList(
-                createDeptVoWithParent(1L, "总公司", 0L),
-                createDeptVoWithParent(2L, "研发部", 1L),
-                createDeptVoWithParent(3L, "市场部", 1L),
-                createDeptVoWithParent(4L, "研发一组", 2L)
-            );
+            List<SysDeptVo> depts =
+                    Arrays.asList(
+                            createDeptVoWithParent(1L, "总公司", 0L),
+                            createDeptVoWithParent(2L, "研发部", 1L),
+                            createDeptVoWithParent(3L, "市场部", 1L),
+                            createDeptVoWithParent(4L, "研发一组", 2L));
 
             // Act
             List<Tree<Long>> result = deptService.buildDeptTreeSelect(depts);
@@ -437,7 +439,8 @@ class SysDeptServiceImplTest extends BaseUnitTest {
         void shouldHandleEmptyDeptIdList() {
             // Arrange
             List<Long> emptyList = Collections.emptyList();
-            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any())).thenReturn(Collections.emptyList());
+            when(baseMapper.selectDeptList(ArgumentMatchers.<Wrapper<SysDept>>any()))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysDeptVo> result = deptService.selectDeptByIds(emptyList);

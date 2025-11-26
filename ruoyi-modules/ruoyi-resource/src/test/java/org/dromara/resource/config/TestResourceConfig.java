@@ -1,5 +1,8 @@
 package org.dromara.resource.config;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.common.core.service.PermissionService;
 import org.dromara.common.tenant.properties.TenantProperties;
 import org.mockito.Mockito;
@@ -7,14 +10,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * 集成测试专用配置类
- * <p>
- * 提供测试所需的 Mock Bean，避免 Bean 定义冲突
+ *
+ * <p>提供测试所需的 Mock Bean，避免 Bean 定义冲突
  *
  * @author Lion Li
  * @since 2025-11-10
@@ -24,9 +23,8 @@ public class TestResourceConfig {
 
     /**
      * Mock PermissionService
-     * <p>
-     * 为 Sa-Token 权限验证提供 Mock 实现
-     * </p>
+     *
+     * <p>为 Sa-Token 权限验证提供 Mock 实现
      */
     @Bean
     @Primary
@@ -52,10 +50,8 @@ public class TestResourceConfig {
 
     /**
      * 提供租户配置属性
-     * <p>
-     * 为多租户插件提供必要的配置信息
-     * 注意：在测试环境中禁用租户功能，避免加载 TenantConfiguration
-     * </p>
+     *
+     * <p>为多租户插件提供必要的配置信息 注意：在测试环境中禁用租户功能，避免加载 TenantConfiguration
      */
     @Bean
     @Primary

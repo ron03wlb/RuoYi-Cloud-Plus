@@ -1,8 +1,8 @@
 package org.dromara.common.encrypt.enumd;
 
-import org.dromara.common.encrypt.core.encryptor.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.dromara.common.encrypt.core.encryptor.*;
 
 /**
  * 算法名称
@@ -14,34 +14,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AlgorithmType {
 
-    /**
-     * 默认走yml配置
-     */
+    /** 默认走yml配置 */
     DEFAULT(null),
 
-    /**
-     * base64
-     */
+    /** base64 */
     BASE64(Base64Encryptor.class),
 
-    /**
-     * aes
-     */
+    /** aes */
     AES(AesEncryptor.class),
 
-    /**
-     * rsa
-     */
+    /** rsa */
     RSA(RsaEncryptor.class),
 
-    /**
-     * sm2
-     */
+    /** sm2 */
     SM2(Sm2Encryptor.class),
 
-    /**
-     * sm4
-     */
+    /** sm4 */
     SM4(Sm4Encryptor.class);
 
     private final Class<? extends AbstractEncryptor> clazz;

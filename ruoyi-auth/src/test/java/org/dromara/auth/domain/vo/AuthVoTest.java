@@ -1,21 +1,19 @@
 package org.dromara.auth.domain.vo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.dromara.auth.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * 认证 VO 类测试
- * <p>
- * 测试所有认证相关的 VO 类
- * </p>
+ *
+ * <p>测试所有认证相关的 VO 类
  *
  * @author Test Team
  */
@@ -43,9 +41,7 @@ class AuthVoTest extends BaseUnitTest {
             CaptchaVo vo = new CaptchaVo();
 
             // Assert
-            assertThat(vo.getCaptchaEnabled())
-                .isNotNull()
-                .isTrue();
+            assertThat(vo.getCaptchaEnabled()).isNotNull().isTrue();
         }
 
         @Test
@@ -59,9 +55,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setUuid(uuid);
 
             // Assert
-            assertThat(vo.getUuid())
-                .isNotNull()
-                .isEqualTo(uuid);
+            assertThat(vo.getUuid()).isNotNull().isEqualTo(uuid);
         }
 
         @Test
@@ -75,9 +69,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setImg(img);
 
             // Assert
-            assertThat(vo.getImg())
-                .isNotNull()
-                .isEqualTo(img);
+            assertThat(vo.getImg()).isNotNull().isEqualTo(img);
         }
 
         @Test
@@ -161,9 +153,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setTenantId(tenantId);
 
             // Assert
-            assertThat(vo.getTenantId())
-                .isNotNull()
-                .isEqualTo(tenantId);
+            assertThat(vo.getTenantId()).isNotNull().isEqualTo(tenantId);
         }
 
         @Test
@@ -177,9 +167,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setCompanyName(companyName);
 
             // Assert
-            assertThat(vo.getCompanyName())
-                .isNotNull()
-                .isEqualTo(companyName);
+            assertThat(vo.getCompanyName()).isNotNull().isEqualTo(companyName);
         }
 
         @Test
@@ -193,9 +181,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setDomain(domain);
 
             // Assert
-            assertThat(vo.getDomain())
-                .isNotNull()
-                .isEqualTo(domain);
+            assertThat(vo.getDomain()).isNotNull().isEqualTo(domain);
         }
 
         @Test
@@ -285,10 +271,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setVoList(tenantList);
 
             // Assert
-            assertThat(vo.getVoList())
-                .isNotNull()
-                .hasSize(2)
-                .contains(tenant1, tenant2);
+            assertThat(vo.getVoList()).isNotNull().hasSize(2).contains(tenant1, tenant2);
         }
 
         @Test
@@ -327,9 +310,7 @@ class AuthVoTest extends BaseUnitTest {
 
             // Assert
             assertThat(vo.getTenantEnabled()).isTrue();
-            assertThat(vo.getVoList())
-                .isNotNull()
-                .isEmpty();
+            assertThat(vo.getVoList()).isNotNull().isEmpty();
         }
 
         @Test
@@ -373,9 +354,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setAccessToken(accessToken);
 
             // Assert
-            assertThat(vo.getAccessToken())
-                .isNotNull()
-                .isEqualTo(accessToken);
+            assertThat(vo.getAccessToken()).isNotNull().isEqualTo(accessToken);
         }
 
         @Test
@@ -389,9 +368,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setRefreshToken(refreshToken);
 
             // Assert
-            assertThat(vo.getRefreshToken())
-                .isNotNull()
-                .isEqualTo(refreshToken);
+            assertThat(vo.getRefreshToken()).isNotNull().isEqualTo(refreshToken);
         }
 
         @Test
@@ -405,9 +382,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setExpireIn(expireIn);
 
             // Assert
-            assertThat(vo.getExpireIn())
-                .isNotNull()
-                .isEqualTo(expireIn);
+            assertThat(vo.getExpireIn()).isNotNull().isEqualTo(expireIn);
         }
 
         @Test
@@ -421,9 +396,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setRefreshExpireIn(refreshExpireIn);
 
             // Assert
-            assertThat(vo.getRefreshExpireIn())
-                .isNotNull()
-                .isEqualTo(refreshExpireIn);
+            assertThat(vo.getRefreshExpireIn()).isNotNull().isEqualTo(refreshExpireIn);
         }
 
         @Test
@@ -437,9 +410,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setClientId(clientId);
 
             // Assert
-            assertThat(vo.getClientId())
-                .isNotNull()
-                .isEqualTo(clientId);
+            assertThat(vo.getClientId()).isNotNull().isEqualTo(clientId);
         }
 
         @Test
@@ -453,9 +424,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setScope(scope);
 
             // Assert
-            assertThat(vo.getScope())
-                .isNotNull()
-                .isEqualTo(scope);
+            assertThat(vo.getScope()).isNotNull().isEqualTo(scope);
         }
 
         @Test
@@ -469,9 +438,7 @@ class AuthVoTest extends BaseUnitTest {
             vo.setOpenid(openid);
 
             // Assert
-            assertThat(vo.getOpenid())
-                .isNotNull()
-                .isEqualTo(openid);
+            assertThat(vo.getOpenid()).isNotNull().isEqualTo(openid);
         }
 
         @Test
@@ -491,7 +458,8 @@ class AuthVoTest extends BaseUnitTest {
 
             // Assert
             assertThat(vo.getAccessToken()).isEqualTo("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
-            assertThat(vo.getRefreshToken()).isEqualTo("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...refresh");
+            assertThat(vo.getRefreshToken())
+                    .isEqualTo("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...refresh");
             assertThat(vo.getExpireIn()).isEqualTo(7200L);
             assertThat(vo.getRefreshExpireIn()).isEqualTo(2592000L);
             assertThat(vo.getClientId()).isEqualTo("e5cd7e4891bf95d1d19206ce24a7b32e");

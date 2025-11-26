@@ -1,5 +1,11 @@
 package org.dromara.common.test.utils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -7,24 +13,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.util.StreamUtils;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 /**
  * SQL 脚本执行器
- * <p>
- * 提供在集成测试中执行 SQL 脚本的工具方法，用于：
+ *
+ * <p>提供在集成测试中执行 SQL 脚本的工具方法，用于：
+ *
  * <ul>
- *     <li>初始化数据库表结构</li>
- *     <li>插入测试数据</li>
- *     <li>清理测试数据</li>
+ *   <li>初始化数据库表结构
+ *   <li>插入测试数据
+ *   <li>清理测试数据
  * </ul>
  *
  * <h3>使用示例：</h3>
+ *
  * <pre>{@code
  * // 执行单个 SQL 脚本
  * SqlScriptExecutor.execute(dataSource, "classpath:db/schema.sql");
@@ -80,7 +81,7 @@ public class SqlScriptExecutor {
     /**
      * 批量执行 SQL 脚本文件
      *
-     * @param dataSource  数据源
+     * @param dataSource 数据源
      * @param scriptPaths 脚本路径列表
      */
     public static void executeBatch(DataSource dataSource, String... scriptPaths) {
@@ -96,14 +97,14 @@ public class SqlScriptExecutor {
     /**
      * 执行 SQL 语句
      *
-     * @param dataSource    数据源
+     * @param dataSource 数据源
      * @param sqlStatements SQL 语句列表
      */
     public static void executeSql(DataSource dataSource, String... sqlStatements) {
         log.info("执行 {} 条 SQL 语句", sqlStatements.length);
 
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
 
             for (String sql : sqlStatements) {
                 if (sql == null || sql.trim().isEmpty()) {
@@ -134,10 +135,7 @@ public class SqlScriptExecutor {
                 throw new IllegalArgumentException("SQL 脚本不存在: " + scriptPath);
             }
 
-            return StreamUtils.copyToString(
-                resource.getInputStream(),
-                StandardCharsets.UTF_8
-            );
+            return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             log.error("读取 SQL 脚本失败: {}", scriptPath, e);
             throw new RuntimeException("读取 SQL 脚本失败: " + scriptPath, e);
@@ -168,7 +166,7 @@ public class SqlScriptExecutor {
         log.info("清空 {} 个表的数据", tableNames.length);
 
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
 
             for (String tableName : tableNames) {
                 // 使用 CASCADE 自动处理外键约束（PostgreSQL 兼容）
@@ -194,7 +192,7 @@ public class SqlScriptExecutor {
         log.info("删除 {} 个表的数据", tableNames.length);
 
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
 
             for (String tableName : tableNames) {
                 String sql = "DELETE FROM " + tableName;
@@ -213,12 +211,12 @@ public class SqlScriptExecutor {
      * 检查表是否存在
      *
      * @param dataSource 数据源
-     * @param tableName  表名
+     * @param tableName 表名
      * @return true-存在，false-不存在
      */
     public static boolean tableExists(DataSource dataSource, String tableName) {
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
 
             String sql = "SELECT 1 FROM " + tableName + " LIMIT 1";
             stmt.execute(sql);

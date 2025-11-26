@@ -1,23 +1,22 @@
 package org.dromara.common.excel.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.excel.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * DropDownOptions (Excel下拉选项) 单元测试
- * <p>
- * 用途: 为 Excel 导出提供级联下拉选项功能
- * 核心功能: 创建选项值、解析选项值、构建级联下拉
+ *
+ * <p>用途: 为 Excel 导出提供级联下拉选项功能 核心功能: 创建选项值、解析选项值、构建级联下拉
  *
  * @author Test Team
  */
@@ -154,8 +153,8 @@ class DropDownOptionsTest extends BaseUnitTest {
         void shouldRejectPureNumberStart() {
             // Act & Assert
             assertThatThrownBy(() -> DropDownOptions.createOptionValue("123"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("禁止以数字开头");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("禁止以数字开头");
         }
 
         @Test
@@ -163,16 +162,16 @@ class DropDownOptionsTest extends BaseUnitTest {
         void shouldRejectSpecialCharacters() {
             // Act & Assert
             assertThatThrownBy(() -> DropDownOptions.createOptionValue("北京-朝阳"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("选项数据不符合规则");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("选项数据不符合规则");
 
             assertThatThrownBy(() -> DropDownOptions.createOptionValue("北京@朝阳"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("选项数据不符合规则");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("选项数据不符合规则");
 
             assertThatThrownBy(() -> DropDownOptions.createOptionValue("北京+朝阳"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("选项数据不符合规则");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("选项数据不符合规则");
         }
 
         @Test
@@ -180,8 +179,8 @@ class DropDownOptionsTest extends BaseUnitTest {
         void shouldRejectSpacesInMiddle() {
             // Act & Assert
             assertThatThrownBy(() -> DropDownOptions.createOptionValue("北京 朝阳"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("选项数据不符合规则");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessageContaining("选项数据不符合规则");
         }
     }
 
@@ -296,27 +295,27 @@ class DropDownOptionsTest extends BaseUnitTest {
         @DisplayName("应该构建省市级联下拉")
         void shouldBuildProvinceCityLinkedOptions() {
             // Arrange
-            List<Region> provinces = Arrays.asList(
-                new Region(1, 0, "北京市"),
-                new Region(2, 0, "上海市")
-            );
-            List<Region> cities = Arrays.asList(
-                new Region(11, 1, "朝阳区"),
-                new Region(12, 1, "海淀区"),
-                new Region(21, 2, "浦东新区"),
-                new Region(22, 2, "黄浦区")
-            );
+            List<Region> provinces =
+                    Arrays.asList(new Region(1, 0, "北京市"), new Region(2, 0, "上海市"));
+            List<Region> cities =
+                    Arrays.asList(
+                            new Region(11, 1, "朝阳区"),
+                            new Region(12, 1, "海淀区"),
+                            new Region(21, 2, "浦东新区"),
+                            new Region(22, 2, "黄浦区"));
 
             // Act
-            DropDownOptions result = DropDownOptions.buildLinkedOptions(
-                provinces,
-                0,  // 父下拉在第0列
-                cities,
-                1,  // 子下拉在第1列
-                Region::getId,
-                Region::getParentId,
-                region -> DropDownOptions.createOptionValue(region.getName(), String.valueOf(region.getId()))
-            );
+            DropDownOptions result =
+                    DropDownOptions.buildLinkedOptions(
+                            provinces,
+                            0, // 父下拉在第0列
+                            cities,
+                            1, // 子下拉在第1列
+                            Region::getId,
+                            Region::getParentId,
+                            region ->
+                                    DropDownOptions.createOptionValue(
+                                            region.getName(), String.valueOf(region.getId())));
 
             // Assert
             assertThat(result.getIndex()).isZero();
@@ -328,36 +327,37 @@ class DropDownOptionsTest extends BaseUnitTest {
             assertThat(result.getOptions()).contains("北京市_1", "上海市_2");
 
             // 验证子选项
-            assertThat(result.getNextOptions().get("北京市_1"))
-                .contains("朝阳区_11", "海淀区_12");
-            assertThat(result.getNextOptions().get("上海市_2"))
-                .contains("浦东新区_21", "黄浦区_22");
+            assertThat(result.getNextOptions().get("北京市_1")).contains("朝阳区_11", "海淀区_12");
+            assertThat(result.getNextOptions().get("上海市_2")).contains("浦东新区_21", "黄浦区_22");
         }
 
         @Test
         @DisplayName("应该处理没有子选项的父选项")
         void shouldHandleParentWithoutChildren() {
             // Arrange
-            List<Region> provinces = Arrays.asList(
-                new Region(1, 0, "北京市"),
-                new Region(2, 0, "上海市"),
-                new Region(3, 0, "深圳市")  // 没有子区域
-            );
-            List<Region> cities = Arrays.asList(
-                new Region(11, 1, "朝阳区"),
-                new Region(21, 2, "浦东新区")
-            );
+            List<Region> provinces =
+                    Arrays.asList(
+                            new Region(1, 0, "北京市"),
+                            new Region(2, 0, "上海市"),
+                            new Region(3, 0, "深圳市") // 没有子区域
+                            );
+            List<Region> cities =
+                    Arrays.asList(new Region(11, 1, "朝阳区"), new Region(21, 2, "浦东新区"));
 
             // Act
-            DropDownOptions result = DropDownOptions.buildLinkedOptions(
-                provinces, 0, cities, 1,
-                Region::getId, Region::getParentId,
-                region -> region.getName()
-            );
+            DropDownOptions result =
+                    DropDownOptions.buildLinkedOptions(
+                            provinces,
+                            0,
+                            cities,
+                            1,
+                            Region::getId,
+                            Region::getParentId,
+                            region -> region.getName());
 
             // Assert
             assertThat(result.getOptions()).hasSize(3);
-            assertThat(result.getNextOptions()).hasSize(2);  // 只有2个父选项有子选项
+            assertThat(result.getNextOptions()).hasSize(2); // 只有2个父选项有子选项
             assertThat(result.getNextOptions()).doesNotContainKey("深圳市");
         }
 
@@ -365,17 +365,19 @@ class DropDownOptionsTest extends BaseUnitTest {
         @DisplayName("应该处理空的子列表")
         void shouldHandleEmptyChildList() {
             // Arrange
-            List<Region> provinces = Arrays.asList(
-                new Region(1, 0, "北京市")
-            );
-            List<Region> cities = Arrays.asList();  // 空列表
+            List<Region> provinces = Arrays.asList(new Region(1, 0, "北京市"));
+            List<Region> cities = Arrays.asList(); // 空列表
 
             // Act
-            DropDownOptions result = DropDownOptions.buildLinkedOptions(
-                provinces, 0, cities, 1,
-                Region::getId, Region::getParentId,
-                region -> region.getName()
-            );
+            DropDownOptions result =
+                    DropDownOptions.buildLinkedOptions(
+                            provinces,
+                            0,
+                            cities,
+                            1,
+                            Region::getId,
+                            Region::getParentId,
+                            region -> region.getName());
 
             // Assert
             assertThat(result.getOptions()).hasSize(1);
@@ -391,11 +393,11 @@ class DropDownOptionsTest extends BaseUnitTest {
         @DisplayName("场景: 导出用户列表，性别列有下拉选项")
         void shouldCreateGenderDropDown() {
             // Arrange
-            List<String> genderOptions = Arrays.asList(
-                DropDownOptions.createOptionValue("男", "1"),
-                DropDownOptions.createOptionValue("女", "2"),
-                DropDownOptions.createOptionValue("未知", "0")
-            );
+            List<String> genderOptions =
+                    Arrays.asList(
+                            DropDownOptions.createOptionValue("男", "1"),
+                            DropDownOptions.createOptionValue("女", "2"),
+                            DropDownOptions.createOptionValue("未知", "0"));
 
             // Act
             DropDownOptions dropDown = new DropDownOptions(2, genderOptions);
@@ -409,13 +411,13 @@ class DropDownOptionsTest extends BaseUnitTest {
         @DisplayName("场景: 导出订单列表，状态列有下拉选项")
         void shouldCreateOrderStatusDropDown() {
             // Arrange
-            List<String> statusOptions = Arrays.asList(
-                DropDownOptions.createOptionValue("待支付", "0"),
-                DropDownOptions.createOptionValue("已支付", "1"),
-                DropDownOptions.createOptionValue("已发货", "2"),
-                DropDownOptions.createOptionValue("已完成", "3"),
-                DropDownOptions.createOptionValue("已取消", "9")
-            );
+            List<String> statusOptions =
+                    Arrays.asList(
+                            DropDownOptions.createOptionValue("待支付", "0"),
+                            DropDownOptions.createOptionValue("已支付", "1"),
+                            DropDownOptions.createOptionValue("已发货", "2"),
+                            DropDownOptions.createOptionValue("已完成", "3"),
+                            DropDownOptions.createOptionValue("已取消", "9"));
 
             // Act
             DropDownOptions dropDown = new DropDownOptions(5, statusOptions);
@@ -429,23 +431,25 @@ class DropDownOptionsTest extends BaseUnitTest {
         @DisplayName("场景: 导出三级地区级联下拉（省-市）")
         void shouldCreateProvinceDistrictCascade() {
             // Arrange - 使用Region类演示三级联动：省份和下属的市区
-            List<Region> provinces = Arrays.asList(
-                new Region(1, 0, "北京市"),
-                new Region(2, 0, "上海市")
-            );
-            List<Region> districts = Arrays.asList(
-                new Region(11, 1, "朝阳区"),
-                new Region(12, 1, "海淀区"),
-                new Region(21, 2, "浦东新区"),
-                new Region(22, 2, "黄浦区")
-            );
+            List<Region> provinces =
+                    Arrays.asList(new Region(1, 0, "北京市"), new Region(2, 0, "上海市"));
+            List<Region> districts =
+                    Arrays.asList(
+                            new Region(11, 1, "朝阳区"),
+                            new Region(12, 1, "海淀区"),
+                            new Region(21, 2, "浦东新区"),
+                            new Region(22, 2, "黄浦区"));
 
             // Act
-            DropDownOptions cascade = DropDownOptions.buildLinkedOptions(
-                provinces, 0, districts, 1,
-                Region::getId, Region::getParentId,
-                region -> region.getName()
-            );
+            DropDownOptions cascade =
+                    DropDownOptions.buildLinkedOptions(
+                            provinces,
+                            0,
+                            districts,
+                            1,
+                            Region::getId,
+                            Region::getParentId,
+                            region -> region.getName());
 
             // Assert
             assertThat(cascade.getOptions()).containsExactly("北京市", "上海市");

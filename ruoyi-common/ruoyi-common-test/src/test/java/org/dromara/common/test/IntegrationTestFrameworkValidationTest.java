@@ -1,5 +1,9 @@
 package org.dromara.common.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import javax.sql.DataSource;
 import org.dromara.common.test.utils.SqlScriptExecutor;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -7,15 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * 集成测试框架验证测试
- * <p>
- * 验证集成测试框架的基础设施是否正常工作
+ *
+ * <p>验证集成测试框架的基础设施是否正常工作
  *
  * @author Lion Li
  * @since 2025-11-10
@@ -24,7 +23,8 @@ import static org.assertj.core.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
 
-    private static final Logger log = LoggerFactory.getLogger(IntegrationTestFrameworkValidationTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(IntegrationTestFrameworkValidationTest.class);
 
     @Autowired(required = false)
     private DataSource dataSource;
@@ -40,17 +40,15 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             log.info("=== 验证 PostgreSQL 容器 ===");
 
             // Assert - 容器应该正在运行
-            assertThat(POSTGRES_CONTAINER.isRunning())
-                .as("PostgreSQL 容器应该正在运行")
-                .isTrue();
+            assertThat(POSTGRES_CONTAINER.isRunning()).as("PostgreSQL 容器应该正在运行").isTrue();
 
             // Assert - JDBC URL 应该包含 PostgreSQL 连接信息
             String jdbcUrl = getPostgresJdbcUrl();
             assertThat(jdbcUrl)
-                .as("JDBC URL 应该不为空")
-                .isNotNull()
-                .contains("jdbc:postgresql://")
-                .contains("ry_cloud_test");
+                    .as("JDBC URL 应该不为空")
+                    .isNotNull()
+                    .contains("jdbc:postgresql://")
+                    .contains("ry_cloud_test");
 
             log.info("✅ PostgreSQL 容器启动成功");
             log.info("   JDBC URL: {}", jdbcUrl);
@@ -65,23 +63,15 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             log.info("=== 验证 Redis 容器 ===");
 
             // Assert - 容器应该正在运行
-            assertThat(REDIS_CONTAINER.isRunning())
-                .as("Redis 容器应该正在运行")
-                .isTrue();
+            assertThat(REDIS_CONTAINER.isRunning()).as("Redis 容器应该正在运行").isTrue();
 
             // Assert - 连接信息应该有效
             String redisHost = getRedisHost();
             Integer redisPort = getRedisPort();
 
-            assertThat(redisHost)
-                .as("Redis 主机应该不为空")
-                .isNotNull()
-                .isNotEmpty();
+            assertThat(redisHost).as("Redis 主机应该不为空").isNotNull().isNotEmpty();
 
-            assertThat(redisPort)
-                .as("Redis 端口应该大于 0")
-                .isGreaterThan(0)
-                .isLessThan(65536);
+            assertThat(redisPort).as("Redis 端口应该大于 0").isGreaterThan(0).isLessThan(65536);
 
             log.info("✅ Redis 容器启动成功");
             log.info("   Host: {}", redisHost);
@@ -113,9 +103,7 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             log.info("=== 验证 Spring 上下文 ===");
 
             // Assert - 如果测试运行到这里，说明 Spring 上下文已成功加载
-            assertThat(true)
-                .as("Spring 上下文应该成功加载")
-                .isTrue();
+            assertThat(true).as("Spring 上下文应该成功加载").isTrue();
 
             log.info("✅ Spring Boot 上下文加载成功");
         }
@@ -127,9 +115,7 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             log.info("=== 验证 DataSource 注入 ===");
 
             // Assert
-            assertThat(dataSource)
-                .as("DataSource 应该被成功注入")
-                .isNotNull();
+            assertThat(dataSource).as("DataSource 应该被成功注入").isNotNull();
 
             log.info("✅ DataSource 注入成功");
             log.info("   类型: {}", dataSource.getClass().getSimpleName());
@@ -153,9 +139,7 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             }
 
             // Assert
-            assertThat(connected)
-                .as("应该能够连接到数据库")
-                .isTrue();
+            assertThat(connected).as("应该能够连接到数据库").isTrue();
 
             log.info("✅ 数据库连接成功");
         }
@@ -173,9 +157,7 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             Integer result = jdbcTemplate.queryForObject("SELECT 1", Integer.class);
 
             // Assert
-            assertThat(result)
-                .as("查询结果应该是 1")
-                .isEqualTo(1);
+            assertThat(result).as("查询结果应该是 1").isEqualTo(1);
 
             log.info("✅ SQL 查询执行成功");
         }
@@ -190,7 +172,8 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
             // Act - 创建临时表
-            jdbcTemplate.execute("""
+            jdbcTemplate.execute(
+                    """
                 CREATE TABLE IF NOT EXISTS test_framework_validation (
                     id INT PRIMARY KEY,
                     name VARCHAR(100)
@@ -201,15 +184,13 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             jdbcTemplate.update("INSERT INTO test_framework_validation VALUES (?, ?)", 1, "test");
 
             // Act - 查询数据
-            String name = jdbcTemplate.queryForObject(
-                "SELECT name FROM test_framework_validation WHERE id = 1",
-                String.class
-            );
+            String name =
+                    jdbcTemplate.queryForObject(
+                            "SELECT name FROM test_framework_validation WHERE id = 1",
+                            String.class);
 
             // Assert
-            assertThat(name)
-                .as("应该能够查询到插入的数据")
-                .isEqualTo("test");
+            assertThat(name).as("应该能够查询到插入的数据").isEqualTo("test");
 
             // Cleanup
             jdbcTemplate.execute("DROP TABLE test_framework_validation");
@@ -229,29 +210,27 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
             log.info("=== 验证 SQL 脚本执行器 ===");
 
             // Arrange
-            String createTableSql = """
+            String createTableSql =
+                    """
                 CREATE TABLE IF NOT EXISTS test_sql_executor (
                     id INT PRIMARY KEY,
                     value VARCHAR(50)
                 )
                 """;
 
-            String insertDataSql = "INSERT INTO test_sql_executor VALUES (1, 'test1'), (2, 'test2')";
+            String insertDataSql =
+                    "INSERT INTO test_sql_executor VALUES (1, 'test1'), (2, 'test2')";
 
             // Act
             SqlScriptExecutor.executeSql(dataSource, createTableSql, insertDataSql);
 
             // Assert - 验证数据是否插入成功
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            List<String> values = jdbcTemplate.queryForList(
-                "SELECT value FROM test_sql_executor ORDER BY id",
-                String.class
-            );
+            List<String> values =
+                    jdbcTemplate.queryForList(
+                            "SELECT value FROM test_sql_executor ORDER BY id", String.class);
 
-            assertThat(values)
-                .as("应该查询到插入的数据")
-                .hasSize(2)
-                .containsExactly("test1", "test2");
+            assertThat(values).as("应该查询到插入的数据").hasSize(2).containsExactly("test1", "test2");
 
             // Cleanup
             SqlScriptExecutor.executeSql(dataSource, "DROP TABLE test_sql_executor");
@@ -267,24 +246,20 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
 
             // Arrange - 创建表并插入数据
             SqlScriptExecutor.executeSql(
-                dataSource,
-                "CREATE TABLE IF NOT EXISTS test_truncate (id INT PRIMARY KEY)",
-                "INSERT INTO test_truncate VALUES (1), (2), (3)"
-            );
+                    dataSource,
+                    "CREATE TABLE IF NOT EXISTS test_truncate (id INT PRIMARY KEY)",
+                    "INSERT INTO test_truncate VALUES (1), (2), (3)");
 
             // Act - 清空表
             SqlScriptExecutor.truncateTables(dataSource, "test_truncate");
 
             // Assert - 验证表已清空
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            Integer count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM test_truncate",
-                Integer.class
-            );
+            Integer count =
+                    jdbcTemplate.queryForObject(
+                            "SELECT COUNT(*) FROM test_truncate", Integer.class);
 
-            assertThat(count)
-                .as("表应该被清空")
-                .isEqualTo(0);
+            assertThat(count).as("表应该被清空").isEqualTo(0);
 
             // Cleanup
             SqlScriptExecutor.executeSql(dataSource, "DROP TABLE test_truncate");
@@ -300,21 +275,15 @@ class IntegrationTestFrameworkValidationTest extends BaseIntegrationTest {
 
             // Arrange
             SqlScriptExecutor.executeSql(
-                dataSource,
-                "CREATE TABLE IF NOT EXISTS test_exists (id INT)"
-            );
+                    dataSource, "CREATE TABLE IF NOT EXISTS test_exists (id INT)");
 
             // Act & Assert - 表应该存在
             boolean exists = SqlScriptExecutor.tableExists(dataSource, "test_exists");
-            assertThat(exists)
-                .as("test_exists 表应该存在")
-                .isTrue();
+            assertThat(exists).as("test_exists 表应该存在").isTrue();
 
             // Act & Assert - 不存在的表
             boolean notExists = SqlScriptExecutor.tableExists(dataSource, "table_not_exists");
-            assertThat(notExists)
-                .as("table_not_exists 表不应该存在")
-                .isFalse();
+            assertThat(notExists).as("table_not_exists 表不应该存在").isFalse();
 
             // Cleanup
             SqlScriptExecutor.executeSql(dataSource, "DROP TABLE test_exists");

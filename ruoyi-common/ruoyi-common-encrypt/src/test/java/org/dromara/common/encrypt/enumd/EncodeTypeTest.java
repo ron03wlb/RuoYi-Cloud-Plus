@@ -1,10 +1,10 @@
 package org.dromara.common.encrypt.enumd;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * {@link EncodeType} 单元测试
@@ -111,11 +111,12 @@ class EncodeTypeTest {
         void shouldSupportSwitchStatement() {
             EncodeType type = EncodeType.BASE64;
 
-            String result = switch (type) {
-                case DEFAULT -> "default";
-                case BASE64 -> "base64";
-                case HEX -> "hex";
-            };
+            String result =
+                    switch (type) {
+                        case DEFAULT -> "default";
+                        case BASE64 -> "base64";
+                        case HEX -> "hex";
+                    };
 
             assertThat(result).isEqualTo("base64");
         }
@@ -243,11 +244,8 @@ class EncodeTypeTest {
         void valuesShouldReturnAllConstants() {
             EncodeType[] values = EncodeType.values();
 
-            assertThat(values).containsExactly(
-                EncodeType.DEFAULT,
-                EncodeType.BASE64,
-                EncodeType.HEX
-            );
+            assertThat(values)
+                    .containsExactly(EncodeType.DEFAULT, EncodeType.BASE64, EncodeType.HEX);
         }
 
         @Test
@@ -266,9 +264,9 @@ class EncodeTypeTest {
             EncodeType[] values = EncodeType.values();
 
             assertThat(values)
-                .extracting(EncodeType::ordinal)
-                .containsExactly(0, 1, 2)
-                .doesNotHaveDuplicates();
+                    .extracting(EncodeType::ordinal)
+                    .containsExactly(0, 1, 2)
+                    .doesNotHaveDuplicates();
         }
 
         @Test
@@ -277,9 +275,9 @@ class EncodeTypeTest {
             EncodeType[] values = EncodeType.values();
 
             assertThat(values)
-                .extracting(EncodeType::name)
-                .containsExactly("DEFAULT", "BASE64", "HEX")
-                .doesNotHaveDuplicates();
+                    .extracting(EncodeType::name)
+                    .containsExactly("DEFAULT", "BASE64", "HEX")
+                    .doesNotHaveDuplicates();
         }
     }
 }

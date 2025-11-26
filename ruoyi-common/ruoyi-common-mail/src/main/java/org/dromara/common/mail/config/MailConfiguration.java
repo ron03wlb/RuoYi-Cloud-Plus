@@ -33,5 +33,4 @@ public class MailConfiguration {
         account.setConnectionTimeout(mailProperties.getConnectionTimeout());
         return account;
     }
-
 }

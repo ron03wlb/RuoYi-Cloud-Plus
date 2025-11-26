@@ -1,13 +1,20 @@
 package org.dromara.system.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
-import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.BaseUnitTest;
@@ -23,38 +30,29 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysUserServiceImpl 单元测试
- * <p>
- * 测试用户服务的核心业务逻辑
- * </p>
  *
- * <p>测试范围:</p>
+ * <p>测试用户服务的核心业务逻辑
+ *
+ * <p>测试范围:
+ *
  * <ul>
- *   <li>查询类方法 (selectUserByUserName, selectUserById, etc.)</li>
- *   <li>验证类方法 (checkUserNameUnique, checkPhoneUnique, etc.)</li>
- *   <li>业务逻辑方法 (selectUserRoleGroup, selectUserPostGroup)</li>
+ *   <li>查询类方法 (selectUserByUserName, selectUserById, etc.)
+ *   <li>验证类方法 (checkUserNameUnique, checkPhoneUnique, etc.)
+ *   <li>业务逻辑方法 (selectUserRoleGroup, selectUserPostGroup)
  * </ul>
  *
- * <p>测试策略:</p>
+ * <p>测试策略:
+ *
  * <ul>
- *   <li>使用 Mockito Mock 所有 Mapper 依赖</li>
- *   <li>重点测试业务逻辑，不测试框架功能</li>
- *   <li>跳过依赖 LoginHelper 的方法 (需要 Servlet 上下文)</li>
+ *   <li>使用 Mockito Mock 所有 Mapper 依赖
+ *   <li>重点测试业务逻辑，不测试框架功能
+ *   <li>跳过依赖 LoginHelper 的方法 (需要 Servlet 上下文)
  * </ul>
  *
  * @author Test Team
@@ -63,33 +61,24 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysUserServiceImpl 单元测试")
 class SysUserServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysUserMapper baseMapper;
+    @Mock private SysUserMapper baseMapper;
 
-    @Mock
-    private SysDeptMapper deptMapper;
+    @Mock private SysDeptMapper deptMapper;
 
-    @Mock
-    private SysRoleMapper roleMapper;
+    @Mock private SysRoleMapper roleMapper;
 
-    @Mock
-    private SysPostMapper postMapper;
+    @Mock private SysPostMapper postMapper;
 
-    @Mock
-    private SysUserRoleMapper userRoleMapper;
+    @Mock private SysUserRoleMapper userRoleMapper;
 
-    @Mock
-    private SysUserPostMapper userPostMapper;
+    @Mock private SysUserPostMapper userPostMapper;
 
-    @InjectMocks
-    private SysUserServiceImpl userService;
+    @InjectMocks private SysUserServiceImpl userService;
 
     /**
      * 初始化 MyBatis-Plus 表信息缓存
-     * <p>
-     * 在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存
-     * 这个方法在所有测试执行前初始化 SysUser 实体的表信息
-     * </p>
+     *
+     * <p>在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存 这个方法在所有测试执行前初始化 SysUser 实体的表信息
      */
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -170,10 +159,10 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 1L;
             SysUserVo user = TestDataFactory.createUserVo(userId, "testuser");
-            List<SysRoleVo> roles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user")
-            );
+            List<SysRoleVo> roles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"));
 
             when(baseMapper.selectVoById(userId)).thenReturn(user);
             when(roleMapper.selectRolesByUserId(userId)).thenReturn(roles);
@@ -186,8 +175,9 @@ class SysUserServiceImplTest extends BaseUnitTest {
             assertThat(result.getUserId()).isEqualTo(userId);
             assertThat(result.getRoles()).isNotNull();
             assertThat(result.getRoles()).hasSize(2);
-            assertThat(result.getRoles()).extracting(SysRoleVo::getRoleKey)
-                .containsExactly("admin", "user");
+            assertThat(result.getRoles())
+                    .extracting(SysRoleVo::getRoleKey)
+                    .containsExactly("admin", "user");
 
             // Verify
             verify(baseMapper, times(1)).selectVoById(userId);
@@ -218,14 +208,15 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             List<Long> userIds = Arrays.asList(1L, 2L, 3L);
             Long deptId = 100L;
-            List<SysUserVo> expectedUsers = Arrays.asList(
-                TestDataFactory.createUserVo(1L, "user1"),
-                TestDataFactory.createUserVo(2L, "user2"),
-                TestDataFactory.createUserVo(3L, "user3")
-            );
+            List<SysUserVo> expectedUsers =
+                    Arrays.asList(
+                            TestDataFactory.createUserVo(1L, "user1"),
+                            TestDataFactory.createUserVo(2L, "user2"),
+                            TestDataFactory.createUserVo(3L, "user3"));
 
             // Directly mock selectUserList method
-            when(baseMapper.selectUserList(ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(expectedUsers);
+            when(baseMapper.selectUserList(ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(expectedUsers);
 
             // Act
             List<SysUserVo> result = userService.selectUserByIds(userIds, deptId);
@@ -233,8 +224,7 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result).hasSize(3);
-            assertThat(result).extracting(SysUserVo::getUserId)
-                .containsExactly(1L, 2L, 3L);
+            assertThat(result).extracting(SysUserVo::getUserId).containsExactly(1L, 2L, 3L);
         }
 
         @Test
@@ -242,11 +232,11 @@ class SysUserServiceImplTest extends BaseUnitTest {
         void shouldSelectUserRoleGroup() {
             // Arrange
             Long userId = 1L;
-            List<SysRoleVo> roles = Arrays.asList(
-                TestDataFactory.createRoleVo(1L, "admin"),
-                TestDataFactory.createRoleVo(2L, "user"),
-                TestDataFactory.createRoleVo(3L, "guest")
-            );
+            List<SysRoleVo> roles =
+                    Arrays.asList(
+                            TestDataFactory.createRoleVo(1L, "admin"),
+                            TestDataFactory.createRoleVo(2L, "user"),
+                            TestDataFactory.createRoleVo(3L, "guest"));
             roles.get(0).setRoleName("管理员");
             roles.get(1).setRoleName("普通用户");
             roles.get(2).setRoleName("访客");
@@ -283,10 +273,10 @@ class SysUserServiceImplTest extends BaseUnitTest {
         void shouldSelectUserPostGroup() {
             // Arrange
             Long userId = 1L;
-            List<SysPostVo> posts = Arrays.asList(
-                TestDataFactory.createPostVo(1L, "CEO"),
-                TestDataFactory.createPostVo(2L, "CTO")
-            );
+            List<SysPostVo> posts =
+                    Arrays.asList(
+                            TestDataFactory.createPostVo(1L, "CEO"),
+                            TestDataFactory.createPostVo(2L, "CTO"));
             posts.get(0).setPostName("董事长");
             posts.get(1).setPostName("技术总监");
 
@@ -483,15 +473,15 @@ class SysUserServiceImplTest extends BaseUnitTest {
             pageQuery.setPageSize(10);
 
             Page<SysUserVo> mockPage = new Page<>();
-            List<SysUserVo> users = Arrays.asList(
-                TestDataFactory.createUserVo(1L, "testuser1"),
-                TestDataFactory.createUserVo(2L, "testuser2")
-            );
+            List<SysUserVo> users =
+                    Arrays.asList(
+                            TestDataFactory.createUserVo(1L, "testuser1"),
+                            TestDataFactory.createUserVo(2L, "testuser2"));
             mockPage.setRecords(users);
             mockPage.setTotal(2);
 
             when(baseMapper.selectPageUserList(any(Page.class), any(LambdaQueryWrapper.class)))
-                .thenReturn(mockPage);
+                    .thenReturn(mockPage);
 
             // Act
             TableDataInfo<SysUserVo> result = userService.selectPageUserList(queryUser, pageQuery);
@@ -500,12 +490,13 @@ class SysUserServiceImplTest extends BaseUnitTest {
             assertThat(result).isNotNull();
             assertThat(result.getRows()).hasSize(2);
             assertThat(result.getTotal()).isEqualTo(2);
-            assertThat(result.getRows()).extracting(SysUserVo::getUserName)
-                .containsExactly("testuser1", "testuser2");
+            assertThat(result.getRows())
+                    .extracting(SysUserVo::getUserName)
+                    .containsExactly("testuser1", "testuser2");
 
             // Verify
             verify(baseMapper, times(1))
-                .selectPageUserList(any(Page.class), any(LambdaQueryWrapper.class));
+                    .selectPageUserList(any(Page.class), any(LambdaQueryWrapper.class));
         }
     }
 
@@ -525,7 +516,7 @@ class SysUserServiceImplTest extends BaseUnitTest {
             Long deptId = 100L;
             // Directly mock selectUserList method
             when(baseMapper.selectUserList(ArgumentMatchers.<Wrapper<SysUser>>any()))
-                .thenReturn(Collections.emptyList());
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysUserVo> result = userService.selectUserByIds(emptyUserIds, deptId);
@@ -541,12 +532,13 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             List<Long> userIds = Arrays.asList(1L, 2L);
             Long deptId = null;
-            List<SysUserVo> expectedUsers = Arrays.asList(
-                TestDataFactory.createUserVo(1L, "user1"),
-                TestDataFactory.createUserVo(2L, "user2")
-            );
+            List<SysUserVo> expectedUsers =
+                    Arrays.asList(
+                            TestDataFactory.createUserVo(1L, "user1"),
+                            TestDataFactory.createUserVo(2L, "user2"));
             // Directly mock selectUserList method
-            when(baseMapper.selectUserList(ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(expectedUsers);
+            when(baseMapper.selectUserList(ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(expectedUsers);
 
             // Act
             List<SysUserVo> result = userService.selectUserByIds(userIds, deptId);
@@ -651,11 +643,12 @@ class SysUserServiceImplTest extends BaseUnitTest {
         void shouldSelectUserListByDept() {
             // Arrange
             Long deptId = 100L;
-            List<SysUserVo> expectedUsers = Arrays.asList(
-                TestDataFactory.createUserVo(1L, "user1"),
-                TestDataFactory.createUserVo(2L, "user2")
-            );
-            when(baseMapper.selectVoList(ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(expectedUsers);
+            List<SysUserVo> expectedUsers =
+                    Arrays.asList(
+                            TestDataFactory.createUserVo(1L, "user1"),
+                            TestDataFactory.createUserVo(2L, "user2"));
+            when(baseMapper.selectVoList(ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(expectedUsers);
 
             // Act
             List<SysUserVo> result = userService.selectUserListByDept(deptId);
@@ -663,8 +656,7 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result).hasSize(2);
-            assertThat(result).extracting(SysUserVo::getUserName)
-                .containsExactly("user1", "user2");
+            assertThat(result).extracting(SysUserVo::getUserName).containsExactly("user1", "user2");
         }
 
         @Test
@@ -682,7 +674,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             userRoles.add(ur1);
             userRoles.add(ur2);
 
-            when(userRoleMapper.selectList(ArgumentMatchers.<Wrapper<SysUserRole>>any())).thenReturn(userRoles);
+            when(userRoleMapper.selectList(ArgumentMatchers.<Wrapper<SysUserRole>>any()))
+                    .thenReturn(userRoles);
 
             // Act
             List<Long> result = userService.selectUserIdsByRoleIds(roleIds);
@@ -698,7 +691,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
         void shouldReturnEmptyListWhenDeptHasNoUsers() {
             // Arrange
             Long deptId = 999L;
-            when(baseMapper.selectVoList(ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysUserVo> result = userService.selectUserListByDept(deptId);
@@ -713,7 +707,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
         void shouldReturnEmptyListWhenRoleHasNoUsers() {
             // Arrange
             List<Long> roleIds = Arrays.asList(999L);
-            when(userRoleMapper.selectList(ArgumentMatchers.<Wrapper<SysUserRole>>any())).thenReturn(Collections.emptyList());
+            when(userRoleMapper.selectList(ArgumentMatchers.<Wrapper<SysUserRole>>any()))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<Long> result = userService.selectUserIdsByRoleIds(roleIds);
@@ -738,7 +733,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 1L;
             String status = "1"; // 停用
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(1);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(1);
 
             // Act
             int result = userService.updateUserStatus(userId, status);
@@ -758,7 +754,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             user.setEmail("new@example.com");
             user.setSex("0");
 
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(1);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(1);
 
             // Act
             int result = userService.updateUserProfile(user);
@@ -774,7 +771,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 1L;
             Long avatarId = 100L;
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(1);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(1);
 
             // Act
             boolean result = userService.updateUserAvatar(userId, avatarId);
@@ -790,7 +788,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 1L;
             String newPassword = "$2a$10$encrypted_password";
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(1);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(1);
 
             // Act
             int result = userService.resetUserPwd(userId, newPassword);
@@ -806,7 +805,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 999L;
             String status = "1";
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(0);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(0);
 
             // Act
             int result = userService.updateUserStatus(userId, status);
@@ -821,7 +821,8 @@ class SysUserServiceImplTest extends BaseUnitTest {
             // Arrange
             Long userId = 999L;
             Long avatarId = 100L;
-            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any())).thenReturn(0);
+            when(baseMapper.update(isNull(), ArgumentMatchers.<Wrapper<SysUser>>any()))
+                    .thenReturn(0);
 
             // Act
             boolean result = userService.updateUserAvatar(userId, avatarId);

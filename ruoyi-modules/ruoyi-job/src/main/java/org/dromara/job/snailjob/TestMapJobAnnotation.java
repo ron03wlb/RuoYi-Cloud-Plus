@@ -8,16 +8,14 @@ import com.aizuda.snailjob.client.job.core.annotation.MapExecutor;
 import com.aizuda.snailjob.client.job.core.dto.MapArgs;
 import com.aizuda.snailjob.common.log.SnailJobLog;
 import com.aizuda.snailjob.model.dto.ExecuteResult;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.springframework.stereotype.Component;
 
 /**
- * Map任务 动态分配 只分片不关注结果
- * <a href="https://juejin.cn/post/7446362500478894106"></a>
+ * Map任务 动态分配 只分片不关注结果 <a href="https://juejin.cn/post/7446362500478894106"></a>
  *
  * @author 老马
  */
@@ -29,12 +27,13 @@ public class TestMapJobAnnotation {
     public ExecuteResult doJobMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
         // 生成1~200数值并分片
         int partitionSize = 50;
-        List<List<Integer>> partition = IntStream.rangeClosed(1, 200)
-            .boxed()
-            .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
-            .values()
-            .stream()
-            .toList();
+        List<List<Integer>> partition =
+                IntStream.rangeClosed(1, 200)
+                        .boxed()
+                        .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
+                        .values()
+                        .stream()
+                        .toList();
         SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
         return mapHandler.doMap(partition, "doCalc");
     }
@@ -46,8 +45,8 @@ public class TestMapJobAnnotation {
         int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
         // 打印日志到服务器
         ThreadUtil.sleep(3, TimeUnit.SECONDS);
-        SnailJobLog.REMOTE.info("端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
+        SnailJobLog.REMOTE.info(
+                "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
         return ExecuteResult.success(partitionTotal);
     }
-
 }

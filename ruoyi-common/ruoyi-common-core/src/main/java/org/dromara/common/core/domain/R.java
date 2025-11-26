@@ -1,11 +1,10 @@
 package org.dromara.common.core.domain;
 
+import java.io.Serial;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.HttpStatus;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * 响应信息主体
@@ -16,32 +15,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class R<T> implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 成功
-     */
+    /** 成功 */
     public static final int SUCCESS = 200;
 
-    /**
-     * 失败
-     */
+    /** 失败 */
     public static final int FAIL = 500;
 
-    /**
-     * 消息状态码
-     */
+    /** 消息状态码 */
     private int code;
 
-    /**
-     * 消息内容
-     */
+    /** 消息内容 */
     private String msg;
 
-    /**
-     * 数据对象
-     */
+    /** 数据对象 */
     private T data;
 
     public static <T> R<T> ok() {
@@ -116,5 +104,4 @@ public class R<T> implements Serializable {
     public static <T> Boolean isSuccess(R<T> ret) {
         return R.SUCCESS == ret.getCode();
     }
-
 }

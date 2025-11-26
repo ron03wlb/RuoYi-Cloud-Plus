@@ -1,10 +1,10 @@
 package org.dromara.common.core.exception;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * ServiceException 测试类
@@ -111,27 +111,20 @@ class ServiceExceptionTest {
         @DisplayName("应该正确格式化多个占位符")
         void shouldFormatMultiplePlaceholders() {
             // Act
-            ServiceException exception = new ServiceException(
-                "订单{}支付失败，原因：{}，时间：{}",
-                "20241030001",
-                "余额不足",
-                "2024-10-30 10:00:00"
-            );
+            ServiceException exception =
+                    new ServiceException(
+                            "订单{}支付失败，原因：{}，时间：{}", "20241030001", "余额不足", "2024-10-30 10:00:00");
 
             // Assert
             assertThat(exception.getMessage())
-                .isEqualTo("订单20241030001支付失败，原因：余额不足，时间：2024-10-30 10:00:00");
+                    .isEqualTo("订单20241030001支付失败，原因：余额不足，时间：2024-10-30 10:00:00");
         }
 
         @Test
         @DisplayName("应该处理数字类型参数")
         void shouldFormatNumericArguments() {
             // Act
-            ServiceException exception = new ServiceException(
-                "文件大小{}MB超过限制{}MB",
-                50,
-                10
-            );
+            ServiceException exception = new ServiceException("文件大小{}MB超过限制{}MB", 50, 10);
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("文件大小50MB超过限制10MB");
@@ -141,11 +134,7 @@ class ServiceExceptionTest {
         @DisplayName("应该处理null参数")
         void shouldHandleNullArguments() {
             // Act
-            ServiceException exception = new ServiceException(
-                "用户{}的角色为{}",
-                "admin",
-                null
-            );
+            ServiceException exception = new ServiceException("用户{}的角色为{}", "admin", null);
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("用户admin的角色为null");
@@ -195,14 +184,12 @@ class ServiceExceptionTest {
         @DisplayName("应该处理包含特殊字符的消息")
         void shouldHandleSpecialCharactersInMessage() {
             // Act
-            ServiceException exception = new ServiceException(
-                "SQL错误：SELECT * FROM users WHERE name = '{}'",
-                "admin"
-            );
+            ServiceException exception =
+                    new ServiceException("SQL错误：SELECT * FROM users WHERE name = '{}'", "admin");
 
             // Assert
             assertThat(exception.getMessage())
-                .isEqualTo("SQL错误：SELECT * FROM users WHERE name = 'admin'");
+                    .isEqualTo("SQL错误：SELECT * FROM users WHERE name = 'admin'");
         }
 
         @Test
@@ -212,18 +199,13 @@ class ServiceExceptionTest {
             String template = "操作失败：用户{}在{}时间尝试{}操作{}资源，但由于{}原因被拒绝";
 
             // Act
-            ServiceException exception = new ServiceException(
-                template,
-                "张三",
-                "2024-10-30 10:00:00",
-                "删除",
-                "用户数据",
-                "权限不足"
-            );
+            ServiceException exception =
+                    new ServiceException(
+                            template, "张三", "2024-10-30 10:00:00", "删除", "用户数据", "权限不足");
 
             // Assert
             assertThat(exception.getMessage())
-                .isEqualTo("操作失败：用户张三在2024-10-30 10:00:00时间尝试删除操作用户数据资源，但由于权限不足原因被拒绝");
+                    .isEqualTo("操作失败：用户张三在2024-10-30 10:00:00时间尝试删除操作用户数据资源，但由于权限不足原因被拒绝");
         }
     }
 
@@ -263,9 +245,8 @@ class ServiceExceptionTest {
         @DisplayName("应该支持链式调用")
         void shouldSupportMethodChaining() {
             // Act
-            ServiceException exception = new ServiceException("错误")
-                .setMessage("更新的消息")
-                .setDetailMessage("这是详细信息");
+            ServiceException exception =
+                    new ServiceException("错误").setMessage("更新的消息").setDetailMessage("这是详细信息");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("更新的消息");
@@ -315,11 +296,12 @@ class ServiceExceptionTest {
         @DisplayName("应该支持多次链式调用")
         void shouldSupportMultipleChainedCalls() {
             // Act
-            ServiceException exception = new ServiceException()
-                .setMessage("第一次")
-                .setDetailMessage("详细1")
-                .setMessage("第二次")
-                .setDetailMessage("详细2");
+            ServiceException exception =
+                    new ServiceException()
+                            .setMessage("第一次")
+                            .setDetailMessage("详细1")
+                            .setMessage("第二次")
+                            .setDetailMessage("详细2");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("第二次");
@@ -345,31 +327,34 @@ class ServiceExceptionTest {
         @DisplayName("应该可以被抛出和捕获")
         void shouldBeThrowableAndCatchable() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw new ServiceException("测试异常");
-            })
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("测试异常");
+            assertThatThrownBy(
+                            () -> {
+                                throw new ServiceException("测试异常");
+                            })
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("测试异常");
         }
 
         @Test
         @DisplayName("应该可以作为RuntimeException捕获")
         void shouldBeCatchableAsRuntimeException() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw new ServiceException("测试异常");
-            })
-                .isInstanceOf(RuntimeException.class);
+            assertThatThrownBy(
+                            () -> {
+                                throw new ServiceException("测试异常");
+                            })
+                    .isInstanceOf(RuntimeException.class);
         }
 
         @Test
         @DisplayName("应该可以作为Exception捕获")
         void shouldBeCatchableAsException() {
             // Act & Assert
-            assertThatThrownBy(() -> {
-                throw new ServiceException("测试异常");
-            })
-                .isInstanceOf(Exception.class);
+            assertThatThrownBy(
+                            () -> {
+                                throw new ServiceException("测试异常");
+                            })
+                    .isInstanceOf(Exception.class);
         }
     }
 
@@ -470,11 +455,7 @@ class ServiceExceptionTest {
         @DisplayName("用户认证失败场景")
         void shouldHandleAuthenticationFailure() {
             // Act
-            ServiceException exception = new ServiceException(
-                "用户{}认证失败，原因：{}",
-                "admin",
-                "密码错误"
-            );
+            ServiceException exception = new ServiceException("用户{}认证失败，原因：{}", "admin", "密码错误");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("用户admin认证失败，原因：密码错误");
@@ -484,38 +465,36 @@ class ServiceExceptionTest {
         @DisplayName("权限不足场景")
         void shouldHandlePermissionDenied() {
             // Act
-            ServiceException exception = new ServiceException("权限不足", 403)
-                .setDetailMessage("用户 admin 尝试访问 /system/user/delete 接口");
+            ServiceException exception =
+                    new ServiceException("权限不足", 403)
+                            .setDetailMessage("用户 admin 尝试访问 /system/user/delete 接口");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("权限不足");
             assertThat(exception.getCode()).isEqualTo(403);
             assertThat(exception.getDetailMessage())
-                .isEqualTo("用户 admin 尝试访问 /system/user/delete 接口");
+                    .isEqualTo("用户 admin 尝试访问 /system/user/delete 接口");
         }
 
         @Test
         @DisplayName("数据验证失败场景")
         void shouldHandleValidationError() {
             // Act
-            ServiceException exception = new ServiceException(
-                "数据验证失败：字段{}的值{}不符合规则{}",
-                "email",
-                "invalid-email",
-                "必须是有效的邮箱地址"
-            );
+            ServiceException exception =
+                    new ServiceException(
+                            "数据验证失败：字段{}的值{}不符合规则{}", "email", "invalid-email", "必须是有效的邮箱地址");
 
             // Assert
             assertThat(exception.getMessage())
-                .isEqualTo("数据验证失败：字段email的值invalid-email不符合规则必须是有效的邮箱地址");
+                    .isEqualTo("数据验证失败：字段email的值invalid-email不符合规则必须是有效的邮箱地址");
         }
 
         @Test
         @DisplayName("资源不存在场景")
         void shouldHandleResourceNotFound() {
             // Act
-            ServiceException exception = new ServiceException("资源不存在", 404)
-                .setDetailMessage("订单ID: 123456");
+            ServiceException exception =
+                    new ServiceException("资源不存在", 404).setDetailMessage("订单ID: 123456");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("资源不存在");
@@ -527,10 +506,7 @@ class ServiceExceptionTest {
         @DisplayName("限流场景")
         void shouldHandleRateLimitExceeded() {
             // Act
-            ServiceException exception = new ServiceException(
-                "请求过于频繁，请{}秒后重试",
-                "60"
-            );
+            ServiceException exception = new ServiceException("请求过于频繁，请{}秒后重试", "60");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("请求过于频繁，请60秒后重试");
@@ -540,12 +516,10 @@ class ServiceExceptionTest {
         @DisplayName("业务规则违反场景")
         void shouldHandleBusinessRuleViolation() {
             // Act
-            ServiceException exception = new ServiceException(
-                "业务规则违反：{}",
-                "库存不足，当前库存：10，需要：20"
-            )
-                .setDetailMessage("商品ID: SKU-12345")
-                .setMessage("库存不足");
+            ServiceException exception =
+                    new ServiceException("业务规则违反：{}", "库存不足，当前库存：10，需要：20")
+                            .setDetailMessage("商品ID: SKU-12345")
+                            .setMessage("库存不足");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("库存不足");
@@ -556,8 +530,8 @@ class ServiceExceptionTest {
         @DisplayName("系统错误场景")
         void shouldHandleSystemError() {
             // Act
-            ServiceException exception = new ServiceException("系统错误", 500)
-                .setDetailMessage("数据库连接超时，耗时：30000ms");
+            ServiceException exception =
+                    new ServiceException("系统错误", 500).setDetailMessage("数据库连接超时，耗时：30000ms");
 
             // Assert
             assertThat(exception.getMessage()).isEqualTo("系统错误");
@@ -574,9 +548,11 @@ class ServiceExceptionTest {
         @DisplayName("应该具有serialVersionUID")
         void shouldHaveSerialVersionUID() {
             // Assert - 通过反射验证serialVersionUID字段存在
-            assertThatCode(() -> {
-                ServiceException.class.getDeclaredField("serialVersionUID");
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                ServiceException.class.getDeclaredField("serialVersionUID");
+                            })
+                    .doesNotThrowAnyException();
         }
     }
 
@@ -619,7 +595,8 @@ class ServiceExceptionTest {
             ServiceException exception2 = new ServiceException(404, "错误", "详细");
             ServiceException exception3 = new ServiceException(500, "错误", "详细");
 
-            // Act & Assert - 由于@EqualsAndHashCode(callSuper = true)，equals包含RuntimeException的字段（如堆栈）
+            // Act & Assert - 由于@EqualsAndHashCode(callSuper =
+            // true)，equals包含RuntimeException的字段（如堆栈）
             // 所以不同实例不会相等，但应该验证字段值相同
             assertThat(exception1.getCode()).isEqualTo(exception2.getCode());
             assertThat(exception1.getMessage()).isEqualTo(exception2.getMessage());
@@ -654,10 +631,7 @@ class ServiceExceptionTest {
             String toString = exception.toString();
 
             // Assert
-            assertThat(toString)
-                .contains("ServiceException")
-                .contains("404")
-                .contains("错误");
+            assertThat(toString).contains("ServiceException").contains("404").contains("错误");
         }
     }
 }

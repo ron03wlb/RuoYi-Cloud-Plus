@@ -9,6 +9,4 @@ import org.dromara.system.domain.vo.SysNoticeVo;
  *
  * @author Lion Li
  */
-public interface SysNoticeMapper extends BaseMapperPlus<SysNotice, SysNoticeVo> {
-
-}
+public interface SysNoticeMapper extends BaseMapperPlus<SysNotice, SysNoticeVo> {}

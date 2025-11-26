@@ -18,5 +18,4 @@ public class I18nConfig {
     public LocaleResolver localeResolver() {
         return new I18nLocaleResolver();
     }
-
 }

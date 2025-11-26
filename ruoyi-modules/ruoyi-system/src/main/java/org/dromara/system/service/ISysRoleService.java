@@ -1,13 +1,12 @@
 package org.dromara.system.service;
 
+import java.util.List;
+import java.util.Set;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;
 import org.dromara.system.domain.vo.SysRoleVo;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * 角色业务层
@@ -19,7 +18,7 @@ public interface ISysRoleService {
     /**
      * 分页查询角色列表
      *
-     * @param role      查询条件
+     * @param role 查询条件
      * @param pageQuery 分页参数
      * @return 角色分页列表
      */
@@ -193,7 +192,7 @@ public interface ISysRoleService {
     /**
      * 批量取消授权用户角色
      *
-     * @param roleId  角色ID
+     * @param roleId 角色ID
      * @param userIds 需要取消授权的用户数据ID
      * @return 结果
      */
@@ -202,7 +201,7 @@ public interface ISysRoleService {
     /**
      * 批量选择授权用户角色
      *
-     * @param roleId  角色ID
+     * @param roleId 角色ID
      * @param userIds 需要删除的用户数据ID
      * @return 结果
      */
@@ -211,5 +210,4 @@ public interface ISysRoleService {
     void cleanOnlineUserByRole(Long roleId);
 
     void cleanOnlineUser(List<Long> userIds);
-
 }

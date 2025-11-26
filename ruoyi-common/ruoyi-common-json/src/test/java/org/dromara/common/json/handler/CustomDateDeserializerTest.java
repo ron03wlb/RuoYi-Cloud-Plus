@@ -1,7 +1,12 @@
 package org.dromara.common.json.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import java.io.IOException;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,17 +16,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
-import java.util.Date;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 /**
  * CustomDateDeserializer (自定义日期反序列化器) 单元测试
- * <p>
- * 用途: 支持多种日期格式的字符串反序列化为 Date 对象
- * 使用 Hutool 的 DateUtil.parse 自动识别格式
+ *
+ * <p>用途: 支持多种日期格式的字符串反序列化为 Date 对象 使用 Hutool 的 DateUtil.parse 自动识别格式
  *
  * @author Test Team
  */
@@ -30,11 +28,9 @@ class CustomDateDeserializerTest {
 
     private CustomDateDeserializer deserializer;
 
-    @Mock
-    private JsonParser jsonParser;
+    @Mock private JsonParser jsonParser;
 
-    @Mock
-    private DeserializationContext deserializationContext;
+    @Mock private DeserializationContext deserializationContext;
 
     @BeforeEach
     void setUp() {
@@ -276,15 +272,16 @@ class CustomDateDeserializerTest {
     class MultipleFormatSupportTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2024-01-15",                   // 标准日期
-            "2024-01-15 10:30:45",          // 标准日期时间
-            "2024/01/15",                   // 斜杠分隔
-            "2024年01月15日",               // 中文格式
-            "2024-01-15T10:30:45",          // ISO 8601 (基本)
-            "2024-01-15T10:30:45.123",      // ISO 8601 (带毫秒)
-            "1704067200000"                 // 毫秒时间戳
-        })
+        @ValueSource(
+                strings = {
+                    "2024-01-15", // 标准日期
+                    "2024-01-15 10:30:45", // 标准日期时间
+                    "2024/01/15", // 斜杠分隔
+                    "2024年01月15日", // 中文格式
+                    "2024-01-15T10:30:45", // ISO 8601 (基本)
+                    "2024-01-15T10:30:45.123", // ISO 8601 (带毫秒)
+                    "1704067200000" // 毫秒时间戳
+                })
         @DisplayName("应该支持多种常见日期格式")
         void shouldSupportMultipleDateFormats(String dateString) throws IOException {
             // Arrange

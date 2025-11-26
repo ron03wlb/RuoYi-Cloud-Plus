@@ -1,6 +1,11 @@
 package org.dromara.common.web.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.*;
+
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import org.dromara.common.web.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,27 +13,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 /**
  * I18nLocaleResolver (国际化区域解析器) 单元测试
- * <p>
- * 用途: 从请求头content-language解析用户的语言区域
- * 测试范围: resolveLocale()方法的各种场景
+ *
+ * <p>用途: 从请求头content-language解析用户的语言区域 测试范围: resolveLocale()方法的各种场景
  *
  * @author Test Team
  */
 @DisplayName("I18nLocaleResolver (国际化区域解析器) 单元测试")
 class I18nLocaleResolverTest extends BaseUnitTest {
 
-    @InjectMocks
-    private I18nLocaleResolver localeResolver;
+    @InjectMocks private I18nLocaleResolver localeResolver;
 
-    @Mock
-    private HttpServletRequest request;
+    @Mock private HttpServletRequest request;
 
     @Nested
     @DisplayName("1. 标准语言格式测试")
@@ -199,9 +196,8 @@ class I18nLocaleResolverTest extends BaseUnitTest {
             Locale testLocale = Locale.CHINA;
 
             // Act - 不应该抛出异常
-            assertThatCode(() ->
-                localeResolver.setLocale(request, null, testLocale)
-            ).doesNotThrowAnyException();
+            assertThatCode(() -> localeResolver.setLocale(request, null, testLocale))
+                    .doesNotThrowAnyException();
         }
     }
 

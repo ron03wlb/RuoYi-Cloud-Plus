@@ -1,12 +1,11 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserVo;
-
-import java.util.List;
 
 /**
  * 用户 业务层
@@ -18,7 +17,7 @@ public interface ISysUserService {
     /**
      * 根据条件分页查询用户列表
      *
-     * @param user      用户信息
+     * @param user 用户信息
      * @param pageQuery 发呢也
      * @return 用户信息
      */
@@ -76,7 +75,7 @@ public interface ISysUserService {
      * 通过用户ID串查询用户
      *
      * @param userIds 用户ID串
-     * @param deptId  部门id
+     * @param deptId 部门id
      * @return 用户列表信息
      */
     List<SysUserVo> selectUserByIds(List<Long> userIds, Long deptId);
@@ -162,7 +161,7 @@ public interface ISysUserService {
     /**
      * 用户授权角色
      *
-     * @param userId  用户ID
+     * @param userId 用户ID
      * @param roleIds 角色组
      */
     void insertUserAuth(Long userId, Long[] roleIds);
@@ -196,7 +195,7 @@ public interface ISysUserService {
     /**
      * 重置用户密码
      *
-     * @param userId   用户ID
+     * @param userId 用户ID
      * @param password 密码
      * @return 结果
      */
@@ -273,5 +272,4 @@ public interface ISysUserService {
      * @return 用户ids
      */
     List<Long> selectUserIdsByRoleIds(List<Long> roleIds);
-
 }

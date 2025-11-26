@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * 广播任务
- * <a href="https://juejin.cn/post/7422948006150438950"></a>
+ * 广播任务 <a href="https://juejin.cn/post/7422948006150438950"></a>
  *
  * @author 老马
  */
@@ -33,5 +32,4 @@ public class TestBroadcastJob {
         // 获得jobArgs 中传入的相加的两个数
         return ExecuteResult.success("随机数大于50，收集日志任务执行成功");
     }
-
 }

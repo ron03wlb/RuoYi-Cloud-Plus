@@ -1,14 +1,13 @@
 package org.dromara.workflow.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.warm.flow.orm.entity.FlowDefinition;
 import org.dromara.workflow.domain.vo.FlowDefinitionVo;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 流程定义 服务层
@@ -21,7 +20,7 @@ public interface IFlwDefinitionService {
      * 查询流程定义列表
      *
      * @param flowDefinition 参数
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      * @return 返回分页列表
      */
     TableDataInfo<FlowDefinitionVo> queryList(FlowDefinition flowDefinition, PageQuery pageQuery);
@@ -30,11 +29,11 @@ public interface IFlwDefinitionService {
      * 查询未发布的流程定义列表
      *
      * @param flowDefinition 参数
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      * @return 返回分页列表
      */
-    TableDataInfo<FlowDefinitionVo> unPublishList(FlowDefinition flowDefinition, PageQuery pageQuery);
-
+    TableDataInfo<FlowDefinitionVo> unPublishList(
+            FlowDefinition flowDefinition, PageQuery pageQuery);
 
     /**
      * 发布流程定义
@@ -47,7 +46,7 @@ public interface IFlwDefinitionService {
     /**
      * 导出流程定义
      *
-     * @param id       流程定义id
+     * @param id 流程定义id
      * @param response 响应
      * @throws IOException 异常
      */
@@ -56,7 +55,7 @@ public interface IFlwDefinitionService {
     /**
      * 导入流程定义
      *
-     * @param file     文件
+     * @param file 文件
      * @param category 分类
      * @return 结果
      */

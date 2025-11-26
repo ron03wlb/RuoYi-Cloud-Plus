@@ -1,8 +1,15 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.system.BaseUnitTest;
 import org.dromara.system.TestDataFactory;
@@ -17,32 +24,25 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysSocialServiceImpl 单元测试
- * <p>
- * 测试社会化关系服务的核心业务逻辑
- * </p>
  *
- * <p>测试范围:</p>
+ * <p>测试社会化关系服务的核心业务逻辑
+ *
+ * <p>测试范围:
+ *
  * <ul>
- *   <li>查询类方法 (queryById, queryList, queryListByUserId, selectByAuthId)</li>
- *   <li>删除方法 (deleteWithValidById)</li>
+ *   <li>查询类方法 (queryById, queryList, queryListByUserId, selectByAuthId)
+ *   <li>删除方法 (deleteWithValidById)
  * </ul>
  *
- * <p>测试策略:</p>
+ * <p>测试策略:
+ *
  * <ul>
- *   <li>使用 Mockito Mock SysSocialMapper 依赖</li>
- *   <li>重点测试查询条件构建和列表过滤逻辑</li>
- *   <li>验证 Mapper 方法调用和参数</li>
- *   <li>跳过insertByBo/updateByBo方法（需要Spring上下文支持MapstructUtils）</li>
+ *   <li>使用 Mockito Mock SysSocialMapper 依赖
+ *   <li>重点测试查询条件构建和列表过滤逻辑
+ *   <li>验证 Mapper 方法调用和参数
+ *   <li>跳过insertByBo/updateByBo方法（需要Spring上下文支持MapstructUtils）
  * </ul>
  *
  * @author Test Team
@@ -51,18 +51,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysSocialServiceImpl 单元测试")
 class SysSocialServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysSocialMapper baseMapper;
+    @Mock private SysSocialMapper baseMapper;
 
-    @InjectMocks
-    private SysSocialServiceImpl socialService;
+    @InjectMocks private SysSocialServiceImpl socialService;
 
     /**
      * 初始化 MyBatis-Plus 表信息缓存
-     * <p>
-     * 在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存
-     * 这个方法在所有测试执行前初始化 SysSocial 实体的表信息
-     * </p>
+     *
+     * <p>在纯单元测试环境中，MyBatis-Plus 的 LambdaQueryWrapper 需要访问表信息缓存 这个方法在所有测试执行前初始化 SysSocial 实体的表信息
      */
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -129,7 +125,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialVo vo1 = TestDataFactory.createSocialVo(1L, 100L, "github");
             SysSocialVo vo2 = TestDataFactory.createSocialVo(2L, 100L, "github");
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(vo1, vo2));
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Arrays.asList(vo1, vo2));
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);
@@ -154,7 +151,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialVo vo2 = TestDataFactory.createSocialVo(2L, userId, "github");
             SysSocialVo vo3 = TestDataFactory.createSocialVo(3L, userId, "qq");
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(vo1, vo2, vo3));
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Arrays.asList(vo1, vo2, vo3));
 
             // Act
             List<SysSocialVo> result = socialService.queryListByUserId(userId);
@@ -165,8 +163,9 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             assertThat(result).allMatch(vo -> vo.getUserId().equals(userId));
 
             // 验证包含不同的社交平台
-            assertThat(result).extracting(SysSocialVo::getSource)
-                .containsExactlyInAnyOrder("wechat", "github", "qq");
+            assertThat(result)
+                    .extracting(SysSocialVo::getSource)
+                    .containsExactlyInAnyOrder("wechat", "github", "qq");
 
             // Verify
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
@@ -181,7 +180,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialVo vo = TestDataFactory.createSocialVo(1L, 100L, "wechat");
             vo.setAuthId(authId);
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.singletonList(vo));
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.singletonList(vo));
 
             // Act
             List<SysSocialVo> result = socialService.selectByAuthId(authId);
@@ -202,7 +202,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialBo bo = new SysSocialBo();
             bo.setUserId(999L);
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);
@@ -222,7 +223,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             bo.setSource("wechat");
 
             SysSocialVo vo = TestDataFactory.createSocialVo(1L, 100L, "wechat");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.singletonList(vo));
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.singletonList(vo));
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);
@@ -293,15 +295,16 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialVo qqBinding = TestDataFactory.createSocialVo(3L, userId, "qq");
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Arrays.asList(wechatBinding, githubBinding, qqBinding));
+                    .thenReturn(Arrays.asList(wechatBinding, githubBinding, qqBinding));
 
             // Act
             List<SysSocialVo> bindings = socialService.queryListByUserId(userId);
 
             // Assert
             assertThat(bindings).hasSize(3);
-            assertThat(bindings).extracting(SysSocialVo::getSource)
-                .containsExactlyInAnyOrder("wechat", "github", "qq");
+            assertThat(bindings)
+                    .extracting(SysSocialVo::getSource)
+                    .containsExactlyInAnyOrder("wechat", "github", "qq");
         }
 
         @Test
@@ -314,7 +317,7 @@ class SysSocialServiceImplTest extends BaseUnitTest {
 
             SysSocialVo existingBinding = TestDataFactory.createSocialVo(1L, 100L, "wechat");
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Collections.singletonList(existingBinding));
+                    .thenReturn(Collections.singletonList(existingBinding));
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);
@@ -334,7 +337,7 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             boundAccount.setAuthId(authId);
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Collections.singletonList(boundAccount));
+                    .thenReturn(Collections.singletonList(boundAccount));
 
             // Act
             List<SysSocialVo> result = socialService.selectByAuthId(authId);
@@ -375,10 +378,10 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialBo bo = new SysSocialBo();
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Arrays.asList(
-                    TestDataFactory.createSocialVo(1L, 100L, "wechat"),
-                    TestDataFactory.createSocialVo(2L, 200L, "github")
-                ));
+                    .thenReturn(
+                            Arrays.asList(
+                                    TestDataFactory.createSocialVo(1L, 100L, "wechat"),
+                                    TestDataFactory.createSocialVo(2L, 200L, "github")));
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);
@@ -392,7 +395,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
         void shouldHandleUserWithNoBindings() {
             // Arrange
             Long userId = 999L;
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysSocialVo> result = socialService.queryListByUserId(userId);
@@ -406,7 +410,8 @@ class SysSocialServiceImplTest extends BaseUnitTest {
         void shouldHandleNonExistentAuthId() {
             // Arrange
             String authId = "nonexistent_auth_id";
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysSocialVo> result = socialService.selectByAuthId(authId);
@@ -426,7 +431,7 @@ class SysSocialServiceImplTest extends BaseUnitTest {
             SysSocialVo vo2 = TestDataFactory.createSocialVo(2L, 200L, "github");
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Arrays.asList(vo1, vo2));
+                    .thenReturn(Arrays.asList(vo1, vo2));
 
             // Act
             List<SysSocialVo> result = socialService.queryList(bo);

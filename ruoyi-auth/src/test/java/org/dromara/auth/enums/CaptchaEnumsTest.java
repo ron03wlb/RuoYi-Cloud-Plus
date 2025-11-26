@@ -1,5 +1,7 @@
 package org.dromara.auth.enums;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.hutool.captcha.CircleCaptcha;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.ShearCaptcha;
@@ -12,13 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * 验证码枚举测试
- * <p>
- * 测试 CaptchaType 和 CaptchaCategory 枚举类
- * </p>
+ *
+ * <p>测试 CaptchaType 和 CaptchaCategory 枚举类
  *
  * @author Test Team
  */
@@ -36,9 +35,7 @@ class CaptchaEnumsTest extends BaseUnitTest {
             CaptchaType[] types = CaptchaType.values();
 
             // Assert
-            assertThat(types)
-                .hasSize(2)
-                .contains(CaptchaType.MATH, CaptchaType.CHAR);
+            assertThat(types).hasSize(2).contains(CaptchaType.MATH, CaptchaType.CHAR);
         }
 
         @Test
@@ -78,9 +75,7 @@ class CaptchaEnumsTest extends BaseUnitTest {
         @DisplayName("每个类型都应该有有效的 CodeGenerator 类")
         void eachTypeShouldHaveValidCodeGeneratorClass(CaptchaType type) {
             // Act & Assert
-            assertThat(type.getClazz())
-                .isNotNull()
-                .isNotInterface();
+            assertThat(type.getClazz()).isNotNull().isNotInterface();
         }
 
         @Test
@@ -104,8 +99,8 @@ class CaptchaEnumsTest extends BaseUnitTest {
 
             // Assert
             assertThat(categories)
-                .hasSize(3)
-                .contains(CaptchaCategory.LINE, CaptchaCategory.CIRCLE, CaptchaCategory.SHEAR);
+                    .hasSize(3)
+                    .contains(CaptchaCategory.LINE, CaptchaCategory.CIRCLE, CaptchaCategory.SHEAR);
         }
 
         @Test
@@ -157,9 +152,7 @@ class CaptchaEnumsTest extends BaseUnitTest {
         @DisplayName("每个类别都应该有有效的 Captcha 类")
         void eachCategoryShouldHaveValidCaptchaClass(CaptchaCategory category) {
             // Act & Assert
-            assertThat(category.getClazz())
-                .isNotNull()
-                .isNotInterface();
+            assertThat(category.getClazz()).isNotNull().isNotInterface();
         }
 
         @Test

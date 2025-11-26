@@ -32,5 +32,4 @@ public class SseAutoConfiguration {
     public SseController sseController(SseEmitterManager sseEmitterManager) {
         return new SseController(sseEmitterManager);
     }
-
 }

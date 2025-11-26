@@ -1,11 +1,5 @@
 package org.dromara.common.redis.utils;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.dromara.common.core.utils.SpringUtils;
-import org.redisson.api.*;
-import org.redisson.api.options.KeysScanOptions;
-
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +8,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.dromara.common.core.utils.SpringUtils;
+import org.redisson.api.*;
+import org.redisson.api.options.KeysScanOptions;
 
 /**
  * redis 工具类
@@ -30,9 +29,9 @@ public class RedisUtils {
     /**
      * 限流
      *
-     * @param key          限流key
-     * @param rateType     限流类型
-     * @param rate         速率
+     * @param key 限流key
+     * @param rateType 限流类型
+     * @param rate 速率
      * @param rateInterval 速率间隔
      * @return -1 表示失败
      */
@@ -43,16 +42,18 @@ public class RedisUtils {
     /**
      * 限流
      *
-     * @param key          限流key
-     * @param rateType     限流类型
-     * @param rate         速率
+     * @param key 限流key
+     * @param rateType 限流类型
+     * @param rate 速率
      * @param rateInterval 速率间隔
-     * @param timeout      超时时间
+     * @param timeout 超时时间
      * @return -1 表示失败
      */
-    public static long rateLimiter(String key, RateType rateType, int rate, int rateInterval, int timeout) {
+    public static long rateLimiter(
+            String key, RateType rateType, int rate, int rateInterval, int timeout) {
         RRateLimiter rateLimiter = CLIENT.getRateLimiter(key);
-        rateLimiter.trySetRate(rateType, rate, Duration.ofSeconds(rateInterval), Duration.ofSeconds(timeout));
+        rateLimiter.trySetRate(
+                rateType, rate, Duration.ofSeconds(rateInterval), Duration.ofSeconds(timeout));
         if (rateLimiter.tryAcquire()) {
             return rateLimiter.availablePermits();
         } else {
@@ -60,9 +61,7 @@ public class RedisUtils {
         }
     }
 
-    /**
-     * 获取客户端实例
-     */
+    /** 获取客户端实例 */
     public static RedissonClient getClient() {
         return CLIENT;
     }
@@ -71,8 +70,8 @@ public class RedisUtils {
      * 发布通道消息
      *
      * @param channelKey 通道key
-     * @param msg        发送数据
-     * @param consumer   自定义处理
+     * @param msg 发送数据
+     * @param consumer 自定义处理
      */
     public static <T> void publish(String channelKey, T msg, Consumer<T> consumer) {
         RTopic topic = CLIENT.getTopic(channelKey);
@@ -84,7 +83,7 @@ public class RedisUtils {
      * 发布消息到指定的频道
      *
      * @param channelKey 通道key
-     * @param msg        发送数据
+     * @param msg 发送数据
      */
     public static <T> void publish(String channelKey, T msg) {
         RTopic topic = CLIENT.getTopic(channelKey);
@@ -95,8 +94,8 @@ public class RedisUtils {
      * 订阅通道接收消息
      *
      * @param channelKey 通道key
-     * @param clazz      消息类型
-     * @param consumer   自定义处理
+     * @param clazz 消息类型
+     * @param consumer 自定义处理
      */
     public static <T> void subscribe(String channelKey, Class<T> clazz, Consumer<T> consumer) {
         RTopic topic = CLIENT.getTopic(channelKey);
@@ -106,7 +105,7 @@ public class RedisUtils {
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key   缓存的键值
+     * @param key 缓存的键值
      * @param value 缓存的值
      */
     public static <T> void setCacheObject(final String key, final T value) {
@@ -116,12 +115,13 @@ public class RedisUtils {
     /**
      * 缓存基本的对象，保留当前对象 TTL 有效期
      *
-     * @param key       缓存的键值
-     * @param value     缓存的值
+     * @param key 缓存的键值
+     * @param value 缓存的值
      * @param isSaveTtl 是否保留TTL有效期(例如: set之前ttl剩余90 set之后还是为90)
      * @since Redis 6.X 以上使用 setAndKeepTTL 兼容 5.X 方案
      */
-    public static <T> void setCacheObject(final String key, final T value, final boolean isSaveTtl) {
+    public static <T> void setCacheObject(
+            final String key, final T value, final boolean isSaveTtl) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         if (isSaveTtl) {
             try {
@@ -142,11 +142,12 @@ public class RedisUtils {
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key      缓存的键值
-     * @param value    缓存的值
+     * @param key 缓存的键值
+     * @param value 缓存的值
      * @param duration 时间
      */
-    public static <T> void setCacheObject(final String key, final T value, final Duration duration) {
+    public static <T> void setCacheObject(
+            final String key, final T value, final Duration duration) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         bucket.set(value, duration);
     }
@@ -154,11 +155,12 @@ public class RedisUtils {
     /**
      * 如果不存在则设置 并返回 true 如果存在则返回 false
      *
-     * @param key   缓存的键值
+     * @param key 缓存的键值
      * @param value 缓存的值
      * @return set成功或失败
      */
-    public static <T> boolean setObjectIfAbsent(final String key, final T value, final Duration duration) {
+    public static <T> boolean setObjectIfAbsent(
+            final String key, final T value, final Duration duration) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         return bucket.setIfAbsent(value, duration);
     }
@@ -166,21 +168,22 @@ public class RedisUtils {
     /**
      * 如果存在则设置 并返回 true 如果存在则返回 false
      *
-     * @param key   缓存的键值
+     * @param key 缓存的键值
      * @param value 缓存的值
      * @return set成功或失败
      */
-    public static <T> boolean setObjectIfExists(final String key, final T value, final Duration duration) {
+    public static <T> boolean setObjectIfExists(
+            final String key, final T value, final Duration duration) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         return bucket.setIfExists(value, duration);
     }
 
     /**
      * 注册对象监听器
-     * <p>
-     * key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
      *
-     * @param key      缓存的键值
+     * <p>key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
+     *
+     * @param key 缓存的键值
      * @param listener 监听器配置
      */
     public static <T> void addObjectListener(final String key, final ObjectListener listener) {
@@ -191,7 +194,7 @@ public class RedisUtils {
     /**
      * 设置有效时间
      *
-     * @param key     Redis键
+     * @param key Redis键
      * @param timeout 超时时间
      * @return true=设置成功；false=设置失败
      */
@@ -202,7 +205,7 @@ public class RedisUtils {
     /**
      * 设置有效时间
      *
-     * @param key      Redis键
+     * @param key Redis键
      * @param duration 超时时间
      * @return true=设置成功；false=设置失败
      */
@@ -249,9 +252,10 @@ public class RedisUtils {
      */
     public static void deleteObject(final Collection collection) {
         RBatch batch = CLIENT.createBatch();
-        collection.forEach(t -> {
-            batch.getBucket(t.toString()).deleteAsync();
-        });
+        collection.forEach(
+                t -> {
+                    batch.getBucket(t.toString()).deleteAsync();
+                });
         batch.execute();
     }
 
@@ -267,7 +271,7 @@ public class RedisUtils {
     /**
      * 缓存List数据
      *
-     * @param key      缓存的键值
+     * @param key 缓存的键值
      * @param dataList 待缓存的List数据
      * @return 缓存的对象
      */
@@ -279,7 +283,7 @@ public class RedisUtils {
     /**
      * 追加缓存List数据
      *
-     * @param key  缓存的键值
+     * @param key 缓存的键值
      * @param data 待缓存的数据
      * @return 缓存的对象
      */
@@ -290,10 +294,10 @@ public class RedisUtils {
 
     /**
      * 注册List监听器
-     * <p>
-     * key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
      *
-     * @param key      缓存的键值
+     * <p>key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
+     *
+     * @param key 缓存的键值
      * @param listener 监听器配置
      */
     public static <T> void addListListener(final String key, final ObjectListener listener) {
@@ -315,9 +319,9 @@ public class RedisUtils {
     /**
      * 获得缓存的list对象(范围)
      *
-     * @param key  缓存的键值
+     * @param key 缓存的键值
      * @param form 起始下标
-     * @param to   截止下标
+     * @param to 截止下标
      * @return 缓存键值对应的数据
      */
     public static <T> List<T> getCacheListRange(final String key, int form, int to) {
@@ -328,7 +332,7 @@ public class RedisUtils {
     /**
      * 缓存Set
      *
-     * @param key     缓存键值
+     * @param key 缓存键值
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
@@ -340,7 +344,7 @@ public class RedisUtils {
     /**
      * 追加缓存Set数据
      *
-     * @param key  缓存的键值
+     * @param key 缓存的键值
      * @param data 待缓存的数据
      * @return 缓存的对象
      */
@@ -351,10 +355,10 @@ public class RedisUtils {
 
     /**
      * 注册Set监听器
-     * <p>
-     * key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
      *
-     * @param key      缓存的键值
+     * <p>key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
+     *
+     * @param key 缓存的键值
      * @param listener 监听器配置
      */
     public static <T> void addSetListener(final String key, final ObjectListener listener) {
@@ -376,7 +380,7 @@ public class RedisUtils {
     /**
      * 缓存Map
      *
-     * @param key     缓存的键值
+     * @param key 缓存的键值
      * @param dataMap 缓存的数据
      */
     public static <T> void setCacheMap(final String key, final Map<String, T> dataMap) {
@@ -388,10 +392,10 @@ public class RedisUtils {
 
     /**
      * 注册Map监听器
-     * <p>
-     * key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
      *
-     * @param key      缓存的键值
+     * <p>key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
+     *
+     * @param key 缓存的键值
      * @param listener 监听器配置
      */
     public static <T> void addMapListener(final String key, final ObjectListener listener) {
@@ -424,8 +428,8 @@ public class RedisUtils {
     /**
      * 往Hash中存入数据
      *
-     * @param key   Redis键
-     * @param hKey  Hash键
+     * @param key Redis键
+     * @param hKey Hash键
      * @param value 值
      */
     public static <T> void setCacheMapValue(final String key, final String hKey, final T value) {
@@ -436,7 +440,7 @@ public class RedisUtils {
     /**
      * 获取Hash中的数据
      *
-     * @param key  Redis键
+     * @param key Redis键
      * @param hKey Hash键
      * @return Hash中的对象
      */
@@ -448,7 +452,7 @@ public class RedisUtils {
     /**
      * 删除Hash中的数据
      *
-     * @param key  Redis键
+     * @param key Redis键
      * @param hKey Hash键
      * @return Hash中的对象
      */
@@ -460,7 +464,7 @@ public class RedisUtils {
     /**
      * 删除Hash中的数据
      *
-     * @param key   Redis键
+     * @param key Redis键
      * @param hKeys Hash键
      */
     public static <T> void delMultiCacheMapValue(final String key, final Set<String> hKeys) {
@@ -475,7 +479,7 @@ public class RedisUtils {
     /**
      * 获取多个Hash中的数据
      *
-     * @param key   Redis键
+     * @param key Redis键
      * @param hKeys Hash键集合
      * @return Hash对象集合
      */
@@ -487,7 +491,7 @@ public class RedisUtils {
     /**
      * 设置原子值
      *
-     * @param key   Redis键
+     * @param key Redis键
      * @param value 值
      */
     public static void setAtomicValue(String key, long value) {
@@ -530,29 +534,24 @@ public class RedisUtils {
 
     /**
      * 获得缓存的基本对象列表(全局匹配忽略租户 自行拼接租户id)
-     * <P>
-     * limit-设置扫描的限制数量(默认为0,查询全部)
-     * pattern-设置键的匹配模式(默认为null)
-     * chunkSize-设置每次扫描的块大小(默认为0,本方法设置为1000)
+     *
+     * <p>limit-设置扫描的限制数量(默认为0,查询全部) pattern-设置键的匹配模式(默认为null) chunkSize-设置每次扫描的块大小(默认为0,本方法设置为1000)
      * type-设置键的类型(默认为null,查询全部类型)
-     * </P>
+     *
      * @see KeysScanOptions
      * @param pattern 字符串前缀
      * @return 对象列表
      */
     public static Collection<String> keys(final String pattern) {
-        return  keys(KeysScanOptions.defaults().pattern(pattern).chunkSize(1000));
+        return keys(KeysScanOptions.defaults().pattern(pattern).chunkSize(1000));
     }
 
     /**
      * 通过扫描参数获取缓存的基本对象列表
+     *
      * @param keysScanOptions 扫描参数
-     * <P>
-     * limit-设置扫描的限制数量(默认为0,查询全部)
-     * pattern-设置键的匹配模式(默认为null)
-     * chunkSize-设置每次扫描的块大小(默认为0)
-     * type-设置键的类型(默认为null,查询全部类型)
-     * </P>
+     *     <p>limit-设置扫描的限制数量(默认为0,查询全部) pattern-设置键的匹配模式(默认为null) chunkSize-设置每次扫描的块大小(默认为0)
+     *     type-设置键的类型(默认为null,查询全部类型)
      * @see KeysScanOptions
      */
     public static Collection<String> keys(final KeysScanOptions keysScanOptions) {

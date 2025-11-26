@@ -1,5 +1,11 @@
 package org.dromara.gen.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.sql.DataSource;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.test.BaseIntegrationTest;
@@ -14,82 +20,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * GenTableService 集成测试
- * <p>
- * 测试代码生成服务的核心功能：
+ *
+ * <p>测试代码生成服务的核心功能：
+ *
  * <ul>
- *     <li>数据库表查询</li>
- *     <li>表信息导入</li>
- *     <li>字段信息查询</li>
- *     <li>代码生成（Velocity）</li>
- *     <li>代码预览</li>
- *     <li>代码下载（ZIP）</li>
+ *   <li>数据库表查询
+ *   <li>表信息导入
+ *   <li>字段信息查询
+ *   <li>代码生成（Velocity）
+ *   <li>代码预览
+ *   <li>代码下载（ZIP）
  * </ul>
  *
- * <p><strong>⚠️ 当前状态：已禁用（@Disabled）</strong></p>
+ * <p><strong>⚠️ 当前状态：已禁用（@Disabled）</strong>
  *
- * <p><strong>问题描述：</strong></p>
+ * <p><strong>问题描述：</strong>
+ *
  * <ul>
- *     <li>测试在 Spring Boot 上下文启动阶段挂起，无法完成</li>
- *     <li>即使添加 @Timeout 注解，测试仍会挂起不停止</li>
- *     <li>可能原因：Testcontainers 初始化、Dubbo 配置、或 Nacos 连接问题</li>
+ *   <li>测试在 Spring Boot 上下文启动阶段挂起，无法完成
+ *   <li>即使添加 @Timeout 注解，测试仍会挂起不停止
+ *   <li>可能原因：Testcontainers 初始化、Dubbo 配置、或 Nacos 连接问题
  * </ul>
  *
- * <p><strong>已尝试的解决方案：</strong></p>
+ * <p><strong>已尝试的解决方案：</strong>
+ *
  * <ol>
- *     <li>❌ 添加类级别 @Timeout(120, TimeUnit.SECONDS) - 无效，测试仍挂起</li>
- *     <li>❌ 保持 PER_CLASS 生命周期以重用容器 - 无改善</li>
- *     <li>❌ 简化配置（禁用 Nacos/Dubbo） - 已在 properties 中配置</li>
+ *   <li>❌ 添加类级别 @Timeout(120, TimeUnit.SECONDS) - 无效，测试仍挂起
+ *   <li>❌ 保持 PER_CLASS 生命周期以重用容器 - 无改善
+ *   <li>❌ 简化配置（禁用 Nacos/Dubbo） - 已在 properties 中配置
  * </ol>
  *
- * <p><strong>建议的解决方案：</strong></p>
+ * <p><strong>建议的解决方案：</strong>
+ *
  * <ul>
- *     <li><strong>方案 A（推荐）：</strong>拆分为 5 个独立的测试类
- *         <ul>
- *             <li>GenTableInfrastructureTest.java - 基础设施测试（3 tests）</li>
- *             <li>GenTableDatabaseQueryTest.java - 数据库查询（3 tests）</li>
- *             <li>GenTableImportTest.java - 表导入（3 tests）</li>
- *             <li>GenTableInfoQueryTest.java - 表信息查询（3 tests）</li>
- *             <li>GenTableCodeGenerationTest.java - 代码生成（5 tests）</li>
- *         </ul>
- *     </li>
- *     <li><strong>方案 B：</strong>使用 H2 内存数据库替代 Testcontainers MySQL</li>
- *     <li><strong>方案 C：</strong>完全移除 Dubbo 依赖，使用纯 Spring Boot 配置</li>
- *     <li><strong>方案 D：</strong>改为手动测试或端到端测试</li>
+ *   <li><strong>方案 A（推荐）：</strong>拆分为 5 个独立的测试类
+ *       <ul>
+ *         <li>GenTableInfrastructureTest.java - 基础设施测试（3 tests）
+ *         <li>GenTableDatabaseQueryTest.java - 数据库查询（3 tests）
+ *         <li>GenTableImportTest.java - 表导入（3 tests）
+ *         <li>GenTableInfoQueryTest.java - 表信息查询（3 tests）
+ *         <li>GenTableCodeGenerationTest.java - 代码生成（5 tests）
+ *       </ul>
+ *   <li><strong>方案 B：</strong>使用 H2 内存数据库替代 Testcontainers MySQL
+ *   <li><strong>方案 C：</strong>完全移除 Dubbo 依赖，使用纯 Spring Boot 配置
+ *   <li><strong>方案 D：</strong>改为手动测试或端到端测试
  * </ul>
  *
- * <p><strong>下一步行动：</strong></p>
+ * <p><strong>下一步行动：</strong>
+ *
  * <ul>
- *     <li>实施方案 A：将此测试类拆分为 5 个独立的小测试类</li>
- *     <li>每个测试类使用 PER_METHOD 生命周期</li>
- *     <li>在方法级别添加 @Timeout 注解</li>
- *     <li>简化每个测试类的数据准备</li>
+ *   <li>实施方案 A：将此测试类拆分为 5 个独立的小测试类
+ *   <li>每个测试类使用 PER_METHOD 生命周期
+ *   <li>在方法级别添加 @Timeout 注解
+ *   <li>简化每个测试类的数据准备
  * </ul>
  *
  * @author Lion Li
  * @since 2025-11-10
  */
-@Disabled("测试在 Spring 上下文启动时挂起。" +
-    "原因：Testcontainers/Dubbo/Nacos 初始化问题。" +
-    "解决方案：需要拆分为多个独立的小测试类，每个类专注一个功能领域。" +
-    "参考：docs/INTEGRATION-TEST-TRACKER.md")
+@Disabled(
+        "测试在 Spring 上下文启动时挂起。"
+                + "原因：Testcontainers/Dubbo/Nacos 初始化问题。"
+                + "解决方案：需要拆分为多个独立的小测试类，每个类专注一个功能领域。"
+                + "参考：docs/INTEGRATION-TEST-TRACKER.md")
 @SpringBootTest(
-    classes = org.dromara.gen.config.TestApplication.class,
-    properties = {
-        "spring.profiles.active=test",
-        "spring.cloud.nacos.config.enabled=false",
-        "spring.cloud.nacos.discovery.enabled=false",
-        "spring.main.allow-bean-definition-overriding=true"
-    }
-)
+        classes = org.dromara.gen.config.TestApplication.class,
+        properties = {
+            "spring.profiles.active=test",
+            "spring.cloud.nacos.config.enabled=false",
+            "spring.cloud.nacos.discovery.enabled=false",
+            "spring.main.allow-bean-definition-overriding=true"
+        })
 @Import(TestSaTokenConfig.class)
 @DisplayName("GenTableService 集成测试")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -99,15 +102,11 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceIntegrationTest.class);
 
-    @Autowired
-    private IGenTableService genTableService;
+    @Autowired private IGenTableService genTableService;
 
-    @Autowired
-    private DataSource dataSource;
+    @Autowired private DataSource dataSource;
 
-    /**
-     * 初始化测试数据库
-     */
+    /** 初始化测试数据库 */
     @BeforeAll
     void initDatabase() {
         log.info("=== 初始化测试数据库 ===");
@@ -159,7 +158,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             boolean testUserExists = SqlScriptExecutor.tableExists(dataSource, "test_user");
             boolean testProductExists = SqlScriptExecutor.tableExists(dataSource, "test_product");
             boolean genTableExists = SqlScriptExecutor.tableExists(dataSource, "gen_table");
-            boolean genTableColumnExists = SqlScriptExecutor.tableExists(dataSource, "gen_table_column");
+            boolean genTableColumnExists =
+                    SqlScriptExecutor.tableExists(dataSource, "gen_table_column");
 
             // Assert
             assertThat(testUserExists).as("test_user 表应该存在").isTrue();
@@ -185,16 +185,21 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             PageQuery pageQuery = new PageQuery(10, 1);
 
             // Act
-            TableDataInfo<GenTable> result = genTableService.selectPageDbTableList(queryParam, pageQuery);
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageDbTableList(queryParam, pageQuery);
 
             // Assert
             assertThat(result).isNotNull();
             assertThat(result.getRows()).isNotEmpty();
 
             log.info("✅ 查询到 {} 张表", result.getTotal());
-            result.getRows().forEach(table ->
-                log.info("   表名: {}, 描述: {}", table.getTableName(), table.getTableComment())
-            );
+            result.getRows()
+                    .forEach(
+                            table ->
+                                    log.info(
+                                            "   表名: {}, 描述: {}",
+                                            table.getTableName(),
+                                            table.getTableComment()));
         }
 
         @Test
@@ -210,15 +215,19 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             assertThat(tables).isNotNull();
             assertThat(tables).hasSizeGreaterThanOrEqualTo(1);
 
-            GenTable testUserTable = tables.stream()
-                .filter(t -> "test_user".equals(t.getTableName()))
-                .findFirst()
-                .orElse(null);
+            GenTable testUserTable =
+                    tables.stream()
+                            .filter(t -> "test_user".equals(t.getTableName()))
+                            .findFirst()
+                            .orElse(null);
 
             assertThat(testUserTable).isNotNull();
             assertThat(testUserTable.getTableComment()).contains("测试用户表");
 
-            log.info("✅ 查询表成功: {} - {}", testUserTable.getTableName(), testUserTable.getTableComment());
+            log.info(
+                    "✅ 查询表成功: {} - {}",
+                    testUserTable.getTableName(),
+                    testUserTable.getTableComment());
         }
 
         @Test
@@ -234,9 +243,7 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             assertThat(tables).isNotNull();
             assertThat(tables).hasSizeGreaterThanOrEqualTo(2);
 
-            List<String> foundTableNames = tables.stream()
-                .map(GenTable::getTableName)
-                .toList();
+            List<String> foundTableNames = tables.stream().map(GenTable::getTableName).toList();
 
             assertThat(foundTableNames).contains("test_user", "test_product");
 
@@ -260,7 +267,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
         void shouldImportDatabaseTable() {
             // Arrange
             String[] tableNames = {"test_user"};
-            List<GenTable> tablesToImport = genTableService.selectDbTableListByNames(tableNames, "master");
+            List<GenTable> tablesToImport =
+                    genTableService.selectDbTableListByNames(tableNames, "master");
             assertThat(tablesToImport).isNotEmpty();
 
             // Act
@@ -269,14 +277,18 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Assert
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_user");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
 
             assertThat(result.getRows()).isNotEmpty();
             GenTable importedTable = result.getRows().get(0);
             assertThat(importedTable.getTableName()).isEqualTo("test_user");
             assertThat(importedTable.getTableComment()).contains("测试用户表");
 
-            log.info("✅ 表导入成功: {} - {}", importedTable.getTableName(), importedTable.getTableComment());
+            log.info(
+                    "✅ 表导入成功: {} - {}",
+                    importedTable.getTableName(),
+                    importedTable.getTableComment());
         }
 
         @Test
@@ -284,7 +296,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
         void shouldImportTableWithCorrectColumns() {
             // Arrange
             String[] tableNames = {"test_product"};
-            List<GenTable> tablesToImport = genTableService.selectDbTableListByNames(tableNames, "master");
+            List<GenTable> tablesToImport =
+                    genTableService.selectDbTableListByNames(tableNames, "master");
             assertThat(tablesToImport).isNotEmpty();
 
             genTableService.importGenTable(tablesToImport, "master");
@@ -292,21 +305,22 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Find the imported table ID
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_product");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
             assertThat(result.getRows()).isNotEmpty();
             Long tableId = result.getRows().get(0).getTableId();
 
             // Act
-            List<GenTableColumn> columns = genTableService.selectGenTableColumnListByTableId(tableId);
+            List<GenTableColumn> columns =
+                    genTableService.selectGenTableColumnListByTableId(tableId);
 
             // Assert
             assertThat(columns).isNotEmpty();
 
-            List<String> columnNames = columns.stream()
-                .map(GenTableColumn::getColumnName)
-                .toList();
+            List<String> columnNames = columns.stream().map(GenTableColumn::getColumnName).toList();
 
-            assertThat(columnNames).contains("id", "product_name", "product_code", "price", "stock");
+            assertThat(columnNames)
+                    .contains("id", "product_name", "product_code", "price", "stock");
 
             log.info("✅ 导入了 {} 个字段: {}", columns.size(), columnNames);
         }
@@ -316,30 +330,37 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
         void shouldIdentifyPrimaryKeyCorrectly() {
             // Arrange
             String[] tableNames = {"test_user"};
-            List<GenTable> tablesToImport = genTableService.selectDbTableListByNames(tableNames, "master");
+            List<GenTable> tablesToImport =
+                    genTableService.selectDbTableListByNames(tableNames, "master");
             genTableService.importGenTable(tablesToImport, "master");
 
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_user");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
             assertThat(result.getRows()).isNotEmpty();
             Long tableId = result.getRows().get(0).getTableId();
 
             // Act
-            List<GenTableColumn> columns = genTableService.selectGenTableColumnListByTableId(tableId);
+            List<GenTableColumn> columns =
+                    genTableService.selectGenTableColumnListByTableId(tableId);
 
             // Assert
-            GenTableColumn pkColumn = columns.stream()
-                .filter(col -> "1".equals(col.getIsPk()))
-                .findFirst()
-                .orElse(null);
+            GenTableColumn pkColumn =
+                    columns.stream()
+                            .filter(col -> "1".equals(col.getIsPk()))
+                            .findFirst()
+                            .orElse(null);
 
             assertThat(pkColumn).isNotNull();
             assertThat(pkColumn.getColumnName()).isEqualTo("id");
             assertThat(pkColumn.getIsPk()).isEqualTo("1");
 
-            log.info("✅ 主键字段: {} (isPk={}, isIncrement={})",
-                pkColumn.getColumnName(), pkColumn.getIsPk(), pkColumn.getIsIncrement());
+            log.info(
+                    "✅ 主键字段: {} (isPk={}, isIncrement={})",
+                    pkColumn.getColumnName(),
+                    pkColumn.getIsPk(),
+                    pkColumn.getIsIncrement());
         }
     }
 
@@ -354,7 +375,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             SqlScriptExecutor.deleteFromTables(dataSource, "gen_table_column", "gen_table");
 
             String[] tableNames = {"test_user", "test_product"};
-            List<GenTable> tablesToImport = genTableService.selectDbTableListByNames(tableNames, "master");
+            List<GenTable> tablesToImport =
+                    genTableService.selectDbTableListByNames(tableNames, "master");
             genTableService.importGenTable(tablesToImport, "master");
         }
 
@@ -364,7 +386,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Arrange
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_user");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
             assertThat(result.getRows()).isNotEmpty();
             Long tableId = result.getRows().get(0).getTableId();
 
@@ -385,7 +408,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Arrange
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_user");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
             assertThat(result.getRows()).isNotEmpty();
             Long tableId = result.getRows().get(0).getTableId();
 
@@ -411,9 +435,7 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             assertThat(allTables).isNotNull();
             assertThat(allTables).hasSizeGreaterThanOrEqualTo(2);
 
-            List<String> tableNamesList = allTables.stream()
-                .map(GenTable::getTableName)
-                .toList();
+            List<String> tableNamesList = allTables.stream().map(GenTable::getTableName).toList();
 
             assertThat(tableNamesList).contains("test_user", "test_product");
 
@@ -434,13 +456,15 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             SqlScriptExecutor.deleteFromTables(dataSource, "gen_table_column", "gen_table");
 
             String[] tableNames = {"test_user"};
-            List<GenTable> tablesToImport = genTableService.selectDbTableListByNames(tableNames, "master");
+            List<GenTable> tablesToImport =
+                    genTableService.selectDbTableListByNames(tableNames, "master");
             genTableService.importGenTable(tablesToImport, "master");
 
             // 获取表ID
             GenTable searchParam = new GenTable();
             searchParam.setTableName("test_user");
-            TableDataInfo<GenTable> result = genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
+            TableDataInfo<GenTable> result =
+                    genTableService.selectPageGenTableList(searchParam, new PageQuery(10, 1));
             testTableId = result.getRows().get(0).getTableId();
         }
 
@@ -455,24 +479,20 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             assertThat(previewCode).isNotEmpty();
 
             // 验证生成的文件
-            assertThat(previewCode).containsKeys(
-                "domain/TestUser.java",
-                "mapper/TestUserMapper.java",
-                "service/ITestUserService.java",
-                "service/impl/TestUserServiceImpl.java",
-                "controller/TestUserController.java"
-            );
+            assertThat(previewCode)
+                    .containsKeys(
+                            "domain/TestUser.java",
+                            "mapper/TestUserMapper.java",
+                            "service/ITestUserService.java",
+                            "service/impl/TestUserServiceImpl.java",
+                            "controller/TestUserController.java");
 
             log.info("✅ 生成了 {} 个代码文件", previewCode.size());
-            previewCode.keySet().forEach(fileName ->
-                log.info("   - {}", fileName)
-            );
+            previewCode.keySet().forEach(fileName -> log.info("   - {}", fileName));
 
             // 验证 Controller 代码包含必要的注解
             String controllerCode = previewCode.get("controller/TestUserController.java");
-            assertThat(controllerCode)
-                .contains("@RestController")
-                .contains("@RequestMapping");
+            assertThat(controllerCode).contains("@RestController").contains("@RequestMapping");
 
             log.info("✅ 代码预览验证通过");
         }
@@ -487,11 +507,11 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Assert
             assertThat(domainCode).isNotNull();
             assertThat(domainCode)
-                .contains("class TestUser")
-                .contains("private Long id")
-                .contains("private String username")
-                .contains("private String email")
-                .contains("private String phone");
+                    .contains("class TestUser")
+                    .contains("private Long id")
+                    .contains("private String username")
+                    .contains("private String email")
+                    .contains("private String phone");
 
             log.info("✅ 实体类生成正确，包含所有字段");
         }
@@ -506,8 +526,8 @@ class GenTableServiceIntegrationTest extends BaseIntegrationTest {
             // Assert
             assertThat(mapperCode).isNotNull();
             assertThat(mapperCode)
-                .contains("interface TestUserMapper")
-                .contains("extends BaseMapperPlus");
+                    .contains("interface TestUserMapper")
+                    .contains("extends BaseMapperPlus");
 
             log.info("✅ Mapper 接口生成正确");
         }

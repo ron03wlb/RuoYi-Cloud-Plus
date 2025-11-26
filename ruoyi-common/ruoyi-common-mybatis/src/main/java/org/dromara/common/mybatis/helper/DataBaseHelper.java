@@ -2,18 +2,17 @@ package org.dromara.common.mybatis.helper;
 
 import cn.hutool.core.convert.Convert;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.dromara.common.core.exception.ServiceException;
-import org.dromara.common.core.utils.SpringUtils;
-import org.dromara.common.mybatis.enums.DataBaseType;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.utils.SpringUtils;
+import org.dromara.common.mybatis.enums.DataBaseType;
 
 /**
  * 数据库助手
@@ -23,14 +22,14 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DataBaseHelper {
 
-    private static final DynamicRoutingDataSource DS = SpringUtils.getBean(DynamicRoutingDataSource.class);
+    private static final DynamicRoutingDataSource DS =
+            SpringUtils.getBean(DynamicRoutingDataSource.class);
 
     /**
      * 获取当前数据源对应的数据库类型
-     * <p>
-     * 通过 DynamicRoutingDataSource 获取当前线程绑定的数据源，
-     * 然后从数据源获取数据库连接，利用连接的元数据获取数据库产品名称，
-     * 最后调用 DataBaseType.find 方法将数据库名称转换为对应的枚举类型
+     *
+     * <p>通过 DynamicRoutingDataSource 获取当前线程绑定的数据源， 然后从数据源获取数据库连接，利用连接的元数据获取数据库产品名称， 最后调用
+     * DataBaseType.find 方法将数据库名称转换为对应的枚举类型
      *
      * @return 当前数据库对应的 DataBaseType 枚举，找不到时默认返回 MY_SQL
      * @throws ServiceException 当获取数据库连接或元数据出现异常时抛出业务异常
@@ -48,12 +47,9 @@ public class DataBaseHelper {
 
     /**
      * 根据当前数据库类型，生成兼容的 FIND_IN_SET 语句片段
-     * <p>
-     * 用于判断指定值是否存在于逗号分隔的字符串列中，SQL写法根据不同数据库方言自动切换：
-     * - Oracle 使用 instr 函数
-     * - PostgreSQL 使用 strpos 函数
-     * - SQL Server 使用 charindex 函数
-     * - 其他默认使用 MySQL 的 find_in_set 函数
+     *
+     * <p>用于判断指定值是否存在于逗号分隔的字符串列中，SQL写法根据不同数据库方言自动切换： - Oracle 使用 instr 函数 - PostgreSQL 使用 strpos 函数
+     * - SQL Server 使用 charindex 函数 - 其他默认使用 MySQL 的 find_in_set 函数
      *
      * @param var1 要查找的值（支持任意类型，内部会转换成字符串）
      * @param var2 存储逗号分隔值的数据库列名
@@ -62,20 +58,18 @@ public class DataBaseHelper {
     public static String findInSet(Object var1, String var2) {
         String var = Convert.toStr(var1);
         return switch (getDataBaseType()) {
-            // instr(',0,100,101,' , ',100,') <> 0
+                // instr(',0,100,101,' , ',100,') <> 0
             case ORACLE -> "instr(','||%s||',' , ',%s,') <> 0".formatted(var2, var);
-            // (select strpos(',0,100,101,' , ',100,')) <> 0
+                // (select strpos(',0,100,101,' , ',100,')) <> 0
             case POSTGRE_SQL -> "(select strpos(','||%s||',' , ',%s,')) <> 0".formatted(var2, var);
-            // charindex(',100,' , ',0,100,101,') <> 0
+                // charindex(',100,' , ',0,100,101,') <> 0
             case SQL_SERVER -> "charindex(',%s,' , ','+%s+',') <> 0".formatted(var, var2);
-            // find_in_set(100 , '0,100,101')
+                // find_in_set(100 , '0,100,101')
             default -> "find_in_set('%s' , %s) <> 0".formatted(var, var2);
         };
     }
 
-    /**
-     * 获取当前加载的数据库名
-     */
+    /** 获取当前加载的数据库名 */
     public static List<String> getDataSourceNameList() {
         return new ArrayList<>(DS.getDataSources().keySet());
     }

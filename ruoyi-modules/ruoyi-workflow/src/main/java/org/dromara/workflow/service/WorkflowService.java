@@ -1,11 +1,10 @@
 package org.dromara.workflow.service;
 
+import java.util.List;
+import java.util.Map;
 import org.dromara.workflow.api.domain.RemoteCompleteTask;
 import org.dromara.workflow.api.domain.RemoteStartProcess;
 import org.dromara.workflow.api.domain.RemoteStartProcessReturn;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 通用 工作流服务
@@ -42,7 +41,7 @@ public interface WorkflowService {
      * 设置流程变量
      *
      * @param instanceId 流程实例id
-     * @param variable   流程变量
+     * @param variable 流程变量
      */
     void setVariable(Long instanceId, Map<String, Object> variable);
 
@@ -77,9 +76,7 @@ public interface WorkflowService {
     RemoteStartProcessReturn startWorkFlow(RemoteStartProcess startProcess);
 
     /**
-     * 办理任务
-     * 系统后台发起审批 无用户信息 需要忽略权限
-     * completeTask.getVariables().put("ignore", true);
+     * 办理任务 系统后台发起审批 无用户信息 需要忽略权限 completeTask.getVariables().put("ignore", true);
      *
      * @param completeTask 参数
      * @return 结果
@@ -89,7 +86,7 @@ public interface WorkflowService {
     /**
      * 办理任务
      *
-     * @param taskId  任务ID
+     * @param taskId 任务ID
      * @param message 办理意见
      * @return 结果
      */

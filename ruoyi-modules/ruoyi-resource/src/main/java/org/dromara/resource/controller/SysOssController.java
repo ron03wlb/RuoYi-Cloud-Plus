@@ -1,16 +1,20 @@
 package org.dromara.resource.controller;
 
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.QueryGroup;
-import org.dromara.common.web.core.BaseController;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.resource.domain.bo.SysOssBo;
 import org.dromara.resource.domain.vo.SysOssUploadVo;
 import org.dromara.resource.domain.vo.SysOssVo;
@@ -19,12 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotEmpty;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 文件上传 控制层
@@ -39,12 +37,11 @@ public class SysOssController extends BaseController {
 
     private final ISysOssService iSysOssService;
 
-    /**
-     * 查询OSS对象存储列表
-     */
+    /** 查询OSS对象存储列表 */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOssVo> list(@Validated(QueryGroup.class) SysOssBo bo, PageQuery pageQuery) {
+    public TableDataInfo<SysOssVo> list(
+            @Validated(QueryGroup.class) SysOssBo bo, PageQuery pageQuery) {
         return iSysOssService.queryPageList(bo, pageQuery);
     }
 
@@ -87,7 +84,8 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:download")
     @GetMapping("/download/{ossId}")
-    public void download(@PathVariable Long ossId, HttpServletResponse response) throws IOException {
+    public void download(@PathVariable Long ossId, HttpServletResponse response)
+            throws IOException {
         iSysOssService.download(ossId, response);
     }
 
@@ -102,5 +100,4 @@ public class SysOssController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ossIds) {
         return toAjax(iSysOssService.deleteWithValidByIds(Arrays.asList(ossIds), true));
     }
-
 }

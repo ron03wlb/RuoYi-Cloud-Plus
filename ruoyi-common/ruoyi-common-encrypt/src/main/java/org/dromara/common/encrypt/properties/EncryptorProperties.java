@@ -1,8 +1,8 @@
 package org.dromara.common.encrypt.properties;
 
+import lombok.Data;
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -15,34 +15,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mybatis-encryptor")
 public class EncryptorProperties {
 
-    /**
-     * 过滤开关
-     */
+    /** 过滤开关 */
     private Boolean enable;
 
-    /**
-     * 默认算法
-     */
+    /** 默认算法 */
     private AlgorithmType algorithm;
 
-    /**
-     * 安全秘钥
-     */
+    /** 安全秘钥 */
     private String password;
 
-    /**
-     * 公钥
-     */
+    /** 公钥 */
     private String publicKey;
 
-    /**
-     * 私钥
-     */
+    /** 私钥 */
     private String privateKey;
 
-    /**
-     * 编码方式，base64/hex
-     */
+    /** 编码方式，base64/hex */
     private EncodeType encode;
-
 }

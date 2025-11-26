@@ -1,5 +1,7 @@
 package org.dromara.common.mybatis.enums;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -7,8 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DataBaseType 枚举类测试
@@ -248,13 +248,12 @@ class DataBaseTypeTest {
         })
         @DisplayName("综合验证 - 数据库类型识别和判断方法")
         void shouldCorrectlyIdentifyDatabaseType(
-            String databaseName,
-            DataBaseType expectedType,
-            boolean expectedIsMySql,
-            boolean expectedIsOracle,
-            boolean expectedIsPostgreSql,
-            boolean expectedIsSqlServer
-        ) {
+                String databaseName,
+                DataBaseType expectedType,
+                boolean expectedIsMySql,
+                boolean expectedIsOracle,
+                boolean expectedIsPostgreSql,
+                boolean expectedIsSqlServer) {
             // Act
             DataBaseType result = DataBaseType.find(databaseName);
 
@@ -277,9 +276,7 @@ class DataBaseTypeTest {
                 if (type.isPostgreSql()) trueCount++;
                 if (type.isSqlServer()) trueCount++;
 
-                assertThat(trueCount)
-                    .as("DataBaseType %s 应该只有一个 is 方法返回 true", type)
-                    .isEqualTo(1);
+                assertThat(trueCount).as("DataBaseType %s 应该只有一个 is 方法返回 true", type).isEqualTo(1);
             }
         }
     }
@@ -302,8 +299,8 @@ class DataBaseTypeTest {
         void getTypeShouldNeverReturnNull() {
             for (DataBaseType type : DataBaseType.values()) {
                 assertThat(type.getType())
-                    .as("DataBaseType %s 的 type 属性不应该为 null", type)
-                    .isNotNull();
+                        .as("DataBaseType %s 的 type 属性不应该为 null", type)
+                        .isNotNull();
             }
         }
     }

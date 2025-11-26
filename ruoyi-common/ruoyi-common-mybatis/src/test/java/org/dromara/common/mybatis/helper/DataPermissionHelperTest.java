@@ -1,6 +1,13 @@
 package org.dromara.common.mybatis.helper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.alibaba.ttl.TtlRunnable;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.dromara.common.mybatis.BaseUnitTest;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.junit.jupiter.api.AfterEach;
@@ -8,19 +15,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 /**
  * DataPermissionHelper 测试
- * <p>
- * 测试数据权限助手的上下文管理和权限控制功能
- * </p>
+ *
+ * <p>测试数据权限助手的上下文管理和权限控制功能
  *
  * @author Test Team
  */
@@ -98,12 +96,11 @@ class DataPermissionHelperTest extends BaseUnitTest {
     class ContextVariableTests {
 
         /**
-         * NOTE: Context variable tests require SaHolder context initialization.
-         * In pure unit test mode (without Spring/Sa-Token context), getContext()
-         * returns a new HashMap each time, so persistence tests will fail.
-         * These tests document the expected behavior in integration test mode.
+         * NOTE: Context variable tests require SaHolder context initialization. In pure unit test
+         * mode (without Spring/Sa-Token context), getContext() returns a new HashMap each time, so
+         * persistence tests will fail. These tests document the expected behavior in integration
+         * test mode.
          */
-
         @Test
         @DisplayName("应该能够获取Context对象（无Sa-Token上下文时返回新Map）")
         void shouldGetContextObject() {
@@ -163,9 +160,10 @@ class DataPermissionHelperTest extends BaseUnitTest {
             AtomicBoolean executed = new AtomicBoolean(false);
 
             // Act
-            DataPermissionHelper.ignore(() -> {
-                executed.set(true);
-            });
+            DataPermissionHelper.ignore(
+                    () -> {
+                        executed.set(true);
+                    });
 
             // Assert
             assertThat(executed.get()).isTrue();
@@ -213,9 +211,10 @@ class DataPermissionHelperTest extends BaseUnitTest {
         void shouldPropagateExceptionFromIgnore() {
             // Act & Assert
             try {
-                DataPermissionHelper.ignore(() -> {
-                    throw new RuntimeException("Test exception");
-                });
+                DataPermissionHelper.ignore(
+                        () -> {
+                            throw new RuntimeException("Test exception");
+                        });
             } catch (RuntimeException e) {
                 assertThat(e.getMessage()).isEqualTo("Test exception");
             }
@@ -228,13 +227,15 @@ class DataPermissionHelperTest extends BaseUnitTest {
             AtomicInteger counter = new AtomicInteger(0);
 
             // Act
-            DataPermissionHelper.ignore(() -> {
-                counter.incrementAndGet();
-                DataPermissionHelper.ignore(() -> {
-                    counter.incrementAndGet();
-                });
-                counter.incrementAndGet();
-            });
+            DataPermissionHelper.ignore(
+                    () -> {
+                        counter.incrementAndGet();
+                        DataPermissionHelper.ignore(
+                                () -> {
+                                    counter.incrementAndGet();
+                                });
+                        counter.incrementAndGet();
+                    });
 
             // Assert
             assertThat(counter.get()).isEqualTo(3);
@@ -245,9 +246,10 @@ class DataPermissionHelperTest extends BaseUnitTest {
         void shouldCleanupOnExceptionInSupplier() {
             // Act
             try {
-                DataPermissionHelper.ignore(() -> {
-                    throw new RuntimeException("Test");
-                });
+                DataPermissionHelper.ignore(
+                        () -> {
+                            throw new RuntimeException("Test");
+                        });
             } catch (RuntimeException ignored) {
                 // Expected
             }
@@ -272,10 +274,12 @@ class DataPermissionHelperTest extends BaseUnitTest {
             AtomicReference<DataPermission> childThreadPermission = new AtomicReference<>(null);
 
             // Act - 使用 TtlRunnable 包装，确保 TTL 值传递到子线程
-            Runnable task = TtlRunnable.get(() -> {
-                DataPermission permission = DataPermissionHelper.getPermission();
-                childThreadPermission.set(permission);
-            });
+            Runnable task =
+                    TtlRunnable.get(
+                            () -> {
+                                DataPermission permission = DataPermissionHelper.getPermission();
+                                childThreadPermission.set(permission);
+                            });
 
             Thread otherThread = new Thread(task);
             otherThread.start();
@@ -297,10 +301,12 @@ class DataPermissionHelperTest extends BaseUnitTest {
 
             // Act - TransmittableThreadLocal 继承自 InheritableThreadLocal，
             // 子线程会自动继承父线程的值
-            Thread otherThread = new Thread(() -> {
-                DataPermission permission = DataPermissionHelper.getPermission();
-                childThreadPermission.set(permission);
-            });
+            Thread otherThread =
+                    new Thread(
+                            () -> {
+                                DataPermission permission = DataPermissionHelper.getPermission();
+                                childThreadPermission.set(permission);
+                            });
             otherThread.start();
             otherThread.join();
 
@@ -318,11 +324,16 @@ class DataPermissionHelperTest extends BaseUnitTest {
             // Act
             Map<String, Object> mainContext = DataPermissionHelper.getContext();
 
-            Thread otherThread = new Thread(() -> {
-                Map<String, Object> otherContext = DataPermissionHelper.getContext();
-                // In unit test mode, both may be new HashMaps, so they're different instances
-                contextIsDifferent.set(otherContext != null && otherContext != mainContext);
-            });
+            Thread otherThread =
+                    new Thread(
+                            () -> {
+                                Map<String, Object> otherContext =
+                                        DataPermissionHelper.getContext();
+                                // In unit test mode, both may be new HashMaps, so they're different
+                                // instances
+                                contextIsDifferent.set(
+                                        otherContext != null && otherContext != mainContext);
+                            });
             otherThread.start();
             otherThread.join();
 

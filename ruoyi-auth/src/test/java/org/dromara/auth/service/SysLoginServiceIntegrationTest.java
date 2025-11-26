@@ -1,7 +1,13 @@
 package org.dromara.auth.service;
 
-import cn.hutool.core.util.StrUtil;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import cn.hutool.crypto.digest.BCrypt;
+import java.time.Duration;
 import org.dromara.auth.AuthTestDataFactory;
 import org.dromara.auth.BaseIntegrationTestWithContainers;
 import org.dromara.auth.form.RegisterBody;
@@ -21,24 +27,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-
-import java.time.Duration;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 /**
  * SysLoginService 集成测试
- * <p>
- * 使用真实 Spring 容器和 Redis 环境测试登录服务
- * </p>
  *
- * <p>TODO: 当前因 RedissonClient 依赖问题暂时禁用</p>
- * <p>问题: ruoyi-common-redis 模块强依赖 Redisson,即使排除自动配置后仍有Bean需要注入 RedissonClient</p>
- * <p>解决方案: 需要重构 ruoyi-common-redis 模块,使 Redisson 变为可选依赖</p>
- * <p>参考: docs/PHASE2-AUTH-TESTING-FINAL-REPORT.md</p>
+ * <p>使用真实 Spring 容器和 Redis 环境测试登录服务
+ *
+ * <p>TODO: 当前因 RedissonClient 依赖问题暂时禁用
+ *
+ * <p>问题: ruoyi-common-redis 模块强依赖 Redisson,即使排除自动配置后仍有Bean需要注入 RedissonClient
+ *
+ * <p>解决方案: 需要重构 ruoyi-common-redis 模块,使 Redisson 变为可选依赖
+ *
+ * <p>参考: docs/PHASE2-AUTH-TESTING-FINAL-REPORT.md
  *
  * @author Test Team
  */
@@ -46,17 +47,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysLoginService 集成测试")
 class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
 
-    @Autowired
-    private SysLoginService sysLoginService;
+    @Autowired private SysLoginService sysLoginService;
 
-    @Autowired
-    private RemoteUserService remoteUserService;
+    @Autowired private RemoteUserService remoteUserService;
 
-    @Autowired
-    private RemoteTenantService remoteTenantService;
+    @Autowired private RemoteTenantService remoteTenantService;
 
-    @Autowired
-    private RemoteSocialService remoteSocialService;
+    @Autowired private RemoteSocialService remoteSocialService;
 
     @BeforeEach
     @Override
@@ -84,7 +81,8 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
 
             // Act & Assert
             assertThatNoException()
-                .isThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid));
+                    .isThrownBy(
+                            () -> sysLoginService.validateCaptcha(tenantId, username, code, uuid));
 
             // Verify Redis 已删除验证码
             assertThat((Object) RedisUtils.getCacheObject(verifyKey)).isNull();
@@ -103,8 +101,9 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
             // 不设置 Redis 值，模拟过期
 
             // Act & Assert
-            assertThatThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
-                .isInstanceOf(CaptchaExpireException.class);
+            assertThatThrownBy(
+                            () -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
+                    .isInstanceOf(CaptchaExpireException.class);
         }
 
         @Test
@@ -121,8 +120,9 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
             RedisUtils.setCacheObject(verifyKey, "5678", Duration.ofMinutes(5));
 
             // Act & Assert
-            assertThatThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
-                .isInstanceOf(CaptchaException.class);
+            assertThatThrownBy(
+                            () -> sysLoginService.validateCaptcha(tenantId, username, code, uuid))
+                    .isInstanceOf(CaptchaException.class);
 
             // Verify Redis 已删除验证码
             assertThat((Object) RedisUtils.getCacheObject(verifyKey)).isNull();
@@ -142,7 +142,10 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
 
             // Act & Assert - 大写输入应该通过
             assertThatNoException()
-                .isThrownBy(() -> sysLoginService.validateCaptcha(tenantId, username, "ABCD", uuid));
+                    .isThrownBy(
+                            () ->
+                                    sysLoginService.validateCaptcha(
+                                            tenantId, username, "ABCD", uuid));
         }
     }
 
@@ -155,19 +158,22 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldRegisterSuccessfully() {
             // Arrange
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
-            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
-                .thenReturn(true);
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class))).thenReturn(true);
 
             // Act & Assert
-            assertThatNoException()
-                .isThrownBy(() -> sysLoginService.register(registerBody));
+            assertThatNoException().isThrownBy(() -> sysLoginService.register(registerBody));
 
             // Verify
-            verify(remoteUserService).registerUserInfo(argThat(bo ->
-                bo.getUserName().equals(registerBody.getUsername()) &&
-                    bo.getTenantId().equals(registerBody.getTenantId()) &&
-                    BCrypt.checkpw(registerBody.getPassword(), bo.getPassword())
-            ));
+            verify(remoteUserService)
+                    .registerUserInfo(
+                            argThat(
+                                    bo ->
+                                            bo.getUserName().equals(registerBody.getUsername())
+                                                    && bo.getTenantId()
+                                                            .equals(registerBody.getTenantId())
+                                                    && BCrypt.checkpw(
+                                                            registerBody.getPassword(),
+                                                            bo.getPassword())));
         }
 
         @Test
@@ -175,12 +181,11 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldThrowUserExceptionWhenRegisterFails() {
             // Arrange
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
-            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
-                .thenReturn(false);
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class))).thenReturn(false);
 
             // Act & Assert
             assertThatThrownBy(() -> sysLoginService.register(registerBody))
-                .isInstanceOf(UserException.class);
+                    .isInstanceOf(UserException.class);
         }
 
         @Test
@@ -189,18 +194,20 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
             // Arrange
             RegisterBody registerBody = AuthTestDataFactory.createRegisterBody();
             String originalPassword = registerBody.getPassword();
-            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class)))
-                .thenReturn(true);
+            when(remoteUserService.registerUserInfo(any(RemoteUserBo.class))).thenReturn(true);
 
             // Act
             sysLoginService.register(registerBody);
 
             // Verify - 密码不应该以明文存储
-            verify(remoteUserService).registerUserInfo(argThat(bo -> {
-                String hashedPassword = bo.getPassword();
-                return !hashedPassword.equals(originalPassword) &&
-                    BCrypt.checkpw(originalPassword, hashedPassword);
-            }));
+            verify(remoteUserService)
+                    .registerUserInfo(
+                            argThat(
+                                    bo -> {
+                                        String hashedPassword = bo.getPassword();
+                                        return !hashedPassword.equals(originalPassword)
+                                                && BCrypt.checkpw(originalPassword, hashedPassword);
+                                    }));
         }
     }
 
@@ -213,10 +220,10 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldThrowExceptionWhenTenantIdIsBlank() {
             // Act & Assert
             assertThatThrownBy(() -> sysLoginService.checkTenant(""))
-                .isInstanceOf(TenantException.class);
+                    .isInstanceOf(TenantException.class);
 
             assertThatThrownBy(() -> sysLoginService.checkTenant(null))
-                .isInstanceOf(TenantException.class);
+                    .isInstanceOf(TenantException.class);
         }
 
         @Test
@@ -224,12 +231,11 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldThrowExceptionWhenTenantNotExists() {
             // Arrange
             String tenantId = "999999";
-            when(remoteTenantService.queryByTenantId(tenantId))
-                .thenReturn(null);
+            when(remoteTenantService.queryByTenantId(tenantId)).thenReturn(null);
 
             // Act & Assert
             assertThatThrownBy(() -> sysLoginService.checkTenant(tenantId))
-                .isInstanceOf(TenantException.class);
+                    .isInstanceOf(TenantException.class);
         }
 
         @Test
@@ -237,12 +243,11 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldThrowExceptionWhenTenantIsDisabled() {
             // Arrange
             RemoteTenantVo tenant = AuthTestDataFactory.createDisabledTenantVo();
-            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
-                .thenReturn(tenant);
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId())).thenReturn(tenant);
 
             // Act & Assert
             assertThatThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()))
-                .isInstanceOf(TenantException.class);
+                    .isInstanceOf(TenantException.class);
         }
 
         @Test
@@ -250,12 +255,11 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldThrowExceptionWhenTenantExpired() {
             // Arrange
             RemoteTenantVo tenant = AuthTestDataFactory.createExpiredTenantVo();
-            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
-                .thenReturn(tenant);
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId())).thenReturn(tenant);
 
             // Act & Assert
             assertThatThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()))
-                .isInstanceOf(TenantException.class);
+                    .isInstanceOf(TenantException.class);
         }
 
         @Test
@@ -263,12 +267,11 @@ class SysLoginServiceIntegrationTest extends BaseIntegrationTestWithContainers {
         void shouldPassWhenTenantIsValid() {
             // Arrange
             RemoteTenantVo tenant = AuthTestDataFactory.createTenantVo();
-            when(remoteTenantService.queryByTenantId(tenant.getTenantId()))
-                .thenReturn(tenant);
+            when(remoteTenantService.queryByTenantId(tenant.getTenantId())).thenReturn(tenant);
 
             // Act & Assert
             assertThatNoException()
-                .isThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()));
+                    .isThrownBy(() -> sysLoginService.checkTenant(tenant.getTenantId()));
         }
     }
 }

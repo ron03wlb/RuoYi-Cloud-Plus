@@ -3,6 +3,7 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.lang.tree.Tree;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -24,8 +25,6 @@ import org.dromara.system.service.ISysUserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 角色信息
  *
@@ -41,18 +40,14 @@ public class SysRoleController extends BaseController {
     private final ISysUserService userService;
     private final ISysDeptService deptService;
 
-    /**
-     * 获取角色信息列表
-     */
+    /** 获取角色信息列表 */
     @SaCheckPermission("system:role:list")
     @GetMapping("/list")
     public TableDataInfo<SysRoleVo> list(SysRoleBo role, PageQuery pageQuery) {
         return roleService.selectPageRoleList(role, pageQuery);
     }
 
-    /**
-     * 导出角色信息列表
-     */
+    /** 导出角色信息列表 */
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:role:export")
     @PostMapping("/export")
@@ -73,9 +68,7 @@ public class SysRoleController extends BaseController {
         return R.ok(roleService.selectRoleById(roleId));
     }
 
-    /**
-     * 新增角色
-     */
+    /** 新增角色 */
     @SaCheckPermission("system:role:add")
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -88,12 +81,9 @@ public class SysRoleController extends BaseController {
             return R.fail("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         return toAjax(roleService.insertRole(role));
-
     }
 
-    /**
-     * 修改保存角色
-     */
+    /** 修改保存角色 */
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -114,9 +104,7 @@ public class SysRoleController extends BaseController {
         return R.fail("修改角色'" + role.getRoleName() + "'失败，请联系管理员");
     }
 
-    /**
-     * 修改保存数据权限
-     */
+    /** 修改保存数据权限 */
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -127,9 +115,7 @@ public class SysRoleController extends BaseController {
         return toAjax(roleService.authDataScope(role));
     }
 
-    /**
-     * 状态修改
-     */
+    /** 状态修改 */
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -163,27 +149,21 @@ public class SysRoleController extends BaseController {
         return R.ok(roleService.selectRoleByIds(roleIds == null ? null : List.of(roleIds)));
     }
 
-    /**
-     * 查询已分配用户角色列表
-     */
+    /** 查询已分配用户角色列表 */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
     public TableDataInfo<SysUserVo> allocatedList(SysUserBo user, PageQuery pageQuery) {
         return userService.selectAllocatedList(user, pageQuery);
     }
 
-    /**
-     * 查询未分配用户角色列表
-     */
+    /** 查询未分配用户角色列表 */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/unallocatedList")
     public TableDataInfo<SysUserVo> unallocatedList(SysUserBo user, PageQuery pageQuery) {
         return userService.selectUnallocatedList(user, pageQuery);
     }
 
-    /**
-     * 取消授权用户
-     */
+    /** 取消授权用户 */
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @RepeatSubmit()
@@ -195,7 +175,7 @@ public class SysRoleController extends BaseController {
     /**
      * 批量取消授权用户
      *
-     * @param roleId  角色ID
+     * @param roleId 角色ID
      * @param userIds 用户ID串
      */
     @SaCheckPermission("system:role:edit")
@@ -209,7 +189,7 @@ public class SysRoleController extends BaseController {
     /**
      * 批量选择用户授权
      *
-     * @param roleId  角色ID
+     * @param roleId 角色ID
      * @param userIds 用户ID串
      */
     @SaCheckPermission("system:role:edit")
@@ -229,9 +209,10 @@ public class SysRoleController extends BaseController {
     @SaCheckPermission("system:role:list")
     @GetMapping(value = "/deptTree/{roleId}")
     public R<DeptTreeSelectVo> roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
-        DeptTreeSelectVo selectVo = new DeptTreeSelectVo(
-            deptService.selectDeptListByRoleId(roleId),
-            deptService.selectDeptTreeList(new SysDeptBo()));
+        DeptTreeSelectVo selectVo =
+                new DeptTreeSelectVo(
+                        deptService.selectDeptListByRoleId(roleId),
+                        deptService.selectDeptTreeList(new SysDeptBo()));
         return R.ok(selectVo);
     }
 
@@ -239,9 +220,7 @@ public class SysRoleController extends BaseController {
      * 角色部门列表树信息
      *
      * @param checkedKeys 选中部门列表
-     * @param depts       下拉树结构列表
+     * @param depts 下拉树结构列表
      */
     public record DeptTreeSelectVo(List<Long> checkedKeys, List<Tree<Long>> depts) {}
-
 }
-

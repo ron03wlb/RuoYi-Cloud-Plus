@@ -9,6 +9,4 @@ import org.dromara.system.domain.vo.SysConfigVo;
  *
  * @author Lion Li
  */
-public interface SysConfigMapper extends BaseMapperPlus<SysConfig, SysConfigVo> {
-
-}
+public interface SysConfigMapper extends BaseMapperPlus<SysConfig, SysConfigVo> {}

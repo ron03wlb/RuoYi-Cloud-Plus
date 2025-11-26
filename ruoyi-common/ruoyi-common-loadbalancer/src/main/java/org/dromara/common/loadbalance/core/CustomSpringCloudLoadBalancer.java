@@ -1,6 +1,8 @@
 package org.dromara.common.loadbalance.core;
 
 import cn.hutool.core.net.NetUtil;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -14,9 +16,6 @@ import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBal
 import org.springframework.cloud.loadbalancer.core.SelectedInstanceCallback;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 自定义 SpringCloud 负载均衡算法
@@ -33,15 +32,20 @@ public class CustomSpringCloudLoadBalancer implements ReactorServiceInstanceLoad
 
     @Override
     public Mono<Response<ServiceInstance>> choose(Request request) {
-        ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);
-        return supplier.get(request).next().map(serviceInstances -> processInstanceResponse(supplier, serviceInstances));
+        ServiceInstanceListSupplier supplier =
+                serviceInstanceListSupplierProvider.getIfAvailable(
+                        NoopServiceInstanceListSupplier::new);
+        return supplier.get(request)
+                .next()
+                .map(serviceInstances -> processInstanceResponse(supplier, serviceInstances));
     }
 
-    private Response<ServiceInstance> processInstanceResponse(ServiceInstanceListSupplier supplier,
-                                                              List<ServiceInstance> serviceInstances) {
+    private Response<ServiceInstance> processInstanceResponse(
+            ServiceInstanceListSupplier supplier, List<ServiceInstance> serviceInstances) {
         Response<ServiceInstance> serviceInstanceResponse = getInstanceResponse(serviceInstances);
         if (supplier instanceof SelectedInstanceCallback && serviceInstanceResponse.hasServer()) {
-            ((SelectedInstanceCallback) supplier).selectedServiceInstance(serviceInstanceResponse.getServer());
+            ((SelectedInstanceCallback) supplier)
+                    .selectedServiceInstance(serviceInstanceResponse.getServer());
         }
         return serviceInstanceResponse;
     }
@@ -58,7 +62,7 @@ public class CustomSpringCloudLoadBalancer implements ReactorServiceInstanceLoad
                 return new DefaultResponse(instance);
             }
         }
-        return new DefaultResponse(instances.get(ThreadLocalRandom.current().nextInt(instances.size())));
+        return new DefaultResponse(
+                instances.get(ThreadLocalRandom.current().nextInt(instances.size())));
     }
-
 }

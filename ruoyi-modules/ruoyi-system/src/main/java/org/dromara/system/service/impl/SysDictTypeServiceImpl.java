@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
@@ -27,10 +30,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * 字典 业务层处理
  *
@@ -46,12 +45,13 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     /**
      * 分页查询字典类型列表
      *
-     * @param dictType  查询条件
+     * @param dictType 查询条件
      * @param pageQuery 分页参数
      * @return 字典类型分页列表
      */
     @Override
-    public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType, PageQuery pageQuery) {
+    public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(
+            SysDictTypeBo dictType, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictType> lqw = buildQueryWrapper(dictType);
         Page<SysDictTypeVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(page);
@@ -72,10 +72,19 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     private LambdaQueryWrapper<SysDictType> buildQueryWrapper(SysDictTypeBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<SysDictType> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getDictName()), SysDictType::getDictName, bo.getDictName());
-        lqw.like(StringUtils.isNotBlank(bo.getDictType()), SysDictType::getDictType, bo.getDictType());
-        lqw.between(params.get("beginTime") != null && params.get("endTime") != null,
-            SysDictType::getCreateTime, params.get("beginTime"), params.get("endTime"));
+        lqw.like(
+                StringUtils.isNotBlank(bo.getDictName()),
+                SysDictType::getDictName,
+                bo.getDictName());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getDictType()),
+                SysDictType::getDictType,
+                bo.getDictType());
+        lqw.between(
+                params.get("beginTime") != null && params.get("endTime") != null,
+                SysDictType::getCreateTime,
+                params.get("beginTime"),
+                params.get("endTime"));
         lqw.orderByAsc(SysDictType::getDictId);
         return lqw;
     }
@@ -123,7 +132,8 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     @Cacheable(cacheNames = CacheNames.SYS_DICT_TYPE, key = "#dictType")
     @Override
     public SysDictTypeVo selectDictTypeByType(String dictType) {
-        return baseMapper.selectVoOne(new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getDictType, dictType));
+        return baseMapper.selectVoOne(
+                new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getDictType, dictType));
     }
 
     /**
@@ -134,23 +144,25 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     @Override
     public void deleteDictTypeByIds(List<Long> dictIds) {
         List<SysDictType> list = baseMapper.selectByIds(dictIds);
-        list.forEach(x -> {
-            boolean assigned = dictDataMapper.exists(new LambdaQueryWrapper<SysDictData>()
-                .eq(SysDictData::getDictType, x.getDictType()));
-            if (assigned) {
-                throw new ServiceException("{}已分配,不能删除", x.getDictName());
-            }
-        });
+        list.forEach(
+                x -> {
+                    boolean assigned =
+                            dictDataMapper.exists(
+                                    new LambdaQueryWrapper<SysDictData>()
+                                            .eq(SysDictData::getDictType, x.getDictType()));
+                    if (assigned) {
+                        throw new ServiceException("{}已分配,不能删除", x.getDictName());
+                    }
+                });
         baseMapper.deleteByIds(dictIds);
-        list.forEach(x -> {
-            CacheUtils.evict(CacheNames.SYS_DICT, x.getDictType());
-            CacheUtils.evict(CacheNames.SYS_DICT_TYPE, x.getDictType());
-        });
+        list.forEach(
+                x -> {
+                    CacheUtils.evict(CacheNames.SYS_DICT, x.getDictType());
+                    CacheUtils.evict(CacheNames.SYS_DICT_TYPE, x.getDictType());
+                });
     }
 
-    /**
-     * 重置字典缓存数据
-     */
+    /** 重置字典缓存数据 */
     @Override
     public void resetDictCache() {
         CacheUtils.clear(CacheNames.SYS_DICT);
@@ -187,9 +199,11 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     public List<SysDictDataVo> updateDictType(SysDictTypeBo bo) {
         SysDictType dict = MapstructUtils.convert(bo, SysDictType.class);
         SysDictType oldDict = baseMapper.selectById(dict.getDictId());
-        dictDataMapper.update(null, new LambdaUpdateWrapper<SysDictData>()
-            .set(SysDictData::getDictType, dict.getDictType())
-            .eq(SysDictData::getDictType, oldDict.getDictType()));
+        dictDataMapper.update(
+                null,
+                new LambdaUpdateWrapper<SysDictData>()
+                        .set(SysDictData::getDictType, dict.getDictType())
+                        .eq(SysDictData::getDictType, oldDict.getDictType()));
         int row = baseMapper.updateById(dict);
         if (row > 0) {
             CacheUtils.evict(CacheNames.SYS_DICT, oldDict.getDictType());
@@ -206,10 +220,14 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
      */
     @Override
     public boolean checkDictTypeUnique(SysDictTypeBo dictType) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysDictType>()
-            .eq(SysDictType::getDictType, dictType.getDictType())
-            .ne(ObjectUtil.isNotNull(dictType.getDictId()), SysDictType::getDictId, dictType.getDictId()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<SysDictType>()
+                                .eq(SysDictType::getDictType, dictType.getDictType())
+                                .ne(
+                                        ObjectUtil.isNotNull(dictType.getDictId()),
+                                        SysDictType::getDictId,
+                                        dictType.getDictId()));
         return !exist;
     }
-
 }

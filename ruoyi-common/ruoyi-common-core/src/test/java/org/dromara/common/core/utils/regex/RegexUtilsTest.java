@@ -1,5 +1,7 @@
 package org.dromara.common.core.utils.regex;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.core.BaseUnitTest;
 import org.dromara.common.core.constant.RegexConstants;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * RegexUtils 单元测试
@@ -82,7 +82,7 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("从完整字符串中提取邮政编码")
         void shouldExtractPostalCodeFromFullString() {
             // POSTAL_CODE 有锚点，需要完整匹配
-            String input = "100000";  // 只包含邮政编码本身
+            String input = "100000"; // 只包含邮政编码本身
             String regex = RegexConstants.POSTAL_CODE;
             String result = RegexUtils.extractFromString(input, "(" + regex + ")", "无邮编");
 
@@ -93,7 +93,7 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("从完整字符串中提取账号")
         void shouldExtractAccountFromFullString() {
             // ACCOUNT 有锚点，需要完整匹配
-            String input = "admin123";  // 只包含账号本身
+            String input = "admin123"; // 只包含账号本身
             String regex = RegexConstants.ACCOUNT;
             String result = RegexUtils.extractFromString(input, "(" + regex + ")", "未匹配");
 
@@ -104,7 +104,7 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("从完整字符串中提取QQ号")
         void shouldExtractQQNumberFromFullString() {
             // QQ_NUMBER 有锚点，需要完整匹配
-            String input = "123456789";  // 只包含QQ号本身
+            String input = "123456789"; // 只包含QQ号本身
             String regex = RegexConstants.QQ_NUMBER;
             String result = RegexUtils.extractFromString(input, "(" + regex + ")", "未匹配");
 
@@ -115,7 +115,7 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("从完整字符串中提取字典类型")
         void shouldExtractDictionaryTypeFromFullString() {
             // DICTIONARY_TYPE 有锚点，需要完整匹配
-            String input = "user_type";  // 只包含字典类型本身
+            String input = "user_type"; // 只包含字典类型本身
             String regex = RegexConstants.DICTIONARY_TYPE;
             String result = RegexUtils.extractFromString(input, "(" + regex + ")", "未匹配");
 
@@ -182,7 +182,8 @@ class RegexUtilsTest extends BaseUnitTest {
         void shouldExtractChineseCharacters() {
             String input = "姓名: 张三，年龄: 25";
             String chineseRegex = "[\u4e00-\u9fa5]+";
-            String result = RegexUtils.extractFromString(input, "姓名:\\s*([\\u4e00-\\u9fa5]+)", "无姓名");
+            String result =
+                    RegexUtils.extractFromString(input, "姓名:\\s*([\\u4e00-\\u9fa5]+)", "无姓名");
 
             assertThat(result).isEqualTo("张三");
         }
@@ -209,7 +210,7 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("从完整字符串中提取权限字符串")
         void shouldExtractPermissionStringFromFullString() {
             // PERMISSION_STRING 有锚点，需要完整匹配
-            String input = "system:user:add";  // 只包含权限字符串本身
+            String input = "system:user:add"; // 只包含权限字符串本身
             String regex = RegexConstants.PERMISSION_STRING;
             String result = RegexUtils.extractFromString(input, "(" + regex + ")", "无权限");
 
@@ -233,7 +234,8 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("包含特殊字符的输入")
         void shouldHandleInputWithSpecialCharacters() {
             String input = "特殊字符: $@#%^&*()";
-            String result = RegexUtils.extractFromString(input, "特殊字符:\\s*([\\$@#%\\^&*()]+)", "无特殊字符");
+            String result =
+                    RegexUtils.extractFromString(input, "特殊字符:\\s*([\\$@#%\\^&*()]+)", "无特殊字符");
 
             assertThat(result).isEqualTo("$@#%^&*()");
         }
@@ -251,7 +253,8 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("提取日期格式")
         void shouldExtractDateFormat() {
             String input = "日期: 2025-10-29";
-            String result = RegexUtils.extractFromString(input, "日期:\\s*(\\d{4}-\\d{2}-\\d{2})", "无日期");
+            String result =
+                    RegexUtils.extractFromString(input, "日期:\\s*(\\d{4}-\\d{2}-\\d{2})", "无日期");
 
             assertThat(result).isEqualTo("2025-10-29");
         }
@@ -260,7 +263,8 @@ class RegexUtilsTest extends BaseUnitTest {
         @DisplayName("提取时间格式")
         void shouldExtractTimeFormat() {
             String input = "时间: 14:30:45";
-            String result = RegexUtils.extractFromString(input, "时间:\\s*(\\d{2}:\\d{2}:\\d{2})", "无时间");
+            String result =
+                    RegexUtils.extractFromString(input, "时间:\\s*(\\d{2}:\\d{2}:\\d{2})", "无时间");
 
             assertThat(result).isEqualTo("14:30:45");
         }
@@ -287,78 +291,75 @@ class RegexUtilsTest extends BaseUnitTest {
         @Test
         @DisplayName("isMatch方法 - 验证身份证格式")
         void shouldValidateIdCardFormat() {
-            assertThat(RegexUtils.isMatch(RegexConstants.CITIZEN_ID, "110101199001011234")).isTrue();
+            assertThat(RegexUtils.isMatch(RegexConstants.CITIZEN_ID, "110101199001011234"))
+                    .isTrue();
             assertThat(RegexUtils.isMatch(RegexConstants.CITIZEN_ID, "12345")).isFalse();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "user_type",
-            "system_config",
-            "a123_test"
-        })
+        @ValueSource(strings = {"user_type", "system_config", "a123_test"})
         @DisplayName("验证字典类型格式 - 有效格式")
         void shouldValidateDictionaryTypeFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.DICTIONARY_TYPE, input)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "User_Type",      // 大写字母开头
-            "1_type",         // 数字开头
-            "_type",          // 下划线开头
-            "user-type",      // 包含连字符
-            "user type"       // 包含空格
-        })
+        @ValueSource(
+                strings = {
+                    "User_Type", // 大写字母开头
+                    "1_type", // 数字开头
+                    "_type", // 下划线开头
+                    "user-type", // 包含连字符
+                    "user type" // 包含空格
+                })
         @DisplayName("验证字典类型格式 - 无效格式")
         void shouldRejectInvalidDictionaryTypeFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.DICTIONARY_TYPE, input)).isFalse();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "system:user:add",
-            "system:user:*",
-            "system:*:*",
-            "admin:role:delete",
-            ""  // 允许空字符串
-        })
+        @ValueSource(
+                strings = {
+                    "system:user:add",
+                    "system:user:*",
+                    "system:*:*",
+                    "admin:role:delete",
+                    "" // 允许空字符串
+                })
         @DisplayName("验证权限字符串格式 - 有效格式")
         void shouldValidatePermissionStringFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.PERMISSION_STRING, input)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "*:user:add",     // 第一部分不能有 *
-            "system",         // 缺少部分
-            "system:user",    // 只有两部分
-            "system::add",    // 中间为空
-            "system:user:add:extra"  // 多余部分
-        })
+        @ValueSource(
+                strings = {
+                    "*:user:add", // 第一部分不能有 *
+                    "system", // 缺少部分
+                    "system:user", // 只有两部分
+                    "system::add", // 中间为空
+                    "system:user:add:extra" // 多余部分
+                })
         @DisplayName("验证权限字符串格式 - 无效格式")
         void shouldRejectInvalidPermissionStringFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.PERMISSION_STRING, input)).isFalse();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "100000",
-            "200000",
-            "518000"
-        })
+        @ValueSource(strings = {"100000", "200000", "518000"})
         @DisplayName("验证邮政编码格式 - 有效格式")
         void shouldValidatePostalCodeFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.POSTAL_CODE, input)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "000000",   // 不能以0开头
-            "12345",    // 不足6位
-            "1234567",  // 超过6位
-            "10000a"    // 包含字母
-        })
+        @ValueSource(
+                strings = {
+                    "000000", // 不能以0开头
+                    "12345", // 不足6位
+                    "1234567", // 超过6位
+                    "10000a" // 包含字母
+                })
         @DisplayName("验证邮政编码格式 - 无效格式")
         void shouldRejectInvalidPostalCodeFormat(String input) {
             assertThat(RegexUtils.isMatch(RegexConstants.POSTAL_CODE, input)).isFalse();

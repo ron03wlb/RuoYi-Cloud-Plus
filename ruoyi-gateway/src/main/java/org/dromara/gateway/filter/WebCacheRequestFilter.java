@@ -23,12 +23,14 @@ public class WebCacheRequestFilter implements WebFilter, Ordered {
         if (!WebFluxUtils.isJsonRequest(exchange)) {
             return chain.filter(exchange);
         }
-        return ServerWebExchangeUtils.cacheRequestBody(exchange, (serverHttpRequest) -> {
-            if (serverHttpRequest == exchange.getRequest()) {
-                return chain.filter(exchange);
-            }
-            return chain.filter(exchange.mutate().request(serverHttpRequest).build());
-        });
+        return ServerWebExchangeUtils.cacheRequestBody(
+                exchange,
+                (serverHttpRequest) -> {
+                    if (serverHttpRequest == exchange.getRequest()) {
+                        return chain.filter(exchange);
+                    }
+                    return chain.filter(exchange.mutate().request(serverHttpRequest).build());
+                });
     }
 
     @Override

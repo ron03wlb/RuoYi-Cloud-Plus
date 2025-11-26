@@ -1,11 +1,11 @@
 package org.dromara.common.encrypt.enumd;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.encrypt.core.encryptor.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * {@link AlgorithmType} 单元测试
@@ -225,14 +225,15 @@ class AlgorithmTypeTest {
         void shouldSupportSwitchStatement() {
             AlgorithmType type = AlgorithmType.AES;
 
-            String result = switch (type) {
-                case DEFAULT -> "default";
-                case BASE64 -> "base64";
-                case AES -> "aes";
-                case RSA -> "rsa";
-                case SM2 -> "sm2";
-                case SM4 -> "sm4";
-            };
+            String result =
+                    switch (type) {
+                        case DEFAULT -> "default";
+                        case BASE64 -> "base64";
+                        case AES -> "aes";
+                        case RSA -> "rsa";
+                        case SM2 -> "sm2";
+                        case SM4 -> "sm4";
+                    };
 
             assertThat(result).isEqualTo("aes");
         }

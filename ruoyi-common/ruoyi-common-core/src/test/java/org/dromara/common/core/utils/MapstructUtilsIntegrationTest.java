@@ -1,6 +1,15 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import cn.hutool.core.collection.CollUtil;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.domain.Order;
 import org.dromara.common.core.domain.OrderVO;
@@ -9,16 +18,6 @@ import org.dromara.common.core.domain.UserVO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * MapstructUtils 集成测试
@@ -138,7 +137,13 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
         void shouldOverrideExistingPropertiesWhenTargetHasData() {
             // Arrange
             User source = new User(1L, "zhangsan", "zhangsan@example.com", 25, LocalDateTime.now());
-            UserVO target = new UserVO(999L, "oldname", "old@example.com", 99, LocalDateTime.now().minusYears(1));
+            UserVO target =
+                    new UserVO(
+                            999L,
+                            "oldname",
+                            "old@example.com",
+                            99,
+                            LocalDateTime.now().minusYears(1));
 
             // Act
             UserVO result = MapstructUtils.convert(source, target);
@@ -186,11 +191,16 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该成功转换非空列表")
         void shouldConvertNonEmptyListWhenValidInput() {
             // Arrange
-            List<User> users = Arrays.asList(
-                new User(1L, "zhangsan", "zhangsan@example.com", 25, LocalDateTime.now()),
-                new User(2L, "lisi", "lisi@example.com", 30, LocalDateTime.now()),
-                new User(3L, "wangwu", "wangwu@example.com", 35, LocalDateTime.now())
-            );
+            List<User> users =
+                    Arrays.asList(
+                            new User(
+                                    1L,
+                                    "zhangsan",
+                                    "zhangsan@example.com",
+                                    25,
+                                    LocalDateTime.now()),
+                            new User(2L, "lisi", "lisi@example.com", 30, LocalDateTime.now()),
+                            new User(3L, "wangwu", "wangwu@example.com", 35, LocalDateTime.now()));
 
             // Act
             List<UserVO> result = MapstructUtils.convert(users, UserVO.class);
@@ -234,10 +244,10 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该正确转换复杂对象列表")
         void shouldConvertComplexObjectListWhenValidInput() {
             // Arrange
-            List<Order> orders = Arrays.asList(
-                new Order(100L, "ORDER-001", 1L, new BigDecimal("100.00"), "PAID"),
-                new Order(101L, "ORDER-002", 2L, new BigDecimal("200.00"), "PENDING")
-            );
+            List<Order> orders =
+                    Arrays.asList(
+                            new Order(100L, "ORDER-001", 1L, new BigDecimal("100.00"), "PAID"),
+                            new Order(101L, "ORDER-002", 2L, new BigDecimal("200.00"), "PENDING"));
 
             // Act
             List<OrderVO> result = MapstructUtils.convert(orders, OrderVO.class);
@@ -255,9 +265,14 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该处理包含单个元素的列表")
         void shouldConvertSingleElementListWhenValidInput() {
             // Arrange
-            List<User> users = Arrays.asList(
-                new User(1L, "zhangsan", "zhangsan@example.com", 25, LocalDateTime.now())
-            );
+            List<User> users =
+                    Arrays.asList(
+                            new User(
+                                    1L,
+                                    "zhangsan",
+                                    "zhangsan@example.com",
+                                    25,
+                                    LocalDateTime.now()));
 
             // Act
             List<UserVO> result = MapstructUtils.convert(users, UserVO.class);
@@ -288,8 +303,8 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
             // MapStruct Plus 需要显式配置 Map 到 Bean 的转换器
             // 由于测试环境未配置，预期会抛出 ConvertException
             assertThatThrownBy(() -> MapstructUtils.convert(map, User.class))
-                .isInstanceOf(io.github.linpeilie.ConvertException.class)
-                .hasMessageContaining("cannot find converter");
+                    .isInstanceOf(io.github.linpeilie.ConvertException.class)
+                    .hasMessageContaining("cannot find converter");
         }
 
         @Test
@@ -344,8 +359,8 @@ class MapstructUtilsIntegrationTest extends BaseIntegrationTest {
             // Act & Assert
             // MapStruct Plus 对于复杂对象也需要显式配置转换器
             assertThatThrownBy(() -> MapstructUtils.convert(map, Order.class))
-                .isInstanceOf(io.github.linpeilie.ConvertException.class)
-                .hasMessageContaining("cannot find converter");
+                    .isInstanceOf(io.github.linpeilie.ConvertException.class)
+                    .hasMessageContaining("cannot find converter");
         }
     }
 }

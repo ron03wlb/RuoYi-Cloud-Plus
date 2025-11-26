@@ -1,5 +1,7 @@
 package org.dromara.common.test.examples;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.test.BaseIntegrationTest;
 import org.dromara.common.test.config.TestSaTokenConfig;
 import org.dromara.common.test.utils.AuthTestUtils;
@@ -9,19 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Import;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * 集成测试框架示例
- * <p>
- * 演示如何使用集成测试框架进行测试
- * <p>
- * 使用 webEnvironment = MOCK 提供 Sa-Token 所需的 Web 上下文
+ *
+ * <p>演示如何使用集成测试框架进行测试
+ *
+ * <p>使用 webEnvironment = MOCK 提供 Sa-Token 所需的 Web 上下文
  *
  * @author Lion Li
  * @since 2025-11-09
  */
-@org.springframework.boot.test.context.SpringBootTest(webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK)
+@org.springframework.boot.test.context.SpringBootTest(
+        webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK)
 @Import(TestSaTokenConfig.class)
 @DisplayName("集成测试框架示例")
 class SampleIntegrationTest extends BaseIntegrationTest {
@@ -187,8 +188,10 @@ class SampleIntegrationTest extends BaseIntegrationTest {
             // Assert
             assertThat(TenantTestUtils.getTenant()).isEqualTo(TenantTestUtils.TEST_TENANT_2_ID);
 
-            log.info("租户切换成功 - From: {} To: {}",
-                TenantTestUtils.TEST_TENANT_1_ID, TenantTestUtils.TEST_TENANT_2_ID);
+            log.info(
+                    "租户切换成功 - From: {} To: {}",
+                    TenantTestUtils.TEST_TENANT_1_ID,
+                    TenantTestUtils.TEST_TENANT_2_ID);
         }
 
         @Test
@@ -198,14 +201,18 @@ class SampleIntegrationTest extends BaseIntegrationTest {
             TenantTestUtils.setDefaultTenant();
 
             // Act
-            String result = TenantTestUtils.executeInTenant("000001", () -> {
-                log.info("在租户 000001 中执行操作");
-                return "result from tenant 000001";
-            });
+            String result =
+                    TenantTestUtils.executeInTenant(
+                            "000001",
+                            () -> {
+                                log.info("在租户 000001 中执行操作");
+                                return "result from tenant 000001";
+                            });
 
             // Assert
             assertThat(result).isEqualTo("result from tenant 000001");
-            assertThat(TenantTestUtils.getTenant()).isEqualTo(TenantTestUtils.DEFAULT_TENANT_ID); // 应该恢复到原租户
+            assertThat(TenantTestUtils.getTenant())
+                    .isEqualTo(TenantTestUtils.DEFAULT_TENANT_ID); // 应该恢复到原租户
         }
 
         @Test
@@ -237,21 +244,27 @@ class SampleIntegrationTest extends BaseIntegrationTest {
             log.info("租户1用户登录: userId=1, tenantId=000001");
 
             // 模拟在租户1中创建数据
-            String tenant1Data = TenantTestUtils.executeInTenant("000001", () -> {
-                log.info("租户1中创建数据");
-                return "data_from_tenant_000001";
-            });
+            String tenant1Data =
+                    TenantTestUtils.executeInTenant(
+                            "000001",
+                            () -> {
+                                log.info("租户1中创建数据");
+                                return "data_from_tenant_000001";
+                            });
 
             // 2. 租户2用户登录
-            AuthTestUtils.logout();  // 先登出租户1用户
+            AuthTestUtils.logout(); // 先登出租户1用户
             TenantTestUtils.mockTenantUserLogin(2L, "user2", "000002");
             log.info("租户2用户登录: userId=2, tenantId=000002");
 
             // 模拟在租户2中创建数据
-            String tenant2Data = TenantTestUtils.executeInTenant("000002", () -> {
-                log.info("租户2中创建数据");
-                return "data_from_tenant_000002";
-            });
+            String tenant2Data =
+                    TenantTestUtils.executeInTenant(
+                            "000002",
+                            () -> {
+                                log.info("租户2中创建数据");
+                                return "data_from_tenant_000002";
+                            });
 
             // 3. 验证数据隔离
             assertThat(tenant1Data).isNotEqualTo(tenant2Data);
@@ -265,10 +278,7 @@ class SampleIntegrationTest extends BaseIntegrationTest {
 
             // 1. 模拟用户登录并设置权限
             AuthTestUtils.mockAdminLoginWithPermissions(
-                "system:user:list",
-                "system:user:add",
-                "system:user:edit"
-            );
+                    "system:user:list", "system:user:add", "system:user:edit");
 
             // 2. 模拟执行需要权限的操作
             log.info("执行需要 system:user:list 权限的操作");

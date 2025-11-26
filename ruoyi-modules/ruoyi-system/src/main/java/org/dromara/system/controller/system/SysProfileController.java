@@ -3,6 +3,8 @@ package org.dromara.system.controller.system;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.crypto.digest.BCrypt;
+import java.io.IOException;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.seata.spring.annotation.GlobalTransactional;
@@ -29,9 +31,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 /**
  * 个人信息 业务处理
  *
@@ -45,12 +44,9 @@ public class SysProfileController extends BaseController {
 
     private final ISysUserService userService;
 
-    @DubboReference
-    private RemoteFileService remoteFileService;
+    @DubboReference private RemoteFileService remoteFileService;
 
-    /**
-     * 个人信息
-     */
+    /** 个人信息 */
     @GetMapping
     public R<ProfileVo> profile() {
         SysUserVo user = userService.selectUserById(LoginHelper.getUserId());
@@ -62,9 +58,7 @@ public class SysProfileController extends BaseController {
         return R.ok(profileVo);
     }
 
-    /**
-     * 修改用户信息
-     */
+    /** 修改用户信息 */
     @RepeatSubmit
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -103,7 +97,11 @@ public class SysProfileController extends BaseController {
         if (BCrypt.checkpw(bo.getNewPassword(), password)) {
             return R.fail("新密码不能与旧密码相同");
         }
-        int rows = DataPermissionHelper.ignore(() -> userService.resetUserPwd(user.getUserId(), BCrypt.hashpw(bo.getNewPassword())));
+        int rows =
+                DataPermissionHelper.ignore(
+                        () ->
+                                userService.resetUserPwd(
+                                        user.getUserId(), BCrypt.hashpw(bo.getNewPassword())));
         if (rows > 0) {
             return R.ok();
         }
@@ -119,15 +117,26 @@ public class SysProfileController extends BaseController {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<AvatarVo> avatar(@RequestPart("avatarfile") MultipartFile avatarfile) throws IOException {
+    public R<AvatarVo> avatar(@RequestPart("avatarfile") MultipartFile avatarfile)
+            throws IOException {
         if (!avatarfile.isEmpty()) {
             String extension = FileUtil.extName(avatarfile.getOriginalFilename());
             if (!StringUtils.equalsAnyIgnoreCase(extension, MimeTypeUtils.IMAGE_EXTENSION)) {
-                return R.fail("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
+                return R.fail(
+                        "文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
             }
-            RemoteFile oss = remoteFileService.upload(avatarfile.getName(), avatarfile.getOriginalFilename(), avatarfile.getContentType(), avatarfile.getBytes());
+            RemoteFile oss =
+                    remoteFileService.upload(
+                            avatarfile.getName(),
+                            avatarfile.getOriginalFilename(),
+                            avatarfile.getContentType(),
+                            avatarfile.getBytes());
             String avatar = oss.getUrl();
-            boolean updateSuccess = DataPermissionHelper.ignore(() -> userService.updateUserAvatar(LoginHelper.getUserId(), oss.getOssId()));
+            boolean updateSuccess =
+                    DataPermissionHelper.ignore(
+                            () ->
+                                    userService.updateUserAvatar(
+                                            LoginHelper.getUserId(), oss.getOssId()));
             if (updateSuccess) {
                 return R.ok(new AvatarVo(avatar));
             }
@@ -145,10 +154,9 @@ public class SysProfileController extends BaseController {
     /**
      * 用户个人信息
      *
-     * @param user      用户信息
+     * @param user 用户信息
      * @param roleGroup 用户所属角色组
      * @param postGroup 用户所属岗位组
      */
     public record ProfileVo(ProfileUserVo user, String roleGroup, String postGroup) {}
-
 }

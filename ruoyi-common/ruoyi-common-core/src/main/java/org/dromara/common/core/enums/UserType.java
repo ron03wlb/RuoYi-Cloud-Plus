@@ -13,19 +13,13 @@ import org.dromara.common.core.utils.StringUtils;
 @AllArgsConstructor
 public enum UserType {
 
-    /**
-     * 后台系统用户
-     */
+    /** 后台系统用户 */
     SYS_USER("sys_user"),
 
-    /**
-     * 移动客户端用户
-     */
+    /** 移动客户端用户 */
     APP_USER("app_user");
 
-    /**
-     * 用户类型标识（用于 token、权限识别等）
-     */
+    /** 用户类型标识（用于 token、权限识别等） */
     private final String userType;
 
     public static UserType getUserType(String str) {

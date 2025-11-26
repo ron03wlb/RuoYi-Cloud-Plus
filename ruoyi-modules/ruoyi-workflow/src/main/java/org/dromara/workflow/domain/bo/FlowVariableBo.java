@@ -1,11 +1,10 @@
 package org.dromara.workflow.domain.bo;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import org.dromara.common.core.validate.AddGroup;
-
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.Data;
+import org.dromara.common.core.validate.AddGroup;
 
 /**
  * 流程变量参数
@@ -15,25 +14,17 @@ import java.io.Serializable;
 @Data
 public class FlowVariableBo implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 流程实例id
-     */
+    /** 流程实例id */
     @NotNull(message = "流程实例id为空", groups = AddGroup.class)
     private Long instanceId;
 
-    /**
-     * 流程变量key
-     */
+    /** 流程变量key */
     @NotNull(message = "流程变量key为空", groups = AddGroup.class)
     private String key;
 
-    /**
-     * 流程变量value
-     */
+    /** 流程变量value */
     @NotNull(message = "流程变量value为空", groups = AddGroup.class)
     private String value;
-
 }

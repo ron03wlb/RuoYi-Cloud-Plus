@@ -37,8 +37,7 @@ public class EmailAuthStrategy implements IAuthStrategy {
 
     private final SysLoginService loginService;
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
     public LoginVo login(String body, RemoteClientVo client) {
@@ -47,11 +46,18 @@ public class EmailAuthStrategy implements IAuthStrategy {
         String tenantId = loginBody.getTenantId();
         String email = loginBody.getEmail();
         String emailCode = loginBody.getEmailCode();
-        LoginUser loginUser = TenantHelper.dynamic(tenantId, () -> {
-            LoginUser user = remoteUserService.getUserInfoByEmail(email, tenantId);
-            loginService.checkLogin(LoginType.EMAIL, tenantId, user.getUsername(), () -> !validateEmailCode(tenantId, email, emailCode));
-            return user;
-        });
+        LoginUser loginUser =
+                TenantHelper.dynamic(
+                        tenantId,
+                        () -> {
+                            LoginUser user = remoteUserService.getUserInfoByEmail(email, tenantId);
+                            loginService.checkLogin(
+                                    LoginType.EMAIL,
+                                    tenantId,
+                                    user.getUsername(),
+                                    () -> !validateEmailCode(tenantId, email, emailCode));
+                            return user;
+                        });
         loginUser.setClientKey(client.getClientKey());
         loginUser.setDeviceType(client.getDeviceType());
         SaLoginParameter model = new SaLoginParameter();
@@ -71,16 +77,17 @@ public class EmailAuthStrategy implements IAuthStrategy {
         return loginVo;
     }
 
-    /**
-     * 校验邮箱验证码
-     */
+    /** 校验邮箱验证码 */
     private boolean validateEmailCode(String tenantId, String email, String emailCode) {
         String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + email);
         if (StringUtils.isBlank(code)) {
-            loginService.recordLogininfor(tenantId, email, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            loginService.recordLogininfor(
+                    tenantId,
+                    email,
+                    Constants.LOGIN_FAIL,
+                    MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         return code.equals(emailCode);
     }
-
 }

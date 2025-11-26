@@ -2,6 +2,9 @@ package org.dromara.system.dubbo;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.utils.StreamUtils;
@@ -9,10 +12,6 @@ import org.dromara.system.api.RemotePostService;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.mapper.SysPostMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 岗位服务
@@ -37,12 +36,11 @@ public class RemotePostServiceImpl implements RemotePostService {
         if (CollUtil.isEmpty(postIds)) {
             return Collections.emptyMap();
         }
-        List<SysPost> list = postMapper.selectList(
-            new LambdaQueryWrapper<SysPost>()
-                .select(SysPost::getPostId, SysPost::getPostName)
-                .in(SysPost::getPostId, postIds)
-        );
+        List<SysPost> list =
+                postMapper.selectList(
+                        new LambdaQueryWrapper<SysPost>()
+                                .select(SysPost::getPostId, SysPost::getPostName)
+                                .in(SysPost::getPostId, postIds));
         return StreamUtils.toMap(list, SysPost::getPostId, SysPost::getPostName);
     }
-
 }

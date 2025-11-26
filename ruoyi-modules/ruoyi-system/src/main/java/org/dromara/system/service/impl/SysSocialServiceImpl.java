@@ -2,6 +2,7 @@ package org.dromara.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -11,8 +12,6 @@ import org.dromara.system.domain.vo.SysSocialVo;
 import org.dromara.system.mapper.SysSocialMapper;
 import org.dromara.system.service.ISysSocialService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 社会化关系Service业务层处理
@@ -45,10 +44,20 @@ public class SysSocialServiceImpl implements ISysSocialService {
      */
     @Override
     public List<SysSocialVo> queryList(SysSocialBo bo) {
-        LambdaQueryWrapper<SysSocial> lqw = new LambdaQueryWrapper<SysSocial>()
-            .eq(ObjectUtil.isNotNull(bo.getUserId()), SysSocial::getUserId, bo.getUserId())
-            .eq(StringUtils.isNotBlank(bo.getAuthId()), SysSocial::getAuthId, bo.getAuthId())
-            .eq(StringUtils.isNotBlank(bo.getSource()), SysSocial::getSource, bo.getSource());
+        LambdaQueryWrapper<SysSocial> lqw =
+                new LambdaQueryWrapper<SysSocial>()
+                        .eq(
+                                ObjectUtil.isNotNull(bo.getUserId()),
+                                SysSocial::getUserId,
+                                bo.getUserId())
+                        .eq(
+                                StringUtils.isNotBlank(bo.getAuthId()),
+                                SysSocial::getAuthId,
+                                bo.getAuthId())
+                        .eq(
+                                StringUtils.isNotBlank(bo.getSource()),
+                                SysSocial::getSource,
+                                bo.getSource());
         return baseMapper.selectVoList(lqw);
     }
 
@@ -60,7 +69,8 @@ public class SysSocialServiceImpl implements ISysSocialService {
      */
     @Override
     public List<SysSocialVo> queryListByUserId(Long userId) {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
+        return baseMapper.selectVoList(
+                new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
     }
 
     /**
@@ -97,11 +107,9 @@ public class SysSocialServiceImpl implements ISysSocialService {
         return baseMapper.updateById(update) > 0;
     }
 
-    /**
-     * 保存前的数据校验
-     */
+    /** 保存前的数据校验 */
     private void validEntityBeforeSave(SysSocial entity) {
-        //TODO 做一些数据校验,如唯一约束
+        // TODO 做一些数据校验,如唯一约束
     }
 
     /**
@@ -123,7 +131,7 @@ public class SysSocialServiceImpl implements ISysSocialService {
      */
     @Override
     public List<SysSocialVo> selectByAuthId(String authId) {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
+        return baseMapper.selectVoList(
+                new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
     }
-
 }

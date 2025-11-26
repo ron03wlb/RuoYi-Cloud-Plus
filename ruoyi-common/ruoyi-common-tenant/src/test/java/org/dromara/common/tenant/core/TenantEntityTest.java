@@ -1,20 +1,18 @@
 package org.dromara.common.tenant.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.tenant.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * TenantEntity 测试
- * <p>
- * 测试租户实体类的tenantId属性
- * </p>
- * <p>
- * 注意：TenantEntity继承自BaseEntity，BaseEntity的属性已在mybatis模块中测试，这里只测试tenantId字段
- * </p>
+ *
+ * <p>测试租户实体类的tenantId属性
+ *
+ * <p>注意：TenantEntity继承自BaseEntity，BaseEntity的属性已在mybatis模块中测试，这里只测试tenantId字段
  *
  * @author Test Team
  */

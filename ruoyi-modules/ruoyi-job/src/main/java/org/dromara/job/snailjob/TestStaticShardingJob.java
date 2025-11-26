@@ -8,8 +8,7 @@ import com.aizuda.snailjob.model.dto.ExecuteResult;
 import org.springframework.stereotype.Component;
 
 /**
- * 静态分片 根据服务端任务参数分片
- * <a href="https://juejin.cn/post/7426232375703896101"></a>
+ * 静态分片 根据服务端任务参数分片 <a href="https://juejin.cn/post/7426232375703896101"></a>
  *
  * @author 老马
  */

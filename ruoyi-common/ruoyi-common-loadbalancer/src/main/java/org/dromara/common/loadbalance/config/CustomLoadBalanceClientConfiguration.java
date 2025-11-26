@@ -21,10 +21,11 @@ public class CustomLoadBalanceClientConfiguration {
 
     @Bean
     @ConditionalOnBean(LoadBalancerClientFactory.class)
-    public ReactorLoadBalancer<ServiceInstance> customLoadBalancer(Environment environment,
-                                                                   LoadBalancerClientFactory loadBalancerClientFactory) {
+    public ReactorLoadBalancer<ServiceInstance> customLoadBalancer(
+            Environment environment, LoadBalancerClientFactory loadBalancerClientFactory) {
         String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
-        return new CustomSpringCloudLoadBalancer(name,
-            loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class));
+        return new CustomSpringCloudLoadBalancer(
+                name,
+                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class));
     }
 }

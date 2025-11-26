@@ -9,14 +9,13 @@ import cn.idev.excel.metadata.GlobalConfiguration;
 import cn.idev.excel.metadata.data.ReadCellData;
 import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
+import java.lang.reflect.Field;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.service.DictService;
 import org.dromara.common.core.utils.SpringUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.utils.ExcelUtil;
-import lombok.extern.slf4j.Slf4j;
-
-import java.lang.reflect.Field;
 
 /**
  * 字典格式化转换处理
@@ -37,7 +36,10 @@ public class ExcelDictConvert implements Converter<Object> {
     }
 
     @Override
-    public Object convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public Object convertToJavaData(
+            ReadCellData<?> cellData,
+            ExcelContentProperty contentProperty,
+            GlobalConfiguration globalConfiguration) {
         ExcelDictFormat anno = getAnnotation(contentProperty.getField());
         String type = anno.dictType();
         String label = cellData.getStringValue();
@@ -45,13 +47,18 @@ public class ExcelDictConvert implements Converter<Object> {
         if (StringUtils.isBlank(type)) {
             value = ExcelUtil.reverseByExp(label, anno.readConverterExp(), anno.separator());
         } else {
-            value = SpringUtils.getBean(DictService.class).getDictValue(type, label, anno.separator());
+            value =
+                    SpringUtils.getBean(DictService.class)
+                            .getDictValue(type, label, anno.separator());
         }
         return Convert.convert(contentProperty.getField().getType(), value);
     }
 
     @Override
-    public WriteCellData<String> convertToExcelData(Object object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(
+            Object object,
+            ExcelContentProperty contentProperty,
+            GlobalConfiguration globalConfiguration) {
         if (ObjectUtil.isNull(object)) {
             return new WriteCellData<>("");
         }
@@ -62,7 +69,9 @@ public class ExcelDictConvert implements Converter<Object> {
         if (StringUtils.isBlank(type)) {
             label = ExcelUtil.convertByExp(value, anno.readConverterExp(), anno.separator());
         } else {
-            label = SpringUtils.getBean(DictService.class).getDictLabel(type, value, anno.separator());
+            label =
+                    SpringUtils.getBean(DictService.class)
+                            .getDictLabel(type, value, anno.separator());
         }
         return new WriteCellData<>(label);
     }

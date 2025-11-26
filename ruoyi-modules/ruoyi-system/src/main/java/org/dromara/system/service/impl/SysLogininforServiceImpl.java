@@ -2,6 +2,10 @@ package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -14,11 +18,6 @@ import org.dromara.system.domain.vo.SysLogininforVo;
 import org.dromara.system.mapper.SysLogininforMapper;
 import org.dromara.system.service.ISysLogininforService;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 系统访问日志情况信息 服务层处理
@@ -36,18 +35,32 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
      * 分页查询登录日志列表
      *
      * @param logininfor 查询条件
-     * @param pageQuery  分页参数
+     * @param pageQuery 分页参数
      * @return 登录日志分页列表
      */
     @Override
-    public TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor, PageQuery pageQuery) {
+    public TableDataInfo<SysLogininforVo> selectPageLogininforList(
+            SysLogininforBo logininfor, PageQuery pageQuery) {
         Map<String, Object> params = logininfor.getParams();
-        LambdaQueryWrapper<SysLogininfor> lqw = new LambdaQueryWrapper<SysLogininfor>()
-            .like(StringUtils.isNotBlank(logininfor.getIpaddr()), SysLogininfor::getIpaddr, logininfor.getIpaddr())
-            .eq(StringUtils.isNotBlank(logininfor.getStatus()), SysLogininfor::getStatus, logininfor.getStatus())
-            .like(StringUtils.isNotBlank(logininfor.getUserName()), SysLogininfor::getUserName, logininfor.getUserName())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysLogininfor::getLoginTime, params.get("beginTime"), params.get("endTime"));
+        LambdaQueryWrapper<SysLogininfor> lqw =
+                new LambdaQueryWrapper<SysLogininfor>()
+                        .like(
+                                StringUtils.isNotBlank(logininfor.getIpaddr()),
+                                SysLogininfor::getIpaddr,
+                                logininfor.getIpaddr())
+                        .eq(
+                                StringUtils.isNotBlank(logininfor.getStatus()),
+                                SysLogininfor::getStatus,
+                                logininfor.getStatus())
+                        .like(
+                                StringUtils.isNotBlank(logininfor.getUserName()),
+                                SysLogininfor::getUserName,
+                                logininfor.getUserName())
+                        .between(
+                                params.get("beginTime") != null && params.get("endTime") != null,
+                                SysLogininfor::getLoginTime,
+                                params.get("beginTime"),
+                                params.get("endTime"));
         if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
             lqw.orderByDesc(SysLogininfor::getInfoId);
         }
@@ -76,13 +89,26 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
     @Override
     public List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor) {
         Map<String, Object> params = logininfor.getParams();
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysLogininfor>()
-            .like(StringUtils.isNotBlank(logininfor.getIpaddr()), SysLogininfor::getIpaddr, logininfor.getIpaddr())
-            .eq(StringUtils.isNotBlank(logininfor.getStatus()), SysLogininfor::getStatus, logininfor.getStatus())
-            .like(StringUtils.isNotBlank(logininfor.getUserName()), SysLogininfor::getUserName, logininfor.getUserName())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysLogininfor::getLoginTime, params.get("beginTime"), params.get("endTime"))
-            .orderByDesc(SysLogininfor::getInfoId));
+        return baseMapper.selectVoList(
+                new LambdaQueryWrapper<SysLogininfor>()
+                        .like(
+                                StringUtils.isNotBlank(logininfor.getIpaddr()),
+                                SysLogininfor::getIpaddr,
+                                logininfor.getIpaddr())
+                        .eq(
+                                StringUtils.isNotBlank(logininfor.getStatus()),
+                                SysLogininfor::getStatus,
+                                logininfor.getStatus())
+                        .like(
+                                StringUtils.isNotBlank(logininfor.getUserName()),
+                                SysLogininfor::getUserName,
+                                logininfor.getUserName())
+                        .between(
+                                params.get("beginTime") != null && params.get("endTime") != null,
+                                SysLogininfor::getLoginTime,
+                                params.get("beginTime"),
+                                params.get("endTime"))
+                        .orderByDesc(SysLogininfor::getInfoId));
     }
 
     /**
@@ -96,9 +122,7 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
         return baseMapper.deleteByIds(Arrays.asList(infoIds));
     }
 
-    /**
-     * 清空系统登录日志
-     */
+    /** 清空系统登录日志 */
     @Override
     public void cleanLogininfor() {
         baseMapper.delete(new LambdaQueryWrapper<>());

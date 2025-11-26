@@ -16,19 +16,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CaptchaCategory {
 
-    /**
-     * 线段干扰
-     */
+    /** 线段干扰 */
     LINE(LineCaptcha.class),
 
-    /**
-     * 圆圈干扰
-     */
+    /** 圆圈干扰 */
     CIRCLE(CircleCaptcha.class),
 
-    /**
-     * 扭曲干扰
-     */
+    /** 扭曲干扰 */
     SHEAR(ShearCaptcha.class);
 
     private final Class<? extends AbstractCaptcha> clazz;

@@ -1,5 +1,12 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import org.dromara.common.core.BaseUnitTest;
 import org.dromara.common.core.enums.FormatsType;
 import org.dromara.common.core.exception.ServiceException;
@@ -8,25 +15,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * DateUtils 工具类测试
- * <p>
- * 测试覆盖：
- * - 获取当前日期/时间
- * - 日期格式化
- * - 日期解析
- * - 时间差计算
- * - 类型转换
- * - 日期验证
- * </p>
+ *
+ * <p>测试覆盖： - 获取当前日期/时间 - 日期格式化 - 日期解析 - 时间差计算 - 类型转换 - 日期验证
  *
  * @author Test Team
  */
@@ -48,56 +40,42 @@ class DateUtilsTest extends BaseUnitTest {
     void shouldGetCurrentDateInYYYYMMDDFormat() {
         String date = DateUtils.getDate();
 
-        assertThat(date)
-            .isNotNull()
-            .matches("\\d{4}-\\d{2}-\\d{2}");
+        assertThat(date).isNotNull().matches("\\d{4}-\\d{2}-\\d{2}");
     }
 
     @Test
     void shouldGetCurrentDateInYYYYMMDDCompactFormat() {
         String date = DateUtils.getCurrentDate();
 
-        assertThat(date)
-            .isNotNull()
-            .hasSize(8)
-            .matches("\\d{8}");
+        assertThat(date).isNotNull().hasSize(8).matches("\\d{8}");
     }
 
     @Test
     void shouldGetDatePath() {
         String path = DateUtils.datePath();
 
-        assertThat(path)
-            .isNotNull()
-            .matches("\\d{4}/\\d{2}/\\d{2}");
+        assertThat(path).isNotNull().matches("\\d{4}/\\d{2}/\\d{2}");
     }
 
     @Test
     void shouldGetCurrentTime() {
         String time = DateUtils.getTime();
 
-        assertThat(time)
-            .isNotNull()
-            .matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+        assertThat(time).isNotNull().matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
     }
 
     @Test
     void shouldGetTimeWithHourMinuteSecond() {
         String time = DateUtils.getTimeWithHourMinuteSecond();
 
-        assertThat(time)
-            .isNotNull()
-            .matches("\\d{2}:\\d{2}:\\d{2}");
+        assertThat(time).isNotNull().matches("\\d{2}:\\d{2}:\\d{2}");
     }
 
     @Test
     void shouldGetDateTimeNowInDefaultFormat() {
         String dateTime = DateUtils.dateTimeNow();
 
-        assertThat(dateTime)
-            .isNotNull()
-            .hasSize(14)
-            .matches("\\d{14}");
+        assertThat(dateTime).isNotNull().hasSize(14).matches("\\d{14}");
     }
 
     @ParameterizedTest
@@ -184,22 +162,25 @@ class DateUtilsTest extends BaseUnitTest {
     void shouldThrowExceptionWhenParseDateTimeWithInvalidFormat() {
         String invalidDateStr = "invalid-date";
 
-        assertThatThrownBy(() ->
-            DateUtils.parseDateTime(FormatsType.YYYY_MM_DD_HH_MM_SS, invalidDateStr)
-        ).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(
+                        () ->
+                                DateUtils.parseDateTime(
+                                        FormatsType.YYYY_MM_DD_HH_MM_SS, invalidDateStr))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "2024-01-15",
-        "2024-01-15 14:30:45",
-        "2024-01-15 14:30",
-        "2024-01",
-        "2024/01/15",
-        "2024/01/15 14:30:45",
-        "2024.01.15",
-        "2024.01.15 14:30:45"
-    })
+    @ValueSource(
+            strings = {
+                "2024-01-15",
+                "2024-01-15 14:30:45",
+                "2024-01-15 14:30",
+                "2024-01",
+                "2024/01/15",
+                "2024/01/15 14:30:45",
+                "2024.01.15",
+                "2024.01.15 14:30:45"
+            })
     void shouldParseDateFromVariousFormats(String dateStr) {
         Date date = DateUtils.parseDate(dateStr);
 
@@ -337,10 +318,7 @@ class DateUtilsTest extends BaseUnitTest {
 
         String poor = DateUtils.getDatePoor(end, start);
 
-        assertThat(poor)
-            .contains("2天")
-            .contains("4小时")
-            .contains("45分钟");
+        assertThat(poor).contains("2天").contains("4小时").contains("45分钟");
     }
 
     @Test
@@ -371,11 +349,7 @@ class DateUtilsTest extends BaseUnitTest {
 
         String diff = DateUtils.getTimeDifference(end, start);
 
-        assertThat(diff)
-            .contains("2天")
-            .contains("4小时")
-            .contains("45分钟")
-            .contains("30秒");
+        assertThat(diff).contains("2天").contains("4小时").contains("45分钟").contains("30秒");
     }
 
     @Test
@@ -391,10 +365,10 @@ class DateUtilsTest extends BaseUnitTest {
         String diff = DateUtils.getTimeDifference(end, start);
 
         assertThat(diff)
-            .isEqualTo("5小时")
-            .doesNotContain("天")
-            .doesNotContain("分钟")
-            .doesNotContain("秒");
+                .isEqualTo("5小时")
+                .doesNotContain("天")
+                .doesNotContain("分钟")
+                .doesNotContain("秒");
     }
 
     @Test
@@ -459,9 +433,8 @@ class DateUtilsTest extends BaseUnitTest {
         Date end = cal2.getTime();
 
         // 不应该抛出异常
-        assertThatCode(() ->
-            DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS)
-        ).doesNotThrowAnyException();
+        assertThatCode(() -> DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -474,10 +447,9 @@ class DateUtilsTest extends BaseUnitTest {
         cal2.set(2024, Calendar.JANUARY, 1);
         Date end = cal2.getTime();
 
-        assertThatThrownBy(() ->
-            DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS)
-        ).isInstanceOf(ServiceException.class)
-            .hasMessageContaining("结束日期不能早于开始日期");
+        assertThatThrownBy(() -> DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("结束日期不能早于开始日期");
     }
 
     @Test
@@ -490,10 +462,9 @@ class DateUtilsTest extends BaseUnitTest {
         cal2.set(2024, Calendar.FEBRUARY, 1);
         Date end = cal2.getTime();
 
-        assertThatThrownBy(() ->
-            DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS)
-        ).isInstanceOf(ServiceException.class)
-            .hasMessageContaining("最大时间跨度");
+        assertThatThrownBy(() -> DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("最大时间跨度");
     }
 
     @Test
@@ -506,10 +477,9 @@ class DateUtilsTest extends BaseUnitTest {
         cal2.set(2024, Calendar.JANUARY, 2, 10, 0);
         Date end = cal2.getTime();
 
-        assertThatThrownBy(() ->
-            DateUtils.validateDateRange(start, end, 12, TimeUnit.HOURS)
-        ).isInstanceOf(ServiceException.class)
-            .hasMessageContaining("最大时间跨度");
+        assertThatThrownBy(() -> DateUtils.validateDateRange(start, end, 12, TimeUnit.HOURS))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("最大时间跨度");
     }
 
     @Test
@@ -522,10 +492,9 @@ class DateUtilsTest extends BaseUnitTest {
         cal2.set(2024, Calendar.JANUARY, 1, 12, 0);
         Date end = cal2.getTime();
 
-        assertThatThrownBy(() ->
-            DateUtils.validateDateRange(start, end, 60, TimeUnit.MINUTES)
-        ).isInstanceOf(ServiceException.class)
-            .hasMessageContaining("最大时间跨度");
+        assertThatThrownBy(() -> DateUtils.validateDateRange(start, end, 60, TimeUnit.MINUTES))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("最大时间跨度");
     }
 
     @Test
@@ -538,10 +507,9 @@ class DateUtilsTest extends BaseUnitTest {
         cal2.set(2024, Calendar.JANUARY, 2);
         Date end = cal2.getTime();
 
-        assertThatThrownBy(() ->
-            DateUtils.validateDateRange(start, end, 10, TimeUnit.SECONDS)
-        ).isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("不支持的时间单位");
+        assertThatThrownBy(() -> DateUtils.validateDateRange(start, end, 10, TimeUnit.SECONDS))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("不支持的时间单位");
     }
 
     @Test
@@ -555,9 +523,8 @@ class DateUtilsTest extends BaseUnitTest {
         Date end = cal2.getTime();
 
         // 正好10天，不应该抛出异常
-        assertThatCode(() ->
-            DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS)
-        ).doesNotThrowAnyException();
+        assertThatCode(() -> DateUtils.validateDateRange(start, end, 10, TimeUnit.DAYS))
+                .doesNotThrowAnyException();
     }
 
     // ========================================
@@ -568,10 +535,10 @@ class DateUtilsTest extends BaseUnitTest {
     void shouldHandleNullDateInFormatMethods() {
         // 这些方法会抛出 NullPointerException，因为没有 null 检查
         assertThatThrownBy(() -> DateUtils.formatDate(null))
-            .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(() -> DateUtils.formatDateTime(null))
-            .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test

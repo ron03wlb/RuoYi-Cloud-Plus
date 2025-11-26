@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysConfigBo;
 import org.dromara.system.domain.vo.SysConfigVo;
-
-import java.util.List;
 
 /**
  * 参数配置 服务层
@@ -17,7 +16,7 @@ public interface ISysConfigService {
     /**
      * 分页查询参数配置列表
      *
-     * @param config    查询条件
+     * @param config 查询条件
      * @param pageQuery 分页参数
      * @return 参数配置分页列表
      */
@@ -41,6 +40,7 @@ public interface ISysConfigService {
 
     /**
      * 获取注册开关
+     *
      * @param tenantId 租户id
      * @return true开启，false关闭
      */
@@ -77,9 +77,7 @@ public interface ISysConfigService {
      */
     void deleteConfigByIds(List<Long> configIds);
 
-    /**
-     * 重置参数缓存数据
-     */
+    /** 重置参数缓存数据 */
     void resetConfigCache();
 
     /**
@@ -89,5 +87,4 @@ public interface ISysConfigService {
      * @return 结果
      */
     boolean checkConfigKeyUnique(SysConfigBo config);
-
 }

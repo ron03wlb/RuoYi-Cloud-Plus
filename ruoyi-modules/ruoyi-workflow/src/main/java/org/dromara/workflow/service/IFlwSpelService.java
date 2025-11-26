@@ -1,15 +1,14 @@
 package org.dromara.workflow.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.api.domain.bo.RemoteTaskAssigneeBo;
 import org.dromara.system.api.domain.vo.RemoteTaskAssigneeVo;
 import org.dromara.workflow.domain.bo.FlowSpelBo;
 import org.dromara.workflow.domain.vo.FlowSpelVo;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 流程spel达式定义Service接口
@@ -30,7 +29,7 @@ public interface IFlwSpelService {
     /**
      * 分页查询流程spel达式定义列表
      *
-     * @param bo        查询条件
+     * @param bo 查询条件
      * @param pageQuery 分页参数
      * @return 流程spel达式定义分页列表
      */
@@ -63,7 +62,7 @@ public interface IFlwSpelService {
     /**
      * 校验并批量删除流程spel达式定义信息
      *
-     * @param ids     待删除的主键集合
+     * @param ids 待删除的主键集合
      * @param isValid 是否进行有效性校验
      * @return 是否删除成功
      */
@@ -84,5 +83,4 @@ public interface IFlwSpelService {
      * @return 映射表：key 为 SpEL 表达式，value 为对应备注；若为空则返回空 Map
      */
     Map<String, String> selectRemarksBySpels(List<String> viewSpels);
-
 }

@@ -15,6 +15,4 @@ public enum VariablesEnum implements NodeExtEnum {
     private final String label;
     private final String value;
     private final boolean selected;
-
 }
-

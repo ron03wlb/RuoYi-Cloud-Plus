@@ -20,9 +20,7 @@ public class Sm4Encryptor extends AbstractEncryptor {
         this.context = context;
     }
 
-    /**
-     * 获得当前算法
-     */
+    /** 获得当前算法 */
     @Override
     public AlgorithmType algorithm() {
         return AlgorithmType.SM4;
@@ -31,7 +29,7 @@ public class Sm4Encryptor extends AbstractEncryptor {
     /**
      * 加密
      *
-     * @param value      待加密字符串
+     * @param value 待加密字符串
      * @param encodeType 加密后的编码格式
      */
     @Override
@@ -46,7 +44,7 @@ public class Sm4Encryptor extends AbstractEncryptor {
     /**
      * 解密
      *
-     * @param value      待加密字符串
+     * @param value 待加密字符串
      */
     @Override
     public String decrypt(String value) {

@@ -15,14 +15,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CaptchaType {
 
-    /**
-     * 数字
-     */
+    /** 数字 */
     MATH(MathGenerator.class),
 
-    /**
-     * 字符
-     */
+    /** 字符 */
     CHAR(RandomGenerator.class);
 
     private final Class<? extends CodeGenerator> clazz;

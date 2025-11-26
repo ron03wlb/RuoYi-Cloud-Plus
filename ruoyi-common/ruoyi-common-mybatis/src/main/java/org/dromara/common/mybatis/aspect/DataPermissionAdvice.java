@@ -1,13 +1,12 @@
 package org.dromara.common.mybatis.aspect;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.helper.DataPermissionHelper;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 /**
  * 数据权限注解Advice
@@ -33,10 +32,9 @@ public class DataPermissionAdvice implements MethodInterceptor {
         }
     }
 
-    /**
-     * 获取数据权限注解
-     */
-    private DataPermission getDataPermissionAnnotation(Object target, Method method,Object[] args){
+    /** 获取数据权限注解 */
+    private DataPermission getDataPermissionAnnotation(
+            Object target, Method method, Object[] args) {
         DataPermission dataPermission = method.getAnnotation(DataPermission.class);
         // 优先获取方法上的注解
         if (dataPermission != null) {

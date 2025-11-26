@@ -8,14 +8,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.utils.SpringUtils;
 import org.dromara.common.core.utils.StringUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JSON 工具类
@@ -27,10 +26,7 @@ public class JsonUtils {
 
     private static ObjectMapper objectMapper;
 
-    /**
-     * 获取ObjectMapper实例（懒加载）
-     * 支持通过setObjectMapper()方法注入测试用的ObjectMapper
-     */
+    /** 获取ObjectMapper实例（懒加载） 支持通过setObjectMapper()方法注入测试用的ObjectMapper */
     public static ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
             objectMapper = SpringUtils.getBean(ObjectMapper.class);
@@ -68,9 +64,9 @@ public class JsonUtils {
     /**
      * 将JSON格式的字符串转换为指定类型的对象
      *
-     * @param text  JSON格式的字符串
+     * @param text JSON格式的字符串
      * @param clazz 要转换的目标对象类型
-     * @param <T>   目标对象的泛型类型
+     * @param <T> 目标对象的泛型类型
      * @return 转换后的对象，如果字符串为空则返回null
      * @throws RuntimeException 如果转换过程中发生IO异常，则抛出运行时异常
      */
@@ -90,7 +86,7 @@ public class JsonUtils {
      *
      * @param bytes 字节数组
      * @param clazz 要转换的目标对象类型
-     * @param <T>   目标对象的泛型类型
+     * @param <T> 目标对象的泛型类型
      * @return 转换后的对象，如果字节数组为空则返回null
      * @throws RuntimeException 如果转换过程中发生IO异常，则抛出运行时异常
      */
@@ -108,9 +104,9 @@ public class JsonUtils {
     /**
      * 将JSON格式的字符串转换为指定类型的对象，支持复杂类型
      *
-     * @param text          JSON格式的字符串
+     * @param text JSON格式的字符串
      * @param typeReference 指定类型的TypeReference对象
-     * @param <T>           目标对象的泛型类型
+     * @param <T> 目标对象的泛型类型
      * @return 转换后的对象，如果字符串为空则返回null
      * @throws RuntimeException 如果转换过程中发生IO异常，则抛出运行时异常
      */
@@ -137,7 +133,8 @@ public class JsonUtils {
             return null;
         }
         try {
-            return getObjectMapper().readValue(text, getObjectMapper().getTypeFactory().constructType(Dict.class));
+            return getObjectMapper()
+                    .readValue(text, getObjectMapper().getTypeFactory().constructType(Dict.class));
         } catch (MismatchedInputException e) {
             // 类型不匹配说明不是json
             return null;
@@ -158,7 +155,12 @@ public class JsonUtils {
             return null;
         }
         try {
-            return getObjectMapper().readValue(text, getObjectMapper().getTypeFactory().constructCollectionType(List.class, Dict.class));
+            return getObjectMapper()
+                    .readValue(
+                            text,
+                            getObjectMapper()
+                                    .getTypeFactory()
+                                    .constructCollectionType(List.class, Dict.class));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -167,9 +169,9 @@ public class JsonUtils {
     /**
      * 将JSON格式的字符串转换为指定类型对象的列表
      *
-     * @param text  JSON格式的字符串
+     * @param text JSON格式的字符串
      * @param clazz 要转换的目标对象类型
-     * @param <T>   目标对象的泛型类型
+     * @param <T> 目标对象的泛型类型
      * @return 转换后的对象的列表，如果字符串为空则返回空列表
      * @throws RuntimeException 如果转换过程中发生IO异常，则抛出运行时异常
      */
@@ -178,7 +180,12 @@ public class JsonUtils {
             return new ArrayList<>();
         }
         try {
-            return getObjectMapper().readValue(text, getObjectMapper().getTypeFactory().constructCollectionType(List.class, clazz));
+            return getObjectMapper()
+                    .readValue(
+                            text,
+                            getObjectMapper()
+                                    .getTypeFactory()
+                                    .constructCollectionType(List.class, clazz));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -237,6 +244,4 @@ public class JsonUtils {
             return false;
         }
     }
-
-
 }

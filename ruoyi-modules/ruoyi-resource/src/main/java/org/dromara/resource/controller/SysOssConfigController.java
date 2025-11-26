@@ -3,6 +3,7 @@ package org.dromara.resource.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
@@ -20,8 +21,6 @@ import org.dromara.resource.service.ISysOssConfigService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-
 /**
  * 对象存储配置Controller
  *
@@ -37,12 +36,11 @@ public class SysOssConfigController extends BaseController {
 
     private final ISysOssConfigService iSysOssConfigService;
 
-    /**
-     * 查询对象存储配置列表
-     */
+    /** 查询对象存储配置列表 */
     @SaCheckPermission("system:ossConfig:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOssConfigVo> list(@Validated(QueryGroup.class) SysOssConfigBo bo, PageQuery pageQuery) {
+    public TableDataInfo<SysOssConfigVo> list(
+            @Validated(QueryGroup.class) SysOssConfigBo bo, PageQuery pageQuery) {
         return iSysOssConfigService.queryPageList(bo, pageQuery);
     }
 
@@ -53,13 +51,12 @@ public class SysOssConfigController extends BaseController {
      */
     @SaCheckPermission("system:ossConfig:list")
     @GetMapping("/{ossConfigId}")
-    public R<SysOssConfigVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable("ossConfigId") Long ossConfigId) {
+    public R<SysOssConfigVo> getInfo(
+            @NotNull(message = "主键不能为空") @PathVariable("ossConfigId") Long ossConfigId) {
         return R.ok(iSysOssConfigService.queryById(ossConfigId));
     }
 
-    /**
-     * 新增对象存储配置
-     */
+    /** 新增对象存储配置 */
     @SaCheckPermission("system:ossConfig:add")
     @Log(title = "对象存储配置", businessType = BusinessType.INSERT)
     @PostMapping()
@@ -67,9 +64,7 @@ public class SysOssConfigController extends BaseController {
         return toAjax(iSysOssConfigService.insertByBo(bo));
     }
 
-    /**
-     * 修改对象存储配置
-     */
+    /** 修改对象存储配置 */
     @SaCheckPermission("system:ossConfig:edit")
     @Log(title = "对象存储配置", businessType = BusinessType.UPDATE)
     @PutMapping()
@@ -89,9 +84,7 @@ public class SysOssConfigController extends BaseController {
         return toAjax(iSysOssConfigService.deleteWithValidByIds(Arrays.asList(ossConfigIds), true));
     }
 
-    /**
-     * 状态修改
-     */
+    /** 状态修改 */
     @SaCheckPermission("system:ossConfig:edit")
     @Log(title = "对象存储状态修改", businessType = BusinessType.UPDATE)
     @RepeatSubmit()

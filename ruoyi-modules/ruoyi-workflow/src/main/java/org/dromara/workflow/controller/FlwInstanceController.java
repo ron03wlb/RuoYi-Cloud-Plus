@@ -1,5 +1,7 @@
 package org.dromara.workflow.controller;
 
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -18,9 +20,6 @@ import org.dromara.workflow.domain.vo.FlowInstanceVo;
 import org.dromara.workflow.service.IFlwInstanceService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 流程实例管理 控制层
@@ -41,10 +40,11 @@ public class FlwInstanceController extends BaseController {
      * 查询正在运行的流程实例列表
      *
      * @param flowInstanceBo 流程实例
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByRunning")
-    public TableDataInfo<FlowInstanceVo> selectRunningInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
+    public TableDataInfo<FlowInstanceVo> selectRunningInstanceList(
+            FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
         return flwInstanceService.selectRunningInstanceList(flowInstanceBo, pageQuery);
     }
 
@@ -52,10 +52,11 @@ public class FlwInstanceController extends BaseController {
      * 查询已结束的流程实例列表
      *
      * @param flowInstanceBo 流程实例
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByFinish")
-    public TableDataInfo<FlowInstanceVo> selectFinishInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
+    public TableDataInfo<FlowInstanceVo> selectFinishInstanceList(
+            FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
         return flwInstanceService.selectFinishInstanceList(flowInstanceBo, pageQuery);
     }
 
@@ -113,7 +114,7 @@ public class FlwInstanceController extends BaseController {
     /**
      * 激活/挂起流程实例
      *
-     * @param id     流程实例id
+     * @param id 流程实例id
      * @param active 激活/挂起
      */
     @RepeatSubmit()
@@ -126,10 +127,11 @@ public class FlwInstanceController extends BaseController {
      * 获取当前登陆人发起的流程实例
      *
      * @param flowInstanceBo 参数
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByCurrent")
-    public TableDataInfo<FlowInstanceVo> selectCurrentInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
+    public TableDataInfo<FlowInstanceVo> selectCurrentInstanceList(
+            FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
         return flwInstanceService.selectCurrentInstanceList(flowInstanceBo, pageQuery);
     }
 
@@ -175,5 +177,4 @@ public class FlwInstanceController extends BaseController {
     public R<Boolean> invalid(@Validated @RequestBody FlowInvalidBo bo) {
         return R.ok(flwInstanceService.processInvalid(bo));
     }
-
 }

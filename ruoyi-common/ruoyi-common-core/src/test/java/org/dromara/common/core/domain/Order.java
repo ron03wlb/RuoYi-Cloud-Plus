@@ -11,8 +11,7 @@ import java.math.BigDecimal;
  */
 public class Order implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Long orderId;
     private String orderNo;
@@ -20,8 +19,7 @@ public class Order implements Serializable {
     private BigDecimal totalAmount;
     private String status;
 
-    public Order() {
-    }
+    public Order() {}
 
     public Order(Long orderId, String orderNo, Long userId, BigDecimal totalAmount, String status) {
         this.orderId = orderId;

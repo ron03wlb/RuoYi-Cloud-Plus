@@ -46,7 +46,8 @@ public class RemoteLogServiceImpl implements RemoteLogService {
     @Async
     @Override
     public void saveLogininfor(RemoteLogininforBo remoteLogininforBo) {
-        SysLogininforBo sysLogininforBo = MapstructUtils.convert(remoteLogininforBo, SysLogininforBo.class);
+        SysLogininforBo sysLogininforBo =
+                MapstructUtils.convert(remoteLogininforBo, SysLogininforBo.class);
         logininforService.insertLogininfor(sysLogininforBo);
     }
 }

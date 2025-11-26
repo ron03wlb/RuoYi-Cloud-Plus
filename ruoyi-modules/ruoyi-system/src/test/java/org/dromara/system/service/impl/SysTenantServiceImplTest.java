@@ -1,9 +1,16 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -19,14 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysTenantServiceImpl 单元测试
  *
@@ -36,41 +35,29 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysTenantServiceImpl 单元测试")
 class SysTenantServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysTenantMapper baseMapper;
+    @Mock private SysTenantMapper baseMapper;
 
-    @Mock
-    private SysTenantPackageMapper tenantPackageMapper;
+    @Mock private SysTenantPackageMapper tenantPackageMapper;
 
-    @Mock
-    private SysUserMapper userMapper;
+    @Mock private SysUserMapper userMapper;
 
-    @Mock
-    private SysDeptMapper deptMapper;
+    @Mock private SysDeptMapper deptMapper;
 
-    @Mock
-    private SysRoleMapper roleMapper;
+    @Mock private SysRoleMapper roleMapper;
 
-    @Mock
-    private SysRoleMenuMapper roleMenuMapper;
+    @Mock private SysRoleMenuMapper roleMenuMapper;
 
-    @Mock
-    private SysRoleDeptMapper roleDeptMapper;
+    @Mock private SysRoleDeptMapper roleDeptMapper;
 
-    @Mock
-    private SysUserRoleMapper userRoleMapper;
+    @Mock private SysUserRoleMapper userRoleMapper;
 
-    @Mock
-    private SysDictTypeMapper dictTypeMapper;
+    @Mock private SysDictTypeMapper dictTypeMapper;
 
-    @Mock
-    private SysDictDataMapper dictDataMapper;
+    @Mock private SysDictDataMapper dictDataMapper;
 
-    @Mock
-    private SysConfigMapper configMapper;
+    @Mock private SysConfigMapper configMapper;
 
-    @InjectMocks
-    private SysTenantServiceImpl tenantService;
+    @InjectMocks private SysTenantServiceImpl tenantService;
 
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -130,7 +117,8 @@ class SysTenantServiceImplTest extends BaseUnitTest {
             vo.setId(1L);
             page.setRecords(Collections.singletonList(vo));
 
-            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class))).thenReturn(page);
+            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class)))
+                    .thenReturn(page);
 
             TableDataInfo<SysTenantVo> result = tenantService.queryPageList(bo, pageQuery);
 
@@ -148,7 +136,7 @@ class SysTenantServiceImplTest extends BaseUnitTest {
             vo.setCompanyName("测试公司");
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Collections.singletonList(vo));
+                    .thenReturn(Collections.singletonList(vo));
 
             List<SysTenantVo> result = tenantService.queryList(bo);
 

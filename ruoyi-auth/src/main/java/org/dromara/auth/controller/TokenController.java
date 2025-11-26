@@ -5,6 +5,13 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
@@ -41,14 +48,6 @@ import org.dromara.system.api.domain.vo.RemoteClientVo;
 import org.dromara.system.api.domain.vo.RemoteTenantVo;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 /**
  * token 控制
  *
@@ -63,14 +62,11 @@ public class TokenController {
     private final SysLoginService sysLoginService;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    @DubboReference
-    private final RemoteConfigService remoteConfigService;
-    @DubboReference
-    private final RemoteTenantService remoteTenantService;
-    @DubboReference
-    private final RemoteClientService remoteClientService;
-    @DubboReference
-    private final RemoteSocialService remoteSocialService;
+    @DubboReference private final RemoteConfigService remoteConfigService;
+    @DubboReference private final RemoteTenantService remoteTenantService;
+    @DubboReference private final RemoteClientService remoteClientService;
+    @DubboReference private final RemoteSocialService remoteSocialService;
+
     @DubboReference(stub = "true")
     private final RemoteMessageService remoteMessageService;
 
@@ -91,7 +87,8 @@ public class TokenController {
         RemoteClientVo clientVo = remoteClientService.queryByClientId(clientId);
 
         // 查询不到 client 或 client 内不包含 grantType
-        if (ObjectUtil.isNull(clientVo) || !StringUtils.contains(clientVo.getGrantType(), grantType)) {
+        if (ObjectUtil.isNull(clientVo)
+                || !StringUtils.contains(clientVo.getGrantType(), grantType)) {
             log.info("客户端id: {} 认证类型：{} 异常!.", clientId, grantType);
             return R.fail(MessageUtils.message("auth.grant.type.error"));
         } else if (!SystemConstants.NORMAL.equals(clientVo.getStatus())) {
@@ -103,9 +100,13 @@ public class TokenController {
         LoginVo loginVo = IAuthStrategy.login(body, clientVo, grantType);
 
         Long userId = LoginHelper.getUserId();
-        scheduledExecutorService.schedule(() -> {
-            remoteMessageService.publishMessage(List.of(userId), "欢迎登录RuoYi-Cloud-Plus微服务管理系统");
-        }, 5, TimeUnit.SECONDS);
+        scheduledExecutorService.schedule(
+                () -> {
+                    remoteMessageService.publishMessage(
+                            List.of(userId), "欢迎登录RuoYi-Cloud-Plus微服务管理系统");
+                },
+                5,
+                TimeUnit.SECONDS);
         return R.ok(loginVo);
     }
 
@@ -116,8 +117,10 @@ public class TokenController {
      * @return 结果
      */
     @GetMapping("/binding/{source}")
-    public R<String> authBinding(@PathVariable("source") String source,
-                                 @RequestParam String tenantId, @RequestParam String domain) {
+    public R<String> authBinding(
+            @PathVariable("source") String source,
+            @RequestParam String tenantId,
+            @RequestParam String domain) {
         SocialLoginConfigProperties obj = socialProperties.getType().get(source);
         if (ObjectUtil.isNull(obj)) {
             return R.fail(source + "平台账号暂不支持");
@@ -127,7 +130,9 @@ public class TokenController {
         map.put("tenantId", tenantId);
         map.put("domain", domain);
         map.put("state", AuthStateUtils.createState());
-        String authorizeUrl = authRequest.authorize(Base64.encode(JsonUtils.toJsonString(map), StandardCharsets.UTF_8));
+        String authorizeUrl =
+                authRequest.authorize(
+                        Base64.encode(JsonUtils.toJsonString(map), StandardCharsets.UTF_8));
         return R.ok("操作成功", authorizeUrl);
     }
 
@@ -140,9 +145,12 @@ public class TokenController {
     @PostMapping("/social/callback")
     public R<Void> socialCallback(@RequestBody SocialLoginBody loginBody) {
         // 获取第三方登录信息
-        AuthResponse<AuthUser> response = SocialUtils.loginAuth(
-            loginBody.getSource(), loginBody.getSocialCode(),
-            loginBody.getSocialState(), socialProperties);
+        AuthResponse<AuthUser> response =
+                SocialUtils.loginAuth(
+                        loginBody.getSource(),
+                        loginBody.getSocialCode(),
+                        loginBody.getSocialState(),
+                        socialProperties);
         AuthUser authUserData = response.getData();
         // 判断授权响应是否成功
         if (!response.ok()) {
@@ -151,7 +159,6 @@ public class TokenController {
         sysLoginService.socialRegister(authUserData);
         return R.ok();
     }
-
 
     /**
      * 取消授权
@@ -164,18 +171,14 @@ public class TokenController {
         return rows ? R.ok() : R.fail("取消授权失败");
     }
 
-    /**
-     * 登出方法
-     */
+    /** 登出方法 */
     @PostMapping("logout")
     public R<Void> logout() {
         sysLoginService.logout();
         return R.ok();
     }
 
-    /**
-     * 用户注册
-     */
+    /** 用户注册 */
     @ApiEncrypt
     @PostMapping("register")
     public R<Void> register(@RequestBody RegisterBody registerBody) {
@@ -225,10 +228,10 @@ public class TokenController {
             host = new URL(request.getRequestURL().toString()).getHost();
         }
         // 根据域名进行筛选
-        List<TenantListVo> list = StreamUtils.filter(voList, vo ->
-            StringUtils.equalsIgnoreCase(vo.getDomain(), host));
+        List<TenantListVo> list =
+                StreamUtils.filter(
+                        voList, vo -> StringUtils.equalsIgnoreCase(vo.getDomain(), host));
         result.setVoList(CollUtil.isNotEmpty(list) ? list : voList);
         return R.ok(result);
     }
-
 }

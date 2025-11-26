@@ -1,21 +1,20 @@
 package org.dromara.common.excel.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.dromara.common.excel.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * DefaultExcelResult (Excel导入结果) 单元测试
- * <p>
- * 用途: 封装 Excel 导入的结果数据和错误信息
- * 核心功能: 数据列表管理、错误列表管理、导入分析报告生成
+ *
+ * <p>用途: 封装 Excel 导入的结果数据和错误信息 核心功能: 数据列表管理、错误列表管理、导入分析报告生成
  *
  * @author Test Team
  */
@@ -224,14 +223,11 @@ class DefaultExcelResultTest extends BaseUnitTest {
         void shouldHandlePartialImportSuccess() {
             // Arrange
             DefaultExcelResult<UserData> result = new DefaultExcelResult<>();
-            result.setList(Arrays.asList(
-                new UserData("user1", "user1@example.com"),
-                new UserData("user2", "user2@example.com")
-            ));
-            result.setErrorList(Arrays.asList(
-                "第3行: 邮箱格式错误",
-                "第5行: 用户名不能为空"
-            ));
+            result.setList(
+                    Arrays.asList(
+                            new UserData("user1", "user1@example.com"),
+                            new UserData("user2", "user2@example.com")));
+            result.setErrorList(Arrays.asList("第3行: 邮箱格式错误", "第5行: 用户名不能为空"));
 
             // Act
             String analysis = result.getAnalysis();
@@ -274,8 +270,7 @@ class DefaultExcelResultTest extends BaseUnitTest {
             result.setList(null);
 
             // Act & Assert
-            assertThatThrownBy(() -> result.getAnalysis())
-                .isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> result.getAnalysis()).isInstanceOf(NullPointerException.class);
         }
 
         @Test
@@ -287,8 +282,7 @@ class DefaultExcelResultTest extends BaseUnitTest {
             result.setErrorList(null);
 
             // Act & Assert
-            assertThatThrownBy(() -> result.getAnalysis())
-                .isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> result.getAnalysis()).isInstanceOf(NullPointerException.class);
         }
 
         @Test
@@ -332,10 +326,10 @@ class DefaultExcelResultTest extends BaseUnitTest {
         void shouldSupportCustomObjectType() {
             // Arrange
             DefaultExcelResult<UserData> result = new DefaultExcelResult<>();
-            List<UserData> users = Arrays.asList(
-                new UserData("Alice", "alice@example.com"),
-                new UserData("Bob", "bob@example.com")
-            );
+            List<UserData> users =
+                    Arrays.asList(
+                            new UserData("Alice", "alice@example.com"),
+                            new UserData("Bob", "bob@example.com"));
             result.setList(users);
 
             // Act

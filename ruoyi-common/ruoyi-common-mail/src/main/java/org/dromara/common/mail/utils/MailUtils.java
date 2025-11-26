@@ -10,29 +10,24 @@ import cn.hutool.extra.mail.JakartaUserPassAuthenticator;
 import cn.hutool.extra.mail.MailAccount;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Session;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.dromara.common.core.utils.SpringUtils;
-import org.dromara.common.core.utils.StringUtils;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.dromara.common.core.utils.SpringUtils;
+import org.dromara.common.core.utils.StringUtils;
 
-/**
- * 邮件工具类
- */
+/** 邮件工具类 */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MailUtils {
 
     private static final MailAccount ACCOUNT = SpringUtils.getBean(MailAccount.class);
 
-    /**
-     * 获取邮件发送实例
-     */
+    /** 获取邮件发送实例 */
     public static MailAccount getMailAccount() {
         return ACCOUNT;
     }
@@ -54,10 +49,10 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送文本邮件，发送给单个或多个收件人<br>
      * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to      收件人
+     * @param to 收件人
      * @param subject 标题
      * @param content 正文
-     * @param files   附件列表
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
@@ -69,10 +64,10 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人<br>
      * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to      收件人
+     * @param to 收件人
      * @param subject 标题
      * @param content 正文
-     * @param files   附件列表
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
@@ -84,14 +79,15 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人<br>
      * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to      收件人
+     * @param to 收件人
      * @param subject 标题
      * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      */
-    public static String send(String to, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            String to, String subject, String content, boolean isHtml, File... files) {
         return send(splitAddress(to), subject, content, isHtml, files);
     }
 
@@ -99,75 +95,99 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人<br>
      * 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to      收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param cc      抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param bcc     密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param to 收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param cc 抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param bcc 密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
      * @param subject 标题
      * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      * @since 4.0.3
      */
-    public static String send(String to, String cc, String bcc, String subject, String content, boolean isHtml, File... files) {
-        return send(splitAddress(to), splitAddress(cc), splitAddress(bcc), subject, content, isHtml, files);
+    public static String send(
+            String to,
+            String cc,
+            String bcc,
+            String subject,
+            String content,
+            boolean isHtml,
+            File... files) {
+        return send(
+                splitAddress(to),
+                splitAddress(cc),
+                splitAddress(bcc),
+                subject,
+                content,
+                isHtml,
+                files);
     }
 
     /**
      * 使用配置文件中设置的账户发送文本邮件，发送给多人
      *
-     * @param tos     收件人列表
+     * @param tos 收件人列表
      * @param subject 标题
      * @param content 正文
-     * @param files   附件列表
+     * @param files 附件列表
      * @return message-id
      */
-    public static String sendText(Collection<String> tos, String subject, String content, File... files) {
+    public static String sendText(
+            Collection<String> tos, String subject, String content, File... files) {
         return send(tos, subject, content, false, files);
     }
 
     /**
      * 使用配置文件中设置的账户发送HTML邮件，发送给多人
      *
-     * @param tos     收件人列表
+     * @param tos 收件人列表
      * @param subject 标题
      * @param content 正文
-     * @param files   附件列表
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
-    public static String sendHtml(Collection<String> tos, String subject, String content, File... files) {
+    public static String sendHtml(
+            Collection<String> tos, String subject, String content, File... files) {
         return send(tos, subject, content, true, files);
     }
 
     /**
      * 使用配置文件中设置的账户发送邮件，发送给多人
      *
-     * @param tos     收件人列表
+     * @param tos 收件人列表
      * @param subject 标题
      * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      */
-    public static String send(Collection<String> tos, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            Collection<String> tos, String subject, String content, boolean isHtml, File... files) {
         return send(tos, null, null, subject, content, isHtml, files);
     }
 
     /**
      * 使用配置文件中设置的账户发送邮件，发送给多人
      *
-     * @param tos     收件人列表
-     * @param ccs     抄送人列表，可以为null或空
-     * @param bccs    密送人列表，可以为null或空
+     * @param tos 收件人列表
+     * @param ccs 抄送人列表，可以为null或空
+     * @param bccs 密送人列表，可以为null或空
      * @param subject 标题
      * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      * @since 4.0.3
      */
-    public static String send(Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            Collection<String> tos,
+            Collection<String> ccs,
+            Collection<String> bccs,
+            String subject,
+            String content,
+            boolean isHtml,
+            File... files) {
         return send(getMailAccount(), true, tos, ccs, bccs, subject, content, null, isHtml, files);
     }
 
@@ -177,15 +197,21 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件认证对象
-     * @param to          收件人，多个收件人逗号或者分号隔开
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param to 收件人，多个收件人逗号或者分号隔开
+     * @param subject 标题
+     * @param content 正文
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
-    public static String send(MailAccount mailAccount, String to, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            String to,
+            String subject,
+            String content,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, splitAddress(to), subject, content, isHtml, files);
     }
 
@@ -193,14 +219,20 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param tos 收件人列表
+     * @param subject 标题
+     * @param content 正文
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      */
-    public static String send(MailAccount mailAccount, Collection<String> tos, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            Collection<String> tos,
+            String subject,
+            String content,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, tos, null, null, subject, content, isHtml, files);
     }
 
@@ -208,17 +240,25 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param ccs         抄送人列表，可以为null或空
-     * @param bccs        密送人列表，可以为null或空
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param tos 收件人列表
+     * @param ccs 抄送人列表，可以为null或空
+     * @param bccs 密送人列表，可以为null或空
+     * @param subject 标题
+     * @param content 正文
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 4.0.3
      */
-    public static String send(MailAccount mailAccount, Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content, boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            Collection<String> tos,
+            Collection<String> ccs,
+            Collection<String> bccs,
+            String subject,
+            String content,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, false, tos, ccs, bccs, subject, content, null, isHtml, files);
     }
 
@@ -226,15 +266,20 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人<br>
      * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to       收件人
-     * @param subject  标题
-     * @param content  正文
+     * @param to 收件人
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param files    附件列表
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
-    public static String sendHtml(String to, String subject, String content, Map<String, InputStream> imageMap, File... files) {
+    public static String sendHtml(
+            String to,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            File... files) {
         return send(to, subject, content, imageMap, true, files);
     }
 
@@ -242,15 +287,21 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人<br>
      * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to       收件人
-     * @param subject  标题
-     * @param content  正文
+     * @param to 收件人
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      */
-    public static String send(String to, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
+    public static String send(
+            String to,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
         return send(splitAddress(to), subject, content, imageMap, isHtml, files);
     }
 
@@ -258,67 +309,103 @@ public class MailUtils {
      * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人<br>
      * 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
-     * @param to       收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param cc       抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param bcc      密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param subject  标题
-     * @param content  正文
+     * @param to 收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param cc 抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param bcc 密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      * @since 4.0.3
      */
-    public static String send(String to, String cc, String bcc, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
-        return send(splitAddress(to), splitAddress(cc), splitAddress(bcc), subject, content, imageMap, isHtml, files);
+    public static String send(
+            String to,
+            String cc,
+            String bcc,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
+        return send(
+                splitAddress(to),
+                splitAddress(cc),
+                splitAddress(bcc),
+                subject,
+                content,
+                imageMap,
+                isHtml,
+                files);
     }
 
     /**
      * 使用配置文件中设置的账户发送HTML邮件，发送给多人
      *
-     * @param tos      收件人列表
-     * @param subject  标题
-     * @param content  正文
+     * @param tos 收件人列表
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param files    附件列表
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
-    public static String sendHtml(Collection<String> tos, String subject, String content, Map<String, InputStream> imageMap, File... files) {
+    public static String sendHtml(
+            Collection<String> tos,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            File... files) {
         return send(tos, subject, content, imageMap, true, files);
     }
 
     /**
      * 使用配置文件中设置的账户发送邮件，发送给多人
      *
-     * @param tos      收件人列表
-     * @param subject  标题
-     * @param content  正文
+     * @param tos 收件人列表
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      */
-    public static String send(Collection<String> tos, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
+    public static String send(
+            Collection<String> tos,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
         return send(tos, null, null, subject, content, imageMap, isHtml, files);
     }
 
     /**
      * 使用配置文件中设置的账户发送邮件，发送给多人
      *
-     * @param tos      收件人列表
-     * @param ccs      抄送人列表，可以为null或空
-     * @param bccs     密送人列表，可以为null或空
-     * @param subject  标题
-     * @param content  正文
+     * @param tos 收件人列表
+     * @param ccs 抄送人列表，可以为null或空
+     * @param bccs 密送人列表，可以为null或空
+     * @param subject 标题
+     * @param content 正文
      * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
+     * @param isHtml 是否为HTML
+     * @param files 附件列表
      * @return message-id
      * @since 4.0.3
      */
-    public static String send(Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
-        return send(getMailAccount(), true, tos, ccs, bccs, subject, content, imageMap, isHtml, files);
+    public static String send(
+            Collection<String> tos,
+            Collection<String> ccs,
+            Collection<String> bccs,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
+        return send(
+                getMailAccount(), true, tos, ccs, bccs, subject, content, imageMap, isHtml, files);
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------- Custom MailAccount
@@ -327,16 +414,23 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件认证对象
-     * @param to          收件人，多个收件人逗号或者分号隔开
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param to 收件人，多个收件人逗号或者分号隔开
+     * @param subject 标题
+     * @param content 正文
+     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 3.2.0
      */
-    public static String send(MailAccount mailAccount, String to, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            String to,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, splitAddress(to), subject, content, imageMap, isHtml, files);
     }
 
@@ -344,16 +438,23 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param tos 收件人列表
+     * @param subject 标题
+     * @param content 正文
+     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 4.6.3
      */
-    public static String send(MailAccount mailAccount, Collection<String> tos, String subject, String content, Map<String, InputStream> imageMap, boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            Collection<String> tos,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, tos, null, null, subject, content, imageMap, isHtml, files);
     }
 
@@ -361,19 +462,27 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param ccs         抄送人列表，可以为null或空
-     * @param bccs        密送人列表，可以为null或空
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
+     * @param tos 收件人列表
+     * @param ccs 抄送人列表，可以为null或空
+     * @param bccs 密送人列表，可以为null或空
+     * @param subject 标题
+     * @param content 正文
+     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 4.6.3
      */
-    public static String send(MailAccount mailAccount, Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content, Map<String, InputStream> imageMap,
-                              boolean isHtml, File... files) {
+    public static String send(
+            MailAccount mailAccount,
+            Collection<String> tos,
+            Collection<String> ccs,
+            Collection<String> bccs,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
         return send(mailAccount, false, tos, ccs, bccs, subject, content, imageMap, isHtml, files);
     }
 
@@ -388,11 +497,13 @@ public class MailUtils {
     public static Session getSession(MailAccount mailAccount, boolean isSingleton) {
         Authenticator authenticator = null;
         if (mailAccount.isAuth()) {
-            authenticator = new JakartaUserPassAuthenticator(mailAccount.getUser(), mailAccount.getPass());
+            authenticator =
+                    new JakartaUserPassAuthenticator(mailAccount.getUser(), mailAccount.getPass());
         }
 
-        return isSingleton ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator) //
-            : Session.getInstance(mailAccount.getSmtpProps(), authenticator);
+        return isSingleton
+                ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator) //
+                : Session.getInstance(mailAccount.getSmtpProps(), authenticator);
     }
 
     // ------------------------------------------------------------------------------------------------------------------------ Private method start
@@ -400,22 +511,32 @@ public class MailUtils {
     /**
      * 发送邮件给多人
      *
-     * @param mailAccount      邮件帐户信息
+     * @param mailAccount 邮件帐户信息
      * @param useGlobalSession 是否全局共享Session
-     * @param tos              收件人列表
-     * @param ccs              抄送人列表，可以为null或空
-     * @param bccs             密送人列表，可以为null或空
-     * @param subject          标题
-     * @param content          正文
-     * @param imageMap         图片与占位符，占位符格式为cid:${cid}
-     * @param isHtml           是否为HTML格式
-     * @param files            附件列表
+     * @param tos 收件人列表
+     * @param ccs 抄送人列表，可以为null或空
+     * @param bccs 密送人列表，可以为null或空
+     * @param subject 标题
+     * @param content 正文
+     * @param imageMap 图片与占位符，占位符格式为cid:${cid}
+     * @param isHtml 是否为HTML格式
+     * @param files 附件列表
      * @return message-id
      * @since 4.6.3
      */
-    private static String send(MailAccount mailAccount, boolean useGlobalSession, Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content,
-                               Map<String, InputStream> imageMap, boolean isHtml, File... files) {
-        final JakartaMail mail = JakartaMail.create(mailAccount).setUseGlobalSession(useGlobalSession);
+    private static String send(
+            MailAccount mailAccount,
+            boolean useGlobalSession,
+            Collection<String> tos,
+            Collection<String> ccs,
+            Collection<String> bccs,
+            String subject,
+            String content,
+            Map<String, InputStream> imageMap,
+            boolean isHtml,
+            File... files) {
+        final JakartaMail mail =
+                JakartaMail.create(mailAccount).setUseGlobalSession(useGlobalSession);
 
         // 可选抄送人
         if (CollUtil.isNotEmpty(ccs)) {

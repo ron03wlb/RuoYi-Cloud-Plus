@@ -1,7 +1,6 @@
 package org.dromara.common.core.domain;
 
 import io.github.linpeilie.annotations.AutoMapper;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,8 +13,7 @@ import java.math.BigDecimal;
 @AutoMapper(target = Order.class)
 public class OrderVO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Long orderId;
     private String orderNo;
@@ -23,10 +21,10 @@ public class OrderVO implements Serializable {
     private BigDecimal totalAmount;
     private String status;
 
-    public OrderVO() {
-    }
+    public OrderVO() {}
 
-    public OrderVO(Long orderId, String orderNo, Long userId, BigDecimal totalAmount, String status) {
+    public OrderVO(
+            Long orderId, String orderNo, Long userId, BigDecimal totalAmount, String status) {
         this.orderId = orderId;
         this.orderNo = orderNo;
         this.userId = userId;

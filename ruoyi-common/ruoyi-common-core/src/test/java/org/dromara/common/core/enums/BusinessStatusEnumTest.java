@@ -1,5 +1,8 @@
 package org.dromara.common.core.enums;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
 import org.dromara.common.core.BaseUnitTest;
 import org.dromara.common.core.exception.ServiceException;
 import org.junit.jupiter.api.DisplayName;
@@ -7,10 +10,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * BusinessStatusEnum 单元测试
@@ -85,7 +84,16 @@ class BusinessStatusEnumTest extends BaseUnitTest {
     class GetByStatusTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"cancel", "draft", "waiting", "finish", "invalid", "back", "termination"})
+        @ValueSource(
+                strings = {
+                    "cancel",
+                    "draft",
+                    "waiting",
+                    "finish",
+                    "invalid",
+                    "back",
+                    "termination"
+                })
         @DisplayName("应该根据状态码返回对应的枚举")
         void shouldReturnEnumByStatus(String status) {
             BusinessStatusEnum result = BusinessStatusEnum.getByStatus(status);
@@ -107,7 +115,7 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         void shouldThrowNullPointerExceptionForNullStatus() {
             // ConcurrentHashMap 不允许 null key，会抛出 NullPointerException
             assertThatThrownBy(() -> BusinessStatusEnum.getByStatus(null))
-                .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(NullPointerException.class);
         }
     }
 
@@ -197,8 +205,8 @@ class BusinessStatusEnumTest extends BaseUnitTest {
             List<String> runningStatus = BusinessStatusEnum.runningStatus();
 
             assertThat(runningStatus)
-                .hasSize(4)
-                .containsExactly("draft", "waiting", "back", "cancel");
+                    .hasSize(4)
+                    .containsExactly("draft", "waiting", "back", "cancel");
         }
 
         @Test
@@ -207,7 +215,7 @@ class BusinessStatusEnumTest extends BaseUnitTest {
             List<String> runningStatus = BusinessStatusEnum.runningStatus();
 
             assertThatThrownBy(() -> runningStatus.add("new_status"))
-                .isInstanceOf(UnsupportedOperationException.class);
+                    .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -220,9 +228,7 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         void shouldReturnFinishStatusList() {
             List<String> finishStatus = BusinessStatusEnum.finishStatus();
 
-            assertThat(finishStatus)
-                .hasSize(3)
-                .containsExactly("finish", "invalid", "termination");
+            assertThat(finishStatus).hasSize(3).containsExactly("finish", "invalid", "termination");
         }
 
         @Test
@@ -231,7 +237,7 @@ class BusinessStatusEnumTest extends BaseUnitTest {
             List<String> finishStatus = BusinessStatusEnum.finishStatus();
 
             assertThatThrownBy(() -> finishStatus.add("new_status"))
-                .isInstanceOf(UnsupportedOperationException.class);
+                    .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -244,51 +250,51 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         @DisplayName("应该允许草稿、已撤销、已退回状态启动流程")
         void shouldAllowStartForDraftCancelBack(String status) {
             assertThatCode(() -> BusinessStatusEnum.checkStartStatus(status))
-                .doesNotThrowAnyException();
+                    .doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("应该拒绝待审核状态启动流程")
         void shouldRejectStartForWaitingStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus("waiting"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已提交过申请,正在审批中！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已提交过申请,正在审批中！");
         }
 
         @Test
         @DisplayName("应该拒绝已完成状态启动流程")
         void shouldRejectStartForFinishStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus("finish"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已完成申请！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已完成申请！");
         }
 
         @Test
         @DisplayName("应该拒绝已作废状态启动流程")
         void shouldRejectStartForInvalidStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus("invalid"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已作废！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已作废！");
         }
 
         @Test
         @DisplayName("应该拒绝已终止状态启动流程")
         void shouldRejectStartForTerminationStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus("termination"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已终止！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已终止！");
         }
 
         @Test
         @DisplayName("应该拒绝空状态启动流程")
         void shouldRejectStartForBlankStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus(""))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("流程状态为空！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("流程状态为空！");
 
             assertThatThrownBy(() -> BusinessStatusEnum.checkStartStatus(null))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("流程状态为空！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("流程状态为空！");
         }
     }
 
@@ -301,47 +307,47 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         @DisplayName("应该允许草稿、待审核状态撤销流程")
         void shouldAllowCancelForDraftWaiting(String status) {
             assertThatCode(() -> BusinessStatusEnum.checkCancelStatus(status))
-                .doesNotThrowAnyException();
+                    .doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("应该拒绝已撤销状态再次撤销")
         void shouldRejectCancelForCancelStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkCancelStatus("cancel"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已撤销！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已撤销！");
         }
 
         @Test
         @DisplayName("应该拒绝已完成状态撤销")
         void shouldRejectCancelForFinishStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkCancelStatus("finish"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已完成申请！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已完成申请！");
         }
 
         @Test
         @DisplayName("应该拒绝已作废状态撤销")
         void shouldRejectCancelForInvalidStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkCancelStatus("invalid"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已作废！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已作废！");
         }
 
         @Test
         @DisplayName("应该拒绝已终止状态撤销")
         void shouldRejectCancelForTerminationStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkCancelStatus("termination"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已终止！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已终止！");
         }
 
         @Test
         @DisplayName("应该拒绝已退回状态撤销")
         void shouldRejectCancelForBackStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkCancelStatus("back"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已退回！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已退回！");
         }
     }
 
@@ -354,47 +360,47 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         @DisplayName("应该允许草稿、待审核状态驳回")
         void shouldAllowBackForDraftWaiting(String status) {
             assertThatCode(() -> BusinessStatusEnum.checkBackStatus(status))
-                .doesNotThrowAnyException();
+                    .doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("应该拒绝已退回状态再次驳回")
         void shouldRejectBackForBackStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkBackStatus("back"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已退回！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已退回！");
         }
 
         @Test
         @DisplayName("应该拒绝已完成状态驳回")
         void shouldRejectBackForFinishStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkBackStatus("finish"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已完成申请！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已完成申请！");
         }
 
         @Test
         @DisplayName("应该拒绝已作废状态驳回")
         void shouldRejectBackForInvalidStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkBackStatus("invalid"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已作废！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已作废！");
         }
 
         @Test
         @DisplayName("应该拒绝已终止状态驳回")
         void shouldRejectBackForTerminationStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkBackStatus("termination"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已终止！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已终止！");
         }
 
         @Test
         @DisplayName("应该拒绝已撤销状态驳回")
         void shouldRejectBackForCancelStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkBackStatus("cancel"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已撤销！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已撤销！");
         }
     }
 
@@ -407,31 +413,31 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         @DisplayName("应该允许草稿、待审核、已撤销、已退回状态作废")
         void shouldAllowInvalidForNonFinishedStatus(String status) {
             assertThatCode(() -> BusinessStatusEnum.checkInvalidStatus(status))
-                .doesNotThrowAnyException();
+                    .doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("应该拒绝已完成状态作废")
         void shouldRejectInvalidForFinishStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkInvalidStatus("finish"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已完成申请！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已完成申请！");
         }
 
         @Test
         @DisplayName("应该拒绝已作废状态再次作废")
         void shouldRejectInvalidForInvalidStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkInvalidStatus("invalid"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已作废！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已作废！");
         }
 
         @Test
         @DisplayName("应该拒绝已终止状态再次作废")
         void shouldRejectInvalidForTerminationStatus() {
             assertThatThrownBy(() -> BusinessStatusEnum.checkInvalidStatus("termination"))
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("该单据已终止！");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("该单据已终止！");
         }
     }
 
@@ -453,15 +459,15 @@ class BusinessStatusEnumTest extends BaseUnitTest {
         void shouldGetAllValues() {
             BusinessStatusEnum[] values = BusinessStatusEnum.values();
 
-            assertThat(values).contains(
-                BusinessStatusEnum.CANCEL,
-                BusinessStatusEnum.DRAFT,
-                BusinessStatusEnum.WAITING,
-                BusinessStatusEnum.FINISH,
-                BusinessStatusEnum.INVALID,
-                BusinessStatusEnum.BACK,
-                BusinessStatusEnum.TERMINATION
-            );
+            assertThat(values)
+                    .contains(
+                            BusinessStatusEnum.CANCEL,
+                            BusinessStatusEnum.DRAFT,
+                            BusinessStatusEnum.WAITING,
+                            BusinessStatusEnum.FINISH,
+                            BusinessStatusEnum.INVALID,
+                            BusinessStatusEnum.BACK,
+                            BusinessStatusEnum.TERMINATION);
         }
 
         @Test

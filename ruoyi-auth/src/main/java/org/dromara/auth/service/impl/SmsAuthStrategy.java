@@ -37,8 +37,7 @@ public class SmsAuthStrategy implements IAuthStrategy {
 
     private final SysLoginService loginService;
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
     public LoginVo login(String body, RemoteClientVo client) {
@@ -47,11 +46,20 @@ public class SmsAuthStrategy implements IAuthStrategy {
         String tenantId = loginBody.getTenantId();
         String phonenumber = loginBody.getPhonenumber();
         String smsCode = loginBody.getSmsCode();
-        LoginUser loginUser = TenantHelper.dynamic(tenantId, () -> {
-            LoginUser user = remoteUserService.getUserInfoByPhonenumber(phonenumber, tenantId);
-            loginService.checkLogin(LoginType.SMS, tenantId, user.getUsername(), () -> !validateSmsCode(tenantId, phonenumber, smsCode));
-            return user;
-        });
+        LoginUser loginUser =
+                TenantHelper.dynamic(
+                        tenantId,
+                        () -> {
+                            LoginUser user =
+                                    remoteUserService.getUserInfoByPhonenumber(
+                                            phonenumber, tenantId);
+                            loginService.checkLogin(
+                                    LoginType.SMS,
+                                    tenantId,
+                                    user.getUsername(),
+                                    () -> !validateSmsCode(tenantId, phonenumber, smsCode));
+                            return user;
+                        });
         loginUser.setClientKey(client.getClientKey());
         loginUser.setDeviceType(client.getDeviceType());
         SaLoginParameter model = new SaLoginParameter();
@@ -71,16 +79,17 @@ public class SmsAuthStrategy implements IAuthStrategy {
         return loginVo;
     }
 
-    /**
-     * 校验短信验证码
-     */
+    /** 校验短信验证码 */
     private boolean validateSmsCode(String tenantId, String phonenumber, String smsCode) {
         String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + phonenumber);
         if (StringUtils.isBlank(code)) {
-            loginService.recordLogininfor(tenantId, phonenumber, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            loginService.recordLogininfor(
+                    tenantId,
+                    phonenumber,
+                    Constants.LOGIN_FAIL,
+                    MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         return code.equals(smsCode);
     }
-
 }

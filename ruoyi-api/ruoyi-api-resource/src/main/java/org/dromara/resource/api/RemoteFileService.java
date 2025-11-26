@@ -1,9 +1,8 @@
 package org.dromara.resource.api;
 
+import java.util.List;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.resource.api.domain.RemoteFile;
-
-import java.util.List;
 
 /**
  * 文件服务
@@ -18,7 +17,8 @@ public interface RemoteFileService {
      * @param file 文件信息
      * @return 结果
      */
-    RemoteFile upload(String name, String originalFilename, String contentType, byte[] file) throws ServiceException;
+    RemoteFile upload(String name, String originalFilename, String contentType, byte[] file)
+            throws ServiceException;
 
     /**
      * 通过ossId查询对应的url

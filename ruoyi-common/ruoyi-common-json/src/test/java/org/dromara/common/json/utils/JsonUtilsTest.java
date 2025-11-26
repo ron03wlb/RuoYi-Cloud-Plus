@@ -1,22 +1,18 @@
 package org.dromara.common.json.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.hutool.core.lang.Dict;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.*;
-
-/**
- * JsonUtils (JSON工具类) 单元测试
- */
+/** JsonUtils (JSON工具类) 单元测试 */
 @DisplayName("JsonUtils (JSON工具类) 单元测试")
 class JsonUtilsTest {
 

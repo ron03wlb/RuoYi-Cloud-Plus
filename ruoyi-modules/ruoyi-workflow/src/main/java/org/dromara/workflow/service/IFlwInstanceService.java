@@ -1,5 +1,7 @@
 package org.dromara.workflow.service;
 
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.warm.flow.orm.entity.FlowInstance;
@@ -8,9 +10,6 @@ import org.dromara.workflow.domain.bo.FlowInstanceBo;
 import org.dromara.workflow.domain.bo.FlowInvalidBo;
 import org.dromara.workflow.domain.bo.FlowVariableBo;
 import org.dromara.workflow.domain.vo.FlowInstanceVo;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 流程实例 服务层
@@ -23,19 +22,21 @@ public interface IFlwInstanceService {
      * 分页查询正在运行的流程实例
      *
      * @param flowInstanceBo 流程实例
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      * @return 结果
      */
-    TableDataInfo<FlowInstanceVo> selectRunningInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery);
+    TableDataInfo<FlowInstanceVo> selectRunningInstanceList(
+            FlowInstanceBo flowInstanceBo, PageQuery pageQuery);
 
     /**
      * 分页查询已结束的流程实例
      *
      * @param flowInstanceBo 流程实例
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      * @return 结果
      */
-    TableDataInfo<FlowInstanceVo> selectFinishInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery);
+    TableDataInfo<FlowInstanceVo> selectFinishInstanceList(
+            FlowInstanceBo flowInstanceBo, PageQuery pageQuery);
 
     /**
      * 根据业务id查询流程实例详细信息
@@ -105,10 +106,11 @@ public interface IFlwInstanceService {
      * 获取当前登陆人发起的流程实例
      *
      * @param instanceBo 流程实例
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      * @return 结果
      */
-    TableDataInfo<FlowInstanceVo> selectCurrentInstanceList(FlowInstanceBo instanceBo, PageQuery pageQuery);
+    TableDataInfo<FlowInstanceVo> selectCurrentInstanceList(
+            FlowInstanceBo instanceBo, PageQuery pageQuery);
 
     /**
      * 获取流程图,流程记录
@@ -122,7 +124,7 @@ public interface IFlwInstanceService {
      * 按照实例id更新状态
      *
      * @param instanceId 实例id
-     * @param status     状态
+     * @param status 状态
      */
     void updateStatus(Long instanceId, String status);
 
@@ -146,7 +148,7 @@ public interface IFlwInstanceService {
      * 设置流程变量
      *
      * @param instanceId 实例id
-     * @param variable   流程变量
+     * @param variable 流程变量
      */
     void setVariable(Long instanceId, Map<String, Object> variable);
 

@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.constant.SystemConstants;
@@ -38,8 +39,6 @@ import org.dromara.system.mapper.SysUserRoleMapper;
 import org.dromara.system.service.*;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
 /**
  * 用户服务
  *
@@ -69,87 +68,104 @@ public class RemoteUserServiceImpl implements RemoteUserService {
      */
     @Override
     public LoginUser getUserInfo(String username, String tenantId) throws UserException {
-        return TenantHelper.dynamic(tenantId, () -> {
-            SysUserVo sysUser = userMapper.selectVoOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, username));
-            if (ObjectUtil.isNull(sysUser)) {
-                throw new UserException("user.not.exists", username);
-            }
-            if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
-                throw new UserException("user.blocked", username);
-            }
-            // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
-            // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
-            return buildLoginUser(sysUser);
-        });
+        return TenantHelper.dynamic(
+                tenantId,
+                () -> {
+                    SysUserVo sysUser =
+                            userMapper.selectVoOne(
+                                    new LambdaQueryWrapper<SysUser>()
+                                            .eq(SysUser::getUserName, username));
+                    if (ObjectUtil.isNull(sysUser)) {
+                        throw new UserException("user.not.exists", username);
+                    }
+                    if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
+                        throw new UserException("user.blocked", username);
+                    }
+                    // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
+                    // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
+                    return buildLoginUser(sysUser);
+                });
     }
 
     /**
      * 通过用户id查询用户信息
      *
-     * @param userId   用户id
+     * @param userId 用户id
      * @param tenantId 租户id
      * @return 结果
      */
     @Override
     public LoginUser getUserInfo(Long userId, String tenantId) throws UserException {
-        return TenantHelper.dynamic(tenantId, () -> {
-            SysUserVo sysUser = userMapper.selectVoById(userId);
-            if (ObjectUtil.isNull(sysUser)) {
-                throw new UserException("user.not.exists", "");
-            }
-            if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
-                throw new UserException("user.blocked", sysUser.getUserName());
-            }
-            // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
-            // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
-            return buildLoginUser(sysUser);
-        });
+        return TenantHelper.dynamic(
+                tenantId,
+                () -> {
+                    SysUserVo sysUser = userMapper.selectVoById(userId);
+                    if (ObjectUtil.isNull(sysUser)) {
+                        throw new UserException("user.not.exists", "");
+                    }
+                    if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
+                        throw new UserException("user.blocked", sysUser.getUserName());
+                    }
+                    // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
+                    // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
+                    return buildLoginUser(sysUser);
+                });
     }
 
     /**
      * 通过手机号查询用户信息
      *
      * @param phonenumber 手机号
-     * @param tenantId    租户id
+     * @param tenantId 租户id
      * @return 结果
      */
     @Override
-    public LoginUser getUserInfoByPhonenumber(String phonenumber, String tenantId) throws UserException {
-        return TenantHelper.dynamic(tenantId, () -> {
-            SysUserVo sysUser = userMapper.selectVoOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getPhonenumber, phonenumber));
-            if (ObjectUtil.isNull(sysUser)) {
-                throw new UserException("user.not.exists", phonenumber);
-            }
-            if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
-                throw new UserException("user.blocked", phonenumber);
-            }
-            // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
-            // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
-            return buildLoginUser(sysUser);
-        });
+    public LoginUser getUserInfoByPhonenumber(String phonenumber, String tenantId)
+            throws UserException {
+        return TenantHelper.dynamic(
+                tenantId,
+                () -> {
+                    SysUserVo sysUser =
+                            userMapper.selectVoOne(
+                                    new LambdaQueryWrapper<SysUser>()
+                                            .eq(SysUser::getPhonenumber, phonenumber));
+                    if (ObjectUtil.isNull(sysUser)) {
+                        throw new UserException("user.not.exists", phonenumber);
+                    }
+                    if (UserStatus.DISABLE.getCode().equals(sysUser.getStatus())) {
+                        throw new UserException("user.blocked", phonenumber);
+                    }
+                    // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
+                    // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
+                    return buildLoginUser(sysUser);
+                });
     }
 
     /**
      * 通过邮箱查询用户信息
      *
-     * @param email    邮箱
+     * @param email 邮箱
      * @param tenantId 租户id
      * @return 结果
      */
     @Override
     public LoginUser getUserInfoByEmail(String email, String tenantId) throws UserException {
-        return TenantHelper.dynamic(tenantId, () -> {
-            SysUserVo user = userMapper.selectVoOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getEmail, email));
-            if (ObjectUtil.isNull(user)) {
-                throw new UserException("user.not.exists", email);
-            }
-            if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
-                throw new UserException("user.blocked", email);
-            }
-            // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
-            // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
-            return buildLoginUser(user);
-        });
+        return TenantHelper.dynamic(
+                tenantId,
+                () -> {
+                    SysUserVo user =
+                            userMapper.selectVoOne(
+                                    new LambdaQueryWrapper<SysUser>().eq(SysUser::getEmail, email));
+                    if (ObjectUtil.isNull(user)) {
+                        throw new UserException("user.not.exists", email);
+                    }
+                    if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+                        throw new UserException("user.blocked", email);
+                    }
+                    // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
+                    // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
+                    return buildLoginUser(user);
+                });
     }
 
     /**
@@ -186,16 +202,24 @@ public class RemoteUserServiceImpl implements RemoteUserService {
      * @return 结果
      */
     @Override
-    public Boolean registerUserInfo(RemoteUserBo remoteUserBo) throws UserException, ServiceException {
+    public Boolean registerUserInfo(RemoteUserBo remoteUserBo)
+            throws UserException, ServiceException {
         SysUserBo sysUserBo = MapstructUtils.convert(remoteUserBo, SysUserBo.class);
         String username = sysUserBo.getUserName();
-        boolean exist = TenantHelper.dynamic(remoteUserBo.getTenantId(), () -> {
-            if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
-                throw new ServiceException("当前系统没有开启注册功能");
-            }
-            return userMapper.exists(new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getUserName, sysUserBo.getUserName()));
-        });
+        boolean exist =
+                TenantHelper.dynamic(
+                        remoteUserBo.getTenantId(),
+                        () -> {
+                            if (!("true"
+                                    .equals(
+                                            configService.selectConfigByKey(
+                                                    "sys.account.registerUser")))) {
+                                throw new ServiceException("当前系统没有开启注册功能");
+                            }
+                            return userMapper.exists(
+                                    new LambdaQueryWrapper<SysUser>()
+                                            .eq(SysUser::getUserName, sysUserBo.getUserName()));
+                        });
         if (exist) {
             throw new UserException("user.register.save.error", username);
         }
@@ -257,9 +281,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         return userService.selectEmailById(userId);
     }
 
-    /**
-     * 构建登录用户
-     */
+    /** 构建登录用户 */
     private LoginUser buildLoginUser(SysUserVo userVo) {
         LoginUser loginUser = new LoginUser();
         Long userId = userVo.getUserId();
@@ -275,7 +297,8 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         if (ObjectUtil.isNotNull(userVo.getDeptId())) {
             Opt<SysDeptVo> deptOpt = Opt.of(userVo.getDeptId()).map(deptService::selectDeptById);
             loginUser.setDeptName(deptOpt.map(SysDeptVo::getDeptName).orElse(StringUtils.EMPTY));
-            loginUser.setDeptCategory(deptOpt.map(SysDeptVo::getDeptCategory).orElse(StringUtils.EMPTY));
+            loginUser.setDeptCategory(
+                    deptOpt.map(SysDeptVo::getDeptCategory).orElse(StringUtils.EMPTY));
         }
         List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);
         List<SysPostVo> posts = postService.selectPostsByUserId(userId);
@@ -288,7 +311,7 @@ public class RemoteUserServiceImpl implements RemoteUserService {
      * 更新用户信息
      *
      * @param userId 用户ID
-     * @param ip     IP地址
+     * @param ip IP地址
      */
     @Override
     public void recordLoginInfo(Long userId, String ip) {
@@ -311,13 +334,22 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         if (CollUtil.isEmpty(userIds)) {
             return new ArrayList<>();
         }
-        List<SysUserVo> list = userMapper.selectVoList(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getUserId, SysUser::getDeptId, SysUser::getUserName,
-                SysUser::getNickName, SysUser::getUserType, SysUser::getEmail,
-                SysUser::getPhonenumber, SysUser::getSex, SysUser::getStatus,
-                SysUser::getCreateTime)
-            .eq(SysUser::getStatus, SystemConstants.NORMAL)
-            .in(SysUser::getUserId, userIds));
+        List<SysUserVo> list =
+                userMapper.selectVoList(
+                        new LambdaQueryWrapper<SysUser>()
+                                .select(
+                                        SysUser::getUserId,
+                                        SysUser::getDeptId,
+                                        SysUser::getUserName,
+                                        SysUser::getNickName,
+                                        SysUser::getUserType,
+                                        SysUser::getEmail,
+                                        SysUser::getPhonenumber,
+                                        SysUser::getSex,
+                                        SysUser::getStatus,
+                                        SysUser::getCreateTime)
+                                .eq(SysUser::getStatus, SystemConstants.NORMAL)
+                                .in(SysUser::getUserId, userIds));
         return MapstructUtils.convert(list, RemoteUserVo.class);
     }
 
@@ -348,8 +380,9 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         }
 
         // 通过角色ID获取用户角色信息
-        List<SysUserRole> userRoles = userRoleMapper.selectList(
-            new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getRoleId, roleIds));
+        List<SysUserRole> userRoles =
+                userRoleMapper.selectList(
+                        new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getRoleId, roleIds));
 
         // 获取用户ID列表
         Set<Long> userIds = StreamUtils.toSet(userRoles, SysUserRole::getUserId);
@@ -368,10 +401,17 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         if (CollUtil.isEmpty(deptIds)) {
             return List.of();
         }
-        List<SysUserVo> list = userMapper.selectVoList(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getUserId, SysUser::getUserName, SysUser::getNickName, SysUser::getEmail, SysUser::getPhonenumber)
-            .eq(SysUser::getStatus, SystemConstants.NORMAL)
-            .in(SysUser::getDeptId, deptIds));
+        List<SysUserVo> list =
+                userMapper.selectVoList(
+                        new LambdaQueryWrapper<SysUser>()
+                                .select(
+                                        SysUser::getUserId,
+                                        SysUser::getUserName,
+                                        SysUser::getNickName,
+                                        SysUser::getEmail,
+                                        SysUser::getPhonenumber)
+                                .eq(SysUser::getStatus, SystemConstants.NORMAL)
+                                .in(SysUser::getDeptId, deptIds));
         return BeanUtil.copyToList(list, RemoteUserVo.class);
     }
 
@@ -388,8 +428,9 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         }
 
         // 通过岗位ID获取用户岗位信息
-        List<SysUserPost> userPosts = userPostMapper.selectList(
-            new LambdaQueryWrapper<SysUserPost>().in(SysUserPost::getPostId, postIds));
+        List<SysUserPost> userPosts =
+                userPostMapper.selectList(
+                        new LambdaQueryWrapper<SysUserPost>().in(SysUserPost::getPostId, postIds));
 
         // 获取用户ID列表
         Set<Long> userIds = StreamUtils.toSet(userPosts, SysUserPost::getUserId);
@@ -407,12 +448,11 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         if (CollUtil.isEmpty(userIds)) {
             return Collections.emptyMap();
         }
-        List<SysUser> list = userMapper.selectList(
-            new LambdaQueryWrapper<SysUser>()
-                .select(SysUser::getUserId, SysUser::getNickName)
-                .in(SysUser::getUserId, userIds)
-        );
+        List<SysUser> list =
+                userMapper.selectList(
+                        new LambdaQueryWrapper<SysUser>()
+                                .select(SysUser::getUserId, SysUser::getNickName)
+                                .in(SysUser::getUserId, userIds));
         return StreamUtils.toMap(list, SysUser::getUserId, SysUser::getNickName);
     }
-
 }

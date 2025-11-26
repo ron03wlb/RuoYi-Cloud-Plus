@@ -15,9 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class SpringUtils extends SpringUtil {
 
-    /**
-     * 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true
-     */
+    /** 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true */
     public static boolean containsBean(String name) {
         return getBeanFactory().containsBean(name);
     }
@@ -37,24 +35,18 @@ public final class SpringUtils extends SpringUtil {
         return getBeanFactory().getType(name);
     }
 
-    /**
-     * 如果给定的bean名字在bean定义中有别名，则返回这些别名
-     */
+    /** 如果给定的bean名字在bean定义中有别名，则返回这些别名 */
     public static String[] getAliases(String name) throws NoSuchBeanDefinitionException {
         return getBeanFactory().getAliases(name);
     }
 
-    /**
-     * 获取aop代理对象
-     */
+    /** 获取aop代理对象 */
     @SuppressWarnings("unchecked")
     public static <T> T getAopProxy(T invoker) {
         return (T) getBean(invoker.getClass());
     }
 
-    /**
-     * 获取spring上下文
-     */
+    /** 获取spring上下文 */
     public static ApplicationContext context() {
         return getApplicationContext();
     }
@@ -62,5 +54,4 @@ public final class SpringUtils extends SpringUtil {
     public static boolean isVirtual() {
         return Threading.VIRTUAL.isActive(getBean(Environment.class));
     }
-
 }

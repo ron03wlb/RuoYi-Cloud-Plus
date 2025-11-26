@@ -16,8 +16,7 @@ import org.springframework.cache.Cache;
 @Slf4j
 public class TenantSpringCacheManager extends PlusSpringCacheManager {
 
-    public TenantSpringCacheManager() {
-    }
+    public TenantSpringCacheManager() {}
 
     @Override
     public Cache getCache(String name) {
@@ -37,5 +36,4 @@ public class TenantSpringCacheManager extends PlusSpringCacheManager {
         }
         return super.getCache(tenantId + ":" + name);
     }
-
 }

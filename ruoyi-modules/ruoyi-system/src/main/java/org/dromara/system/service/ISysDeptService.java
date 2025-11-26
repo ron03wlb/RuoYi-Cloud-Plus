@@ -1,12 +1,11 @@
 package org.dromara.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysDeptBo;
 import org.dromara.system.domain.vo.SysDeptVo;
-
-import java.util.List;
 
 /**
  * 部门管理 服务层
@@ -18,7 +17,7 @@ public interface ISysDeptService {
     /**
      * 分页查询部门管理数据
      *
-     * @param dept      部门信息
+     * @param dept 部门信息
      * @param pageQuery 分页对象
      * @return 部门信息集合
      */
@@ -112,7 +111,6 @@ public interface ISysDeptService {
      */
     boolean checkDeptNameUnique(SysDeptBo dept);
 
-
     /**
      * 校验部门是否有数据权限
      *
@@ -143,5 +141,4 @@ public interface ISysDeptService {
      * @return 结果
      */
     int deleteDeptById(Long deptId);
-
 }

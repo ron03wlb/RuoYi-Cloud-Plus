@@ -9,6 +9,4 @@ import org.dromara.system.domain.vo.SysSocialVo;
  *
  * @author thiszhc
  */
-public interface SysSocialMapper extends BaseMapperPlus<SysSocial, SysSocialVo> {
-
-}
+public interface SysSocialMapper extends BaseMapperPlus<SysSocial, SysSocialVo> {}

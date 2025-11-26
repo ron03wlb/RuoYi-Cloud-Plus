@@ -1,11 +1,10 @@
 package org.dromara.demo.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
+import java.io.Serial;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serial;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
  * 测试单表对象 test_demo
@@ -18,52 +17,31 @@ import java.io.Serial;
 @TableName("test_demo")
 public class TestDemo extends BaseEntity {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-
-    /**
-     * 主键
-     */
+    /** 主键 */
     @TableId(value = "id")
     private Long id;
 
-    /**
-     * 部门id
-     */
+    /** 部门id */
     private Long deptId;
 
-    /**
-     * 用户id
-     */
+    /** 用户id */
     private Long userId;
 
-    /**
-     * 排序号
-     */
+    /** 排序号 */
     @OrderBy(asc = false, sort = 1)
     private Integer orderNum;
 
-    /**
-     * key键
-     */
+    /** key键 */
     private String testKey;
 
-    /**
-     * 值
-     */
+    /** 值 */
     private String value;
 
-    /**
-     * 版本
-     */
-    @Version
-    private Long version;
+    /** 版本 */
+    @Version private Long version;
 
-    /**
-     * 删除标志
-     */
-    @TableLogic
-    private Long delFlag;
-
+    /** 删除标志 */
+    @TableLogic private Long delFlag;
 }

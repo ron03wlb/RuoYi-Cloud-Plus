@@ -3,6 +3,7 @@ package org.dromara.common.mybatis.handler;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.dromara.common.core.exception.ServiceException;
@@ -10,8 +11,6 @@ import org.dromara.common.core.utils.ObjectUtils;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.system.api.model.LoginUser;
-
-import java.util.Date;
 
 /**
  * MP注入处理器
@@ -21,9 +20,7 @@ import java.util.Date;
 @Slf4j
 public class InjectionMetaObjectHandler implements MetaObjectHandler {
 
-    /**
-     * 如果用户不存在默认注入-1代表无用户
-     */
+    /** 如果用户不存在默认注入-1代表无用户 */
     private static final Long DEFAULT_USER_ID = -1L;
 
     /**
@@ -34,7 +31,8 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         try {
-            if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity baseEntity) {
+            if (ObjectUtil.isNotNull(metaObject)
+                    && metaObject.getOriginalObject() instanceof BaseEntity baseEntity) {
                 // 获取当前时间作为创建时间和更新时间，如果创建时间不为空，则使用创建时间，否则使用当前时间
                 Date current = ObjectUtils.notNull(baseEntity.getCreateTime(), new Date());
                 baseEntity.setCreateTime(current);
@@ -48,12 +46,15 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
                         // 填充创建人、更新人和创建部门信息
                         baseEntity.setCreateBy(userId);
                         baseEntity.setUpdateBy(userId);
-                        baseEntity.setCreateDept(ObjectUtils.notNull(baseEntity.getCreateDept(), loginUser.getDeptId()));
+                        baseEntity.setCreateDept(
+                                ObjectUtils.notNull(
+                                        baseEntity.getCreateDept(), loginUser.getDeptId()));
                     } else {
                         // 填充创建人、更新人和创建部门信息
                         baseEntity.setCreateBy(DEFAULT_USER_ID);
                         baseEntity.setUpdateBy(DEFAULT_USER_ID);
-                        baseEntity.setCreateDept(ObjectUtils.notNull(baseEntity.getCreateDept(), DEFAULT_USER_ID));
+                        baseEntity.setCreateDept(
+                                ObjectUtils.notNull(baseEntity.getCreateDept(), DEFAULT_USER_ID));
                     }
                 }
             } else {
@@ -74,7 +75,8 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         try {
-            if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity baseEntity) {
+            if (ObjectUtil.isNotNull(metaObject)
+                    && metaObject.getOriginalObject() instanceof BaseEntity baseEntity) {
                 // 获取当前时间作为更新时间，无论原始对象中的更新时间是否为空都填充
                 Date current = new Date();
                 baseEntity.setUpdateTime(current);
@@ -108,5 +110,4 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
         }
         return loginUser;
     }
-
 }

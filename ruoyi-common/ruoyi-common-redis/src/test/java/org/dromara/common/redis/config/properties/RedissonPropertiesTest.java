@@ -1,17 +1,16 @@
 package org.dromara.common.redis.config.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.redisson.config.ReadMode;
 import org.redisson.config.SubscriptionMode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * {@link RedissonProperties} 单元测试
@@ -67,7 +66,8 @@ class RedissonPropertiesTest {
         @DisplayName("应该能够设置和获取singleServerConfig")
         void shouldSetAndGetSingleServerConfig() {
             RedissonProperties properties = new RedissonProperties();
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             properties.setSingleServerConfig(config);
 
@@ -78,7 +78,8 @@ class RedissonPropertiesTest {
         @DisplayName("应该能够设置和获取clusterServersConfig")
         void shouldSetAndGetClusterServersConfig() {
             RedissonProperties properties = new RedissonProperties();
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             properties.setClusterServersConfig(config);
 
@@ -107,7 +108,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够创建默认实例")
         void shouldCreateDefaultInstance() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             assertThat(config).isNotNull();
         }
@@ -115,7 +117,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取clientName")
         void shouldSetAndGetClientName() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setClientName("my-redis-client");
 
@@ -125,7 +128,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取connectionMinimumIdleSize")
         void shouldSetAndGetConnectionMinimumIdleSize() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setConnectionMinimumIdleSize(10);
 
@@ -135,7 +139,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取connectionPoolSize")
         void shouldSetAndGetConnectionPoolSize() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setConnectionPoolSize(64);
 
@@ -145,7 +150,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取idleConnectionTimeout")
         void shouldSetAndGetIdleConnectionTimeout() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setIdleConnectionTimeout(10000);
 
@@ -155,7 +161,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取timeout")
         void shouldSetAndGetTimeout() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setTimeout(3000);
 
@@ -165,7 +172,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取subscriptionConnectionPoolSize")
         void shouldSetAndGetSubscriptionConnectionPoolSize() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setSubscriptionConnectionPoolSize(50);
 
@@ -175,7 +183,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该支持完整配置")
         void shouldSupportCompleteConfiguration() {
-            RedissonProperties.SingleServerConfig config = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config =
+                    new RedissonProperties.SingleServerConfig();
 
             config.setClientName("test-client");
             config.setConnectionMinimumIdleSize(5);
@@ -200,7 +209,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够创建默认实例")
         void shouldCreateDefaultInstance() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             assertThat(config).isNotNull();
         }
@@ -208,7 +218,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取clientName")
         void shouldSetAndGetClientName() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setClientName("cluster-client");
 
@@ -218,7 +229,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取masterConnectionMinimumIdleSize")
         void shouldSetAndGetMasterConnectionMinimumIdleSize() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setMasterConnectionMinimumIdleSize(10);
 
@@ -228,7 +240,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取masterConnectionPoolSize")
         void shouldSetAndGetMasterConnectionPoolSize() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setMasterConnectionPoolSize(64);
 
@@ -238,7 +251,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取slaveConnectionMinimumIdleSize")
         void shouldSetAndGetSlaveConnectionMinimumIdleSize() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setSlaveConnectionMinimumIdleSize(10);
 
@@ -248,7 +262,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取slaveConnectionPoolSize")
         void shouldSetAndGetSlaveConnectionPoolSize() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setSlaveConnectionPoolSize(64);
 
@@ -258,7 +273,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取idleConnectionTimeout")
         void shouldSetAndGetIdleConnectionTimeout() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setIdleConnectionTimeout(10000);
 
@@ -268,7 +284,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取timeout")
         void shouldSetAndGetTimeout() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setTimeout(3000);
 
@@ -278,7 +295,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取subscriptionConnectionPoolSize")
         void shouldSetAndGetSubscriptionConnectionPoolSize() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setSubscriptionConnectionPoolSize(50);
 
@@ -288,7 +306,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取readMode")
         void shouldSetAndGetReadMode() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setReadMode(ReadMode.SLAVE);
 
@@ -298,7 +317,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该能够设置和获取subscriptionMode")
         void shouldSetAndGetSubscriptionMode() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setSubscriptionMode(SubscriptionMode.MASTER);
 
@@ -308,7 +328,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该支持所有ReadMode枚举值")
         void shouldSupportAllReadModeValues() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             for (ReadMode mode : ReadMode.values()) {
                 config.setReadMode(mode);
@@ -319,7 +340,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该支持所有SubscriptionMode枚举值")
         void shouldSupportAllSubscriptionModeValues() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             for (SubscriptionMode mode : SubscriptionMode.values()) {
                 config.setSubscriptionMode(mode);
@@ -330,7 +352,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该支持完整的集群配置")
         void shouldSupportCompleteClusterConfiguration() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             config.setClientName("cluster-client");
             config.setMasterConnectionMinimumIdleSize(5);
@@ -363,7 +386,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("RedissonProperties应该有@ConfigurationProperties注解")
         void shouldHaveConfigurationPropertiesAnnotation() {
-            ConfigurationProperties annotation = RedissonProperties.class.getAnnotation(ConfigurationProperties.class);
+            ConfigurationProperties annotation =
+                    RedissonProperties.class.getAnnotation(ConfigurationProperties.class);
 
             assertThat(annotation).isNotNull();
             assertThat(annotation.prefix()).isEqualTo("redisson");
@@ -414,7 +438,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("SingleServerConfig应该有所有字段的getter和setter方法")
         void singleServerConfigShouldHaveGettersAndSettersForAllFields() throws Exception {
-            Class<RedissonProperties.SingleServerConfig> clazz = RedissonProperties.SingleServerConfig.class;
+            Class<RedissonProperties.SingleServerConfig> clazz =
+                    RedissonProperties.SingleServerConfig.class;
 
             assertThat(clazz.getMethod("getClientName")).isNotNull();
             assertThat(clazz.getMethod("setClientName", String.class)).isNotNull();
@@ -433,12 +458,14 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("ClusterServersConfig应该有所有字段的getter和setter方法")
         void clusterServersConfigShouldHaveGettersAndSettersForAllFields() throws Exception {
-            Class<RedissonProperties.ClusterServersConfig> clazz = RedissonProperties.ClusterServersConfig.class;
+            Class<RedissonProperties.ClusterServersConfig> clazz =
+                    RedissonProperties.ClusterServersConfig.class;
 
             assertThat(clazz.getMethod("getClientName")).isNotNull();
             assertThat(clazz.getMethod("setClientName", String.class)).isNotNull();
             assertThat(clazz.getMethod("getMasterConnectionMinimumIdleSize")).isNotNull();
-            assertThat(clazz.getMethod("setMasterConnectionMinimumIdleSize", int.class)).isNotNull();
+            assertThat(clazz.getMethod("setMasterConnectionMinimumIdleSize", int.class))
+                    .isNotNull();
             assertThat(clazz.getMethod("getMasterConnectionPoolSize")).isNotNull();
             assertThat(clazz.getMethod("setMasterConnectionPoolSize", int.class)).isNotNull();
             assertThat(clazz.getMethod("getSlaveConnectionMinimumIdleSize")).isNotNull();
@@ -464,7 +491,8 @@ class RedissonPropertiesTest {
             properties.setThreads(16);
             properties.setNettyThreads(32);
 
-            RedissonProperties.SingleServerConfig singleConfig = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig singleConfig =
+                    new RedissonProperties.SingleServerConfig();
             singleConfig.setClientName("single-client");
             singleConfig.setConnectionMinimumIdleSize(10);
             singleConfig.setConnectionPoolSize(64);
@@ -476,7 +504,8 @@ class RedissonPropertiesTest {
 
             assertThat(properties.getKeyPrefix()).isEqualTo("myapp");
             assertThat(properties.getSingleServerConfig()).isNotNull();
-            assertThat(properties.getSingleServerConfig().getClientName()).isEqualTo("single-client");
+            assertThat(properties.getSingleServerConfig().getClientName())
+                    .isEqualTo("single-client");
             assertThat(properties.getClusterServersConfig()).isNull();
         }
 
@@ -488,7 +517,8 @@ class RedissonPropertiesTest {
             properties.setThreads(32);
             properties.setNettyThreads(64);
 
-            RedissonProperties.ClusterServersConfig clusterConfig = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig clusterConfig =
+                    new RedissonProperties.ClusterServersConfig();
             clusterConfig.setClientName("cluster-client");
             clusterConfig.setMasterConnectionMinimumIdleSize(10);
             clusterConfig.setMasterConnectionPoolSize(64);
@@ -501,14 +531,16 @@ class RedissonPropertiesTest {
 
             assertThat(properties.getKeyPrefix()).isEqualTo("cluster-app");
             assertThat(properties.getClusterServersConfig()).isNotNull();
-            assertThat(properties.getClusterServersConfig().getReadMode()).isEqualTo(ReadMode.SLAVE);
+            assertThat(properties.getClusterServersConfig().getReadMode())
+                    .isEqualTo(ReadMode.SLAVE);
             assertThat(properties.getSingleServerConfig()).isNull();
         }
 
         @Test
         @DisplayName("应该支持高性能配置")
         void shouldSupportHighPerformanceConfiguration() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             // 高性能配置
             config.setMasterConnectionPoolSize(128);
@@ -544,7 +576,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("应该支持主从读写分离配置")
         void shouldSupportMasterSlaveReadWriteSeparation() {
-            RedissonProperties.ClusterServersConfig config = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config =
+                    new RedissonProperties.ClusterServersConfig();
 
             // 主库用于写，从库用于读
             config.setReadMode(ReadMode.SLAVE);
@@ -555,7 +588,7 @@ class RedissonPropertiesTest {
             assertThat(config.getReadMode()).isEqualTo(ReadMode.SLAVE);
             assertThat(config.getSubscriptionMode()).isEqualTo(SubscriptionMode.MASTER);
             assertThat(config.getSlaveConnectionPoolSize())
-                .isGreaterThan(config.getMasterConnectionPoolSize());
+                    .isGreaterThan(config.getMasterConnectionPoolSize());
         }
     }
 
@@ -580,11 +613,13 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("SingleServerConfig对象应该支持equals")
         void singleServerConfigShouldSupportEquals() {
-            RedissonProperties.SingleServerConfig config1 = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config1 =
+                    new RedissonProperties.SingleServerConfig();
             config1.setClientName("test");
             config1.setConnectionPoolSize(64);
 
-            RedissonProperties.SingleServerConfig config2 = new RedissonProperties.SingleServerConfig();
+            RedissonProperties.SingleServerConfig config2 =
+                    new RedissonProperties.SingleServerConfig();
             config2.setClientName("test");
             config2.setConnectionPoolSize(64);
 
@@ -594,11 +629,13 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("ClusterServersConfig对象应该支持equals")
         void clusterServersConfigShouldSupportEquals() {
-            RedissonProperties.ClusterServersConfig config1 = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config1 =
+                    new RedissonProperties.ClusterServersConfig();
             config1.setClientName("cluster");
             config1.setReadMode(ReadMode.SLAVE);
 
-            RedissonProperties.ClusterServersConfig config2 = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.ClusterServersConfig config2 =
+                    new RedissonProperties.ClusterServersConfig();
             config2.setClientName("cluster");
             config2.setReadMode(ReadMode.SLAVE);
 
@@ -631,7 +668,8 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("ClusterServersConfig应该有readMode字段")
         void shouldHaveReadModeField() throws NoSuchFieldException {
-            Field field = RedissonProperties.ClusterServersConfig.class.getDeclaredField("readMode");
+            Field field =
+                    RedissonProperties.ClusterServersConfig.class.getDeclaredField("readMode");
 
             assertThat(field).isNotNull();
             assertThat(field.getType()).isEqualTo(ReadMode.class);
@@ -640,7 +678,9 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("ClusterServersConfig应该有subscriptionMode字段")
         void shouldHaveSubscriptionModeField() throws NoSuchFieldException {
-            Field field = RedissonProperties.ClusterServersConfig.class.getDeclaredField("subscriptionMode");
+            Field field =
+                    RedissonProperties.ClusterServersConfig.class.getDeclaredField(
+                            "subscriptionMode");
 
             assertThat(field).isNotNull();
             assertThat(field.getType()).isEqualTo(SubscriptionMode.class);
@@ -654,26 +694,36 @@ class RedissonPropertiesTest {
         @Test
         @DisplayName("SingleServerConfig应该是静态内部类")
         void singleServerConfigShouldBeStaticInnerClass() throws NoSuchFieldException {
-            Class<?> enclosingClass = RedissonProperties.SingleServerConfig.class.getEnclosingClass();
+            Class<?> enclosingClass =
+                    RedissonProperties.SingleServerConfig.class.getEnclosingClass();
 
             assertThat(enclosingClass).isEqualTo(RedissonProperties.class);
-            assertThat(java.lang.reflect.Modifier.isStatic(RedissonProperties.SingleServerConfig.class.getModifiers())).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isStatic(
+                                    RedissonProperties.SingleServerConfig.class.getModifiers()))
+                    .isTrue();
         }
 
         @Test
         @DisplayName("ClusterServersConfig应该是静态内部类")
         void clusterServersConfigShouldBeStaticInnerClass() {
-            Class<?> enclosingClass = RedissonProperties.ClusterServersConfig.class.getEnclosingClass();
+            Class<?> enclosingClass =
+                    RedissonProperties.ClusterServersConfig.class.getEnclosingClass();
 
             assertThat(enclosingClass).isEqualTo(RedissonProperties.class);
-            assertThat(java.lang.reflect.Modifier.isStatic(RedissonProperties.ClusterServersConfig.class.getModifiers())).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isStatic(
+                                    RedissonProperties.ClusterServersConfig.class.getModifiers()))
+                    .isTrue();
         }
 
         @Test
         @DisplayName("嵌套类应该可以独立实例化")
         void nestedClassesShouldBeInstantiableIndependently() {
-            RedissonProperties.SingleServerConfig singleConfig = new RedissonProperties.SingleServerConfig();
-            RedissonProperties.ClusterServersConfig clusterConfig = new RedissonProperties.ClusterServersConfig();
+            RedissonProperties.SingleServerConfig singleConfig =
+                    new RedissonProperties.SingleServerConfig();
+            RedissonProperties.ClusterServersConfig clusterConfig =
+                    new RedissonProperties.ClusterServersConfig();
 
             assertThat(singleConfig).isNotNull();
             assertThat(clusterConfig).isNotNull();

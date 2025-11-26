@@ -67,13 +67,15 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/config/**",           // 配置类
-                    "**/handler/**"           // 异常处理器（已测试）
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/config/**", // 配置类
+                        "**/handler/**", // 异常处理器（已测试）
+                    )
+                }
+            },
+        ),
     )
 }

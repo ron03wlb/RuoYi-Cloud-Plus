@@ -1,5 +1,8 @@
 package org.dromara.demo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.dromara.common.core.enums.UserType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +14,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * 带参数单元测试案例
  *
  * @author Lion Li
  */
-@Disabled("原因：ruoyi-demo 是示例模块，仅用于演示JUnit 5的参数化测试功能。" +
-    "此测试不依赖Spring容器，但为了统一管理，暂时禁用。" +
-    "如需启用，可移除@Disabled注解")
+@Disabled(
+        "原因：ruoyi-demo 是示例模块，仅用于演示JUnit 5的参数化测试功能。"
+                + "此测试不依赖Spring容器，但为了统一管理，暂时禁用。"
+                + "如需启用，可移除@Disabled注解")
 @DisplayName("带参数单元测试案例")
 public class ParamUnitTest {
 
@@ -71,6 +71,4 @@ public class ParamUnitTest {
     public void testAfterEach() {
         System.out.println("@AfterEach ==================");
     }
-
-
 }

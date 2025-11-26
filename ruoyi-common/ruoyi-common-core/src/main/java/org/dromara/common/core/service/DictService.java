@@ -1,8 +1,7 @@
 package org.dromara.common.core.service;
 
-import org.dromara.common.core.utils.StringUtils;
-
 import java.util.Map;
+import org.dromara.common.core.utils.StringUtils;
 
 /**
  * 字典服务服务
@@ -14,7 +13,7 @@ public interface DictService {
     /**
      * 根据字典类型和字典值获取字典标签
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictValue 字典值
      * @return 字典标签
      */
@@ -25,7 +24,7 @@ public interface DictService {
     /**
      * 根据字典类型和字典标签获取字典值
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictLabel 字典标签
      * @return 字典值
      */
@@ -36,7 +35,7 @@ public interface DictService {
     /**
      * 根据字典类型和字典值获取字典标签
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictValue 字典值
      * @param separator 分隔符
      * @return 字典标签
@@ -46,7 +45,7 @@ public interface DictService {
     /**
      * 根据字典类型和字典标签获取字典值
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictLabel 字典标签
      * @param separator 分隔符
      * @return 字典值

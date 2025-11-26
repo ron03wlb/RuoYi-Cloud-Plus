@@ -1,6 +1,11 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.*;
 import org.dromara.system.domain.SysLogininfor;
 import org.dromara.system.domain.bo.SysLogininforBo;
 import org.dromara.system.domain.vo.SysLogininforVo;
@@ -15,17 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 /**
  * SysLogininforServiceImpl 单元测试
  *
@@ -36,14 +30,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysLogininforServiceImpl 单元测试")
 class SysLogininforServiceImplTest {
 
-    @Mock
-    private SysLogininforMapper baseMapper;
+    @Mock private SysLogininforMapper baseMapper;
 
-    @InjectMocks
-    private SysLogininforServiceImpl logininforService;
+    @InjectMocks private SysLogininforServiceImpl logininforService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysLogininfor>> wrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysLogininfor>> wrapperCaptor;
 
     @Nested
     @DisplayName("1. 查询方法测试")
@@ -56,10 +47,10 @@ class SysLogininforServiceImplTest {
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setIpaddr("127.0.0.1");
 
-            List<SysLogininforVo> expectedList = Arrays.asList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0"),
-                createLogininforVo(2L, "admin", "127.0.0.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Arrays.asList(
+                            createLogininforVo(1L, "admin", "127.0.0.1", "0"),
+                            createLogininforVo(2L, "admin", "127.0.0.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -67,10 +58,10 @@ class SysLogininforServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysLogininforVo::getIpaddr)
-                .containsOnly("127.0.0.1");
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysLogininforVo::getIpaddr)
+                    .containsOnly("127.0.0.1");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -82,10 +73,10 @@ class SysLogininforServiceImplTest {
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setStatus("0"); // 成功
 
-            List<SysLogininforVo> expectedList = Arrays.asList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0"),
-                createLogininforVo(2L, "test", "192.168.1.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Arrays.asList(
+                            createLogininforVo(1L, "admin", "127.0.0.1", "0"),
+                            createLogininforVo(2L, "test", "192.168.1.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -93,10 +84,10 @@ class SysLogininforServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysLogininforVo::getStatus)
-                .containsOnly("0");
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysLogininforVo::getStatus)
+                    .containsOnly("0");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -108,18 +99,15 @@ class SysLogininforServiceImplTest {
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setUserName("admin");
 
-            List<SysLogininforVo> expectedList = Collections.singletonList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Collections.singletonList(createLogininforVo(1L, "admin", "127.0.0.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -134,18 +122,15 @@ class SysLogininforServiceImplTest {
             params.put("endTime", new Date());
             queryBo.setParams(params);
 
-            List<SysLogininforVo> expectedList = Collections.singletonList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Collections.singletonList(createLogininforVo(1L, "admin", "127.0.0.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -159,18 +144,15 @@ class SysLogininforServiceImplTest {
             queryBo.setIpaddr("127.0.0.1");
             queryBo.setStatus("0");
 
-            List<SysLogininforVo> expectedList = Collections.singletonList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Collections.singletonList(createLogininforVo(1L, "admin", "127.0.0.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -180,15 +162,14 @@ class SysLogininforServiceImplTest {
         void shouldReturnEmptyList_WhenNoLogininforMatch() {
             // Arrange
             SysLogininforBo queryBo = createLogininforBo(null, "不存在的用户");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -200,10 +181,10 @@ class SysLogininforServiceImplTest {
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setStatus("1"); // 失败
 
-            List<SysLogininforVo> expectedList = Arrays.asList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "1"),
-                createLogininforVo(2L, "admin", "127.0.0.2", "1")
-            );
+            List<SysLogininforVo> expectedList =
+                    Arrays.asList(
+                            createLogininforVo(1L, "admin", "127.0.0.1", "1"),
+                            createLogininforVo(2L, "admin", "127.0.0.2", "1"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
@@ -211,10 +192,10 @@ class SysLogininforServiceImplTest {
 
             // Assert
             assertThat(result)
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysLogininforVo::getStatus)
-                .containsOnly("1");
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysLogininforVo::getStatus)
+                    .containsOnly("1");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -226,19 +207,17 @@ class SysLogininforServiceImplTest {
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setIpaddr("192.168");
 
-            List<SysLogininforVo> expectedList = Arrays.asList(
-                createLogininforVo(1L, "admin", "192.168.1.1", "0"),
-                createLogininforVo(2L, "test", "192.168.1.2", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Arrays.asList(
+                            createLogininforVo(1L, "admin", "192.168.1.1", "0"),
+                            createLogininforVo(2L, "test", "192.168.1.2", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(2);
+            assertThat(result).isNotNull().hasSize(2);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -246,11 +225,9 @@ class SysLogininforServiceImplTest {
 
     /**
      * 注意: 无法测试分页方法
-     * <p>
-     * <b>selectPageLogininforList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
-     * </p>
+     *
+     * <p><b>selectPageLogininforList</b> - 需要 MyBatis-Plus Page 对象和完整分页设置<br>
      */
-
     @Nested
     @DisplayName("2. 删除方法测试")
     class DeleteMethodsTests {
@@ -329,12 +306,10 @@ class SysLogininforServiceImplTest {
 
     /**
      * 注意: 无法测试 CRUD 相关方法
-     * <p>
-     * <b>insertLogininfor()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
+     *
+     * <p><b>insertLogininfor()</b> - 使用 MapstructUtils.convert()，需要静态方法 mock<br>
      * 需要 mockito-inline 或集成测试环境才能测试这个方法
-     * </p>
      */
-
     @Nested
     @DisplayName("3. 边界条件测试")
     class BoundaryTests {
@@ -345,15 +320,14 @@ class SysLogininforServiceImplTest {
             // Arrange
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setIpaddr("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -364,15 +338,14 @@ class SysLogininforServiceImplTest {
             // Arrange
             SysLogininforBo queryBo = createLogininforBo(null, "");
             queryBo.setUserName("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -383,15 +356,14 @@ class SysLogininforServiceImplTest {
             // Arrange
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setStatus("");
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -402,15 +374,14 @@ class SysLogininforServiceImplTest {
             // Arrange
             SysLogininforBo queryBo = createLogininforBo(null, "admin");
             queryBo.setParams(new HashMap<>()); // 使用空HashMap而不是null
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -425,19 +396,17 @@ class SysLogininforServiceImplTest {
             queryBo.setStatus("");
             queryBo.setParams(new HashMap<>());
 
-            List<SysLogininforVo> expectedList = Arrays.asList(
-                createLogininforVo(1L, "admin", "127.0.0.1", "0"),
-                createLogininforVo(2L, "test", "192.168.1.1", "0")
-            );
+            List<SysLogininforVo> expectedList =
+                    Arrays.asList(
+                            createLogininforVo(1L, "admin", "127.0.0.1", "0"),
+                            createLogininforVo(2L, "test", "192.168.1.1", "0"));
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
             // Act
             List<SysLogininforVo> result = logininforService.selectLogininforList(queryBo);
 
             // Assert
-            assertThat(result)
-                .isNotNull()
-                .hasSize(2);
+            assertThat(result).isNotNull().hasSize(2);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -445,9 +414,7 @@ class SysLogininforServiceImplTest {
 
     // ==================== Factory Methods ====================
 
-    /**
-     * 创建测试用 SysLogininforBo 业务对象
-     */
+    /** 创建测试用 SysLogininforBo 业务对象 */
     private static SysLogininforBo createLogininforBo(Long infoId, String userName) {
         SysLogininforBo logininforBo = new SysLogininforBo();
         logininforBo.setInfoId(infoId);
@@ -459,10 +426,9 @@ class SysLogininforServiceImplTest {
         return logininforBo;
     }
 
-    /**
-     * 创建测试用 SysLogininforVo 视图对象
-     */
-    private static SysLogininforVo createLogininforVo(Long infoId, String userName, String ipaddr, String status) {
+    /** 创建测试用 SysLogininforVo 视图对象 */
+    private static SysLogininforVo createLogininforVo(
+            Long infoId, String userName, String ipaddr, String status) {
         SysLogininforVo logininforVo = new SysLogininforVo();
         logininforVo.setInfoId(infoId);
         logininforVo.setTenantId("000000");

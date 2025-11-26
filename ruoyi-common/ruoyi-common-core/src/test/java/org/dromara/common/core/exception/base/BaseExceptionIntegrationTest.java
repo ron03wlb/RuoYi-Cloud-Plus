@@ -1,14 +1,13 @@
 package org.dromara.common.core.exception.base;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Locale;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * BaseException 集成测试
@@ -26,7 +25,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持全参数构造函数")
         void shouldCreateWithAllArguments() {
             // Act
-            BaseException exception = new BaseException("system", "user.not.exists", new Object[]{"admin"}, "默认消息");
+            BaseException exception =
+                    new BaseException("system", "user.not.exists", new Object[] {"admin"}, "默认消息");
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("system");
@@ -39,7 +39,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持模块、错误码、参数构造函数")
         void shouldCreateWithModuleCodeAndArgs() {
             // Act
-            BaseException exception = new BaseException("system", "user.not.exists", new Object[]{"admin"});
+            BaseException exception =
+                    new BaseException("system", "user.not.exists", new Object[] {"admin"});
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("system");
@@ -65,7 +66,7 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持错误码、参数构造函数")
         void shouldCreateWithCodeAndArgs() {
             // Act
-            BaseException exception = new BaseException("user.not.exists", new Object[]{"admin"});
+            BaseException exception = new BaseException("user.not.exists", new Object[] {"admin"});
 
             // Assert
             assertThat(exception.getModule()).isNull();
@@ -124,7 +125,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldGetFormattedMessageFromMessageUtils() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException("user.password.retry.limit.count", new Object[]{5});
+            BaseException exception =
+                    new BaseException("user.password.retry.limit.count", new Object[] {5});
 
             // Act
             String message = exception.getMessage();
@@ -138,7 +140,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldGetMultiParameterMessageFromMessageUtils() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException("user.password.retry.limit.exceed", new Object[]{10});
+            BaseException exception =
+                    new BaseException("user.password.retry.limit.exceed", new Object[] {10});
 
             // Act
             String message = exception.getMessage();
@@ -152,12 +155,9 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldReturnCodeWhenCodeNotFoundInMessageSource() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException(
-                null,
-                "non.existent.code",
-                new Object[]{"param"},
-                "这是默认错误消息"
-            );
+            BaseException exception =
+                    new BaseException(
+                            null, "non.existent.code", new Object[] {"param"}, "这是默认错误消息");
 
             // Act
             String message = exception.getMessage();
@@ -216,7 +216,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleUserLoginFailureScenario() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException("auth", "user.password.not.match", null, null);
+            BaseException exception =
+                    new BaseException("auth", "user.password.not.match", null, null);
 
             // Act
             String message = exception.getMessage();
@@ -246,11 +247,9 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleFileSizeExceededScenario() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException(
-                "file",
-                "file.upload.msg.sizeLimitExceeded",
-                new Object[]{10}
-            );
+            BaseException exception =
+                    new BaseException(
+                            "file", "file.upload.msg.sizeLimitExceeded", new Object[] {10});
 
             // Act
             String message = exception.getMessage();
@@ -265,12 +264,9 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandlePasswordRetryLimitExceededScenario() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException(
-                "auth",
-                "user.password.retry.limit.exceed",
-                new Object[]{30},
-                "账户已锁定"
-            );
+            BaseException exception =
+                    new BaseException(
+                            "auth", "user.password.retry.limit.exceed", new Object[] {30}, "账户已锁定");
 
             // Act
             String message = exception.getMessage();
@@ -316,7 +312,7 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleEmptyArgsArray() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException("user.not.exists", new Object[]{});
+            BaseException exception = new BaseException("user.not.exists", new Object[] {});
 
             // Act
             String message = exception.getMessage();
@@ -330,7 +326,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleNullInArgsArray() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException("user.password.retry.limit.count", new Object[]{null});
+            BaseException exception =
+                    new BaseException("user.password.retry.limit.count", new Object[] {null});
 
             // Act
             String message = exception.getMessage();
@@ -359,10 +356,10 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleSpecialCharactersInArgs() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            BaseException exception = new BaseException(
-                "user.password.retry.limit.count",
-                new Object[]{"<script>alert('xss')</script>"}
-            );
+            BaseException exception =
+                    new BaseException(
+                            "user.password.retry.limit.count",
+                            new Object[] {"<script>alert('xss')</script>"});
 
             // Act
             String message = exception.getMessage();
@@ -393,7 +390,8 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持 getter 方法")
         void shouldSupportGetters() {
             // Arrange
-            BaseException exception = new BaseException("module", "code", new Object[]{"arg"}, "message");
+            BaseException exception =
+                    new BaseException("module", "code", new Object[] {"arg"}, "message");
 
             // Act & Assert
             assertThat(exception.getModule()).isEqualTo("module");
@@ -411,7 +409,7 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
             // Act
             exception.setModule("newModule");
             exception.setCode("newCode");
-            exception.setArgs(new Object[]{"newArg"});
+            exception.setArgs(new Object[] {"newArg"});
             exception.setDefaultMessage("newMessage");
 
             // Assert
@@ -425,7 +423,7 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持 equals 和 hashCode（字段级比较）")
         void shouldSupportEqualsAndHashCodeForFields() {
             // Arrange
-            Object[] args1 = new Object[]{"arg"};
+            Object[] args1 = new Object[] {"arg"};
 
             BaseException exception1 = new BaseException("module", "code", args1, "message");
             BaseException exception2 = new BaseException("module", "code", args1, "message");
@@ -462,11 +460,13 @@ class BaseExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该可以被抛出和捕获")
         void shouldBeThrowableAndCatchable() {
             // Act & Assert
-            assertThat(org.assertj.core.api.Assertions.catchThrowable(() -> {
-                throw new BaseException("user.not.exists", new Object[0]);
-            }))
-                .isInstanceOf(BaseException.class)
-                .hasMessage("用户不存在");
+            assertThat(
+                            org.assertj.core.api.Assertions.catchThrowable(
+                                    () -> {
+                                        throw new BaseException("user.not.exists", new Object[0]);
+                                    }))
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage("用户不存在");
         }
 
         @Test

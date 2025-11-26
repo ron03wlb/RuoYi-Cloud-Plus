@@ -3,13 +3,18 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.lock.annotation.Lock4j;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.encrypt.annotation.ApiEncrypt;
-import org.dromara.common.web.core.BaseController;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
@@ -17,19 +22,13 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.helper.TenantHelper;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysTenantBo;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.service.ISysTenantService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 租户管理
@@ -45,9 +44,7 @@ public class SysTenantController extends BaseController {
 
     private final ISysTenantService tenantService;
 
-    /**
-     * 查询租户列表
-     */
+    /** 查询租户列表 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:list")
     @GetMapping("/list")
@@ -55,9 +52,7 @@ public class SysTenantController extends BaseController {
         return tenantService.queryPageList(bo, pageQuery);
     }
 
-    /**
-     * 导出租户列表
-     */
+    /** 导出租户列表 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:export")
     @Log(title = "租户管理", businessType = BusinessType.EXPORT)
@@ -75,14 +70,11 @@ public class SysTenantController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:query")
     @GetMapping("/{id}")
-    public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+    public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         return R.ok(tenantService.queryById(id));
     }
 
-    /**
-     * 新增租户
-     */
+    /** 新增租户 */
     @ApiEncrypt
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:add")
@@ -97,9 +89,7 @@ public class SysTenantController extends BaseController {
         return toAjax(TenantHelper.ignore(() -> tenantService.insertByBo(bo)));
     }
 
-    /**
-     * 修改租户
-     */
+    /** 修改租户 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:edit")
     @Log(title = "租户管理", businessType = BusinessType.UPDATE)
@@ -113,9 +103,7 @@ public class SysTenantController extends BaseController {
         return toAjax(tenantService.updateByBo(bo));
     }
 
-    /**
-     * 状态修改
-     */
+    /** 状态修改 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:edit")
     @Log(title = "租户管理", businessType = BusinessType.UPDATE)
@@ -135,8 +123,7 @@ public class SysTenantController extends BaseController {
     @SaCheckPermission("system:tenant:remove")
     @Log(title = "租户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Long[] ids) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return toAjax(tenantService.deleteWithValidByIds(Arrays.asList(ids), true));
     }
 
@@ -152,9 +139,7 @@ public class SysTenantController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 清除动态租户
-     */
+    /** 清除动态租户 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @GetMapping("/dynamic/clear")
     public R<Void> dynamicClear() {
@@ -162,11 +147,10 @@ public class SysTenantController extends BaseController {
         return R.ok();
     }
 
-
     /**
      * 同步租户套餐
      *
-     * @param tenantId  租户id
+     * @param tenantId 租户id
      * @param packageId 套餐id
      */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
@@ -174,14 +158,14 @@ public class SysTenantController extends BaseController {
     @Log(title = "租户管理", businessType = BusinessType.UPDATE)
     @Lock4j
     @GetMapping("/syncTenantPackage")
-    public R<Void> syncTenantPackage(@NotBlank(message = "租户ID不能为空") String tenantId,
-                                     @NotNull(message = "套餐ID不能为空") Long packageId) {
-        return toAjax(TenantHelper.ignore(() -> tenantService.syncTenantPackage(tenantId, packageId)));
+    public R<Void> syncTenantPackage(
+            @NotBlank(message = "租户ID不能为空") String tenantId,
+            @NotNull(message = "套餐ID不能为空") Long packageId) {
+        return toAjax(
+                TenantHelper.ignore(() -> tenantService.syncTenantPackage(tenantId, packageId)));
     }
 
-    /**
-     * 同步租户字典
-     */
+    /** 同步租户字典 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @Log(title = "租户管理", businessType = BusinessType.INSERT)
     @Lock4j
@@ -194,9 +178,7 @@ public class SysTenantController extends BaseController {
         return R.ok("同步租户字典成功");
     }
 
-    /**
-     * 同步租户参数配置
-     */
+    /** 同步租户参数配置 */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @Log(title = "租户管理", businessType = BusinessType.INSERT)
     @Lock4j
@@ -208,5 +190,4 @@ public class SysTenantController extends BaseController {
         tenantService.syncTenantConfig();
         return R.ok("同步租户参数配置成功");
     }
-
 }

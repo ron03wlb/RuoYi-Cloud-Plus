@@ -1,6 +1,8 @@
 package org.dromara.workflow.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -19,9 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 流程定义管理 控制层
@@ -42,10 +41,11 @@ public class FlwDefinitionController extends BaseController {
      * 查询流程定义列表
      *
      * @param flowDefinition 参数
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      */
     @GetMapping("/list")
-    public TableDataInfo<FlowDefinitionVo> list(FlowDefinition flowDefinition, PageQuery pageQuery) {
+    public TableDataInfo<FlowDefinitionVo> list(
+            FlowDefinition flowDefinition, PageQuery pageQuery) {
         return flwDefinitionService.queryList(flowDefinition, pageQuery);
     }
 
@@ -53,10 +53,11 @@ public class FlwDefinitionController extends BaseController {
      * 查询未发布的流程定义列表
      *
      * @param flowDefinition 参数
-     * @param pageQuery      分页
+     * @param pageQuery 分页
      */
     @GetMapping("/unPublishList")
-    public TableDataInfo<FlowDefinitionVo> unPublishList(FlowDefinition flowDefinition, PageQuery pageQuery) {
+    public TableDataInfo<FlowDefinitionVo> unPublishList(
+            FlowDefinition flowDefinition, PageQuery pageQuery) {
         return flwDefinitionService.unPublishList(flowDefinition, pageQuery);
     }
 
@@ -121,9 +122,7 @@ public class FlwDefinitionController extends BaseController {
         return R.ok(defService.unPublish(id));
     }
 
-    /**
-     * 删除流程定义
-     */
+    /** 删除流程定义 */
     @Log(title = "流程定义", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@PathVariable List<Long> ids) {
@@ -146,7 +145,7 @@ public class FlwDefinitionController extends BaseController {
     /**
      * 导入流程定义
      *
-     * @param file     文件
+     * @param file 文件
      * @param category 分类
      */
     @Log(title = "流程定义", businessType = BusinessType.IMPORT)
@@ -158,7 +157,7 @@ public class FlwDefinitionController extends BaseController {
     /**
      * 导出流程定义
      *
-     * @param id       流程定义id
+     * @param id 流程定义id
      * @param response 响应
      * @throws IOException 异常
      */
@@ -181,7 +180,7 @@ public class FlwDefinitionController extends BaseController {
     /**
      * 激活/挂起流程定义
      *
-     * @param id     流程定义id
+     * @param id 流程定义id
      * @param active 激活/挂起
      */
     @RepeatSubmit()
@@ -190,5 +189,4 @@ public class FlwDefinitionController extends BaseController {
     public R<Boolean> active(@PathVariable Long id, @RequestParam boolean active) {
         return R.ok(active ? defService.active(id) : defService.unActive(id));
     }
-
 }

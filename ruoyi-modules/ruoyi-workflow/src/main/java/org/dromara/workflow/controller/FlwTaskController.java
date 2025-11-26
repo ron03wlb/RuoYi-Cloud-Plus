@@ -1,5 +1,6 @@
 package org.dromara.workflow.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
@@ -20,8 +21,6 @@ import org.dromara.workflow.domain.vo.FlowTaskVo;
 import org.dromara.workflow.service.IFlwTaskService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 任务管理 控制层
@@ -45,7 +44,8 @@ public class FlwTaskController extends BaseController {
     @Log(title = "任务管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/startWorkFlow")
-    public R<RemoteStartProcessReturn> startWorkFlow(@Validated(AddGroup.class) @RequestBody StartProcessBo startProcessBo) {
+    public R<RemoteStartProcessReturn> startWorkFlow(
+            @Validated(AddGroup.class) @RequestBody StartProcessBo startProcessBo) {
         RemoteStartProcessReturn startProcessReturn = flwTaskService.startWorkFlow(startProcessBo);
         return R.ok("提交成功", startProcessReturn);
     }
@@ -58,7 +58,8 @@ public class FlwTaskController extends BaseController {
     @Log(title = "任务管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/completeTask")
-    public R<Void> completeTask(@Validated(AddGroup.class) @RequestBody CompleteTaskBo completeTaskBo) {
+    public R<Void> completeTask(
+            @Validated(AddGroup.class) @RequestBody CompleteTaskBo completeTaskBo) {
         return toAjax(flwTaskService.completeTask(completeTaskBo));
     }
 
@@ -66,7 +67,7 @@ public class FlwTaskController extends BaseController {
      * 查询当前用户的待办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByTaskWait")
     public TableDataInfo<FlowTaskVo> pageByTaskWait(FlowTaskBo flowTaskBo, PageQuery pageQuery) {
@@ -77,11 +78,11 @@ public class FlwTaskController extends BaseController {
      * 查询当前用户的已办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      */
-
     @GetMapping("/pageByTaskFinish")
-    public TableDataInfo<FlowHisTaskVo> pageByTaskFinish(FlowTaskBo flowTaskBo, PageQuery pageQuery) {
+    public TableDataInfo<FlowHisTaskVo> pageByTaskFinish(
+            FlowTaskBo flowTaskBo, PageQuery pageQuery) {
         return flwTaskService.pageByTaskFinish(flowTaskBo, pageQuery);
     }
 
@@ -89,7 +90,7 @@ public class FlwTaskController extends BaseController {
      * 查询待办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByAllTaskWait")
     public TableDataInfo<FlowTaskVo> pageByAllTaskWait(FlowTaskBo flowTaskBo, PageQuery pageQuery) {
@@ -100,10 +101,11 @@ public class FlwTaskController extends BaseController {
      * 查询已办任务
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByAllTaskFinish")
-    public TableDataInfo<FlowHisTaskVo> pageByAllTaskFinish(FlowTaskBo flowTaskBo, PageQuery pageQuery) {
+    public TableDataInfo<FlowHisTaskVo> pageByAllTaskFinish(
+            FlowTaskBo flowTaskBo, PageQuery pageQuery) {
         return flwTaskService.pageByAllTaskFinish(flowTaskBo, pageQuery);
     }
 
@@ -111,7 +113,7 @@ public class FlwTaskController extends BaseController {
      * 查询当前用户的抄送
      *
      * @param flowTaskBo 参数
-     * @param pageQuery  分页
+     * @param pageQuery 分页
      */
     @GetMapping("/pageByTaskCopy")
     public TableDataInfo<FlowTaskVo> pageByTaskCopy(FlowTaskBo flowTaskBo, PageQuery pageQuery) {
@@ -153,13 +155,15 @@ public class FlwTaskController extends BaseController {
     /**
      * 任务操作
      *
-     * @param bo            参数
-     * @param taskOperation 操作类型，委派 delegateTask、转办 transferTask、加签 addSignature、减签 reductionSignature
+     * @param bo 参数
+     * @param taskOperation 操作类型，委派 delegateTask、转办 transferTask、加签 addSignature、减签
+     *     reductionSignature
      */
     @Log(title = "任务管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit
     @PostMapping("/taskOperation/{taskOperation}")
-    public R<Void> taskOperation(@Validated @RequestBody TaskOperationBo bo, @PathVariable String taskOperation) {
+    public R<Void> taskOperation(
+            @Validated @RequestBody TaskOperationBo bo, @PathVariable String taskOperation) {
         return toAjax(flwTaskService.taskOperation(bo, taskOperation));
     }
 
@@ -167,7 +171,7 @@ public class FlwTaskController extends BaseController {
      * 修改任务办理人
      *
      * @param taskIdList 任务id
-     * @param userId     办理人id
+     * @param userId 办理人id
      */
     @Log(title = "任务管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -191,11 +195,12 @@ public class FlwTaskController extends BaseController {
     /**
      * 获取可驳回的前置节点
      *
-     * @param taskId       任务id
-     * @param nowNodeCode  当前节点
+     * @param taskId 任务id
+     * @param nowNodeCode 当前节点
      */
     @GetMapping("/getBackTaskNode/{taskId}/{nowNodeCode}")
-    public R<List<Node>> getBackTaskNode(@PathVariable Long taskId, @PathVariable String nowNodeCode) {
+    public R<List<Node>> getBackTaskNode(
+            @PathVariable Long taskId, @PathVariable String nowNodeCode) {
         return R.ok(flwTaskService.getBackTaskNode(taskId, nowNodeCode));
     }
 
@@ -219,5 +224,4 @@ public class FlwTaskController extends BaseController {
     public R<Void> urgeTask(@RequestBody FlowUrgeTaskBo bo) {
         return toAjax(flwTaskService.urgeTask(bo));
     }
-
 }

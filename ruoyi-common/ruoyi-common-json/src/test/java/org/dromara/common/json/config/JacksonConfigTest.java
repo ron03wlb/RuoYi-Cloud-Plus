@@ -1,10 +1,18 @@
 package org.dromara.common.json.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.dromara.common.json.handler.BigNumberSerializer;
-import org.dromara.common.json.handler.CustomDateDeserializer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,25 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.TimeZone;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.*;
-
 /**
  * JacksonConfig (Jackson配置类) 单元测试
- * <p>
- * 用途: 配置 Jackson ObjectMapper 的序列化和反序列化行为
- * - 大数字序列化为字符串
- * - LocalDateTime 格式化
- * - Date 多格式支持
- * - 时区配置
+ *
+ * <p>用途: 配置 Jackson ObjectMapper 的序列化和反序列化行为 - 大数字序列化为字符串 - LocalDateTime 格式化 - Date 多格式支持 - 时区配置
  *
  * @author Test Team
  */
@@ -88,12 +81,14 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // 验证 ObjectMapper 可以正常工作
-            assertThatCode(() -> {
-                objectMapper.writeValueAsString(LocalDateTime.now());
-                objectMapper.writeValueAsString(Long.MAX_VALUE);
-                objectMapper.writeValueAsString(new BigInteger("12345"));
-                objectMapper.writeValueAsString(new BigDecimal("123.45"));
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                objectMapper.writeValueAsString(LocalDateTime.now());
+                                objectMapper.writeValueAsString(Long.MAX_VALUE);
+                                objectMapper.writeValueAsString(new BigInteger("12345"));
+                                objectMapper.writeValueAsString(new BigDecimal("123.45"));
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -105,11 +100,13 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Assert - 验证大数字序列化为字符串
-            assertThatCode(() -> {
-                String json = objectMapper.writeValueAsString(Long.MAX_VALUE);
-                // Long.MAX_VALUE 超出 JavaScript 安全范围,应该被序列化为字符串
-                assertThat(json).isEqualTo("\"" + Long.MAX_VALUE + "\"");
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                String json = objectMapper.writeValueAsString(Long.MAX_VALUE);
+                                // Long.MAX_VALUE 超出 JavaScript 安全范围,应该被序列化为字符串
+                                assertThat(json).isEqualTo("\"" + Long.MAX_VALUE + "\"");
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -121,11 +118,13 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Assert
-            assertThatCode(() -> {
-                BigInteger bigNum = new BigInteger("99999999999999999999");
-                String json = objectMapper.writeValueAsString(bigNum);
-                assertThat(json).isEqualTo("\"99999999999999999999\"");
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                BigInteger bigNum = new BigInteger("99999999999999999999");
+                                String json = objectMapper.writeValueAsString(bigNum);
+                                assertThat(json).isEqualTo("\"99999999999999999999\"");
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -137,11 +136,13 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Assert
-            assertThatCode(() -> {
-                BigDecimal decimal = new BigDecimal("123.456");
-                String json = objectMapper.writeValueAsString(decimal);
-                assertThat(json).isEqualTo("\"123.456\"");
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                BigDecimal decimal = new BigDecimal("123.456");
+                                String json = objectMapper.writeValueAsString(decimal);
+                                assertThat(json).isEqualTo("\"123.456\"");
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -153,15 +154,19 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Assert - 验证 LocalDateTime 使用指定格式
-            assertThatCode(() -> {
-                LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 45);
-                String json = objectMapper.writeValueAsString(dateTime);
-                assertThat(json).isEqualTo("\"2024-01-15 10:30:45\"");
+            assertThatCode(
+                            () -> {
+                                LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 45);
+                                String json = objectMapper.writeValueAsString(dateTime);
+                                assertThat(json).isEqualTo("\"2024-01-15 10:30:45\"");
 
-                // 反序列化
-                LocalDateTime parsed = objectMapper.readValue("\"2024-01-15 10:30:45\"", LocalDateTime.class);
-                assertThat(parsed).isEqualTo(dateTime);
-            }).doesNotThrowAnyException();
+                                // 反序列化
+                                LocalDateTime parsed =
+                                        objectMapper.readValue(
+                                                "\"2024-01-15 10:30:45\"", LocalDateTime.class);
+                                assertThat(parsed).isEqualTo(dateTime);
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -173,10 +178,12 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Assert - 验证 Date 使用自定义反序列化器
-            assertThatCode(() -> {
-                Date date = objectMapper.readValue("\"2024-01-15\"", Date.class);
-                assertThat(date).isNotNull();
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                Date date = objectMapper.readValue("\"2024-01-15\"", Date.class);
+                                assertThat(date).isNotNull();
+                            })
+                    .doesNotThrowAnyException();
         }
     }
 
@@ -216,8 +223,7 @@ class JacksonConfigTest {
             Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 
             // Act & Assert - 应该不抛异常
-            assertThatCode(() -> customizer.customize(builder))
-                .doesNotThrowAnyException();
+            assertThatCode(() -> customizer.customize(builder)).doesNotThrowAnyException();
         }
     }
 
@@ -234,7 +240,7 @@ class JacksonConfigTest {
 
             Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
             customizer.customize(builder);
-            builder.modules(module);  // 在 build() 之前注册 module
+            builder.modules(module); // 在 build() 之前注册 module
 
             ObjectMapper objectMapper = builder.build();
 
@@ -290,8 +296,8 @@ class JacksonConfigTest {
             String json = "\"2024-03-15 14:30:45\"";
 
             // Act
-            LocalDateTime result = assertDoesNotThrow(() ->
-                objectMapper.readValue(json, LocalDateTime.class));
+            LocalDateTime result =
+                    assertDoesNotThrow(() -> objectMapper.readValue(json, LocalDateTime.class));
 
             // Assert
             assertThat(result).isEqualTo(LocalDateTime.of(2024, 3, 15, 14, 30, 45));
@@ -365,16 +371,20 @@ class JacksonConfigTest {
             objectMapper.registerModule(module);
 
             // Act & Assert - CustomDateDeserializer 支持多种格式
-            assertThatCode(() -> {
-                Date date1 = objectMapper.readValue("\"2024-01-15\"", Date.class);
-                assertThat(date1).isNotNull();
+            assertThatCode(
+                            () -> {
+                                Date date1 = objectMapper.readValue("\"2024-01-15\"", Date.class);
+                                assertThat(date1).isNotNull();
 
-                Date date2 = objectMapper.readValue("\"2024-01-15 10:30:00\"", Date.class);
-                assertThat(date2).isNotNull();
+                                Date date2 =
+                                        objectMapper.readValue(
+                                                "\"2024-01-15 10:30:00\"", Date.class);
+                                assertThat(date2).isNotNull();
 
-                Date date3 = objectMapper.readValue("\"2024/01/15\"", Date.class);
-                assertThat(date3).isNotNull();
-            }).doesNotThrowAnyException();
+                                Date date3 = objectMapper.readValue("\"2024/01/15\"", Date.class);
+                                assertThat(date3).isNotNull();
+                            })
+                    .doesNotThrowAnyException();
         }
     }
 

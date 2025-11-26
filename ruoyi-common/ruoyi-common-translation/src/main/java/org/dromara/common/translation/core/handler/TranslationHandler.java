@@ -7,16 +7,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.core.utils.reflect.ReflectUtils;
-import org.dromara.common.translation.annotation.Translation;
-import org.dromara.common.translation.core.TranslationInterface;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.utils.reflect.ReflectUtils;
+import org.dromara.common.translation.annotation.Translation;
+import org.dromara.common.translation.core.TranslationInterface;
 
 /**
  * 翻译处理器
@@ -26,15 +25,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class TranslationHandler extends JsonSerializer<Object> implements ContextualSerializer {
 
-    /**
-     * 全局翻译实现类映射器
-     */
-    public static final Map<String, TranslationInterface<?>> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
+    /** 全局翻译实现类映射器 */
+    public static final Map<String, TranslationInterface<?>> TRANSLATION_MAPPER =
+            new ConcurrentHashMap<>();
 
     private Translation translation;
 
     @Override
-    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException {
         TranslationInterface<?> trans = TRANSLATION_MAPPER.get(translation.type());
         if (ObjectUtil.isNotNull(trans)) {
             // 如果映射字段不为空 则取映射字段的值
@@ -60,7 +59,8 @@ public class TranslationHandler extends JsonSerializer<Object> implements Contex
     }
 
     @Override
-    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
+    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
+            throws JsonMappingException {
         Translation translation = property.getAnnotation(Translation.class);
         if (Objects.nonNull(translation)) {
             this.translation = translation;

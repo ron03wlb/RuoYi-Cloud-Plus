@@ -1,5 +1,7 @@
 package org.dromara.common.satoken.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpLogic;
@@ -12,13 +14,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * SaTokenConfiguration 测试
- * <p>
- * 测试 Sa-Token 配置类的 Bean 创建
- * </p>
+ *
+ * <p>测试 Sa-Token 配置类的 Bean 创建
  *
  * @author Test Team
  */
@@ -89,8 +88,9 @@ class SaTokenConfigurationTest extends BaseUnitTest {
         @DisplayName("配置类应该有 @AutoConfiguration 注解")
         void configurationShouldHaveAutoConfigurationAnnotation() {
             // Arrange & Act
-            boolean hasAnnotation = SaTokenConfiguration.class
-                .isAnnotationPresent(org.springframework.boot.autoconfigure.AutoConfiguration.class);
+            boolean hasAnnotation =
+                    SaTokenConfiguration.class.isAnnotationPresent(
+                            org.springframework.boot.autoconfigure.AutoConfiguration.class);
 
             // Assert
             assertThat(hasAnnotation).isTrue();
@@ -100,8 +100,9 @@ class SaTokenConfigurationTest extends BaseUnitTest {
         @DisplayName("配置类应该有 @PropertySource 注解")
         void configurationShouldHavePropertySourceAnnotation() {
             // Arrange & Act
-            boolean hasAnnotation = SaTokenConfiguration.class
-                .isAnnotationPresent(org.springframework.context.annotation.PropertySource.class);
+            boolean hasAnnotation =
+                    SaTokenConfiguration.class.isAnnotationPresent(
+                            org.springframework.context.annotation.PropertySource.class);
 
             // Assert
             assertThat(hasAnnotation).isTrue();

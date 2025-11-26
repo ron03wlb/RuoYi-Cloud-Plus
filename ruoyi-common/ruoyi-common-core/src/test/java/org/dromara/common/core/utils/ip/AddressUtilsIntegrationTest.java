@@ -1,5 +1,7 @@
 package org.dromara.common.core.utils.ip;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.core.BaseIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,16 +10,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * AddressUtils 集成测试类（补充测试）
- * <p>
- * 此测试补充 AddressUtilsTest 中未覆盖的功能:
- * 1. 公网IP地址解析 (依赖 RegionUtils)
- * 2. HTML标签清理验证
- * 3. 内网IPv6地址处理
- * 4. 特殊IP地址处理
+ *
+ * <p>此测试补充 AddressUtilsTest 中未覆盖的功能: 1. 公网IP地址解析 (依赖 RegionUtils) 2. HTML标签清理验证 3. 内网IPv6地址处理 4.
+ * 特殊IP地址处理
  *
  * @author Test Team
  */
@@ -30,21 +27,21 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
         @ParameterizedTest
         @CsvSource({
-            "114.114.114.114, 中国",      // 114DNS
-            "119.75.217.109, 中国",       // 百度服务器
-            "8.8.8.8, 美国",              // Google DNS
-            "1.1.1.1, 澳大利亚"           // Cloudflare DNS
+            "114.114.114.114, 中国", // 114DNS
+            "119.75.217.109, 中国", // 百度服务器
+            "8.8.8.8, 美国", // Google DNS
+            "1.1.1.1, 澳大利亚" // Cloudflare DNS
         })
         @DisplayName("应该正确解析公网IPv4地址并返回地理位置")
         void shouldResolvePublicIPv4AndReturnLocation(String ip, String expectedCountry) {
             String result = AddressUtils.getRealAddressByIP(ip);
 
             assertThat(result)
-                .isNotNull()
-                .isNotEqualTo(AddressUtils.LOCAL_ADDRESS)
-                .isNotEqualTo(AddressUtils.UNKNOWN_IP)
-                .isNotEqualTo(AddressUtils.UNKNOWN_ADDRESS)
-                .contains(expectedCountry);
+                    .isNotNull()
+                    .isNotEqualTo(AddressUtils.LOCAL_ADDRESS)
+                    .isNotEqualTo(AddressUtils.UNKNOWN_IP)
+                    .isNotEqualTo(AddressUtils.UNKNOWN_ADDRESS)
+                    .contains(expectedCountry);
         }
 
         @Test
@@ -53,11 +50,10 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
             String result = AddressUtils.getRealAddressByIP("114.114.114.114");
 
             assertThat(result)
-                .isNotNull()
-                .satisfiesAnyOf(
-                    r -> assertThat(r).containsAnyOf("江苏", "南京", "中国"),
-                    r -> assertThat(r).contains("中国")
-                );
+                    .isNotNull()
+                    .satisfiesAnyOf(
+                            r -> assertThat(r).containsAnyOf("江苏", "南京", "中国"),
+                            r -> assertThat(r).contains("中国"));
         }
     }
 
@@ -75,9 +71,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
         void shouldCleanHtmlTagsBeforeResolving(String ipWithHtml, String expectedCountry) {
             String result = AddressUtils.getRealAddressByIP(ipWithHtml);
 
-            assertThat(result)
-                .isNotNull()
-                .contains(expectedCountry);
+            assertThat(result).isNotNull().contains(expectedCountry);
         }
 
         @Test
@@ -100,9 +94,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             String result = AddressUtils.getRealAddressByIP(nestedHtml);
 
-            assertThat(result)
-                .isNotNull()
-                .contains("中国");
+            assertThat(result).isNotNull().contains("中国");
         }
 
         @Test
@@ -122,9 +114,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             String result = AddressUtils.getRealAddressByIP(ipWithTrailingHtml);
 
-            assertThat(result)
-                .isNotNull()
-                .contains("中国");
+            assertThat(result).isNotNull().contains("中国");
         }
     }
 
@@ -133,23 +123,28 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
     class GetRealAddressByIPv6InnerTest {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "::1",                              // IPv6 回环地址
-            "fe80::1",                          // 链路本地地址
-            "fc00::1",                          // 唯一本地地址 (ULA)
-            "fd00::1",                          // ULA
-            "fec0::1"                           // 站点本地地址
-        })
+        @ValueSource(
+                strings = {
+                    "::1", // IPv6 回环地址
+                    "fe80::1", // 链路本地地址
+                    "fc00::1", // 唯一本地地址 (ULA)
+                    "fd00::1", // ULA
+                    "fec0::1" // 站点本地地址
+                })
         @DisplayName("应该识别内网IPv6地址(可能返回内网IP或未知)")
         void shouldRecognizeInnerIPv6(String ipv6) {
             String result = AddressUtils.getRealAddressByIP(ipv6);
 
             // IPv6地址的识别可能有不同的结果:
-            // 1. 如果 NetUtils.isIPv6() 识别成功 -> 调用 resolverIPv6Region() -> 返回 LOCAL_ADDRESS 或 UNKNOWN_ADDRESS
+            // 1. 如果 NetUtils.isIPv6() 识别成功 -> 调用 resolverIPv6Region() -> 返回 LOCAL_ADDRESS 或
+            // UNKNOWN_ADDRESS
             // 2. 如果识别失败 -> 返回 UNKNOWN_IP
             assertThat(result)
-                .isNotNull()
-                .isIn(AddressUtils.LOCAL_ADDRESS, AddressUtils.UNKNOWN_ADDRESS, AddressUtils.UNKNOWN_IP);
+                    .isNotNull()
+                    .isIn(
+                            AddressUtils.LOCAL_ADDRESS,
+                            AddressUtils.UNKNOWN_ADDRESS,
+                            AddressUtils.UNKNOWN_IP);
         }
 
         @Test
@@ -159,20 +154,20 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             // IPv6回环地址应该被识别
             assertThat(result)
-                .isNotNull()
-                .satisfiesAnyOf(
-                    r -> assertThat(r).isEqualTo(AddressUtils.LOCAL_ADDRESS),
-                    r -> assertThat(r).isEqualTo(AddressUtils.UNKNOWN_ADDRESS),
-                    r -> assertThat(r).isEqualTo(AddressUtils.UNKNOWN_IP)
-                );
+                    .isNotNull()
+                    .satisfiesAnyOf(
+                            r -> assertThat(r).isEqualTo(AddressUtils.LOCAL_ADDRESS),
+                            r -> assertThat(r).isEqualTo(AddressUtils.UNKNOWN_ADDRESS),
+                            r -> assertThat(r).isEqualTo(AddressUtils.UNKNOWN_IP));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2001:4860:4860::8888",             // Google Public DNS (IPv6)
-            "2400:3200::1",                     // 阿里DNS (IPv6)
-            "2606:4700:4700::1111"              // Cloudflare DNS (IPv6)
-        })
+        @ValueSource(
+                strings = {
+                    "2001:4860:4860::8888", // Google Public DNS (IPv6)
+                    "2400:3200::1", // 阿里DNS (IPv6)
+                    "2606:4700:4700::1111" // Cloudflare DNS (IPv6)
+                })
         @DisplayName("应该识别公网IPv6地址(返回未知,因为不支持IPv6解析)")
         void shouldRecognizePublicIPv6ButReturnUnknown(String ipv6) {
             String result = AddressUtils.getRealAddressByIP(ipv6);
@@ -181,8 +176,8 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
             // 1. 如果被识别为IPv6 -> resolverIPv6Region() -> 返回 UNKNOWN_ADDRESS
             // 2. 如果识别失败 -> 返回 UNKNOWN_IP
             assertThat(result)
-                .isNotNull()
-                .isIn(AddressUtils.UNKNOWN_ADDRESS, AddressUtils.UNKNOWN_IP);
+                    .isNotNull()
+                    .isIn(AddressUtils.UNKNOWN_ADDRESS, AddressUtils.UNKNOWN_IP);
         }
     }
 
@@ -191,12 +186,13 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
     class GetRealAddressBySpecialIPv4Test {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "0.0.0.0",              // 未指定地址
-            "255.255.255.255",      // 广播地址
-            "224.0.0.1",            // 组播地址
-            "169.254.1.1"           // 链路本地地址
-        })
+        @ValueSource(
+                strings = {
+                    "0.0.0.0", // 未指定地址
+                    "255.255.255.255", // 广播地址
+                    "224.0.0.1", // 组播地址
+                    "169.254.1.1" // 链路本地地址
+                })
         @DisplayName("应该处理特殊IPv4地址（可能返回地理位置或特殊标识）")
         void shouldHandleSpecialIPv4Addresses(String ip) {
             String result = AddressUtils.getRealAddressByIP(ip);
@@ -215,9 +211,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
             // 1. 被ip2region解析为某个地理位置
             // 2. 返回 LOCAL_ADDRESS / UNKNOWN_IP / UNKNOWN_ADDRESS
             // 我们只验证返回值不为null且不为空
-            assertThat(result)
-                .isNotNull()
-                .isNotEmpty();
+            assertThat(result).isNotNull().isNotEmpty();
         }
 
         @Test
@@ -225,9 +219,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
         void shouldHandleZeroAddress() {
             String result = AddressUtils.getRealAddressByIP("0.0.0.0");
 
-            assertThat(result)
-                .isNotNull()
-                .satisfies(r -> assertThat(r).isNotEmpty());
+            assertThat(result).isNotNull().satisfies(r -> assertThat(r).isNotEmpty());
         }
     }
 
@@ -265,7 +257,8 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该处理复杂HTML文档中的IP地址")
         void shouldHandleComplexHtmlWithIP() {
             // HTML清理行为取决于Hutool版本,只验证不抛异常
-            String complexHtml = """
+            String complexHtml =
+                    """
                 <html>
                     <body>
                         <div class="ip">114.114.114.114</div>
@@ -292,9 +285,9 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
             String location = AddressUtils.getRealAddressByIP(loginIP);
 
             assertThat(location)
-                .isNotNull()
-                .isNotEqualTo(AddressUtils.LOCAL_ADDRESS)
-                .contains("中国");
+                    .isNotNull()
+                    .isNotEqualTo(AddressUtils.LOCAL_ADDRESS)
+                    .contains("中国");
         }
 
         @Test
@@ -305,9 +298,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             String location = AddressUtils.getRealAddressByIP(loginIP);
 
-            assertThat(location)
-                .isNotNull()
-                .contains("美国");
+            assertThat(location).isNotNull().contains("美国");
         }
 
         @Test
@@ -330,9 +321,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             String location = AddressUtils.getRealAddressByIP(clientIP);
 
-            assertThat(location)
-                .isNotNull()
-                .contains("中国");
+            assertThat(location).isNotNull().contains("中国");
         }
 
         @Test
@@ -345,10 +334,7 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
 
             // HTML标签应该被清理,至少保证不抛异常
             // 具体的解析结果取决于HtmlUtil.cleanHtmlTag的实现
-            assertThat(location)
-                .isNotNull()
-                .doesNotContain("<script>")
-                .doesNotContain("</script>");
+            assertThat(location).isNotNull().doesNotContain("<script>").doesNotContain("</script>");
         }
     }
 
@@ -380,12 +366,15 @@ class AddressUtilsIntegrationTest extends BaseIntegrationTest {
             Thread[] threads = new Thread[threadCount];
 
             for (int i = 0; i < threadCount; i++) {
-                threads[i] = new Thread(() -> {
-                    for (int j = 0; j < 10; j++) {
-                        String result = AddressUtils.getRealAddressByIP("114.114.114.114");
-                        assertThat(result).contains("中国");
-                    }
-                });
+                threads[i] =
+                        new Thread(
+                                () -> {
+                                    for (int j = 0; j < 10; j++) {
+                                        String result =
+                                                AddressUtils.getRealAddressByIP("114.114.114.114");
+                                        assertThat(result).contains("中国");
+                                    }
+                                });
                 threads[i].start();
             }
 

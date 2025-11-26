@@ -1,5 +1,11 @@
 package org.dromara.common.core.factory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,13 +14,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.EncodedResource;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * YmlPropertySourceFactory (YAML配置源工厂) 集成测试
@@ -26,8 +25,7 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
 
     private final YmlPropertySourceFactory factory = new YmlPropertySourceFactory();
 
-    @TempDir
-    Path tempDir;
+    @TempDir Path tempDir;
 
     @Nested
     @DisplayName("1. YAML文件加载测试")
@@ -38,7 +36,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadYmlFile() throws IOException {
             // Arrange
             Path ymlFile = tempDir.resolve("test.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 server:
                   port: 8080
                   host: localhost
@@ -68,7 +67,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadYamlFile() throws IOException {
             // Arrange
             Path yamlFile = tempDir.resolve("test.yaml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 database:
                   url: jdbc:mysql://localhost:3306/test
                   username: root
@@ -85,7 +85,7 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
             assertThat(propertySource).isNotNull();
             assertThat(propertySource.getName()).isEqualTo("test.yaml");
             assertThat(propertySource.getProperty("database.url"))
-                .isEqualTo("jdbc:mysql://localhost:3306/test");
+                    .isEqualTo("jdbc:mysql://localhost:3306/test");
             assertThat(propertySource.getProperty("database.username")).isEqualTo("root");
             assertThat(propertySource.getProperty("database.password")).isEqualTo("password");
         }
@@ -95,7 +95,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadNestedYamlStructure() throws IOException {
             // Arrange
             Path ymlFile = tempDir.resolve("nested.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 application:
                   security:
                     jwt:
@@ -116,11 +117,13 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(propertySource.getProperty("application.security.jwt.secret"))
-                .isEqualTo("my-secret-key");
+                    .isEqualTo("my-secret-key");
             assertThat(propertySource.getProperty("application.security.jwt.expiration"))
-                .isEqualTo(3600); // 数字类型
-            assertThat(propertySource.getProperty("application.security.oauth.providers.google.client-id"))
-                .isEqualTo("google-client-id");
+                    .isEqualTo(3600); // 数字类型
+            assertThat(
+                            propertySource.getProperty(
+                                    "application.security.oauth.providers.google.client-id"))
+                    .isEqualTo("google-client-id");
         }
 
         @Test
@@ -128,7 +131,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadYamlWithLists() throws IOException {
             // Arrange
             Path ymlFile = tempDir.resolve("list.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 servers:
                   - name: server1
                     host: 192.168.1.1
@@ -159,7 +163,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldDelegateToSuperClassForPropertiesFile() throws IOException {
             // Arrange
             Path propertiesFile = tempDir.resolve("test.properties");
-            String propertiesContent = """
+            String propertiesContent =
+                    """
                 server.port=9090
                 server.host=localhost
                 app.name=test-app
@@ -186,7 +191,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldDelegateToSuperClassForXmlFile() throws IOException {
             // Arrange
             Path xmlFile = tempDir.resolve("test.xml");
-            String xmlContent = """
+            String xmlContent =
+                    """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
                 <properties>
@@ -258,7 +264,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldHandleYamlWithOnlyComments() throws IOException {
             // Arrange
             Path commentYmlFile = tempDir.resolve("comment.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 # This is a comment
                 # Another comment
                 """;
@@ -279,7 +286,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldHandleYamlWithChinese() throws IOException {
             // Arrange
             Path chineseYmlFile = tempDir.resolve("chinese.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 应用:
                   名称: 若依管理系统
                   描述: 基于SpringBoot的权限管理系统
@@ -302,7 +310,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
             // Arrange
             Path invalidYmlFile = tempDir.resolve("invalid.yml");
             // 使用严重的格式错误，确保抛出异常
-            String invalidYamlContent = """
+            String invalidYamlContent =
+                    """
                 key1: value1
                 - invalid list syntax without key
                 : invalid colon without key
@@ -328,7 +337,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldHandleSpecialCharactersInKeys() throws IOException {
             // Arrange
             Path specialYmlFile = tempDir.resolve("special.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 "key-with-dash": value1
                 "key.with.dot": value2
                 "key:with:colon": value3
@@ -356,7 +366,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadSpringBootStyleConfiguration() throws IOException {
             // Arrange
             Path appYmlFile = tempDir.resolve("application.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 spring:
                   application:
                     name: ruoyi-system
@@ -378,11 +389,12 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
             PropertySource<?> propertySource = factory.createPropertySource(null, resource);
 
             // Assert
-            assertThat(propertySource.getProperty("spring.application.name")).isEqualTo("ruoyi-system");
+            assertThat(propertySource.getProperty("spring.application.name"))
+                    .isEqualTo("ruoyi-system");
             assertThat(propertySource.getProperty("spring.datasource.driver-class-name"))
-                .isEqualTo("com.mysql.cj.jdbc.Driver");
+                    .isEqualTo("com.mysql.cj.jdbc.Driver");
             assertThat(propertySource.getProperty("spring.datasource.url"))
-                .isEqualTo("jdbc:mysql://localhost:3306/ruoyi");
+                    .isEqualTo("jdbc:mysql://localhost:3306/ruoyi");
             assertThat(propertySource.getProperty("spring.redis.host")).isEqualTo("localhost");
             assertThat(propertySource.getProperty("spring.redis.port")).isEqualTo(6379); // 数字类型
         }
@@ -392,7 +404,8 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
         void shouldLoadNacosStyleConfiguration() throws IOException {
             // Arrange
             Path nacosYmlFile = tempDir.resolve("ruoyi-system.yml");
-            String yamlContent = """
+            String yamlContent =
+                    """
                 server:
                   port: 9201
 
@@ -419,7 +432,7 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
             assertThat(propertySource.getProperty("dubbo.protocol.name")).isEqualTo("dubbo");
             assertThat(propertySource.getProperty("dubbo.protocol.port")).isEqualTo(-1); // 数字类型
             assertThat(propertySource.getProperty("dubbo.registry.address"))
-                .isEqualTo("nacos://localhost:8848");
+                    .isEqualTo("nacos://localhost:8848");
         }
     }
 
@@ -441,7 +454,7 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
 
             // Assert
             assertThat(propertySource.getClass().getSimpleName())
-                .isEqualTo("PropertiesPropertySource");
+                    .isEqualTo("PropertiesPropertySource");
         }
 
         @Test
@@ -460,7 +473,7 @@ class YmlPropertySourceFactoryIntegrationTest extends BaseIntegrationTest {
             assertThat(propertySource).isNotNull();
             // 父类返回的类型可能是 ResourcePropertySource
             assertThat(propertySource.getClass().getSimpleName())
-                .isIn("ResourcePropertySource", "PropertiesPropertySource");
+                    .isIn("ResourcePropertySource", "PropertiesPropertySource");
         }
     }
 }

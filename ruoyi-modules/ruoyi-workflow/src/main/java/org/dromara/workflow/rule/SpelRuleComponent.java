@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * spel表达式规则组件
- * <p>
- *     通过该组件统一管理流程定义中的spel表达式
- * </p>
+ *
+ * <p>通过该组件统一管理流程定义中的spel表达式
  *
  * @author Michelle.Chung
  */
@@ -24,9 +23,7 @@ public class SpelRuleComponent {
 
     private final RemoteDeptService deptService;
 
-    /**
-     * 通过发起人部门id获取部门负责人
-     */
+    /** 通过发起人部门id获取部门负责人 */
     public Long selectDeptLeaderById(Long initiatorDeptId) {
         Long leaderId = deptService.selectDeptLeaderById(initiatorDeptId);
         if (ObjectUtil.isNull(leaderId)) {
@@ -34,5 +31,4 @@ public class SpelRuleComponent {
         }
         return leaderId;
     }
-
 }

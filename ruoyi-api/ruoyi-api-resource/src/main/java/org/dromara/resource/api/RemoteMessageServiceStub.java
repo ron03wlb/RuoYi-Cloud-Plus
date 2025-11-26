@@ -1,9 +1,8 @@
 package org.dromara.resource.api;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 /**
  * 消息服务
@@ -20,7 +19,7 @@ public class RemoteMessageServiceStub implements RemoteMessageService {
      * 发送消息
      *
      * @param sessionKey session主键 一般为用户id
-     * @param message    消息文本
+     * @param message 消息文本
      */
     @Override
     public void publishMessage(List<Long> sessionKey, String message) {

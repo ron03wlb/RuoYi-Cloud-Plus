@@ -1,19 +1,17 @@
 package org.dromara.common.sensitive.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.function.Function;
 import org.dromara.common.sensitive.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * SensitiveStrategy (脱敏策略) 单元测试
- * <p>
- * 用途: 提供各种数据脱敏策略，用于JSON序列化时的数据保护
- * 核心功能: 15种脱敏策略（身份证、手机号、地址、邮箱等）
+ *
+ * <p>用途: 提供各种数据脱敏策略，用于JSON序列化时的数据保护 核心功能: 15种脱敏策略（身份证、手机号、地址、邮箱等）
  *
  * @author Test Team
  */
@@ -36,9 +34,9 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Assert
             assertThat(result).isNotEqualTo(idCard);
-            assertThat(result).startsWith("110");  // 前3位可见
-            assertThat(result).endsWith("1234");   // 后4位可见
-            assertThat(result).contains("*");      // 中间有星号
+            assertThat(result).startsWith("110"); // 前3位可见
+            assertThat(result).endsWith("1234"); // 后4位可见
+            assertThat(result).contains("*"); // 中间有星号
         }
 
         @Test
@@ -86,9 +84,9 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Assert
             assertThat(result).isNotEqualTo(phone);
-            assertThat(result).startsWith("138");   // 前3位可见
-            assertThat(result).endsWith("8000");    // 后4位可见
-            assertThat(result).contains("****");    // 中间4位星号
+            assertThat(result).startsWith("138"); // 前3位可见
+            assertThat(result).endsWith("8000"); // 后4位可见
+            assertThat(result).contains("****"); // 中间4位星号
         }
 
         @Test
@@ -125,7 +123,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Assert
             assertThat(result).isNotEqualTo(address);
-            assertThat(result).startsWith("北京市朝阳区");  // 前8个字符可见
+            assertThat(result).startsWith("北京市朝阳区"); // 前8个字符可见
             assertThat(result).contains("*");
         }
 
@@ -160,9 +158,9 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Assert
             assertThat(result).isNotEqualTo(email);
-            assertThat(result).contains("@");      // 保留@符号
-            assertThat(result).contains("*");      // 有星号
-            assertThat(result).endsWith(".com");   // 保留域名后缀
+            assertThat(result).contains("@"); // 保留@符号
+            assertThat(result).contains("*"); // 有星号
+            assertThat(result).endsWith(".com"); // 保留域名后缀
         }
 
         @Test
@@ -203,7 +201,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
         @DisplayName("应该脱敏银行卡号")
         void shouldDesensitizeBankCard() {
             // Arrange
-            String bankCard = "6217000010012345678";  // 19位银行卡号
+            String bankCard = "6217000010012345678"; // 19位银行卡号
             Function<String, String> desensitizer = SensitiveStrategy.BANK_CARD.desensitizer();
 
             // Act
@@ -305,7 +303,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
         @DisplayName("应该处理不同区号的固定电话")
         void shouldHandleDifferentAreaCodes() {
             // Arrange
-            String phone1 = "021-87654321";  // 上海
+            String phone1 = "021-87654321"; // 上海
             String phone2 = "0755-12345678"; // 深圳
             Function<String, String> desensitizer = SensitiveStrategy.FIXED_PHONE.desensitizer();
 
@@ -355,7 +353,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Assert
             assertThat(result).isNotEqualTo(password);
-            assertThat(result).contains("*");  // 密码应该包含星号脱敏
+            assertThat(result).contains("*"); // 密码应该包含星号脱敏
         }
 
         @Test
@@ -467,7 +465,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
         @DisplayName("应该脱敏新能源车牌号")
         void shouldDesensitizeNewEnergyCarLicense() {
             // Arrange
-            String license = "京AD12345";  // 新能源车牌（D或F开头）
+            String license = "京AD12345"; // 新能源车牌（D或F开头）
             Function<String, String> desensitizer = SensitiveStrategy.CAR_LICENSE.desensitizer();
 
             // Act
@@ -509,7 +507,7 @@ class SensitiveStrategyTest extends BaseUnitTest {
             String result = desensitizer.apply(singleChar);
 
             // Assert
-            assertThat(result).isEqualTo("A");  // 单个字符应该保持不变
+            assertThat(result).isEqualTo("A"); // 单个字符应该保持不变
         }
     }
 
@@ -679,7 +677,8 @@ class SensitiveStrategyTest extends BaseUnitTest {
 
             // Act
             String clearedToEmpty = SensitiveStrategy.CLEAR.desensitizer().apply(sensitiveData);
-            String clearedToNull = SensitiveStrategy.CLEAR_TO_NULL.desensitizer().apply(sensitiveData);
+            String clearedToNull =
+                    SensitiveStrategy.CLEAR_TO_NULL.desensitizer().apply(sensitiveData);
 
             // Assert
             assertThat(clearedToEmpty).isEmpty();
@@ -730,12 +729,24 @@ class SensitiveStrategyTest extends BaseUnitTest {
             SensitiveStrategy[] strategies = SensitiveStrategy.values();
 
             // Assert
-            assertThat(strategies).extracting(Enum::name).containsExactlyInAnyOrder(
-                "ID_CARD", "PHONE", "ADDRESS", "EMAIL", "BANK_CARD",
-                "CHINESE_NAME", "FIXED_PHONE", "USER_ID", "PASSWORD",
-                "IPV4", "IPV6", "CAR_LICENSE", "FIRST_MASK",
-                "CLEAR", "CLEAR_TO_NULL"
-            );
+            assertThat(strategies)
+                    .extracting(Enum::name)
+                    .containsExactlyInAnyOrder(
+                            "ID_CARD",
+                            "PHONE",
+                            "ADDRESS",
+                            "EMAIL",
+                            "BANK_CARD",
+                            "CHINESE_NAME",
+                            "FIXED_PHONE",
+                            "USER_ID",
+                            "PASSWORD",
+                            "IPV4",
+                            "IPV6",
+                            "CAR_LICENSE",
+                            "FIRST_MASK",
+                            "CLEAR",
+                            "CLEAR_TO_NULL");
         }
     }
 }

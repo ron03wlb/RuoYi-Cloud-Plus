@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class NormalRabbitProducer {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Autowired private RabbitTemplate rabbitTemplate;
 
     public void send(String message) {
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, message);
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, message);
         log.info("【生产者】Message send: " + message);
     }
 }

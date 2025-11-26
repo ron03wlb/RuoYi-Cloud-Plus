@@ -5,6 +5,8 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.core.exception.ServiceException;
@@ -23,9 +25,6 @@ import org.dromara.system.mapper.SysUserPostMapper;
 import org.dromara.system.service.ISysPostService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * 岗位信息 服务层处理
  *
@@ -42,13 +41,14 @@ public class SysPostServiceImpl implements ISysPostService {
     /**
      * 分页查询岗位列表
      *
-     * @param post      查询条件
+     * @param post 查询条件
      * @param pageQuery 分页参数
      * @return 岗位分页列表
      */
     @Override
     public TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post, PageQuery pageQuery) {
-        Page<SysPostVo> page = baseMapper.selectPagePostList(pageQuery.build(), buildQueryWrapper(post));
+        Page<SysPostVo> page =
+                baseMapper.selectPagePostList(pageQuery.build(), buildQueryWrapper(post));
         return TableDataInfo.build(page);
     }
 
@@ -83,22 +83,36 @@ public class SysPostServiceImpl implements ISysPostService {
     private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<SysPost> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StringUtils.isNotBlank(bo.getPostCode()), SysPost::getPostCode, bo.getPostCode())
-            .like(StringUtils.isNotBlank(bo.getPostCategory()), SysPost::getPostCategory, bo.getPostCategory())
-            .like(StringUtils.isNotBlank(bo.getPostName()), SysPost::getPostName, bo.getPostName())
-            .eq(StringUtils.isNotBlank(bo.getStatus()), SysPost::getStatus, bo.getStatus())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysPost::getCreateTime, params.get("beginTime"), params.get("endTime"))
-            .orderByAsc(SysPost::getPostSort);
+        wrapper.like(
+                        StringUtils.isNotBlank(bo.getPostCode()),
+                        SysPost::getPostCode,
+                        bo.getPostCode())
+                .like(
+                        StringUtils.isNotBlank(bo.getPostCategory()),
+                        SysPost::getPostCategory,
+                        bo.getPostCategory())
+                .like(
+                        StringUtils.isNotBlank(bo.getPostName()),
+                        SysPost::getPostName,
+                        bo.getPostName())
+                .eq(StringUtils.isNotBlank(bo.getStatus()), SysPost::getStatus, bo.getStatus())
+                .between(
+                        params.get("beginTime") != null && params.get("endTime") != null,
+                        SysPost::getCreateTime,
+                        params.get("beginTime"),
+                        params.get("endTime"))
+                .orderByAsc(SysPost::getPostSort);
         if (ObjectUtil.isNotNull(bo.getDeptId())) {
-            //优先单部门搜索
+            // 优先单部门搜索
             wrapper.eq(SysPost::getDeptId, bo.getDeptId());
         } else if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
-            //部门树搜索
-            wrapper.and(x -> {
-                List<Long> deptIds = deptMapper.selectDeptAndChildById(bo.getBelongDeptId());
-                x.in(SysPost::getDeptId, deptIds);
-            });
+            // 部门树搜索
+            wrapper.and(
+                    x -> {
+                        List<Long> deptIds =
+                                deptMapper.selectDeptAndChildById(bo.getBelongDeptId());
+                        x.in(SysPost::getDeptId, deptIds);
+                    });
         }
         return wrapper;
     }
@@ -144,10 +158,11 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public List<SysPostVo> selectPostByIds(List<Long> postIds) {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysPost>()
-            .select(SysPost::getPostId, SysPost::getPostName, SysPost::getPostCode)
-            .eq(SysPost::getStatus, SystemConstants.NORMAL)
-            .in(CollUtil.isNotEmpty(postIds), SysPost::getPostId, postIds));
+        return baseMapper.selectVoList(
+                new LambdaQueryWrapper<SysPost>()
+                        .select(SysPost::getPostId, SysPost::getPostName, SysPost::getPostCode)
+                        .eq(SysPost::getStatus, SystemConstants.NORMAL)
+                        .in(CollUtil.isNotEmpty(postIds), SysPost::getPostId, postIds));
     }
 
     /**
@@ -158,10 +173,15 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public boolean checkPostNameUnique(SysPostBo post) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
-            .eq(SysPost::getPostName, post.getPostName())
-            .eq(SysPost::getDeptId, post.getDeptId())
-            .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<SysPost>()
+                                .eq(SysPost::getPostName, post.getPostName())
+                                .eq(SysPost::getDeptId, post.getDeptId())
+                                .ne(
+                                        ObjectUtil.isNotNull(post.getPostId()),
+                                        SysPost::getPostId,
+                                        post.getPostId()));
         return !exist;
     }
 
@@ -173,9 +193,14 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public boolean checkPostCodeUnique(SysPostBo post) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
-            .eq(SysPost::getPostCode, post.getPostCode())
-            .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<SysPost>()
+                                .eq(SysPost::getPostCode, post.getPostCode())
+                                .ne(
+                                        ObjectUtil.isNotNull(post.getPostId()),
+                                        SysPost::getPostId,
+                                        post.getPostId()));
         return !exist;
     }
 
@@ -187,7 +212,8 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public long countUserPostById(Long postId) {
-        return userPostMapper.selectCount(new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getPostId, postId));
+        return userPostMapper.selectCount(
+                new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getPostId, postId));
     }
 
     /**
@@ -198,7 +224,8 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public long countPostByDeptId(Long deptId) {
-        return baseMapper.selectCount(new LambdaQueryWrapper<SysPost>().eq(SysPost::getDeptId, deptId));
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<SysPost>().eq(SysPost::getDeptId, deptId));
     }
 
     /**

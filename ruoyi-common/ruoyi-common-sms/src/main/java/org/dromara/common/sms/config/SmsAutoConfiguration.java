@@ -22,12 +22,9 @@ public class SmsAutoConfiguration {
         return new PlusSmsDao();
     }
 
-    /**
-     * 异常处理器
-     */
+    /** 异常处理器 */
     @Bean
     public SmsExceptionHandler smsExceptionHandler() {
         return new SmsExceptionHandler();
     }
-
 }

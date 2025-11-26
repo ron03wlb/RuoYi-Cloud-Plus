@@ -1,12 +1,10 @@
 package org.dromara.resource.domain.vo;
 
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-import org.dromara.resource.domain.SysOssConfig;
-
 import java.io.Serial;
 import java.io.Serializable;
-
+import lombok.Data;
+import org.dromara.resource.domain.SysOssConfig;
 
 /**
  * 对象存储配置视图对象 sys_oss_config
@@ -19,78 +17,47 @@ import java.io.Serializable;
 @AutoMapper(target = SysOssConfig.class)
 public class SysOssConfigVo implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键
-     */
+    /** 主键 */
     private Long ossConfigId;
 
-    /**
-     * 配置key
-     */
+    /** 配置key */
     private String configKey;
 
-    /**
-     * accessKey
-     */
+    /** accessKey */
     private String accessKey;
 
-    /**
-     * 秘钥
-     */
+    /** 秘钥 */
     private String secretKey;
 
-    /**
-     * 桶名称
-     */
+    /** 桶名称 */
     private String bucketName;
 
-    /**
-     * 前缀
-     */
+    /** 前缀 */
     private String prefix;
 
-    /**
-     * 访问站点
-     */
+    /** 访问站点 */
     private String endpoint;
 
-    /**
-     * 自定义域名
-     */
+    /** 自定义域名 */
     private String domain;
 
-    /**
-     * 是否https（Y=是,N=否）
-     */
+    /** 是否https（Y=是,N=否） */
     private String isHttps;
 
-    /**
-     * 域
-     */
+    /** 域 */
     private String region;
 
-    /**
-     * 是否默认（0=是,1=否）
-     */
+    /** 是否默认（0=是,1=否） */
     private String status;
 
-    /**
-     * 扩展字段
-     */
+    /** 扩展字段 */
     private String ext1;
 
-    /**
-     * 备注
-     */
+    /** 备注 */
     private String remark;
 
-    /**
-     * 桶权限类型(0private 1public 2custom)
-     */
+    /** 桶权限类型(0private 1public 2custom) */
     private String accessPolicy;
-
-
 }

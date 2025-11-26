@@ -1,5 +1,7 @@
 package org.dromara.common.core.utils.regex;
 
+import static org.assertj.core.api.Assertions.*;
+
 import cn.hutool.core.exceptions.ValidateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,14 +10,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * RegexValidator 测试类
- * <p>
- * 正则规则说明：
- * - ACCOUNT: ^[a-zA-Z][a-zA-Z0-9_]{4,15}$ (账号必须以字母开头，长度5-16位，只能包含字母、数字、下划线)
- * - STATUS: ^[01]$ (状态只能是0或1)
+ *
+ * <p>正则规则说明： - ACCOUNT: ^[a-zA-Z][a-zA-Z0-9_]{4,15}$ (账号必须以字母开头，长度5-16位，只能包含字母、数字、下划线) - STATUS:
+ * ^[01]$ (状态只能是0或1)
  *
  * @author Test Team
  */
@@ -27,47 +26,45 @@ class RegexValidatorTest {
     class IsAccountTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "admin",          // 5位，全小写
-            "Admin",          // 5位，首字母大写
-            "ADMIN",          // 5位，全大写
-            "user123",        // 7位，字母+数字
-            "test_user",      // 9位，包含下划线
-            "A1234",          // 5位，最短有效长度
-            "a12345678901234", // 16位，最长有效长度
-            "UserName_123",   // 12位，混合大小写、数字、下划线
-            "aB_123",         // 6位，混合格式
-            "TestUser123"     // 11位，驼峰命名
-        })
+        @ValueSource(
+                strings = {
+                    "admin", // 5位，全小写
+                    "Admin", // 5位，首字母大写
+                    "ADMIN", // 5位，全大写
+                    "user123", // 7位，字母+数字
+                    "test_user", // 9位，包含下划线
+                    "A1234", // 5位，最短有效长度
+                    "a12345678901234", // 16位，最长有效长度
+                    "UserName_123", // 12位，混合大小写、数字、下划线
+                    "aB_123", // 6位，混合格式
+                    "TestUser123" // 11位，驼峰命名
+                })
         @DisplayName("应该接受有效的账号格式")
         void shouldAcceptValidAccounts(String account) {
             // Act & Assert
-            assertThat(RegexValidator.isAccount(account))
-                .as("账号 '%s' 应该是有效的", account)
-                .isTrue();
+            assertThat(RegexValidator.isAccount(account)).as("账号 '%s' 应该是有效的", account).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "abc",            // 3位，太短（最少5位）
-            "abcd",           // 4位，太短
-            "a1234567890123456", // 17位，太长（最多16位）
-            "123abc",         // 数字开头
-            "_admin",         // 下划线开头
-            "admin-user",     // 包含连字符
-            "admin user",     // 包含空格
-            "admin@user",     // 包含@符号
-            "用户名",          // 中文字符
-            "admin.user",     // 包含点号
-            "admin#123",      // 包含#号
-            "admin$123"       // 包含$符号
-        })
+        @ValueSource(
+                strings = {
+                    "abc", // 3位，太短（最少5位）
+                    "abcd", // 4位，太短
+                    "a1234567890123456", // 17位，太长（最多16位）
+                    "123abc", // 数字开头
+                    "_admin", // 下划线开头
+                    "admin-user", // 包含连字符
+                    "admin user", // 包含空格
+                    "admin@user", // 包含@符号
+                    "用户名", // 中文字符
+                    "admin.user", // 包含点号
+                    "admin#123", // 包含#号
+                    "admin$123" // 包含$符号
+                })
         @DisplayName("应该拒绝无效的账号格式")
         void shouldRejectInvalidAccounts(String account) {
             // Act & Assert
-            assertThat(RegexValidator.isAccount(account))
-                .as("账号 '%s' 应该是无效的", account)
-                .isFalse();
+            assertThat(RegexValidator.isAccount(account)).as("账号 '%s' 应该是无效的", account).isFalse();
         }
 
         @ParameterizedTest
@@ -97,7 +94,7 @@ class RegexValidatorTest {
         @DisplayName("应该正确处理边界长度 - 16位（最长）")
         void shouldHandleMaximumLength() {
             // Act & Assert
-            assertThat(RegexValidator.isAccount("a123456789012345")).isTrue();  // 16位
+            assertThat(RegexValidator.isAccount("a123456789012345")).isTrue(); // 16位
             assertThat(RegexValidator.isAccount("a1234567890123456")).isFalse(); // 17位
         }
 
@@ -137,8 +134,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateAccount(invalidAccount, errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @Test
@@ -149,8 +146,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateAccount(null, errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @Test
@@ -161,17 +158,12 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateAccount("", errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "admin",
-            "User123",
-            "test_user_01",
-            "A1234"
-        })
+        @ValueSource(strings = {"admin", "User123", "test_user_01", "A1234"})
         @DisplayName("多个有效账号验证应该都返回原值")
         void shouldReturnOriginalValueForMultipleValidAccounts(String account) {
             // Act
@@ -189,8 +181,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateAccount("123", customMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(customMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(customMsg);
         }
     }
 
@@ -207,29 +199,28 @@ class RegexValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2",              // 超出范围
-            "01",             // 两位数字
-            "00",             // 两个0
-            "10",             // 1和0
-            "true",           // 布尔字符串
-            "false",          // 布尔字符串
-            "yes",            // yes/no
-            "no",
-            " 0",             // 前导空格
-            "0 ",             // 后置空格
-            " 1 ",            // 两边空格
-            "O",              // 字母O
-            "l",              // 字母l
-            "一",             // 中文
-            ""                // 空字符串
-        })
+        @ValueSource(
+                strings = {
+                    "2", // 超出范围
+                    "01", // 两位数字
+                    "00", // 两个0
+                    "10", // 1和0
+                    "true", // 布尔字符串
+                    "false", // 布尔字符串
+                    "yes", // yes/no
+                    "no",
+                    " 0", // 前导空格
+                    "0 ", // 后置空格
+                    " 1 ", // 两边空格
+                    "O", // 字母O
+                    "l", // 字母l
+                    "一", // 中文
+                    "" // 空字符串
+                })
         @DisplayName("应该拒绝无效的状态值")
         void shouldRejectInvalidStatus(String status) {
             // Act & Assert
-            assertThat(RegexValidator.isStatus(status))
-                .as("状态 '%s' 应该是无效的", status)
-                .isFalse();
+            assertThat(RegexValidator.isStatus(status)).as("状态 '%s' 应该是无效的", status).isFalse();
         }
 
         @Test
@@ -286,8 +277,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateStatus(invalidStatus, errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @Test
@@ -298,8 +289,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateStatus(null, errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @Test
@@ -310,8 +301,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateStatus("", errorMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(errorMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(errorMsg);
         }
 
         @Test
@@ -322,8 +313,8 @@ class RegexValidatorTest {
 
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateStatus("2", customMsg))
-                .isInstanceOf(ValidateException.class)
-                .hasMessage(customMsg);
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage(customMsg);
         }
 
         @ParameterizedTest
@@ -332,7 +323,7 @@ class RegexValidatorTest {
         void shouldRejectCommonNonBinaryStatusValues(String status) {
             // Act & Assert
             assertThatThrownBy(() -> RegexValidator.validateStatus(status, "状态值错误"))
-                .isInstanceOf(ValidateException.class);
+                    .isInstanceOf(ValidateException.class);
         }
     }
 
@@ -364,11 +355,13 @@ class RegexValidatorTest {
             String validStatus = "0";
 
             // Act & Assert
-            assertThatThrownBy(() -> {
-                RegexValidator.validateAccount(invalidAccount, "账号错误");
-                RegexValidator.validateStatus(validStatus, "状态错误");
-            }).isInstanceOf(ValidateException.class)
-                .hasMessage("账号错误");
+            assertThatThrownBy(
+                            () -> {
+                                RegexValidator.validateAccount(invalidAccount, "账号错误");
+                                RegexValidator.validateStatus(validStatus, "状态错误");
+                            })
+                    .isInstanceOf(ValidateException.class)
+                    .hasMessage("账号错误");
         }
 
         @Test
@@ -383,10 +376,10 @@ class RegexValidatorTest {
 
                 if (isValid) {
                     assertThatCode(() -> RegexValidator.validateAccount(account, "错误"))
-                        .doesNotThrowAnyException();
+                            .doesNotThrowAnyException();
                 } else {
                     assertThatThrownBy(() -> RegexValidator.validateAccount(account, "错误"))
-                        .isInstanceOf(ValidateException.class);
+                            .isInstanceOf(ValidateException.class);
                 }
             }
         }

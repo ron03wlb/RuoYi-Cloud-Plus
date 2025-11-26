@@ -4,6 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.SystemConstants;
@@ -21,11 +25,6 @@ import org.dromara.workflow.domain.vo.FlowSpelVo;
 import org.dromara.workflow.mapper.FlwSpelMapper;
 import org.dromara.workflow.service.IFlwSpelService;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 流程spel达式定义Service业务层处理
@@ -48,14 +47,14 @@ public class FlwSpelServiceImpl implements IFlwSpelService {
      * @return 流程spel达式定义
      */
     @Override
-    public FlowSpelVo queryById(Long id){
+    public FlowSpelVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
     /**
      * 分页查询流程spel达式定义列表
      *
-     * @param bo        查询条件
+     * @param bo 查询条件
      * @param pageQuery 分页参数
      * @return 流程spel达式定义分页列表
      */
@@ -82,9 +81,18 @@ public class FlwSpelServiceImpl implements IFlwSpelService {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<FlowSpel> lqw = Wrappers.lambdaQuery();
         lqw.orderByAsc(FlowSpel::getId);
-        lqw.like(StringUtils.isNotBlank(bo.getComponentName()), FlowSpel::getComponentName, bo.getComponentName());
-        lqw.like(StringUtils.isNotBlank(bo.getMethodName()), FlowSpel::getMethodName, bo.getMethodName());
-        lqw.eq(StringUtils.isNotBlank(bo.getMethodParams()), FlowSpel::getMethodParams, bo.getMethodParams());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getComponentName()),
+                FlowSpel::getComponentName,
+                bo.getComponentName());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getMethodName()),
+                FlowSpel::getMethodName,
+                bo.getMethodName());
+        lqw.eq(
+                StringUtils.isNotBlank(bo.getMethodParams()),
+                FlowSpel::getMethodParams,
+                bo.getMethodParams());
         lqw.eq(StringUtils.isNotBlank(bo.getViewSpel()), FlowSpel::getViewSpel, bo.getViewSpel());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), FlowSpel::getStatus, bo.getStatus());
         lqw.like(StringUtils.isNotBlank(bo.getRemark()), FlowSpel::getRemark, bo.getRemark());
@@ -121,24 +129,22 @@ public class FlwSpelServiceImpl implements IFlwSpelService {
         return baseMapper.updateById(update) > 0;
     }
 
-    /**
-     * 保存前的数据校验
-     */
-    private void validEntityBeforeSave(FlowSpel entity){
-        //TODO 做一些数据校验,如唯一约束
+    /** 保存前的数据校验 */
+    private void validEntityBeforeSave(FlowSpel entity) {
+        // TODO 做一些数据校验,如唯一约束
     }
 
     /**
      * 校验并批量删除流程spel达式定义信息
      *
-     * @param ids     待删除的主键集合
+     * @param ids 待删除的主键集合
      * @param isValid 是否进行有效性校验
      * @return 是否删除成功
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+        if (isValid) {
+            // TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
     }
@@ -161,8 +167,14 @@ public class FlwSpelServiceImpl implements IFlwSpelService {
         params.put("endTime", taskQuery.getEndTime());
         TableDataInfo<FlowSpelVo> page = this.queryPageList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
-        List<RemoteTaskAssigneeVo.TaskHandler> handlers = RemoteTaskAssigneeVo.convertToHandlerList(page.getRows(),
-            FlowSpelVo::getViewSpel, item -> "", FlowSpelVo::getRemark, item -> "", FlowSpelVo::getCreateTime);
+        List<RemoteTaskAssigneeVo.TaskHandler> handlers =
+                RemoteTaskAssigneeVo.convertToHandlerList(
+                        page.getRows(),
+                        FlowSpelVo::getViewSpel,
+                        item -> "",
+                        FlowSpelVo::getRemark,
+                        item -> "",
+                        FlowSpelVo::getCreateTime);
         return new RemoteTaskAssigneeVo(page.getTotal(), handlers);
     }
 
@@ -177,12 +189,11 @@ public class FlwSpelServiceImpl implements IFlwSpelService {
         if (CollUtil.isEmpty(viewSpels)) {
             return Collections.emptyMap();
         }
-        List<FlowSpel> list = baseMapper.selectList(
-            new LambdaQueryWrapper<FlowSpel>()
-                .select(FlowSpel::getViewSpel, FlowSpel::getRemark)
-                .in(FlowSpel::getViewSpel, viewSpels)
-        );
+        List<FlowSpel> list =
+                baseMapper.selectList(
+                        new LambdaQueryWrapper<FlowSpel>()
+                                .select(FlowSpel::getViewSpel, FlowSpel::getRemark)
+                                .in(FlowSpel::getViewSpel, viewSpels));
         return StreamUtils.toMap(list, FlowSpel::getViewSpel, FlowSpel::getRemark);
     }
-
 }

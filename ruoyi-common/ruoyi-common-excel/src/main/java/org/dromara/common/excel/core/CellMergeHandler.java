@@ -6,13 +6,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
+import java.lang.reflect.Field;
+import java.util.*;
 import lombok.SneakyThrows;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.excel.annotation.CellMerge;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 /**
  * 单元格合并处理器
@@ -59,7 +58,8 @@ public class CellMergeHandler {
                 // 当前行数据
                 Object currentRowObj = rows.get(i);
                 // 当前行数据字段值
-                Object currentRowObjFieldVal = ReflectUtils.invokeGetter(currentRowObj, field.getName());
+                Object currentRowObjFieldVal =
+                        ReflectUtils.invokeGetter(currentRowObj, field.getName());
 
                 // 空值跳过不处理
                 if (currentRowObjFieldVal == null || "".equals(currentRowObjFieldVal)) {
@@ -79,7 +79,8 @@ public class CellMergeHandler {
 
                 // 检查是否满足合并条件
                 // currentRowObj 当前行数据
-                // rows.get(i - 1) 上一行数据 注：由于 if (!rowRepeatCellMap.containsKey(field)) 条件的存在，所以该 i 必不可能小于1
+                // rows.get(i - 1) 上一行数据 注：由于 if (!rowRepeatCellMap.containsKey(field)) 条件的存在，所以该 i
+                // 必不可能小于1
                 // cellMerge 当前行字段合并注解
                 boolean merge = isMerge(currentRowObj, rows.get(i - 1), cellMerge);
 
@@ -110,20 +111,22 @@ public class CellMergeHandler {
         return result;
     }
 
-    /**
-     * 获取带有合并注解的字段列索引和合并注解信息Map集
-     */
+    /** 获取带有合并注解的字段列索引和合并注解信息Map集 */
     private Map<Field, FieldColumnIndex> getFieldColumnIndexMap(Class<?> clazz) {
         boolean annotationPresent = clazz.isAnnotationPresent(ExcelIgnoreUnannotated.class);
-        Field[] fields = ReflectUtils.getFields(clazz, field -> {
-            if ("serialVersionUID".equals(field.getName())) {
-                return false;
-            }
-            if (field.isAnnotationPresent(ExcelIgnore.class)) {
-                return false;
-            }
-            return !annotationPresent || field.isAnnotationPresent(ExcelProperty.class);
-        });
+        Field[] fields =
+                ReflectUtils.getFields(
+                        clazz,
+                        field -> {
+                            if ("serialVersionUID".equals(field.getName())) {
+                                return false;
+                            }
+                            if (field.isAnnotationPresent(ExcelIgnore.class)) {
+                                return false;
+                            }
+                            return !annotationPresent
+                                    || field.isAnnotationPresent(ExcelProperty.class);
+                        });
 
         // 有注解的字段
         Map<Field, FieldColumnIndex> mergeFields = new HashMap<>();
@@ -147,12 +150,12 @@ public class CellMergeHandler {
     private boolean isMerge(Object currentRow, Object preRow, CellMerge cellMerge) {
         final String[] mergeBy = cellMerge.mergeBy();
         if (StrUtil.isAllNotBlank(mergeBy)) {
-            //比对当前行和上一行的各个属性值一一比对 如果全为真 则为真
+            // 比对当前行和上一行的各个属性值一一比对 如果全为真 则为真
             for (String fieldName : mergeBy) {
                 final Object valCurrent = ReflectUtil.getFieldValue(currentRow, fieldName);
                 final Object valPre = ReflectUtil.getFieldValue(preRow, fieldName);
                 if (!Objects.equals(valPre, valCurrent)) {
-                    //依赖字段如有任一不等值,则标记为不可合并
+                    // 依赖字段如有任一不等值,则标记为不可合并
                     return false;
                 }
             }
@@ -160,18 +163,14 @@ public class CellMergeHandler {
         return true;
     }
 
-    /**
-     * 单元格合并
-     */
+    /** 单元格合并 */
     record RepeatCell(Object value, int current) {
         static RepeatCell of(Object value, int current) {
             return new RepeatCell(value, current);
         }
     }
 
-    /**
-     * 字段列索引和合并注解信息
-     */
+    /** 字段列索引和合并注解信息 */
     record FieldColumnIndex(int colIndex, CellMerge cellMerge) {
         static FieldColumnIndex of(int colIndex, CellMerge cellMerge) {
             return new FieldColumnIndex(colIndex, cellMerge);
@@ -196,5 +195,4 @@ public class CellMergeHandler {
     public static CellMergeHandler of() {
         return new CellMergeHandler(false);
     }
-
 }

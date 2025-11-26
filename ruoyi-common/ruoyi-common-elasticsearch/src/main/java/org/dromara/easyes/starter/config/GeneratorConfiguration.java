@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 代码生成注册
+ *
  * @author MoJie
  * @since 2.0
  */
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GeneratorConfiguration extends Generator {
 
-    @Autowired
-    private ElasticsearchClient client;
+    @Autowired private ElasticsearchClient client;
 
     @Override
     public Boolean generate(GeneratorConfig config) {

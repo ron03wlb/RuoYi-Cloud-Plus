@@ -1,14 +1,14 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.dromara.common.core.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * NetUtils 单元测试
@@ -23,39 +23,41 @@ class NetUtilsTest extends BaseUnitTest {
     class IsIPv4Test {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "192.168.1.1",
-            "10.0.0.1",
-            "172.16.0.1",
-            "127.0.0.1",
-            "0.0.0.0",
-            "255.255.255.255",
-            "8.8.8.8",
-            "114.114.114.114"
-        })
+        @ValueSource(
+                strings = {
+                    "192.168.1.1",
+                    "10.0.0.1",
+                    "172.16.0.1",
+                    "127.0.0.1",
+                    "0.0.0.0",
+                    "255.255.255.255",
+                    "8.8.8.8",
+                    "114.114.114.114"
+                })
         @DisplayName("有效的IPv4地址")
         void shouldReturnTrueForValidIPv4Addresses(String ip) {
             assertThat(NetUtils.isIPv4(ip)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "256.1.1.1",           // 超出范围
-            "192.168.1",           // 缺少段
-            "192.168.1.1.1",       // 多余段
-            "192.168.-1.1",        // 负数
-            "192.168.1.a",         // 包含字母
-            "192.168.1.1a",        // 数字后包含字母
-            "",                    // 空字符串
-            "   ",                 // 空白字符串
-            "192.168.1.",          // 末尾多余点
-            ".192.168.1.1",        // 开头多余点
-            "192..168.1.1",        // 连续点
-            "192.168.1.1.",        // 末尾点
-            "192.168.1.1/24",      // CIDR表示法
-            "localhost",           // 主机名
-            "example.com"          // 域名
-        })
+        @ValueSource(
+                strings = {
+                    "256.1.1.1", // 超出范围
+                    "192.168.1", // 缺少段
+                    "192.168.1.1.1", // 多余段
+                    "192.168.-1.1", // 负数
+                    "192.168.1.a", // 包含字母
+                    "192.168.1.1a", // 数字后包含字母
+                    "", // 空字符串
+                    "   ", // 空白字符串
+                    "192.168.1.", // 末尾多余点
+                    ".192.168.1.1", // 开头多余点
+                    "192..168.1.1", // 连续点
+                    "192.168.1.1.", // 末尾点
+                    "192.168.1.1/24", // CIDR表示法
+                    "localhost", // 主机名
+                    "example.com" // 域名
+                })
         @DisplayName("无效的IPv4地址")
         void shouldReturnFalseForInvalidIPv4Addresses(String ip) {
             assertThat(NetUtils.isIPv4(ip)).isFalse();
@@ -72,13 +74,14 @@ class NetUtilsTest extends BaseUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-            "2001:db8:85a3::8a2e:370:7334",
-            "::1",
-            "fe80::1",
-            "::"
-        })
+        @ValueSource(
+                strings = {
+                    "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+                    "2001:db8:85a3::8a2e:370:7334",
+                    "::1",
+                    "fe80::1",
+                    "::"
+                })
         @DisplayName("IPv6地址应返回false")
         void shouldReturnFalseForIPv6Addresses(String ip) {
             assertThat(NetUtils.isIPv4(ip)).isFalse();
@@ -132,36 +135,38 @@ class NetUtilsTest extends BaseUnitTest {
     class IsIPv6Test {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2001:0db8:85a3:0000:0000:8a2e:0370:7334",  // 完整格式
-            "2001:db8:85a3::8a2e:370:7334",             // 压缩格式
-            "2001:db8:85a3:0:0:8a2e:370:7334",          // 部分压缩
-            "::1",                                       // 本地回环
-            "::",                                        // 全零地址
-            "fe80::1",                                   // 链路本地地址
-            "ff02::1",                                   // 多播地址
-            "2001:db8::1",                              // 文档前缀
-            "fc00::1",                                   // 唯一本地地址
-            "fd00::1"                                    // 唯一本地地址
-        })
+        @ValueSource(
+                strings = {
+                    "2001:0db8:85a3:0000:0000:8a2e:0370:7334", // 完整格式
+                    "2001:db8:85a3::8a2e:370:7334", // 压缩格式
+                    "2001:db8:85a3:0:0:8a2e:370:7334", // 部分压缩
+                    "::1", // 本地回环
+                    "::", // 全零地址
+                    "fe80::1", // 链路本地地址
+                    "ff02::1", // 多播地址
+                    "2001:db8::1", // 文档前缀
+                    "fc00::1", // 唯一本地地址
+                    "fd00::1" // 唯一本地地址
+                })
         @DisplayName("有效的IPv6地址")
         void shouldReturnTrueForValidIPv6Addresses(String ip) {
             assertThat(NetUtils.isIPv6(ip)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "192.168.1.1",         // IPv4地址
-            "256.1.1.1",           // 无效IPv4
-            "",                    // 空字符串
-            "   ",                 // 空白字符串
-            "gggg::1",             // 无效十六进制
-            "2001:0db8:85a3::8a2e:370g:7334",  // 包含非法字符
-            "2001:db8:85a3:::8a2e:370:7334",   // 三个连续冒号
-            "::1::2",              // 多个双冒号
-            "localhost",           // 主机名
-            "example.com"          // 域名
-        })
+        @ValueSource(
+                strings = {
+                    "192.168.1.1", // IPv4地址
+                    "256.1.1.1", // 无效IPv4
+                    "", // 空字符串
+                    "   ", // 空白字符串
+                    "gggg::1", // 无效十六进制
+                    "2001:0db8:85a3::8a2e:370g:7334", // 包含非法字符
+                    "2001:db8:85a3:::8a2e:370:7334", // 三个连续冒号
+                    "::1::2", // 多个双冒号
+                    "localhost", // 主机名
+                    "example.com" // 域名
+                })
         @DisplayName("无效的IPv6地址")
         void shouldReturnFalseForInvalidIPv6Addresses(String ip) {
             assertThat(NetUtils.isIPv6(ip)).isFalse();
@@ -228,53 +233,57 @@ class NetUtilsTest extends BaseUnitTest {
     class IsInnerIPv6Test {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "::1",                    // 回环地址
-            "0000:0000:0000:0000:0000:0000:0000:0001",  // 回环地址完整格式
-            "::",                     // 通配符地址
-            "0000:0000:0000:0000:0000:0000:0000:0000",  // 通配符地址完整格式
-            "fe80::1",                // 链路本地地址
-            "fe80::215:5dff:fe00:0000",  // 链路本地地址
-            "fec0::1"                 // 站点本地地址（已废弃）
-        })
+        @ValueSource(
+                strings = {
+                    "::1", // 回环地址
+                    "0000:0000:0000:0000:0000:0000:0000:0001", // 回环地址完整格式
+                    "::", // 通配符地址
+                    "0000:0000:0000:0000:0000:0000:0000:0000", // 通配符地址完整格式
+                    "fe80::1", // 链路本地地址
+                    "fe80::215:5dff:fe00:0000", // 链路本地地址
+                    "fec0::1" // 站点本地地址（已废弃）
+                })
         @DisplayName("内网IPv6地址")
         void shouldReturnTrueForInnerIPv6Addresses(String ip) {
             assertThat(NetUtils.isInnerIPv6(ip)).isTrue();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "2001:0db8:85a3:0000:0000:8a2e:0370:7334",  // 全局单播地址
-            "2001:db8:85a3::8a2e:370:7334",             // 文档前缀（非内网）
-            "2400:3200::1",                              // 公网IPv6
-            "2001:4860:4860::8888",                      // Google DNS
-            "2606:4700:4700::1111",                      // Cloudflare DNS
-            "ff02::1",                                   // 多播地址（非内网）
-            "fc00::1",                                   // ULA (Java可能不识别为site local)
-            "fd00::1"                                    // ULA (Java可能不识别为site local)
-        })
+        @ValueSource(
+                strings = {
+                    "2001:0db8:85a3:0000:0000:8a2e:0370:7334", // 全局单播地址
+                    "2001:db8:85a3::8a2e:370:7334", // 文档前缀（非内网）
+                    "2400:3200::1", // 公网IPv6
+                    "2001:4860:4860::8888", // Google DNS
+                    "2606:4700:4700::1111", // Cloudflare DNS
+                    "ff02::1", // 多播地址（非内网）
+                    "fc00::1", // ULA (Java可能不识别为site local)
+                    "fd00::1" // ULA (Java可能不识别为site local)
+                })
         @DisplayName("非内网IPv6地址")
         void shouldReturnFalseForNonInnerIPv6Addresses(String ip) {
             assertThat(NetUtils.isInnerIPv6(ip)).isFalse();
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "invalid",             // 无效字符串
-            "gggg::1"              // 无效IPv6
-        })
+        @ValueSource(
+                strings = {
+                    "invalid", // 无效字符串
+                    "gggg::1" // 无效IPv6
+                })
         @DisplayName("无效地址应抛出异常")
         void shouldThrowExceptionForInvalidAddresses(String ip) {
             assertThatThrownBy(() -> NetUtils.isInnerIPv6(ip))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Invalid IPv6 address");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Invalid IPv6 address");
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "192.168.1.1",         // IPv4地址（不抛异常，返回false）
-            ""                     // 空字符串（不抛异常，返回false）
-        })
+        @ValueSource(
+                strings = {
+                    "192.168.1.1", // IPv4地址（不抛异常，返回false）
+                    "" // 空字符串（不抛异常，返回false）
+                })
         @DisplayName("非IPv6地址应返回false")
         void shouldReturnFalseForNonIPv6Addresses(String ip) {
             // 这些地址不是IPv6，但不会抛异常，只是返回false

@@ -12,19 +12,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum JsonType {
 
-    /**
-     * JSON 对象，例如 {"a":1}
-     */
+    /** JSON 对象，例如 {"a":1} */
     OBJECT,
 
-    /**
-     * JSON 数组，例如 [1,2,3]
-     */
+    /** JSON 数组，例如 [1,2,3] */
     ARRAY,
 
-    /**
-     * 任意 JSON 类型，对象或数组都可以
-     */
+    /** 任意 JSON 类型，对象或数组都可以 */
     ANY
-
 }

@@ -1,5 +1,9 @@
 package org.dromara.common.core.validate.enumd;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,10 +14,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * 枚举验证器单元测试
@@ -26,8 +26,7 @@ class EnumPatternValidatorTest {
 
     private EnumPatternValidator validator;
 
-    @Mock
-    private ConstraintValidatorContext context;
+    @Mock private ConstraintValidatorContext context;
 
     @BeforeEach
     void setUp() {
@@ -35,9 +34,7 @@ class EnumPatternValidatorTest {
         validator = new EnumPatternValidator();
     }
 
-    /**
-     * 测试用枚举 - 用户状态
-     */
+    /** 测试用枚举 - 用户状态 */
     enum UserStatus {
         ACTIVE("0", "正常"),
         DISABLED("1", "停用"),
@@ -60,9 +57,7 @@ class EnumPatternValidatorTest {
         }
     }
 
-    /**
-     * 测试用枚举 - 性别
-     */
+    /** 测试用枚举 - 性别 */
     enum Gender {
         MALE("M", "男"),
         FEMALE("F", "女"),
@@ -85,9 +80,7 @@ class EnumPatternValidatorTest {
         }
     }
 
-    /**
-     * 测试用枚举 - 数字字符串类型
-     */
+    /** 测试用枚举 - 数字字符串类型 */
     enum Priority {
         LOW("1", "低"),
         MEDIUM("2", "中"),
@@ -385,9 +378,9 @@ class EnumPatternValidatorTest {
             validator.initialize(annotation);
 
             // Simulate form validation
-            String userInputNormal = "0";      // ACTIVE
-            String userInputDisabled = "1";    // DISABLED
-            String userInputInvalid = "999";   // Invalid
+            String userInputNormal = "0"; // ACTIVE
+            String userInputDisabled = "1"; // DISABLED
+            String userInputInvalid = "999"; // Invalid
 
             // Act & Assert
             assertThat(validator.isValid(userInputNormal, context)).isTrue();

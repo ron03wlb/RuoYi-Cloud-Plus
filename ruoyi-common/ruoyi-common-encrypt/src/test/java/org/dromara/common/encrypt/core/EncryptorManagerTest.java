@@ -1,5 +1,10 @@
 package org.dromara.common.encrypt.core;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.common.encrypt.annotation.EncryptField;
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
@@ -7,12 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * EncryptorManager (加密管理器) 单元测试
@@ -58,8 +57,8 @@ class EncryptorManagerTest {
 
             // Act & Assert - 验证抛出 NoClassDefFoundError (因为 MyBatis 不可用)
             assertThatThrownBy(() -> new EncryptorManager("org.dromara.common.encrypt.core"))
-                .isInstanceOf(NoClassDefFoundError.class)
-                .hasMessageContaining("org/apache/ibatis/io/Resources");
+                    .isInstanceOf(NoClassDefFoundError.class)
+                    .hasMessageContaining("org/apache/ibatis/io/Resources");
         }
 
         @Test
@@ -67,7 +66,7 @@ class EncryptorManagerTest {
         void shouldNotThrowExceptionWhenPackageNotExists() {
             // Act & Assert - 不存在的包不应该导致构造失败
             assertThatCode(() -> new EncryptorManager("com.nonexistent.package"))
-                .doesNotThrowAnyException();
+                    .doesNotThrowAnyException();
         }
     }
 
@@ -169,8 +168,7 @@ class EncryptorManagerTest {
             ctx.setAlgorithm(AlgorithmType.BASE64);
 
             // Act & Assert
-            assertThatCode(() -> manager.removeEncryptor(ctx))
-                .doesNotThrowAnyException();
+            assertThatCode(() -> manager.removeEncryptor(ctx)).doesNotThrowAnyException();
         }
 
         @Test
@@ -596,8 +594,7 @@ class EncryptorManagerTest {
             String result = manager.decrypt(onlyPrefix, context);
 
             // Assert - 应该正常处理
-            assertThatCode(() -> manager.decrypt(onlyPrefix, context))
-                .doesNotThrowAnyException();
+            assertThatCode(() -> manager.decrypt(onlyPrefix, context)).doesNotThrowAnyException();
         }
     }
 

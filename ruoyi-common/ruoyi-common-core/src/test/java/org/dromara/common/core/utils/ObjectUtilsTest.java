@@ -1,11 +1,11 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.core.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * ObjectUtils 单元测试
@@ -122,7 +122,8 @@ class ObjectUtilsTest extends BaseUnitTest {
         void shouldSupportComplexDefaultValue() {
             TestUser user = null;
             TestAddress defaultAddress = new TestAddress("默认城市", "默认区域");
-            TestAddress result = ObjectUtils.notNullGetter(user, TestUser::getAddress, defaultAddress);
+            TestAddress result =
+                    ObjectUtils.notNullGetter(user, TestUser::getAddress, defaultAddress);
             assertThat(result).isEqualTo(defaultAddress);
             assertThat(result.getCity()).isEqualTo("默认城市");
         }
@@ -310,9 +311,7 @@ class ObjectUtilsTest extends BaseUnitTest {
 
     // ========== 测试辅助类 ==========
 
-    /**
-     * 测试用户类
-     */
+    /** 测试用户类 */
     private static class TestUser {
         private String name;
         private Integer age;
@@ -348,9 +347,7 @@ class ObjectUtilsTest extends BaseUnitTest {
         }
     }
 
-    /**
-     * 测试地址类
-     */
+    /** 测试地址类 */
     private static class TestAddress {
         private String city;
         private String district;

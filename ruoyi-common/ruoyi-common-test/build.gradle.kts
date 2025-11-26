@@ -113,13 +113,15 @@ tasks.jacocoTestReport {
     }
 
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/config/**",           // 配置类
-                    "**/examples/**"          // 示例类
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/config/**", // 配置类
+                        "**/examples/**", // 示例类
+                    )
+                }
+            },
+        ),
     )
 }

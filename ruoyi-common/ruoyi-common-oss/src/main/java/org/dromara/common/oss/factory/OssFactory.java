@@ -1,5 +1,9 @@
 package org.dromara.common.oss.factory;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.json.utils.JsonUtils;
@@ -9,11 +13,6 @@ import org.dromara.common.oss.exception.OssException;
 import org.dromara.common.oss.properties.OssProperties;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.common.redis.utils.RedisUtils;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 文件上传Factory
@@ -26,9 +25,7 @@ public class OssFactory {
     private static final Map<String, OssClient> CLIENT_CACHE = new ConcurrentHashMap<>();
     private static final ReentrantLock LOCK = new ReentrantLock();
 
-    /**
-     * 获取默认实例
-     */
+    /** 获取默认实例 */
     public static OssClient instance() {
         // 获取redis 默认类型
         String configKey = RedisUtils.getCacheObject(OssConstant.DEFAULT_CONFIG_KEY);
@@ -38,9 +35,7 @@ public class OssFactory {
         return instance(configKey);
     }
 
-    /**
-     * 根据类型获取实例
-     */
+    /** 根据类型获取实例 */
     public static synchronized OssClient instance(String configKey) {
         String json = CacheUtils.get(CacheNames.SYS_OSS_CONFIG, configKey);
         if (json == null) {
@@ -69,5 +64,4 @@ public class OssFactory {
         }
         return client;
     }
-
 }

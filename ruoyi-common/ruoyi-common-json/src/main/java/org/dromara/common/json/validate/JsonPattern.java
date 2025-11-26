@@ -2,7 +2,6 @@ package org.dromara.common.json.validate;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-
 import java.lang.annotation.*;
 
 /**
@@ -16,18 +15,13 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = JsonPatternValidator.class)
 public @interface JsonPattern {
 
-    /**
-     * 限制 JSON 类型，默认为 {@link JsonType#ANY}，即对象或数组都允许
-     */
+    /** 限制 JSON 类型，默认为 {@link JsonType#ANY}，即对象或数组都允许 */
     JsonType type() default JsonType.ANY;
 
-    /**
-     * 校验失败时的提示消息
-     */
+    /** 校验失败时的提示消息 */
     String message() default "不是有效的 JSON 格式";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }

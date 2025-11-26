@@ -1,5 +1,7 @@
 package org.dromara.system.service.impl;
 
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.satoken.utils.LoginHelper;
@@ -7,9 +9,6 @@ import org.dromara.system.service.ISysMenuService;
 import org.dromara.system.service.ISysPermissionService;
 import org.dromara.system.service.ISysRoleService;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 用户权限处理
@@ -26,7 +25,7 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     /**
      * 获取角色数据权限
      *
-     * @param userId  用户id
+     * @param userId 用户id
      * @return 角色权限信息
      */
     @Override
@@ -44,7 +43,7 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     /**
      * 获取菜单数据权限
      *
-     * @param userId  用户id
+     * @param userId 用户id
      * @return 菜单权限信息
      */
     @Override

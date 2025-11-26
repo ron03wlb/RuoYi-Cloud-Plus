@@ -1,5 +1,7 @@
 package org.dromara.common.mybatis.enums;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -7,8 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DataScopeType 枚举类测试
@@ -69,7 +69,7 @@ class DataScopeTypeTest {
             assertThat(DataScopeType.DEPT_AND_CHILD).isNotNull();
             assertThat(DataScopeType.DEPT_AND_CHILD.getCode()).isEqualTo("4");
             assertThat(DataScopeType.DEPT_AND_CHILD.getSqlTemplate())
-                .contains("#{@sdss.getDeptAndChild");
+                    .contains("#{@sdss.getDeptAndChild");
             assertThat(DataScopeType.DEPT_AND_CHILD.getElseSql()).isEqualTo(" 1 = 0 ");
         }
 
@@ -79,8 +79,7 @@ class DataScopeTypeTest {
             // Assert
             assertThat(DataScopeType.SELF).isNotNull();
             assertThat(DataScopeType.SELF.getCode()).isEqualTo("5");
-            assertThat(DataScopeType.SELF.getSqlTemplate())
-                .contains("#{#user.userId}");
+            assertThat(DataScopeType.SELF.getSqlTemplate()).contains("#{#user.userId}");
             assertThat(DataScopeType.SELF.getElseSql()).isEqualTo(" 1 = 0 ");
         }
 
@@ -90,8 +89,7 @@ class DataScopeTypeTest {
             // Assert
             assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF).isNotNull();
             assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.getCode()).isEqualTo("6");
-            assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.getSqlTemplate())
-                .contains("OR");
+            assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.getSqlTemplate()).contains("OR");
             assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.getElseSql()).isEqualTo(" 1 = 0 ");
         }
     }
@@ -234,23 +232,23 @@ class DataScopeTypeTest {
         @DisplayName("CUSTOM 应该使用 @sdss 服务调用")
         void customShouldUseServiceCall() {
             assertThat(DataScopeType.CUSTOM.getSqlTemplate())
-                .contains("@sdss")
-                .contains("getRoleCustom");
+                    .contains("@sdss")
+                    .contains("getRoleCustom");
         }
 
         @Test
         @DisplayName("DEPT_AND_CHILD 应该使用 @sdss 服务调用")
         void deptAndChildShouldUseServiceCall() {
             assertThat(DataScopeType.DEPT_AND_CHILD.getSqlTemplate())
-                .contains("@sdss")
-                .contains("getDeptAndChild");
+                    .contains("@sdss")
+                    .contains("getDeptAndChild");
         }
 
         @Test
         @DisplayName("DEPT_AND_CHILD_OR_SELF 应该包含 OR 逻辑运算符")
         void deptAndChildOrSelfShouldContainOrOperator() {
             assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.getSqlTemplate())
-                .containsIgnoringCase("OR");
+                    .containsIgnoringCase("OR");
         }
 
         @Test
@@ -300,8 +298,8 @@ class DataScopeTypeTest {
         @DisplayName("所有枚举常量都应该有唯一的 code")
         void allConstantsShouldHaveUniqueCode() {
             assertThat(DataScopeType.values())
-                .extracting(DataScopeType::getCode)
-                .doesNotHaveDuplicates();
+                    .extracting(DataScopeType::getCode)
+                    .doesNotHaveDuplicates();
         }
 
         @Test
@@ -309,8 +307,8 @@ class DataScopeTypeTest {
         void allCodesShouldBeNumericStrings() {
             for (DataScopeType type : DataScopeType.values()) {
                 assertThat(type.getCode())
-                    .as("DataScopeType %s 的 code 应该是数字", type)
-                    .matches("\\d+");
+                        .as("DataScopeType %s 的 code 应该是数字", type)
+                        .matches("\\d+");
             }
         }
 
@@ -319,8 +317,8 @@ class DataScopeTypeTest {
         void allCodesShouldNotBeNullOrEmpty() {
             for (DataScopeType type : DataScopeType.values()) {
                 assertThat(type.getCode())
-                    .as("DataScopeType %s 的 code 不应该为 null 或空", type)
-                    .isNotEmpty();
+                        .as("DataScopeType %s 的 code 不应该为 null 或空", type)
+                        .isNotEmpty();
             }
         }
     }
@@ -340,11 +338,7 @@ class DataScopeTypeTest {
         })
         @DisplayName("综合验证 - 代码查找和属性验证")
         void shouldCorrectlyIdentifyDataScopeType(
-            String code,
-            String expectedName,
-            String sqlKeyword,
-            String expectedElseSql
-        ) {
+                String code, String expectedName, String sqlKeyword, String expectedElseSql) {
             // Act
             DataScopeType result = DataScopeType.findCode(code);
 
@@ -365,9 +359,7 @@ class DataScopeTypeTest {
             // 权限代码应该从 1 到 6 连续
             for (int i = 1; i <= 6; i++) {
                 DataScopeType type = DataScopeType.findCode(String.valueOf(i));
-                assertThat(type)
-                    .as("应该能找到代码为 %d 的数据权限类型", i)
-                    .isNotNull();
+                assertThat(type).as("应该能找到代码为 %d 的数据权限类型", i).isNotNull();
             }
         }
     }
@@ -422,9 +414,11 @@ class DataScopeTypeTest {
             assertThat(DataScopeType.valueOf("ALL")).isEqualTo(DataScopeType.ALL);
             assertThat(DataScopeType.valueOf("CUSTOM")).isEqualTo(DataScopeType.CUSTOM);
             assertThat(DataScopeType.valueOf("DEPT")).isEqualTo(DataScopeType.DEPT);
-            assertThat(DataScopeType.valueOf("DEPT_AND_CHILD")).isEqualTo(DataScopeType.DEPT_AND_CHILD);
+            assertThat(DataScopeType.valueOf("DEPT_AND_CHILD"))
+                    .isEqualTo(DataScopeType.DEPT_AND_CHILD);
             assertThat(DataScopeType.valueOf("SELF")).isEqualTo(DataScopeType.SELF);
-            assertThat(DataScopeType.valueOf("DEPT_AND_CHILD_OR_SELF")).isEqualTo(DataScopeType.DEPT_AND_CHILD_OR_SELF);
+            assertThat(DataScopeType.valueOf("DEPT_AND_CHILD_OR_SELF"))
+                    .isEqualTo(DataScopeType.DEPT_AND_CHILD_OR_SELF);
         }
 
         @Test
@@ -442,7 +436,8 @@ class DataScopeTypeTest {
             assertThat(DataScopeType.DEPT.name()).isEqualTo("DEPT");
             assertThat(DataScopeType.DEPT_AND_CHILD.name()).isEqualTo("DEPT_AND_CHILD");
             assertThat(DataScopeType.SELF.name()).isEqualTo("SELF");
-            assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.name()).isEqualTo("DEPT_AND_CHILD_OR_SELF");
+            assertThat(DataScopeType.DEPT_AND_CHILD_OR_SELF.name())
+                    .isEqualTo("DEPT_AND_CHILD_OR_SELF");
         }
 
         @Test
@@ -514,9 +509,9 @@ class DataScopeTypeTest {
             // Assert
             assertThat(type).isEqualTo(DataScopeType.DEPT_AND_CHILD_OR_SELF);
             assertThat(type.getSqlTemplate())
-                .contains("getDeptAndChild")
-                .contains("OR")
-                .contains("#user.userId");
+                    .contains("getDeptAndChild")
+                    .contains("OR")
+                    .contains("#user.userId");
         }
     }
 }

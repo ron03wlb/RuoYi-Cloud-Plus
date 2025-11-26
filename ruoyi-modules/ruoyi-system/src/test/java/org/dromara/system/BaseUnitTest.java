@@ -5,27 +5,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * 单元测试基类
- * <p>
- * 提供 Mockito 支持的轻量级单元测试环境
- * </p>
  *
- * <p>特性:</p>
+ * <p>提供 Mockito 支持的轻量级单元测试环境
+ *
+ * <p>特性:
+ *
  * <ul>
- *   <li>Mockito 扩展支持</li>
- *   <li>@Mock 注解支持</li>
- *   <li>@InjectMocks 注解支持</li>
- *   <li>不启动 Spring 容器，测试执行速度快</li>
+ *   <li>Mockito 扩展支持
+ *   <li>@Mock 注解支持
+ *   <li>@InjectMocks 注解支持
+ *   <li>不启动 Spring 容器，测试执行速度快
  * </ul>
  *
- * <p>适用场景:</p>
+ * <p>适用场景:
+ *
  * <ul>
- *   <li>Service 层单元测试</li>
- *   <li>工具类单元测试</li>
- *   <li>业务逻辑验证测试</li>
- *   <li>不需要 Spring 容器的独立组件测试</li>
+ *   <li>Service 层单元测试
+ *   <li>工具类单元测试
+ *   <li>业务逻辑验证测试
+ *   <li>不需要 Spring 容器的独立组件测试
  * </ul>
  *
- * <p>使用示例:</p>
+ * <p>使用示例:
+ *
  * <pre>
  * class MyServiceTest extends BaseUnitTest {
  *     &#64;Mock

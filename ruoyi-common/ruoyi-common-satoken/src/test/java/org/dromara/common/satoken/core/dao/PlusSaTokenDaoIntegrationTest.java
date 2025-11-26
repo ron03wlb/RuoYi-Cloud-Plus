@@ -1,27 +1,29 @@
 package org.dromara.common.satoken.core.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.dromara.common.satoken.BaseSaTokenIntegrationTest;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * PlusSaTokenDao 集成測試
- * <p>
- * 測試 Sa-Token DAO 層的 Redis + Caffeine 多級緩存功能
- * </p>
  *
- * <p>測試場景:</p>
+ * <p>測試 Sa-Token DAO 層的 Redis + Caffeine 多級緩存功能
+ *
+ * <p>測試場景:
+ *
  * <ul>
- *   <li>字符串值的存取和刪除</li>
- *   <li>對象值的存取和刪除</li>
- *   <li>超時時間的獲取和更新</li>
- *   <li>值的更新操作</li>
- *   <li>數據搜索功能</li>
+ *   <li>字符串值的存取和刪除
+ *   <li>對象值的存取和刪除
+ *   <li>超時時間的獲取和更新
+ *   <li>值的更新操作
+ *   <li>數據搜索功能
  * </ul>
  *
  * @author Test Team
@@ -30,17 +32,12 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("PlusSaTokenDao 集成測試")
 class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
 
-    @Autowired
-    private PlusSaTokenDao saTokenDao;
+    @Autowired private PlusSaTokenDao saTokenDao;
 
-    /**
-     * 測試 Key 前綴
-     */
+    /** 測試 Key 前綴 */
     private static final String TEST_KEY_PREFIX = "test:satoken:";
 
-    /**
-     * 每個測試後清理測試數據
-     */
+    /** 每個測試後清理測試數據 */
     @AfterEach
     void cleanup() {
         // 清理可能殘留的測試數據
@@ -48,9 +45,7 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         saTokenDao.deleteObject(TEST_KEY_PREFIX + "object");
     }
 
-    /**
-     * 測試字符串值操作
-     */
+    /** 測試字符串值操作 */
     @Nested
     @DisplayName("字符串值操作測試")
     class StringValueTests {
@@ -137,9 +132,7 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         }
     }
 
-    /**
-     * 測試對象值操作
-     */
+    /** 測試對象值操作 */
     @Nested
     @DisplayName("對象值操作測試")
     class ObjectValueTests {
@@ -201,9 +194,7 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         }
     }
 
-    /**
-     * 測試超時操作
-     */
+    /** 測試超時操作 */
     @Nested
     @DisplayName("超時操作測試")
     class TimeoutTests {
@@ -284,9 +275,7 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         }
     }
 
-    /**
-     * 測試搜索功能
-     */
+    /** 測試搜索功能 */
     @Nested
     @DisplayName("數據搜索測試")
     class SearchDataTests {
@@ -322,7 +311,8 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         @DisplayName("應該在無匹配時返回空列表")
         void shouldReturnEmptyListWhenNoMatch() {
             // Act
-            List<String> results = saTokenDao.searchData(TEST_KEY_PREFIX, "nonexistent-key-xyz", 0, 10, true);
+            List<String> results =
+                    saTokenDao.searchData(TEST_KEY_PREFIX, "nonexistent-key-xyz", 0, 10, true);
 
             // Assert
             assertThat(results).isNotNull();
@@ -330,16 +320,13 @@ class PlusSaTokenDaoIntegrationTest extends BaseSaTokenIntegrationTest {
         }
     }
 
-    /**
-     * 測試用對象類
-     */
+    /** 測試用對象類 */
     @org.springframework.stereotype.Component
     static class TestObject implements java.io.Serializable {
         private String name;
         private Integer value;
 
-        public TestObject() {
-        }
+        public TestObject() {}
 
         public TestObject(String name, Integer value) {
             this.name = name;

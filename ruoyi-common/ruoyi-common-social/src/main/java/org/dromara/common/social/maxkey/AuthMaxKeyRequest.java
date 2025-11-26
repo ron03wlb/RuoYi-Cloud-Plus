@@ -12,15 +12,14 @@ import org.dromara.common.core.utils.SpringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 
 /**
- *  @author 长春叭哥 2023年03月26日
+ * @author 长春叭哥 2023年03月26日
  */
 public class AuthMaxKeyRequest extends AuthDefaultRequest {
 
-    public static final String SERVER_URL = SpringUtils.getProperty("justauth.type.maxkey.server-url");
+    public static final String SERVER_URL =
+            SpringUtils.getProperty("justauth.type.maxkey.server-url");
 
-    /**
-     * 设定归属域
-     */
+    /** 设定归属域 */
     public AuthMaxKeyRequest(AuthConfig config) {
         super(config, AuthMaxKeySource.MAXKEY);
     }
@@ -42,12 +41,12 @@ public class AuthMaxKeyRequest extends AuthDefaultRequest {
             throw new AuthException(object.getStr("message"));
         }
         return AuthToken.builder()
-            .accessToken(object.getStr("access_token"))
-            .refreshToken(object.getStr("refresh_token"))
-            .idToken(object.getStr("id_token"))
-            .tokenType(object.getStr("token_type"))
-            .scope(object.getStr("scope"))
-            .build();
+                .accessToken(object.getStr("access_token"))
+                .refreshToken(object.getStr("refresh_token"))
+                .idToken(object.getStr("id_token"))
+                .tokenType(object.getStr("token_type"))
+                .scope(object.getStr("scope"))
+                .build();
     }
 
     @Override
@@ -63,18 +62,17 @@ public class AuthMaxKeyRequest extends AuthDefaultRequest {
             throw new AuthException(object.getStr("message"));
         }
         return AuthUser.builder()
-            .uuid(object.getStr("userId"))
-            .username(object.getStr("username"))
-            .nickname(object.getStr("displayName"))
-            .avatar(object.getStr("avatar_url"))
-            .blog(object.getStr("web_url"))
-            .company(object.getStr("organization"))
-            .location(object.getStr("location"))
-            .email(object.getStr("email"))
-            .remark(object.getStr("bio"))
-            .token(authToken)
-            .source(source.toString())
-            .build();
+                .uuid(object.getStr("userId"))
+                .username(object.getStr("username"))
+                .nickname(object.getStr("displayName"))
+                .avatar(object.getStr("avatar_url"))
+                .blog(object.getStr("web_url"))
+                .company(object.getStr("organization"))
+                .location(object.getStr("location"))
+                .email(object.getStr("email"))
+                .remark(object.getStr("bio"))
+                .token(authToken)
+                .source(source.toString())
+                .build();
     }
-
 }

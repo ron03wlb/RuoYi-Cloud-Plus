@@ -64,16 +64,18 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",      // 注解类
-                    "**/config/**",           // 配置类
-                    "**/filter/**",           // 过滤器
-                    "**/interceptor/**",      // 拦截器
-                    "**/*Application.class"   // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/annotation/**", // 注解类
+                        "**/config/**", // 配置类
+                        "**/filter/**", // 过滤器
+                        "**/interceptor/**", // 拦截器
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

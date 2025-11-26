@@ -1,14 +1,14 @@
 package org.dromara.common.encrypt.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * {@link EncryptorProperties} 单元测试
@@ -98,8 +98,8 @@ class EncryptorPropertiesTest {
         @Test
         @DisplayName("应该有@ConfigurationProperties注解")
         void shouldHaveConfigurationPropertiesAnnotation() {
-            ConfigurationProperties annotation = EncryptorProperties.class
-                .getAnnotation(ConfigurationProperties.class);
+            ConfigurationProperties annotation =
+                    EncryptorProperties.class.getAnnotation(ConfigurationProperties.class);
 
             assertThat(annotation).isNotNull();
             assertThat(annotation.prefix()).isEqualTo("mybatis-encryptor");
@@ -297,8 +297,8 @@ class EncryptorPropertiesTest {
         @Test
         @DisplayName("配置前缀应该是mybatis-encryptor")
         void configurationPrefixShouldBeMybatisEncryptor() {
-            ConfigurationProperties annotation = EncryptorProperties.class
-                .getAnnotation(ConfigurationProperties.class);
+            ConfigurationProperties annotation =
+                    EncryptorProperties.class.getAnnotation(ConfigurationProperties.class);
 
             assertThat(annotation.prefix()).isEqualTo("mybatis-encryptor");
         }

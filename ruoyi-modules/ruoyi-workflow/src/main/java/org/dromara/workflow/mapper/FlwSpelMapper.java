@@ -10,6 +10,4 @@ import org.dromara.workflow.domain.vo.FlowSpelVo;
  * @author Michelle.Chung
  * @date 2025-07-04
  */
-public interface FlwSpelMapper extends BaseMapperPlus<FlowSpel, FlowSpelVo> {
-
-}
+public interface FlwSpelMapper extends BaseMapperPlus<FlowSpel, FlowSpelVo> {}

@@ -1,11 +1,11 @@
 package org.dromara.common.translation.core.impl;
 
+import lombok.AllArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.constant.TransConstant;
 import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.system.api.RemoteUserService;
-import lombok.AllArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.annotation.Profile;
 
 /**
@@ -18,8 +18,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class UserNameTranslationImpl implements TranslationInterface<String> {
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
     public String translation(Object key, String other) {

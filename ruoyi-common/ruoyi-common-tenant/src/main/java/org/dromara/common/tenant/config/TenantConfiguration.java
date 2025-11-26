@@ -36,27 +36,29 @@ public class TenantConfiguration {
     @AutoConfiguration
     static class MybatisPlusConfig {
 
-        /**
-         * 多租户插件
-         */
+        /** 多租户插件 */
         @Bean
-        public TenantLineInnerInterceptor tenantLineInnerInterceptor(TenantProperties tenantProperties) {
+        public TenantLineInnerInterceptor tenantLineInnerInterceptor(
+                TenantProperties tenantProperties) {
             return new TenantLineInnerInterceptor(new PlusTenantLineHandler(tenantProperties));
         }
-
     }
 
     @Bean
-    public RedissonAutoConfigurationCustomizer tenantRedissonCustomizer(RedissonProperties redissonProperties) {
+    public RedissonAutoConfigurationCustomizer tenantRedissonCustomizer(
+            RedissonProperties redissonProperties) {
         return config -> {
-            TenantKeyPrefixHandler nameMapper = new TenantKeyPrefixHandler(redissonProperties.getKeyPrefix());
-            SingleServerConfig singleServerConfig = ReflectUtils.invokeGetter(config, "singleServerConfig");
+            TenantKeyPrefixHandler nameMapper =
+                    new TenantKeyPrefixHandler(redissonProperties.getKeyPrefix());
+            SingleServerConfig singleServerConfig =
+                    ReflectUtils.invokeGetter(config, "singleServerConfig");
             if (ObjectUtil.isNotNull(singleServerConfig)) {
                 // 使用单机模式
                 // 设置多租户 redis key前缀
                 singleServerConfig.setNameMapper(nameMapper);
             }
-            ClusterServersConfig clusterServersConfig = ReflectUtils.invokeGetter(config, "clusterServersConfig");
+            ClusterServersConfig clusterServersConfig =
+                    ReflectUtils.invokeGetter(config, "clusterServersConfig");
             // 集群配置方式 参考下方注释
             if (ObjectUtil.isNotNull(clusterServersConfig)) {
                 // 设置多租户 redis key前缀
@@ -65,22 +67,17 @@ public class TenantConfiguration {
         };
     }
 
-    /**
-     * 多租户缓存管理器
-     */
+    /** 多租户缓存管理器 */
     @Primary
     @Bean
     public CacheManager tenantCacheManager() {
         return new TenantSpringCacheManager();
     }
 
-    /**
-     * 多租户鉴权dao实现
-     */
+    /** 多租户鉴权dao实现 */
     @Primary
     @Bean
     public SaTokenDao tenantSaTokenDao() {
         return new TenantSaTokenDao();
     }
-
 }

@@ -1,7 +1,14 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.dromara.common.core.exception.ServiceException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.bo.SysDictDataBo;
 import org.dromara.system.domain.vo.SysDictDataVo;
@@ -16,36 +23,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysDictDataServiceImpl 单元测试
- * <p>
- * 测试字典数据管理服务
- * </p>
  *
- * <p><b>测试覆盖范围:</b></p>
+ * <p>测试字典数据管理服务
+ *
+ * <p><b>测试覆盖范围:</b>
+ *
  * <ul>
- *   <li>查询方法 - 单个查询、列表查询、标签查询</li>
- *   <li>验证方法 - 字典键值唯一性验证</li>
- *   <li>删除方法 - 批量删除（含缓存清理）</li>
- *   <li>边界条件 - null、空列表等</li>
+ *   <li>查询方法 - 单个查询、列表查询、标签查询
+ *   <li>验证方法 - 字典键值唯一性验证
+ *   <li>删除方法 - 批量删除（含缓存清理）
+ *   <li>边界条件 - null、空列表等
  * </ul>
  *
- * <p><b>测试限制:</b></p>
+ * <p><b>测试限制:</b>
+ *
  * <ul>
- *   <li>无法测试 insertDictData/updateDictData - 需要 MapstructUtils.convert()</li>
- *   <li>无法测试 selectPageDictDataList - 复杂分页查询需要完整 MyBatis-Plus 环境</li>
- *   <li>无法验证 CacheUtils.evict 调用 - 需要 mockito-inline</li>
- *   <li>@CachePut 注解在纯单元测试中不生效</li>
- *   <li>无法测试 buildQueryWrapper - 私有方法，通过公共方法间接测试</li>
+ *   <li>无法测试 insertDictData/updateDictData - 需要 MapstructUtils.convert()
+ *   <li>无法测试 selectPageDictDataList - 复杂分页查询需要完整 MyBatis-Plus 环境
+ *   <li>无法验证 CacheUtils.evict 调用 - 需要 mockito-inline
+ *   <li>@CachePut 注解在纯单元测试中不生效
+ *   <li>无法测试 buildQueryWrapper - 私有方法，通过公共方法间接测试
  * </ul>
  *
  * @author Test Team
@@ -55,14 +54,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysDictDataServiceImpl 单元测试")
 class SysDictDataServiceImplTest {
 
-    @Mock
-    private SysDictDataMapper baseMapper;
+    @Mock private SysDictDataMapper baseMapper;
 
-    @InjectMocks
-    private SysDictDataServiceImpl dictDataService;
+    @InjectMocks private SysDictDataServiceImpl dictDataService;
 
-    @Captor
-    private ArgumentCaptor<LambdaQueryWrapper<SysDictData>> wrapperCaptor;
+    @Captor private ArgumentCaptor<LambdaQueryWrapper<SysDictData>> wrapperCaptor;
 
     // ==================== Nested Test Groups ====================
 
@@ -78,10 +74,10 @@ class SysDictDataServiceImplTest {
             queryBo.setDictLabel(null); // 只按类型查询
             queryBo.setDictSort(null);
 
-            List<SysDictDataVo> expectedList = Arrays.asList(
-                createDictDataVo(1L, "正常", "0", "sys_user_status"),
-                createDictDataVo(2L, "停用", "1", "sys_user_status")
-            );
+            List<SysDictDataVo> expectedList =
+                    Arrays.asList(
+                            createDictDataVo(1L, "正常", "0", "sys_user_status"),
+                            createDictDataVo(2L, "停用", "1", "sys_user_status"));
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
@@ -90,11 +86,11 @@ class SysDictDataServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回匹配的字典数据列表")
-                .isNotNull()
-                .hasSize(2)
-                .extracting(SysDictDataVo::getDictType)
-                .containsOnly("sys_user_status");
+                    .as("应该返回匹配的字典数据列表")
+                    .isNotNull()
+                    .hasSize(2)
+                    .extracting(SysDictDataVo::getDictType)
+                    .containsOnly("sys_user_status");
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -106,9 +102,8 @@ class SysDictDataServiceImplTest {
             SysDictDataBo queryBo = createDictDataBo(null, "sys_user_status");
             queryBo.setDictLabel("正常");
 
-            List<SysDictDataVo> expectedList = Arrays.asList(
-                createDictDataVo(1L, "正常", "0", "sys_user_status")
-            );
+            List<SysDictDataVo> expectedList =
+                    Arrays.asList(createDictDataVo(1L, "正常", "0", "sys_user_status"));
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
@@ -117,13 +112,14 @@ class SysDictDataServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回匹配标签的字典数据")
-                .isNotNull()
-                .hasSize(1)
-                .first()
-                .satisfies(vo -> {
-                    assertThat(vo.getDictLabel()).contains("正常");
-                });
+                    .as("应该返回匹配标签的字典数据")
+                    .isNotNull()
+                    .hasSize(1)
+                    .first()
+                    .satisfies(
+                            vo -> {
+                                assertThat(vo.getDictLabel()).contains("正常");
+                            });
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -135,9 +131,8 @@ class SysDictDataServiceImplTest {
             SysDictDataBo queryBo = createDictDataBo(null, "sys_user_status");
             queryBo.setDictSort(1);
 
-            List<SysDictDataVo> expectedList = Arrays.asList(
-                createDictDataVo(1L, "正常", "0", "sys_user_status")
-            );
+            List<SysDictDataVo> expectedList =
+                    Arrays.asList(createDictDataVo(1L, "正常", "0", "sys_user_status"));
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(expectedList);
 
@@ -145,10 +140,7 @@ class SysDictDataServiceImplTest {
             List<SysDictDataVo> result = dictDataService.selectDictDataList(queryBo);
 
             // Assert
-            assertThat(result)
-                .as("应该返回指定排序的字典数据")
-                .isNotNull()
-                .hasSize(1);
+            assertThat(result).as("应该返回指定排序的字典数据").isNotNull().hasSize(1);
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
@@ -159,29 +151,24 @@ class SysDictDataServiceImplTest {
             // Arrange
             SysDictDataBo queryBo = createDictDataBo(null, "non_existent_type");
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysDictDataVo> result = dictDataService.selectDictDataList(queryBo);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空列表")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空列表").isNotNull().isEmpty();
 
             verify(baseMapper, times(1)).selectVoList(any(LambdaQueryWrapper.class));
         }
 
         /**
          * 注意: selectDictLabel 方法无法测试
-         * <p>
-         * 该方法使用 LambdaQueryWrapper.select() 指定返回字段，
-         * 在纯单元测试中会抛出 MybatisPlusException。
-         * 需要 MyBatis-Plus 表信息初始化才能测试。
-         * </p>
+         *
+         * <p>该方法使用 LambdaQueryWrapper.select() 指定返回字段， 在纯单元测试中会抛出 MybatisPlusException。 需要
+         * MyBatis-Plus 表信息初始化才能测试。
          */
-
         @Test
         @DisplayName("应该根据ID查询字典数据")
         void shouldReturnDictData_WhenQueryById() {
@@ -196,13 +183,14 @@ class SysDictDataServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回字典数据VO")
-                .isNotNull()
-                .satisfies(vo -> {
-                    assertThat(vo.getDictCode()).isEqualTo(dictCode);
-                    assertThat(vo.getDictLabel()).isEqualTo("正常");
-                    assertThat(vo.getDictValue()).isEqualTo("0");
-                });
+                    .as("应该返回字典数据VO")
+                    .isNotNull()
+                    .satisfies(
+                            vo -> {
+                                assertThat(vo.getDictCode()).isEqualTo(dictCode);
+                                assertThat(vo.getDictLabel()).isEqualTo("正常");
+                                assertThat(vo.getDictValue()).isEqualTo("0");
+                            });
 
             verify(baseMapper, times(1)).selectVoById(dictCode);
         }
@@ -218,9 +206,7 @@ class SysDictDataServiceImplTest {
             SysDictDataVo result = dictDataService.selectDictDataById(dictCode);
 
             // Assert
-            assertThat(result)
-                .as("应该返回null")
-                .isNull();
+            assertThat(result).as("应该返回null").isNull();
 
             verify(baseMapper, times(1)).selectVoById(dictCode);
         }
@@ -244,9 +230,7 @@ class SysDictDataServiceImplTest {
             boolean result = dictDataService.checkDictDataUnique(newDictData);
 
             // Assert
-            assertThat(result)
-                .as("字典键值唯一时应该返回true")
-                .isTrue();
+            assertThat(result).as("字典键值唯一时应该返回true").isTrue();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -265,9 +249,7 @@ class SysDictDataServiceImplTest {
             boolean result = dictDataService.checkDictDataUnique(newDictData);
 
             // Assert
-            assertThat(result)
-                .as("字典键值重复时应该返回false")
-                .isFalse();
+            assertThat(result).as("字典键值重复时应该返回false").isFalse();
 
             verify(baseMapper, times(1)).exists(any(LambdaQueryWrapper.class));
         }
@@ -286,9 +268,7 @@ class SysDictDataServiceImplTest {
             boolean result = dictDataService.checkDictDataUnique(updateDictData);
 
             // Assert
-            assertThat(result)
-                .as("更新时应该排除自身ID")
-                .isTrue();
+            assertThat(result).as("更新时应该排除自身ID").isTrue();
 
             verify(baseMapper, times(1)).exists(wrapperCaptor.capture());
             // LambdaQueryWrapper包含 .ne(dictCode != null, SysDictData::getDictCode, dictCode)
@@ -321,14 +301,11 @@ class SysDictDataServiceImplTest {
 
         /**
          * 注意: 无法测试成功删除场景
-         * <p>
-         * deleteDictDataByIds() 在删除成功后会调用 CacheUtils.evict()，
-         * 这是静态方法且依赖 Spring 上下文初始化。
-         * 在纯单元测试中会抛出 NoClassDefFoundError/ExceptionInInitializerError。
-         * 需要 mockito-inline 或集成测试环境才能测试完整删除流程。
-         * </p>
+         *
+         * <p>deleteDictDataByIds() 在删除成功后会调用 CacheUtils.evict()， 这是静态方法且依赖 Spring 上下文初始化。
+         * 在纯单元测试中会抛出 NoClassDefFoundError/ExceptionInInitializerError。 需要 mockito-inline
+         * 或集成测试环境才能测试完整删除流程。
          */
-
         @Test
         @DisplayName("应该处理空列表_当批量删除空字典数据ID列表")
         void shouldHandleEmptyList_WhenBatchDeleteEmptyDictCodes() {
@@ -348,18 +325,17 @@ class SysDictDataServiceImplTest {
 
     /**
      * 注意: 无法测试 CRUD 相关方法
-     * <p>
-     * <b>4. CRUD 方法 - 无法测试原因:</b>
-     * </p>
+     *
+     * <p><b>4. CRUD 方法 - 无法测试原因:</b>
+     *
      * <ul>
-     *   <li>insertDictData() 使用 MapstructUtils.convert()，需要静态方法 mock</li>
-     *   <li>updateDictData() 同样使用 MapstructUtils.convert()</li>
-     *   <li>deleteDictDataByIds() 成功路径调用 CacheUtils.evict()，需要 Spring 上下文</li>
-     *   <li>@CachePut 注解需要 Spring AOP 代理才能生效</li>
-     *   <li>需要 mockito-inline 或集成测试环境才能测试这些方法</li>
+     *   <li>insertDictData() 使用 MapstructUtils.convert()，需要静态方法 mock
+     *   <li>updateDictData() 同样使用 MapstructUtils.convert()
+     *   <li>deleteDictDataByIds() 成功路径调用 CacheUtils.evict()，需要 Spring 上下文
+     *   <li>@CachePut 注解需要 Spring AOP 代理才能生效
+     *   <li>需要 mockito-inline 或集成测试环境才能测试这些方法
      * </ul>
      */
-
     @Nested
     @DisplayName("5. 边界条件测试")
     class BoundaryTests {
@@ -381,12 +357,9 @@ class SysDictDataServiceImplTest {
 
         /**
          * 注意: selectDictLabel 无法测试边界条件
-         * <p>
-         * 该方法使用 LambdaQueryWrapper.select() 和链式调用，
-         * 在纯单元测试中无法 mock 复杂的 Lambda 表达式。
-         * </p>
+         *
+         * <p>该方法使用 LambdaQueryWrapper.select() 和链式调用， 在纯单元测试中无法 mock 复杂的 Lambda 表达式。
          */
-
         @Test
         @DisplayName("应该处理最大Long值字典数据ID")
         void shouldHandleMaxLongDictCode() {
@@ -409,7 +382,8 @@ class SysDictDataServiceImplTest {
             SysDictDataBo queryBo = createDictDataBo(null, "sys_user_status");
             queryBo.setDictSort(-1);
 
-            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+            when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
+                    .thenReturn(Collections.emptyList());
 
             // Act
             List<SysDictDataVo> result = dictDataService.selectDictDataList(queryBo);
@@ -422,10 +396,9 @@ class SysDictDataServiceImplTest {
 
     // ==================== Test Data Factory Methods ====================
 
-    /**
-     * 创建字典数据测试数据
-     */
-    private static SysDictData createDictData(Long dictCode, String dictLabel, String dictValue, String dictType) {
+    /** 创建字典数据测试数据 */
+    private static SysDictData createDictData(
+            Long dictCode, String dictLabel, String dictValue, String dictType) {
         SysDictData data = new SysDictData();
         data.setDictCode(dictCode);
         data.setDictLabel(dictLabel);
@@ -439,9 +412,7 @@ class SysDictDataServiceImplTest {
         return data;
     }
 
-    /**
-     * 创建字典数据BO测试数据
-     */
+    /** 创建字典数据BO测试数据 */
     private static SysDictDataBo createDictDataBo(Long dictCode, String dictType) {
         SysDictDataBo bo = new SysDictDataBo();
         bo.setDictCode(dictCode);
@@ -458,10 +429,9 @@ class SysDictDataServiceImplTest {
         return bo;
     }
 
-    /**
-     * 创建字典数据VO测试数据
-     */
-    private static SysDictDataVo createDictDataVo(Long dictCode, String dictLabel, String dictValue, String dictType) {
+    /** 创建字典数据VO测试数据 */
+    private static SysDictDataVo createDictDataVo(
+            Long dictCode, String dictLabel, String dictValue, String dictType) {
         SysDictDataVo vo = new SysDictDataVo();
         vo.setDictCode(dictCode);
         vo.setDictLabel(dictLabel);

@@ -5,9 +5,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * 单元测试基类
- * <p>
- * 提供 Mockito 支持
- * </p>
+ *
+ * <p>提供 Mockito 支持
  *
  * @author Test Team
  */

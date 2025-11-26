@@ -29,26 +29,32 @@ public class WebSecurityConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        SavedRequestAwareAuthenticationSuccessHandler successHandler =
+                new SavedRequestAwareAuthenticationSuccessHandler();
         successHandler.setTargetUrlParameter("redirectTo");
         successHandler.setDefaultTargetUrl(adminContextPath + "/");
         PathPatternRequestMatcher.Builder mvc = PathPatternRequestMatcher.withDefaults();
         return httpSecurity
-            .headers((header) ->
-                header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-            .authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers(
-                        mvc.matcher(adminContextPath + "/assets/**"),
-                        mvc.matcher(adminContextPath + "/login")
-                    ).permitAll()
-                    .anyRequest().authenticated())
-            .formLogin((formLogin) ->
-                formLogin.loginPage(adminContextPath + "/login").successHandler(successHandler))
-            .logout((logout) ->
-                logout.logoutUrl(adminContextPath + "/logout"))
-            .httpBasic(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
-            .build();
+                .headers(
+                        (header) ->
+                                header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .authorizeHttpRequests(
+                        (authorize) ->
+                                authorize
+                                        .requestMatchers(
+                                                mvc.matcher(adminContextPath + "/assets/**"),
+                                                mvc.matcher(adminContextPath + "/login"))
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
+                .formLogin(
+                        (formLogin) ->
+                                formLogin
+                                        .loginPage(adminContextPath + "/login")
+                                        .successHandler(successHandler))
+                .logout((logout) -> logout.logoutUrl(adminContextPath + "/logout"))
+                .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
     }
-
 }

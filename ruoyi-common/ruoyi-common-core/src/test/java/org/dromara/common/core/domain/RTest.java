@@ -1,12 +1,12 @@
 package org.dromara.common.core.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.core.BaseUnitTest;
 import org.dromara.common.core.constant.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * R（统一响应对象）单元测试
@@ -510,9 +510,7 @@ class RTest extends BaseUnitTest {
         }
     }
 
-    /**
-     * 测试用户类
-     */
+    /** 测试用户类 */
     static class TestUser {
         private String name;
         private int age;

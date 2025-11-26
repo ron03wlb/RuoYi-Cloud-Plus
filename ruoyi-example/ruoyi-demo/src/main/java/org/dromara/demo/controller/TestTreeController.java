@@ -1,26 +1,25 @@
 package org.dromara.demo.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.dromara.common.core.domain.R;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.web.core.BaseController;
-import org.dromara.common.excel.utils.ExcelUtil;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.log.enums.BusinessType;
-import org.dromara.demo.domain.bo.TestTreeBo;
-import org.dromara.demo.domain.vo.TestTreeVo;
-import org.dromara.demo.service.ITestTreeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.dromara.common.core.domain.R;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.excel.utils.ExcelUtil;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
+import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.demo.domain.bo.TestTreeBo;
+import org.dromara.demo.domain.vo.TestTreeVo;
+import org.dromara.demo.service.ITestTreeService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 测试树表Controller
@@ -36,9 +35,7 @@ public class TestTreeController extends BaseController {
 
     private final ITestTreeService iTestTreeService;
 
-    /**
-     * 查询测试树表列表
-     */
+    /** 查询测试树表列表 */
     @SaCheckPermission("demo:tree:list")
     @GetMapping("/list")
     public R<List<TestTreeVo>> list(TestTreeBo bo) {
@@ -46,9 +43,7 @@ public class TestTreeController extends BaseController {
         return R.ok(list);
     }
 
-    /**
-     * 导出测试树表列表
-     */
+    /** 导出测试树表列表 */
     @SaCheckPermission("demo:tree:export")
     @Log(title = "测试树表", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
@@ -68,9 +63,7 @@ public class TestTreeController extends BaseController {
         return R.ok(iTestTreeService.queryById(id));
     }
 
-    /**
-     * 新增测试树表
-     */
+    /** 新增测试树表 */
     @SaCheckPermission("demo:tree:add")
     @Log(title = "测试树表", businessType = BusinessType.INSERT)
     @RepeatSubmit
@@ -79,9 +72,7 @@ public class TestTreeController extends BaseController {
         return toAjax(iTestTreeService.insertByBo(bo));
     }
 
-    /**
-     * 修改测试树表
-     */
+    /** 修改测试树表 */
     @SaCheckPermission("demo:tree:edit")
     @Log(title = "测试树表", businessType = BusinessType.UPDATE)
     @RepeatSubmit

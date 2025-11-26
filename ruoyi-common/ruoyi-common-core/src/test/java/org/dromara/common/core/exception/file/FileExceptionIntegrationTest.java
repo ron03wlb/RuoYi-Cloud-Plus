@@ -1,16 +1,15 @@
 package org.dromara.common.core.exception.file;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.util.Locale;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.exception.base.BaseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * FileException 集成测试
@@ -28,7 +27,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该通过错误码和参数数组创建异常")
         void shouldCreateWithCodeAndArgsArray() {
             // Act
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10});
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("file");
@@ -41,7 +41,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持空参数数组")
         void shouldCreateWithEmptyArgsArray() {
             // Act
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[0]);
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[0]);
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("file");
@@ -53,7 +54,9 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持多参数数组")
         void shouldCreateWithMultipleArgs() {
             // Act
-            FileException exception = new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[]{5, "image.jpg"});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileSizeLimitExceeded", new Object[] {5, "image.jpg"});
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("file");
@@ -81,7 +84,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldGetFileMessageFromMessageUtils() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10});
 
             // Act
             String message = exception.getMessage();
@@ -95,7 +99,9 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldFormatFileNameLengthMessage() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{255});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileNameLengthLimitExceeded", new Object[] {255});
 
             // Act
             String message = exception.getMessage();
@@ -109,7 +115,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldFormatFileSizeLimitMessage() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[]{5});
+            FileException exception =
+                    new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[] {5});
 
             // Act
             String message = exception.getMessage();
@@ -128,7 +135,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleFileSizeExceededScenario10MB() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10});
 
             // Act
             String message = exception.getMessage();
@@ -143,7 +151,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleFileSizeExceededScenario50MB() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{50});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {50});
 
             // Act
             String message = exception.getMessage();
@@ -158,7 +167,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleSingleFileSizeExceededScenario() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[]{5});
+            FileException exception =
+                    new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[] {5});
 
             // Act
             String message = exception.getMessage();
@@ -173,7 +183,9 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleFileNameLengthExceededScenario100() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{100});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileNameLengthLimitExceeded", new Object[] {100});
 
             // Act
             String message = exception.getMessage();
@@ -188,7 +200,9 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleFileNameLengthExceededScenario255() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{255});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileNameLengthLimitExceeded", new Object[] {255});
 
             // Act
             String message = exception.getMessage();
@@ -205,8 +219,11 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
 
             // Simulate multiple file upload errors
-            FileException exception1 = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
-            FileException exception2 = new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{255});
+            FileException exception1 =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10});
+            FileException exception2 =
+                    new FileException(
+                            "file.upload.msg.fileNameLengthLimitExceeded", new Object[] {255});
 
             // Act
             String message1 = exception1.getMessage();
@@ -226,7 +243,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该是 BaseException 的子类")
         void shouldBeSubclassOfBaseException() {
             // Arrange
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10});
 
             // Act & Assert
             assertThat(exception).isInstanceOf(BaseException.class);
@@ -240,12 +258,16 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
 
             // Act & Assert
-            assertThat(catchThrowable(() -> {
-                throw new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10});
-            }))
-                .isInstanceOf(FileException.class)
-                .isInstanceOf(BaseException.class)
-                .hasMessage("文件大小超出限制，最大允许10MB");
+            assertThat(
+                            catchThrowable(
+                                    () -> {
+                                        throw new FileException(
+                                                "file.upload.msg.sizeLimitExceeded",
+                                                new Object[] {10});
+                                    }))
+                    .isInstanceOf(FileException.class)
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage("文件大小超出限制，最大允许10MB");
         }
 
         @Test
@@ -258,7 +280,7 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
 
             // Act
             try {
-                throw new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[]{5});
+                throw new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[] {5});
             } catch (BaseException e) {
                 caught = true;
                 message = e.getMessage();
@@ -279,7 +301,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
 
             // Act
             try {
-                throw new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{255});
+                throw new FileException(
+                        "file.upload.msg.fileNameLengthLimitExceeded", new Object[] {255});
             } catch (RuntimeException e) {
                 caught = true;
                 message = e.getMessage();
@@ -300,7 +323,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleZeroValue() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{0});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {0});
 
             // Act
             String message = exception.getMessage();
@@ -314,7 +338,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleNegativeValue() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{-1});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {-1});
 
             // Act
             String message = exception.getMessage();
@@ -328,7 +353,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleLargeNumberValue() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{10000});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {10000});
 
             // Act
             String message = exception.getMessage();
@@ -342,7 +368,10 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleSpecialCharactersInArgs() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileNameLengthLimitExceeded", new Object[]{"<script>alert('xss')</script>"});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileNameLengthLimitExceeded",
+                            new Object[] {"<script>alert('xss')</script>"});
 
             // Act
             String message = exception.getMessage();
@@ -356,7 +385,8 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleNullInArgsArray() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.sizeLimitExceeded", new Object[]{null});
+            FileException exception =
+                    new FileException("file.upload.msg.sizeLimitExceeded", new Object[] {null});
 
             // Act
             String message = exception.getMessage();
@@ -370,7 +400,10 @@ class FileExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleMixedTypeArgs() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            FileException exception = new FileException("file.upload.msg.fileSizeLimitExceeded", new Object[]{10, "test.jpg", true});
+            FileException exception =
+                    new FileException(
+                            "file.upload.msg.fileSizeLimitExceeded",
+                            new Object[] {10, "test.jpg", true});
 
             // Act
             String message = exception.getMessage();

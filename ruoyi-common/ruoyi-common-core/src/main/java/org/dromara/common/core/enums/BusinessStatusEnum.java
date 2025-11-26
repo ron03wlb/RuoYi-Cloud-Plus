@@ -1,16 +1,15 @@
 package org.dromara.common.core.enums;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.dromara.common.core.exception.ServiceException;
-import org.dromara.common.core.utils.StringUtils;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.utils.StringUtils;
 
 /**
  * 业务状态枚举
@@ -21,53 +20,38 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum BusinessStatusEnum {
 
-    /**
-     * 已撤销
-     */
+    /** 已撤销 */
     CANCEL("cancel", "已撤销"),
 
-    /**
-     * 草稿
-     */
+    /** 草稿 */
     DRAFT("draft", "草稿"),
 
-    /**
-     * 待审核
-     */
+    /** 待审核 */
     WAITING("waiting", "待审核"),
 
-    /**
-     * 已完成
-     */
+    /** 已完成 */
     FINISH("finish", "已完成"),
 
-    /**
-     * 已作废
-     */
+    /** 已作废 */
     INVALID("invalid", "已作废"),
 
-    /**
-     * 已退回
-     */
+    /** 已退回 */
     BACK("back", "已退回"),
 
-    /**
-     * 已终止
-     */
+    /** 已终止 */
     TERMINATION("termination", "已终止");
 
-    /**
-     * 状态
-     */
+    /** 状态 */
     private final String status;
 
-    /**
-     * 描述
-     */
+    /** 描述 */
     private final String desc;
 
-    private static final Map<String, BusinessStatusEnum> STATUS_MAP = Arrays.stream(BusinessStatusEnum.values())
-        .collect(Collectors.toConcurrentMap(BusinessStatusEnum::getStatus, Function.identity()));
+    private static final Map<String, BusinessStatusEnum> STATUS_MAP =
+            Arrays.stream(BusinessStatusEnum.values())
+                    .collect(
+                            Collectors.toConcurrentMap(
+                                    BusinessStatusEnum::getStatus, Function.identity()));
 
     /**
      * 根据状态获取对应的 BusinessStatusEnum 枚举
@@ -101,7 +85,9 @@ public enum BusinessStatusEnum {
      * @return 如果状态为草稿、已撤销或已退回之一，则返回 true；否则返回 false
      */
     public static boolean isDraftOrCancelOrBack(String status) {
-        return DRAFT.status.equals(status) || CANCEL.status.equals(status) || BACK.status.equals(status);
+        return DRAFT.status.equals(status)
+                || CANCEL.status.equals(status)
+                || BACK.status.equals(status);
     }
 
     /**
@@ -111,14 +97,16 @@ public enum BusinessStatusEnum {
      * @return 结果
      */
     public static boolean initialState(String status) {
-        return CANCEL.status.equals(status) || BACK.status.equals(status) || INVALID.status.equals(status) || TERMINATION.status.equals(status);
+        return CANCEL.status.equals(status)
+                || BACK.status.equals(status)
+                || INVALID.status.equals(status)
+                || TERMINATION.status.equals(status);
     }
 
     /**
      * 获取运行中的实例状态列表
      *
-     * @return 包含运行中实例状态的不可变列表
-     * （包含 DRAFT、WAITING、BACK 和 CANCEL 状态）
+     * @return 包含运行中实例状态的不可变列表 （包含 DRAFT、WAITING、BACK 和 CANCEL 状态）
      */
     public static List<String> runningStatus() {
         return Arrays.asList(DRAFT.status, WAITING.status, BACK.status, CANCEL.status);
@@ -127,8 +115,7 @@ public enum BusinessStatusEnum {
     /**
      * 获取结束实例的状态列表
      *
-     * @return 包含结束实例状态的不可变列表
-     * （包含 FINISH、INVALID 和 TERMINATION 状态）
+     * @return 包含结束实例状态的不可变列表 （包含 FINISH、INVALID 和 TERMINATION 状态）
      */
     public static List<String> finishStatus() {
         return Arrays.asList(FINISH.status, INVALID.status, TERMINATION.status);
@@ -211,5 +198,4 @@ public enum BusinessStatusEnum {
             throw new ServiceException("流程状态为空！");
         }
     }
-
 }

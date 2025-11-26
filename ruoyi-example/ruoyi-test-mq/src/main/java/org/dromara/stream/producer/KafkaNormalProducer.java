@@ -8,13 +8,12 @@ import org.springframework.stereotype.Component;
 /**
  * @author xbhog
  * @date 2024/05/19 18:02
- **/
+ */
 @Slf4j
 @Component
 public class KafkaNormalProducer {
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendKafkaMsg() {
         kafkaTemplate.send("test-topic", "hello", "kafkaTest");

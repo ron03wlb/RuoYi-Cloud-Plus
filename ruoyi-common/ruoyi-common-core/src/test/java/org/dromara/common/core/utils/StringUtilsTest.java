@@ -1,5 +1,11 @@
 package org.dromara.common.core.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import org.dromara.common.core.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,24 +13,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * StringUtils 工具类测试
- * <p>
- * 测试覆盖：
- * - 空值判断
- * - 字符串操作
- * - 格式转换
- * - 集合转换
- * - 路径匹配
- * - 字符串拼接分割
- * </p>
+ *
+ * <p>测试覆盖： - 空值判断 - 字符串操作 - 格式转换 - 集合转换 - 路径匹配 - 字符串拼接分割
  *
  * @author Test Team
  */
@@ -139,31 +131,25 @@ class StringUtilsTest extends BaseUnitTest {
     // ========================================
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "http://example.com",
-        "https://example.com",
-        "http://www.example.com/path",
-        "https://example.com:8080/path?query=1"
-    })
+    @ValueSource(
+            strings = {
+                "http://example.com",
+                "https://example.com",
+                "http://www.example.com/path",
+                "https://example.com:8080/path?query=1"
+            })
     void shouldReturnTrueForValidHttpUrls(String url) {
         assertThat(StringUtils.ishttp(url)).isTrue();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "/path/to/resource",
-        "example.com",
-        "not-a-url"
-    })
+    @ValueSource(strings = {"/path/to/resource", "example.com", "not-a-url"})
     void shouldReturnFalseForInvalidHttpUrls(String url) {
         assertThat(StringUtils.ishttp(url)).isFalse();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "ftp://example.com",
-        "file:///path/to/file"
-    })
+    @ValueSource(strings = {"ftp://example.com", "file:///path/to/file"})
     void shouldReturnTrueForValidUrls(String url) {
         // Validator.isUrl() 也接受 ftp:// 和 file:// 协议
         assertThat(StringUtils.ishttp(url)).isTrue();
@@ -177,45 +163,35 @@ class StringUtilsTest extends BaseUnitTest {
     void shouldConvertStringToSet() {
         Set<String> result = StringUtils.str2Set("a,b,c", ",");
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactlyInAnyOrder("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactlyInAnyOrder("a", "b", "c");
     }
 
     @Test
     void shouldConvertStringToSetWithDuplicates() {
         Set<String> result = StringUtils.str2Set("a,b,a,c,b", ",");
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactlyInAnyOrder("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactlyInAnyOrder("a", "b", "c");
     }
 
     @Test
     void shouldConvertStringToListWithFilter() {
         List<String> result = StringUtils.str2List("a, b, c", ",", true, true);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
     void shouldConvertStringToListFilteringBlanks() {
         List<String> result = StringUtils.str2List("a, , b,  , c", ",", true, true);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
     void shouldConvertStringToListWithoutTrim() {
         List<String> result = StringUtils.str2List("a, b, c", ",", false, false);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("a", " b", " c");
+        assertThat(result).hasSize(3).containsExactly("a", " b", " c");
     }
 
     @Test
@@ -250,7 +226,7 @@ class StringUtilsTest extends BaseUnitTest {
         "helloWorld, hello_world",
         "HelloWorld, hello_world",
         "hello, hello",
-        "HELLO, HELLO",  // 全大写不转换
+        "HELLO, HELLO", // 全大写不转换
         "userNameList, user_name_list"
     })
     void shouldConvertToUnderScoreCase(String input, String expected) {
@@ -269,11 +245,7 @@ class StringUtilsTest extends BaseUnitTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "HELLO_WORLD, HelloWorld",
-        "USER_NAME, UserName",
-        "hello, Hello"
-    })
+    @CsvSource({"HELLO_WORLD, HelloWorld", "USER_NAME, UserName", "hello, Hello"})
     void shouldConvertToCamelCaseWithUpperFirst(String input, String expected) {
         assertThat(StringUtils.convertToCamelCase(input)).isEqualTo(expected);
     }
@@ -369,18 +341,14 @@ class StringUtilsTest extends BaseUnitTest {
     void shouldSplitListWithDefaultSeparator() {
         List<String> result = StringUtils.splitList("a,b,c");
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
     void shouldSplitListWithCustomSeparator() {
         List<String> result = StringUtils.splitList("a;b;c", ";");
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("a", "b", "c");
+        assertThat(result).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
@@ -391,31 +359,32 @@ class StringUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldSplitToWithCustomMapper() {
-        List<Integer> result = StringUtils.splitTo("1,2,3", obj -> Integer.parseInt(obj.toString()));
+        List<Integer> result =
+                StringUtils.splitTo("1,2,3", obj -> Integer.parseInt(obj.toString()));
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly(1, 2, 3);
+        assertThat(result).hasSize(3).containsExactly(1, 2, 3);
     }
 
     @Test
     void shouldSplitToWithCustomSeparatorAndMapper() {
-        List<Long> result = StringUtils.splitTo("100;200;300", ";", obj -> Long.parseLong(obj.toString()));
+        List<Long> result =
+                StringUtils.splitTo("100;200;300", ";", obj -> Long.parseLong(obj.toString()));
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly(100L, 200L, 300L);
+        assertThat(result).hasSize(3).containsExactly(100L, 200L, 300L);
     }
 
     @Test
     void shouldFilterNullValuesInSplitTo() {
-        List<String> result = StringUtils.splitTo("1,2,,3,", obj -> {
-            try {
-                return obj.toString();
-            } catch (Exception e) {
-                return null;
-            }
-        });
+        List<String> result =
+                StringUtils.splitTo(
+                        "1,2,,3,",
+                        obj -> {
+                            try {
+                                return obj.toString();
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        });
 
         // 过滤掉 null 值
         assertThat(result).hasSizeGreaterThan(0);
@@ -445,20 +414,24 @@ class StringUtilsTest extends BaseUnitTest {
     @Test
     void shouldConvertCharset() {
         String original = "Hello";
-        String result = StringUtils.convert(original, StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1);
+        String result =
+                StringUtils.convert(original, StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1);
 
         assertThat(result).isNotNull();
     }
 
     @Test
     void shouldReturnOriginalWhenConvertBlankString() {
-        assertThat(StringUtils.convert("", StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1)).isEmpty();
-        assertThat(StringUtils.convert("   ", StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1)).isEqualTo("   ");
+        assertThat(StringUtils.convert("", StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1))
+                .isEmpty();
+        assertThat(StringUtils.convert("   ", StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1))
+                .isEqualTo("   ");
     }
 
     @Test
     void shouldReturnOriginalWhenConvertNull() {
-        assertThat(StringUtils.convert(null, StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1)).isNull();
+        assertThat(StringUtils.convert(null, StandardCharsets.UTF_8, StandardCharsets.ISO_8859_1))
+                .isNull();
     }
 
     // ========================================

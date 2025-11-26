@@ -1,8 +1,13 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.system.service.ISysMenuService;
 import org.dromara.system.service.ISysRoleService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,29 +16,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysPermissionServiceImpl 单元测试
- * <p>
- * 测试用户权限处理服务
- * </p>
  *
- * <p><b>测试覆盖范围:</b></p>
+ * <p>测试用户权限处理服务
+ *
+ * <p><b>测试覆盖范围:</b>
+ *
  * <ul>
- *   <li>角色权限获取</li>
- *   <li>菜单权限获取</li>
+ *   <li>角色权限获取
+ *   <li>菜单权限获取
  * </ul>
  *
- * <p><b>测试限制:</b></p>
+ * <p><b>测试限制:</b>
+ *
  * <ul>
- *   <li>无法测试超级管理员路径 - LoginHelper.isSuperAdmin() 是静态方法,需要 mockito-inline 支持</li>
- *   <li>当前测试仅覆盖普通用户权限获取逻辑</li>
+ *   <li>无法测试超级管理员路径 - LoginHelper.isSuperAdmin() 是静态方法,需要 mockito-inline 支持
+ *   <li>当前测试仅覆盖普通用户权限获取逻辑
  * </ul>
  *
  * @author Test Team
@@ -43,14 +42,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysPermissionServiceImpl 单元测试")
 class SysPermissionServiceImplTest {
 
-    @Mock
-    private ISysRoleService roleService;
+    @Mock private ISysRoleService roleService;
 
-    @Mock
-    private ISysMenuService menuService;
+    @Mock private ISysMenuService menuService;
 
-    @InjectMocks
-    private SysPermissionServiceImpl permissionService;
+    @InjectMocks private SysPermissionServiceImpl permissionService;
 
     // ==================== Nested Test Groups ====================
 
@@ -63,7 +59,8 @@ class SysPermissionServiceImplTest {
         void shouldReturnRolePermissions_WhenNormalUser() {
             // Arrange - 准备测试数据
             Long userId = 2L; // 普通用户ID
-            Set<String> expectedRoles = new HashSet<>(Arrays.asList("common", "operator", "viewer"));
+            Set<String> expectedRoles =
+                    new HashSet<>(Arrays.asList("common", "operator", "viewer"));
 
             // Mock roleService 返回角色权限
             when(roleService.selectRolePermissionByUserId(userId)).thenReturn(expectedRoles);
@@ -73,11 +70,11 @@ class SysPermissionServiceImplTest {
 
             // Assert - 验证结果
             assertThat(result)
-                .as("应该返回普通用户的角色权限")
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(3)
-                .containsExactlyInAnyOrderElementsOf(expectedRoles);
+                    .as("应该返回普通用户的角色权限")
+                    .isNotNull()
+                    .isNotEmpty()
+                    .hasSize(3)
+                    .containsExactlyInAnyOrderElementsOf(expectedRoles);
 
             // Verify - 验证交互
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
@@ -98,10 +95,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getRolePermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
         }
@@ -119,11 +113,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getRolePermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回单个角色权限")
-                .isNotNull()
-                .hasSize(1)
-                .containsExactly("viewer");
+            assertThat(result).as("应该返回单个角色权限").isNotNull().hasSize(1).containsExactly("viewer");
 
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
         }
@@ -133,9 +123,9 @@ class SysPermissionServiceImplTest {
         void shouldReturnMultipleRoles_WhenUserHasMultipleRoles() {
             // Arrange
             Long userId = 5L;
-            Set<String> multipleRoles = new HashSet<>(Arrays.asList(
-                "admin", "manager", "operator", "viewer", "auditor"
-            ));
+            Set<String> multipleRoles =
+                    new HashSet<>(
+                            Arrays.asList("admin", "manager", "operator", "viewer", "auditor"));
 
             when(roleService.selectRolePermissionByUserId(userId)).thenReturn(multipleRoles);
 
@@ -144,10 +134,10 @@ class SysPermissionServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回多个角色权限")
-                .isNotNull()
-                .hasSize(5)
-                .containsExactlyInAnyOrderElementsOf(multipleRoles);
+                    .as("应该返回多个角色权限")
+                    .isNotNull()
+                    .hasSize(5)
+                    .containsExactlyInAnyOrderElementsOf(multipleRoles);
 
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
         }
@@ -178,13 +168,11 @@ class SysPermissionServiceImplTest {
 
         /**
          * 注意: 无法测试超级管理员路径
-         * <p>
-         * 原因: LoginHelper.isSuperAdmin(userId) 是静态方法,需要 mockito-inline 才能 mock
-         * </p>
-         * <p>
-         * 期望行为: 当 userId=1L (超级管理员) 时,应该返回包含 "superadmin" 的 Set,
-         * 而不调用 roleService.selectRolePermissionByUserId()
-         * </p>
+         *
+         * <p>原因: LoginHelper.isSuperAdmin(userId) 是静态方法,需要 mockito-inline 才能 mock
+         *
+         * <p>期望行为: 当 userId=1L (超级管理员) 时,应该返回包含 "superadmin" 的 Set, 而不调用
+         * roleService.selectRolePermissionByUserId()
          */
     }
 
@@ -197,12 +185,13 @@ class SysPermissionServiceImplTest {
         void shouldReturnMenuPermissions_WhenNormalUser() {
             // Arrange - 准备测试数据
             Long userId = 2L; // 普通用户ID
-            Set<String> expectedPerms = new HashSet<>(Arrays.asList(
-                "system:user:list",
-                "system:user:query",
-                "system:role:list",
-                "system:menu:list"
-            ));
+            Set<String> expectedPerms =
+                    new HashSet<>(
+                            Arrays.asList(
+                                    "system:user:list",
+                                    "system:user:query",
+                                    "system:role:list",
+                                    "system:menu:list"));
 
             // Mock menuService 返回菜单权限
             when(menuService.selectMenuPermsByUserId(userId)).thenReturn(expectedPerms);
@@ -212,11 +201,11 @@ class SysPermissionServiceImplTest {
 
             // Assert - 验证结果
             assertThat(result)
-                .as("应该返回普通用户的菜单权限")
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4)
-                .containsExactlyInAnyOrderElementsOf(expectedPerms);
+                    .as("应该返回普通用户的菜单权限")
+                    .isNotNull()
+                    .isNotEmpty()
+                    .hasSize(4)
+                    .containsExactlyInAnyOrderElementsOf(expectedPerms);
 
             // Verify - 验证交互
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
@@ -237,10 +226,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getMenuPermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -259,10 +245,10 @@ class SysPermissionServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回单个菜单权限")
-                .isNotNull()
-                .hasSize(1)
-                .containsExactly("system:user:list");
+                    .as("应该返回单个菜单权限")
+                    .isNotNull()
+                    .hasSize(1)
+                    .containsExactly("system:user:list");
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -272,12 +258,20 @@ class SysPermissionServiceImplTest {
         void shouldReturnMultiplePermissions_WhenUserHasMultiplePermissions() {
             // Arrange
             Long userId = 5L;
-            Set<String> multiplePerms = new HashSet<>(Arrays.asList(
-                "system:user:list", "system:user:add", "system:user:edit",
-                "system:user:remove", "system:user:export", "system:user:import",
-                "system:role:list", "system:role:add", "system:role:edit",
-                "system:menu:list", "system:dept:list"
-            ));
+            Set<String> multiplePerms =
+                    new HashSet<>(
+                            Arrays.asList(
+                                    "system:user:list",
+                                    "system:user:add",
+                                    "system:user:edit",
+                                    "system:user:remove",
+                                    "system:user:export",
+                                    "system:user:import",
+                                    "system:role:list",
+                                    "system:role:add",
+                                    "system:role:edit",
+                                    "system:menu:list",
+                                    "system:dept:list"));
 
             when(menuService.selectMenuPermsByUserId(userId)).thenReturn(multiplePerms);
 
@@ -286,10 +280,10 @@ class SysPermissionServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回多个菜单权限")
-                .isNotNull()
-                .hasSize(11)
-                .containsExactlyInAnyOrderElementsOf(multiplePerms);
+                    .as("应该返回多个菜单权限")
+                    .isNotNull()
+                    .hasSize(11)
+                    .containsExactlyInAnyOrderElementsOf(multiplePerms);
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -299,15 +293,17 @@ class SysPermissionServiceImplTest {
         void shouldReturnFullCrudPermissions_WhenUserHasFullAccess() {
             // Arrange
             Long userId = 6L;
-            Set<String> crudPerms = new HashSet<>(Arrays.asList(
-                "system:user:list",   // 查询
-                "system:user:query",  // 详情
-                "system:user:add",    // 新增
-                "system:user:edit",   // 编辑
-                "system:user:remove", // 删除
-                "system:user:export", // 导出
-                "system:user:import"  // 导入
-            ));
+            Set<String> crudPerms =
+                    new HashSet<>(
+                            Arrays.asList(
+                                    "system:user:list", // 查询
+                                    "system:user:query", // 详情
+                                    "system:user:add", // 新增
+                                    "system:user:edit", // 编辑
+                                    "system:user:remove", // 删除
+                                    "system:user:export", // 导出
+                                    "system:user:import" // 导入
+                                    ));
 
             when(menuService.selectMenuPermsByUserId(userId)).thenReturn(crudPerms);
 
@@ -316,15 +312,18 @@ class SysPermissionServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回完整的CRUD权限")
-                .isNotNull()
-                .hasSize(7)
-                .containsAll(Arrays.asList(
-                    "system:user:list", "system:user:query",
-                    "system:user:add", "system:user:edit",
-                    "system:user:remove", "system:user:export",
-                    "system:user:import"
-                ));
+                    .as("应该返回完整的CRUD权限")
+                    .isNotNull()
+                    .hasSize(7)
+                    .containsAll(
+                            Arrays.asList(
+                                    "system:user:list",
+                                    "system:user:query",
+                                    "system:user:add",
+                                    "system:user:edit",
+                                    "system:user:remove",
+                                    "system:user:export",
+                                    "system:user:import"));
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -334,13 +333,14 @@ class SysPermissionServiceImplTest {
         void shouldHandleDifferentModulePermissions_IncludingSystemMonitorWorkflow() {
             // Arrange
             Long userId = 7L;
-            Set<String> multiModulePerms = new HashSet<>(Arrays.asList(
-                "system:user:list",
-                "monitor:online:list",
-                "workflow:process:list",
-                "gen:code:preview",
-                "tool:build:list"
-            ));
+            Set<String> multiModulePerms =
+                    new HashSet<>(
+                            Arrays.asList(
+                                    "system:user:list",
+                                    "monitor:online:list",
+                                    "workflow:process:list",
+                                    "gen:code:preview",
+                                    "tool:build:list"));
 
             when(menuService.selectMenuPermsByUserId(userId)).thenReturn(multiModulePerms);
 
@@ -349,16 +349,15 @@ class SysPermissionServiceImplTest {
 
             // Assert
             assertThat(result)
-                .as("应该返回不同模块的权限")
-                .isNotNull()
-                .hasSize(5)
-                .contains(
-                    "system:user:list",
-                    "monitor:online:list",
-                    "workflow:process:list",
-                    "gen:code:preview",
-                    "tool:build:list"
-                );
+                    .as("应该返回不同模块的权限")
+                    .isNotNull()
+                    .hasSize(5)
+                    .contains(
+                            "system:user:list",
+                            "monitor:online:list",
+                            "workflow:process:list",
+                            "gen:code:preview",
+                            "tool:build:list");
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -389,13 +388,11 @@ class SysPermissionServiceImplTest {
 
         /**
          * 注意: 无法测试超级管理员路径
-         * <p>
-         * 原因: LoginHelper.isSuperAdmin(userId) 是静态方法,需要 mockito-inline 才能 mock
-         * </p>
-         * <p>
-         * 期望行为: 当 userId=1L (超级管理员) 时,应该返回包含 "*:*:*" 的 Set,
-         * 而不调用 menuService.selectMenuPermsByUserId()
-         * </p>
+         *
+         * <p>原因: LoginHelper.isSuperAdmin(userId) 是静态方法,需要 mockito-inline 才能 mock
+         *
+         * <p>期望行为: 当 userId=1L (超级管理员) 时,应该返回包含 "*:*:*" 的 Set, 而不调用
+         * menuService.selectMenuPermsByUserId()
          */
     }
 
@@ -416,10 +413,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getRolePermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
         }
@@ -437,10 +431,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getMenuPermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }
@@ -458,10 +449,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getRolePermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(roleService, times(1)).selectRolePermissionByUserId(userId);
         }
@@ -479,10 +467,7 @@ class SysPermissionServiceImplTest {
             Set<String> result = permissionService.getMenuPermission(userId);
 
             // Assert
-            assertThat(result)
-                .as("应该返回空集合")
-                .isNotNull()
-                .isEmpty();
+            assertThat(result).as("应该返回空集合").isNotNull().isEmpty();
 
             verify(menuService, times(1)).selectMenuPermsByUserId(userId);
         }

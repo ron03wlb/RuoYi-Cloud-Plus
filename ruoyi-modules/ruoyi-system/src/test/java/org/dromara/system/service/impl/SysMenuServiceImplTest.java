@@ -1,9 +1,17 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import cn.hutool.core.lang.tree.Tree;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.system.BaseUnitTest;
 import org.dromara.system.TestDataFactory;
@@ -17,15 +25,13 @@ import org.dromara.system.mapper.SysMenuMapper;
 import org.dromara.system.mapper.SysRoleMapper;
 import org.dromara.system.mapper.SysRoleMenuMapper;
 import org.dromara.system.mapper.SysTenantPackageMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 /**
  * SysMenuServiceImpl 单元测试
@@ -36,20 +42,15 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysMenuServiceImpl 单元测试")
 class SysMenuServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysMenuMapper baseMapper;
+    @Mock private SysMenuMapper baseMapper;
 
-    @Mock
-    private SysRoleMapper roleMapper;
+    @Mock private SysRoleMapper roleMapper;
 
-    @Mock
-    private SysRoleMenuMapper roleMenuMapper;
+    @Mock private SysRoleMenuMapper roleMenuMapper;
 
-    @Mock
-    private SysTenantPackageMapper tenantPackageMapper;
+    @Mock private SysTenantPackageMapper tenantPackageMapper;
 
-    @InjectMocks
-    private SysMenuServiceImpl menuService;
+    @InjectMocks private SysMenuServiceImpl menuService;
 
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -219,7 +220,8 @@ class SysMenuServiceImplTest extends BaseUnitTest {
         void shouldCheckMenuExistRole() {
             // Arrange
             Long menuId = 1L;
-            when(roleMenuMapper.exists(ArgumentMatchers.<Wrapper<SysRoleMenu>>any())).thenReturn(true);
+            when(roleMenuMapper.exists(ArgumentMatchers.<Wrapper<SysRoleMenu>>any()))
+                    .thenReturn(true);
 
             // Act
             boolean result = menuService.checkMenuExistRole(menuId);
@@ -286,11 +288,11 @@ class SysMenuServiceImplTest extends BaseUnitTest {
         @DisplayName("应该构建菜单树选择结构")
         void shouldBuildMenuTreeSelect() {
             // Arrange
-            List<SysMenuVo> menus = Arrays.asList(
-                createMenuVoWithParent(1L, "系统管理", 0L),
-                createMenuVoWithParent(2L, "用户管理", 1L),
-                createMenuVoWithParent(3L, "角色管理", 1L)
-            );
+            List<SysMenuVo> menus =
+                    Arrays.asList(
+                            createMenuVoWithParent(1L, "系统管理", 0L),
+                            createMenuVoWithParent(2L, "用户管理", 1L),
+                            createMenuVoWithParent(3L, "角色管理", 1L));
 
             // Act
             List<Tree<Long>> result = menuService.buildMenuTreeSelect(menus);

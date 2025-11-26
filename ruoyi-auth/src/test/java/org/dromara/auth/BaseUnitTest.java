@@ -8,18 +8,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * 单元测试基类
- * <p>
- * 提供基本的 Mockito 支持和通用测试设置
- * </p>
  *
- * <p>适用场景:</p>
+ * <p>提供基本的 Mockito 支持和通用测试设置
+ *
+ * <p>适用场景:
+ *
  * <ul>
- *   <li>Service 层单元测试</li>
- *   <li>工具类单元测试</li>
- *   <li>不需要 Spring 容器的测试</li>
+ *   <li>Service 层单元测试
+ *   <li>工具类单元测试
+ *   <li>不需要 Spring 容器的测试
  * </ul>
  *
- * <p>使用示例:</p>
+ * <p>使用示例:
+ *
  * <pre>{@code
  * class MyServiceTest extends BaseUnitTest {
  *
@@ -44,18 +45,14 @@ public abstract class BaseUnitTest {
 
     private AutoCloseable closeable;
 
-    /**
-     * 测试前初始化
-     */
+    /** 测试前初始化 */
     @BeforeEach
     public void baseSetUp() {
         // 初始化 Mockito 注解
         closeable = MockitoAnnotations.openMocks(this);
     }
 
-    /**
-     * 测试后清理
-     */
+    /** 测试后清理 */
     @AfterEach
     public void baseTearDown() throws Exception {
         // 关闭 Mockito 资源

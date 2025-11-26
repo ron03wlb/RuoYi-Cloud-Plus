@@ -1,8 +1,7 @@
 package org.dromara.common.tenant.exception;
 
-import org.dromara.common.core.exception.base.BaseException;
-
 import java.io.Serial;
+import org.dromara.common.core.exception.base.BaseException;
 
 /**
  * 租户异常类
@@ -11,8 +10,7 @@ import java.io.Serial;
  */
 public class TenantException extends BaseException {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     public TenantException(String code, Object... args) {
         super("tenant", code, args, null);

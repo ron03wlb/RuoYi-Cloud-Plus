@@ -55,17 +55,19 @@ tasks.jacocoTestReport {
 
     // 排除不需要覆盖的类
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/annotation/**",                    // 注解（元数据）
-                    "**/core/TranslationInterface.class",  // 接口
-                    "**/core/handler/**",                  // Handler（依赖Jackson）
-                    "**/core/impl/**",                     // 实现类（依赖Spring服务）
-                    "**/config/**",                        // 配置类
-                    "**/*Application.class"                // 主程序
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/annotation/**", // 注解（元数据）
+                        "**/core/TranslationInterface.class", // 接口
+                        "**/core/handler/**", // Handler（依赖Jackson）
+                        "**/core/impl/**", // 实现类（依赖Spring服务）
+                        "**/config/**", // 配置类
+                        "**/*Application.class", // 主程序
+                    )
+                }
+            },
+        ),
     )
 }

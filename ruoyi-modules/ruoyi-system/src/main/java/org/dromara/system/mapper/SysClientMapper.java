@@ -9,6 +9,4 @@ import org.dromara.system.domain.vo.SysClientVo;
  *
  * @author Michelle.Chung
  */
-public interface SysClientMapper extends BaseMapperPlus<SysClient, SysClientVo> {
-
-}
+public interface SysClientMapper extends BaseMapperPlus<SysClient, SysClientVo> {}

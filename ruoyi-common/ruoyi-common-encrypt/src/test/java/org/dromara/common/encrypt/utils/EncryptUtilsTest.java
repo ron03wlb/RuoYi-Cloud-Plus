@@ -1,14 +1,13 @@
 package org.dromara.common.encrypt.utils;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * {@link EncryptUtils} 单元测试
@@ -144,24 +143,24 @@ class EncryptUtilsTest {
         @DisplayName("使用空密钥应该抛出异常")
         void shouldThrowExceptionWithEmptyPassword() {
             assertThatThrownBy(() -> EncryptUtils.encryptByAes("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("AES需要传入秘钥信息");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("AES需要传入秘钥信息");
         }
 
         @Test
         @DisplayName("使用null密钥应该抛出异常")
         void shouldThrowExceptionWithNullPassword() {
             assertThatThrownBy(() -> EncryptUtils.encryptByAes("data", null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("AES需要传入秘钥信息");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("AES需要传入秘钥信息");
         }
 
         @Test
         @DisplayName("使用非法长度密钥应该抛出异常")
         void shouldThrowExceptionWithInvalidKeyLength() {
             assertThatThrownBy(() -> EncryptUtils.encryptByAes("data", "12345")) // 5 bytes, invalid
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("AES秘钥长度要求为16位、24位、32位");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("AES秘钥长度要求为16位、24位、32位");
         }
 
         @ParameterizedTest
@@ -171,11 +170,13 @@ class EncryptUtilsTest {
             String plaintext = "test data";
             String password = "a".repeat(length);
 
-            assertThatCode(() -> {
-                String encrypted = EncryptUtils.encryptByAes(plaintext, password);
-                String decrypted = EncryptUtils.decryptByAes(encrypted, password);
-                assertThat(decrypted).isEqualTo(plaintext);
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                String encrypted = EncryptUtils.encryptByAes(plaintext, password);
+                                String decrypted = EncryptUtils.decryptByAes(encrypted, password);
+                                assertThat(decrypted).isEqualTo(plaintext);
+                            })
+                    .doesNotThrowAnyException();
         }
     }
 
@@ -235,16 +236,16 @@ class EncryptUtilsTest {
         @DisplayName("使用空密钥应该抛出异常")
         void shouldThrowExceptionWithEmptyPassword() {
             assertThatThrownBy(() -> EncryptUtils.encryptBySm4("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("SM4需要传入秘钥信息");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("SM4需要传入秘钥信息");
         }
 
         @Test
         @DisplayName("使用非16位密钥应该抛出异常")
         void shouldThrowExceptionWithNon16ByteKey() {
             assertThatThrownBy(() -> EncryptUtils.encryptBySm4("data", "12345")) // Not 16 bytes
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("SM4秘钥长度要求为16位");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("SM4秘钥长度要求为16位");
         }
     }
 
@@ -295,16 +296,16 @@ class EncryptUtilsTest {
         @DisplayName("使用空公钥加密应该抛出异常")
         void shouldThrowExceptionWithEmptyPublicKey() {
             assertThatThrownBy(() -> EncryptUtils.encryptByRsa("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA需要传入公钥进行加密");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA需要传入公钥进行加密");
         }
 
         @Test
         @DisplayName("使用空私钥解密应该抛出异常")
         void shouldThrowExceptionWithEmptyPrivateKey() {
             assertThatThrownBy(() -> EncryptUtils.decryptByRsa("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RSA需要传入私钥进行解密");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("RSA需要传入私钥进行解密");
         }
     }
 
@@ -355,16 +356,16 @@ class EncryptUtilsTest {
         @DisplayName("使用空公钥加密应该抛出异常")
         void shouldThrowExceptionWithEmptyPublicKey() {
             assertThatThrownBy(() -> EncryptUtils.encryptBySm2("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("SM2需要传入公钥进行加密");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("SM2需要传入公钥进行加密");
         }
 
         @Test
         @DisplayName("使用空私钥解密应该抛出异常")
         void shouldThrowExceptionWithEmptyPrivateKey() {
             assertThatThrownBy(() -> EncryptUtils.decryptBySm2("data", ""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("SM2需要传入私钥进行解密");
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("SM2需要传入私钥进行解密");
         }
     }
 
@@ -507,9 +508,11 @@ class EncryptUtilsTest {
             String apiData = "{\"userId\":123,\"action\":\"transfer\"}";
 
             // 客户端使用公钥加密
-            String encrypted = EncryptUtils.encryptByRsa(apiData, keyPair.get(EncryptUtils.PUBLIC_KEY));
+            String encrypted =
+                    EncryptUtils.encryptByRsa(apiData, keyPair.get(EncryptUtils.PUBLIC_KEY));
             // 服务端使用私钥解密
-            String decrypted = EncryptUtils.decryptByRsa(encrypted, keyPair.get(EncryptUtils.PRIVATE_KEY));
+            String decrypted =
+                    EncryptUtils.decryptByRsa(encrypted, keyPair.get(EncryptUtils.PRIVATE_KEY));
 
             assertThat(decrypted).isEqualTo(apiData);
         }
@@ -530,8 +533,10 @@ class EncryptUtilsTest {
 
             // SM2 非对称加密
             Map<String, String> sm2Keys = EncryptUtils.generateSm2Key();
-            String sm2Encrypted = EncryptUtils.encryptBySm2(data, sm2Keys.get(EncryptUtils.PUBLIC_KEY));
-            String sm2Decrypted = EncryptUtils.decryptBySm2(sm2Encrypted, sm2Keys.get(EncryptUtils.PRIVATE_KEY));
+            String sm2Encrypted =
+                    EncryptUtils.encryptBySm2(data, sm2Keys.get(EncryptUtils.PUBLIC_KEY));
+            String sm2Decrypted =
+                    EncryptUtils.decryptBySm2(sm2Encrypted, sm2Keys.get(EncryptUtils.PRIVATE_KEY));
             assertThat(sm2Decrypted).isEqualTo(data);
         }
     }
@@ -543,11 +548,13 @@ class EncryptUtilsTest {
         @Test
         @DisplayName("应该能够处理空字符串")
         void shouldHandleEmptyString() {
-            assertThatCode(() -> {
-                String encrypted = EncryptUtils.encryptByBase64("");
-                String decrypted = EncryptUtils.decryptByBase64(encrypted);
-                assertThat(decrypted).isEmpty();
-            }).doesNotThrowAnyException();
+            assertThatCode(
+                            () -> {
+                                String encrypted = EncryptUtils.encryptByBase64("");
+                                String decrypted = EncryptUtils.decryptByBase64(encrypted);
+                                assertThat(decrypted).isEmpty();
+                            })
+                    .doesNotThrowAnyException();
         }
 
         @Test
@@ -581,9 +588,9 @@ class EncryptUtilsTest {
             Map<String, String> keyPair2 = EncryptUtils.generateRsaKey();
 
             assertThat(keyPair1.get(EncryptUtils.PUBLIC_KEY))
-                .isNotEqualTo(keyPair2.get(EncryptUtils.PUBLIC_KEY));
+                    .isNotEqualTo(keyPair2.get(EncryptUtils.PUBLIC_KEY));
             assertThat(keyPair1.get(EncryptUtils.PRIVATE_KEY))
-                .isNotEqualTo(keyPair2.get(EncryptUtils.PRIVATE_KEY));
+                    .isNotEqualTo(keyPair2.get(EncryptUtils.PRIVATE_KEY));
         }
     }
 }

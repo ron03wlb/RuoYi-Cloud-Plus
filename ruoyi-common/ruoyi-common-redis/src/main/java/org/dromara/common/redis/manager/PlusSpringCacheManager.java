@@ -1,20 +1,23 @@
 /**
  * Copyright (c) 2013-2021 Nikita Koksharov
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.dromara.common.redis.manager;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
@@ -26,21 +29,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
- * A {@link org.springframework.cache.CacheManager} implementation
- * backed by Redisson instance.
- * <p>
- * 修改 RedissonSpringCacheManager 源码
- * 重写 cacheName 处理方法 支持多参数
+ * A {@link org.springframework.cache.CacheManager} implementation backed by Redisson instance.
+ *
+ * <p>修改 RedissonSpringCacheManager 源码 重写 cacheName 处理方法 支持多参数
  *
  * @author Nikita Koksharov
- *
  */
 @SuppressWarnings("unchecked")
 public class PlusSpringCacheManager implements CacheManager {
@@ -54,17 +48,13 @@ public class PlusSpringCacheManager implements CacheManager {
     Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
     ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
 
-    /**
-     * Creates CacheManager supplied by Redisson instance
-     */
-    public PlusSpringCacheManager() {
-    }
-
+    /** Creates CacheManager supplied by Redisson instance */
+    public PlusSpringCacheManager() {}
 
     /**
      * Defines possibility of storing {@code null} values.
-     * <p>
-     * Default is <code>true</code>
+     *
+     * <p>Default is <code>true</code>
      *
      * @param allowNullValues stores if <code>true</code>
      */
@@ -73,10 +63,10 @@ public class PlusSpringCacheManager implements CacheManager {
     }
 
     /**
-     * Defines if cache aware of Spring-managed transactions.
-     * If {@code true} put/evict operations are executed only for successful transaction in after-commit phase.
-     * <p>
-     * Default is <code>false</code>
+     * Defines if cache aware of Spring-managed transactions. If {@code true} put/evict operations
+     * are executed only for successful transaction in after-commit phase.
+     *
+     * <p>Default is <code>false</code>
      *
      * @param transactionAware cache is transaction aware if <code>true</code>
      */
@@ -85,10 +75,10 @@ public class PlusSpringCacheManager implements CacheManager {
     }
 
     /**
-     * Defines 'fixed' cache names.
-     * A new cache instance will not be created in dynamic for non-defined names.
-     * <p>
-     * `null` parameter setups dynamic mode
+     * Defines 'fixed' cache names. A new cache instance will not be created in dynamic for
+     * non-defined names.
+     *
+     * <p>`null` parameter setups dynamic mode
      *
      * @param names of caches
      */
@@ -197,6 +187,4 @@ public class PlusSpringCacheManager implements CacheManager {
     public Collection<String> getCacheNames() {
         return Collections.unmodifiableSet(configMap.keySet());
     }
-
-
 }

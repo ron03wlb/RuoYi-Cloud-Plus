@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysPostBo;
 import org.dromara.system.domain.vo.SysPostVo;
-
-import java.util.List;
 
 /**
  * 岗位信息 服务层
@@ -17,7 +16,7 @@ public interface ISysPostService {
     /**
      * 分页查询岗位列表
      *
-     * @param post      查询条件
+     * @param post 查询条件
      * @param pageQuery 分页参数
      * @return 岗位分页列表
      */

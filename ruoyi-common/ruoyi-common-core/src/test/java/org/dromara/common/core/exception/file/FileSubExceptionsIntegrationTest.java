@@ -1,5 +1,8 @@
 package org.dromara.common.core.exception.file;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Locale;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.exception.base.BaseException;
 import org.junit.jupiter.api.DisplayName;
@@ -7,19 +10,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * 文件异常子类集成测试
- * <p>
- * 测试文件相关异常子类的功能，包括：
- * - FileNameLengthLimitExceededException（文件名长度超限异常）
- * - FileSizeLimitExceededException（文件大小超限异常）
- * <p>
- * 这些异常类继承自 FileException，依赖 MessageUtils 进行国际化消息处理，
- * 因此需要 Spring 容器环境进行集成测试。
+ *
+ * <p>测试文件相关异常子类的功能，包括： - FileNameLengthLimitExceededException（文件名长度超限异常） -
+ * FileSizeLimitExceededException（文件大小超限异常）
+ *
+ * <p>这些异常类继承自 FileException，依赖 MessageUtils 进行国际化消息处理， 因此需要 Spring 容器环境进行集成测试。
  *
  * @author Test Team
  * @date 2025-10-31
@@ -43,7 +40,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
 
                 // Act
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(defaultFileNameLength);
+                        new FileNameLengthLimitExceededException(defaultFileNameLength);
 
                 // Assert
                 assertThat(exception).isNotNull();
@@ -57,11 +54,11 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldCreateWithDifferentLengthLimits() {
                 // Test different length limits
                 FileNameLengthLimitExceededException exception50 =
-                    new FileNameLengthLimitExceededException(50);
+                        new FileNameLengthLimitExceededException(50);
                 FileNameLengthLimitExceededException exception200 =
-                    new FileNameLengthLimitExceededException(200);
+                        new FileNameLengthLimitExceededException(200);
                 FileNameLengthLimitExceededException exception255 =
-                    new FileNameLengthLimitExceededException(255);
+                        new FileNameLengthLimitExceededException(255);
 
                 // Assert
                 assertThat(exception50.getArgs()).containsExactly(50);
@@ -74,7 +71,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldCreateWithZeroLength() {
                 // Act
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(0);
+                        new FileNameLengthLimitExceededException(0);
 
                 // Assert
                 assertThat(exception.getArgs()).containsExactly(0);
@@ -85,7 +82,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldCreateWithNegativeLength() {
                 // Act
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(-1);
+                        new FileNameLengthLimitExceededException(-1);
 
                 // Assert
                 assertThat(exception.getArgs()).containsExactly(-1);
@@ -102,7 +99,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 // Arrange
                 LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(100);
+                        new FileNameLengthLimitExceededException(100);
 
                 // Act
                 String message = exception.getMessage();
@@ -118,9 +115,9 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 // Arrange
                 LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
                 FileNameLengthLimitExceededException exception50 =
-                    new FileNameLengthLimitExceededException(50);
+                        new FileNameLengthLimitExceededException(50);
                 FileNameLengthLimitExceededException exception200 =
-                    new FileNameLengthLimitExceededException(200);
+                        new FileNameLengthLimitExceededException(200);
 
                 // Act
                 String message50 = exception50.getMessage();
@@ -142,7 +139,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromFileException() {
                 // Arrange
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(100);
+                        new FileNameLengthLimitExceededException(100);
 
                 // Assert
                 assertThat(exception).isInstanceOf(FileException.class);
@@ -153,7 +150,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromBaseException() {
                 // Arrange
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(100);
+                        new FileNameLengthLimitExceededException(100);
 
                 // Assert
                 assertThat(exception).isInstanceOf(BaseException.class);
@@ -164,7 +161,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromRuntimeException() {
                 // Arrange
                 FileNameLengthLimitExceededException exception =
-                    new FileNameLengthLimitExceededException(100);
+                        new FileNameLengthLimitExceededException(100);
 
                 // Assert
                 assertThat(exception).isInstanceOf(RuntimeException.class);
@@ -179,13 +176,16 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该定义 serialVersionUID")
             void shouldDefineSerialVersionUID() {
                 // Assert
-                assertThatCode(() -> {
-                    java.lang.reflect.Field field =
-                        FileNameLengthLimitExceededException.class.getDeclaredField("serialVersionUID");
-                    field.setAccessible(true);
-                    long serialVersionUID = field.getLong(null);
-                    assertThat(serialVersionUID).isEqualTo(1L);
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    java.lang.reflect.Field field =
+                                            FileNameLengthLimitExceededException.class
+                                                    .getDeclaredField("serialVersionUID");
+                                    field.setAccessible(true);
+                                    long serialVersionUID = field.getLong(null);
+                                    assertThat(serialVersionUID).isEqualTo(1L);
+                                })
+                        .doesNotThrowAnyException();
             }
         }
 
@@ -201,16 +201,18 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 String longFileName = "a".repeat(150) + ".jpg"; // 154字符
 
                 // Act
-                Throwable thrown = catchThrowable(() -> {
-                    if (longFileName.length() > systemLimit) {
-                        throw new FileNameLengthLimitExceededException(systemLimit);
-                    }
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    if (longFileName.length() > systemLimit) {
+                                        throw new FileNameLengthLimitExceededException(systemLimit);
+                                    }
+                                });
 
                 // Assert
                 assertThat(thrown)
-                    .isInstanceOf(FileNameLengthLimitExceededException.class)
-                    .hasFieldOrPropertyWithValue("code", "upload.filename.exceed.length");
+                        .isInstanceOf(FileNameLengthLimitExceededException.class)
+                        .hasFieldOrPropertyWithValue("code", "upload.filename.exceed.length");
             }
 
             @Test
@@ -222,13 +224,15 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 String fileName = "a".repeat(96) + ".jpg"; // 96 + 4 = 100字符
 
                 // Act & Assert
-                assertThatCode(() -> {
-                    if (fileName.length() <= systemLimit) {
-                        // 不抛异常
-                    } else {
-                        throw new FileNameLengthLimitExceededException(systemLimit);
-                    }
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    if (fileName.length() <= systemLimit) {
+                                        // 不抛异常
+                                    } else {
+                                        throw new FileNameLengthLimitExceededException(systemLimit);
+                                    }
+                                })
+                        .doesNotThrowAnyException();
 
                 // 验证文件名长度
                 assertThat(fileName.length()).isEqualTo(100);
@@ -241,14 +245,17 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 int databaseFieldLimit = 255;
 
                 // Act
-                Throwable thrown = catchThrowable(() -> {
-                    throw new FileNameLengthLimitExceededException(databaseFieldLimit);
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    throw new FileNameLengthLimitExceededException(
+                                            databaseFieldLimit);
+                                });
 
                 // Assert
                 assertThat(thrown).isInstanceOf(FileNameLengthLimitExceededException.class);
                 assertThat(((FileNameLengthLimitExceededException) thrown).getArgs())
-                    .containsExactly(255);
+                        .containsExactly(255);
             }
         }
     }
@@ -269,7 +276,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
 
                 // Act
                 FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(defaultMaxSize);
+                        new FileSizeLimitExceededException(defaultMaxSize);
 
                 // Assert
                 assertThat(exception).isNotNull();
@@ -283,11 +290,11 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldCreateWithDifferentSizeLimits() {
                 // Test different size limits
                 FileSizeLimitExceededException exception1MB =
-                    new FileSizeLimitExceededException(1048576L); // 1MB
+                        new FileSizeLimitExceededException(1048576L); // 1MB
                 FileSizeLimitExceededException exception50MB =
-                    new FileSizeLimitExceededException(52428800L); // 50MB
+                        new FileSizeLimitExceededException(52428800L); // 50MB
                 FileSizeLimitExceededException exception100MB =
-                    new FileSizeLimitExceededException(104857600L); // 100MB
+                        new FileSizeLimitExceededException(104857600L); // 100MB
 
                 // Assert
                 assertThat(exception1MB.getArgs()).containsExactly(1048576L);
@@ -299,8 +306,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该支持零值大小限制")
             void shouldCreateWithZeroSize() {
                 // Act
-                FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(0L);
+                FileSizeLimitExceededException exception = new FileSizeLimitExceededException(0L);
 
                 // Assert
                 assertThat(exception.getArgs()).containsExactly(0L);
@@ -310,8 +316,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该支持负数大小限制（边界测试）")
             void shouldCreateWithNegativeSize() {
                 // Act
-                FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(-1L);
+                FileSizeLimitExceededException exception = new FileSizeLimitExceededException(-1L);
 
                 // Assert
                 assertThat(exception.getArgs()).containsExactly(-1L);
@@ -328,7 +333,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 // Arrange
                 LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
                 FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(10485760L);
+                        new FileSizeLimitExceededException(10485760L);
 
                 // Act
                 String message = exception.getMessage();
@@ -344,9 +349,9 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 // Arrange
                 LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
                 FileSizeLimitExceededException exception1MB =
-                    new FileSizeLimitExceededException(1048576L);
+                        new FileSizeLimitExceededException(1048576L);
                 FileSizeLimitExceededException exception100MB =
-                    new FileSizeLimitExceededException(104857600L);
+                        new FileSizeLimitExceededException(104857600L);
 
                 // Act
                 String message1MB = exception1MB.getMessage();
@@ -368,7 +373,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromFileException() {
                 // Arrange
                 FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(10485760L);
+                        new FileSizeLimitExceededException(10485760L);
 
                 // Assert
                 assertThat(exception).isInstanceOf(FileException.class);
@@ -379,7 +384,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromBaseException() {
                 // Arrange
                 FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(10485760L);
+                        new FileSizeLimitExceededException(10485760L);
 
                 // Assert
                 assertThat(exception).isInstanceOf(BaseException.class);
@@ -390,7 +395,7 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             void shouldInheritFromRuntimeException() {
                 // Arrange
                 FileSizeLimitExceededException exception =
-                    new FileSizeLimitExceededException(10485760L);
+                        new FileSizeLimitExceededException(10485760L);
 
                 // Assert
                 assertThat(exception).isInstanceOf(RuntimeException.class);
@@ -405,13 +410,16 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
             @DisplayName("应该定义 serialVersionUID")
             void shouldDefineSerialVersionUID() {
                 // Assert
-                assertThatCode(() -> {
-                    java.lang.reflect.Field field =
-                        FileSizeLimitExceededException.class.getDeclaredField("serialVersionUID");
-                    field.setAccessible(true);
-                    long serialVersionUID = field.getLong(null);
-                    assertThat(serialVersionUID).isEqualTo(1L);
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    java.lang.reflect.Field field =
+                                            FileSizeLimitExceededException.class.getDeclaredField(
+                                                    "serialVersionUID");
+                                    field.setAccessible(true);
+                                    long serialVersionUID = field.getLong(null);
+                                    assertThat(serialVersionUID).isEqualTo(1L);
+                                })
+                        .doesNotThrowAnyException();
             }
         }
 
@@ -427,16 +435,18 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 long actualImageSize = 15 * 1024 * 1024L; // 15MB
 
                 // Act
-                Throwable thrown = catchThrowable(() -> {
-                    if (actualImageSize > maxImageSize) {
-                        throw new FileSizeLimitExceededException(maxImageSize);
-                    }
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    if (actualImageSize > maxImageSize) {
+                                        throw new FileSizeLimitExceededException(maxImageSize);
+                                    }
+                                });
 
                 // Assert
                 assertThat(thrown)
-                    .isInstanceOf(FileSizeLimitExceededException.class)
-                    .hasFieldOrPropertyWithValue("code", "upload.exceed.maxSize");
+                        .isInstanceOf(FileSizeLimitExceededException.class)
+                        .hasFieldOrPropertyWithValue("code", "upload.exceed.maxSize");
             }
 
             @Test
@@ -446,14 +456,16 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 long maxVideoSize = 100 * 1024 * 1024L; // 100MB
 
                 // Act
-                Throwable thrown = catchThrowable(() -> {
-                    throw new FileSizeLimitExceededException(maxVideoSize);
-                });
+                Throwable thrown =
+                        catchThrowable(
+                                () -> {
+                                    throw new FileSizeLimitExceededException(maxVideoSize);
+                                });
 
                 // Assert
                 assertThat(thrown).isInstanceOf(FileSizeLimitExceededException.class);
                 assertThat(((FileSizeLimitExceededException) thrown).getArgs())
-                    .containsExactly(100 * 1024 * 1024L);
+                        .containsExactly(100 * 1024 * 1024L);
             }
 
             @Test
@@ -464,30 +476,32 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
                 long fileSize = 10 * 1024 * 1024L; // 刚好10MB
 
                 // Act & Assert
-                assertThatCode(() -> {
-                    if (fileSize <= maxSize) {
-                        // 不抛异常
-                    } else {
-                        throw new FileSizeLimitExceededException(maxSize);
-                    }
-                }).doesNotThrowAnyException();
+                assertThatCode(
+                                () -> {
+                                    if (fileSize <= maxSize) {
+                                        // 不抛异常
+                                    } else {
+                                        throw new FileSizeLimitExceededException(maxSize);
+                                    }
+                                })
+                        .doesNotThrowAnyException();
             }
 
             @Test
             @DisplayName("场景: 不同文件类型有不同的大小限制")
             void shouldHandleDifferentSizeLimitsForDifferentFileTypes() {
                 // Arrange
-                long imageSizeLimit = 10 * 1024 * 1024L;    // 10MB
-                long videoSizeLimit = 100 * 1024 * 1024L;   // 100MB
+                long imageSizeLimit = 10 * 1024 * 1024L; // 10MB
+                long videoSizeLimit = 100 * 1024 * 1024L; // 100MB
                 long documentSizeLimit = 50 * 1024 * 1024L; // 50MB
 
                 // Act
                 FileSizeLimitExceededException imageException =
-                    new FileSizeLimitExceededException(imageSizeLimit);
+                        new FileSizeLimitExceededException(imageSizeLimit);
                 FileSizeLimitExceededException videoException =
-                    new FileSizeLimitExceededException(videoSizeLimit);
+                        new FileSizeLimitExceededException(videoSizeLimit);
                 FileSizeLimitExceededException documentException =
-                    new FileSizeLimitExceededException(documentSizeLimit);
+                        new FileSizeLimitExceededException(documentSizeLimit);
 
                 // Assert
                 assertThat(imageException.getArgs()).containsExactly(imageSizeLimit);
@@ -506,9 +520,9 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
         void shouldHaveDifferentErrorCodes() {
             // Arrange
             FileNameLengthLimitExceededException nameException =
-                new FileNameLengthLimitExceededException(100);
+                    new FileNameLengthLimitExceededException(100);
             FileSizeLimitExceededException sizeException =
-                new FileSizeLimitExceededException(10485760L);
+                    new FileSizeLimitExceededException(10485760L);
 
             // Assert
             assertThat(nameException.getCode()).isEqualTo("upload.filename.exceed.length");
@@ -521,9 +535,9 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
         void shouldHaveDifferentParameterTypes() {
             // Arrange
             FileNameLengthLimitExceededException nameException =
-                new FileNameLengthLimitExceededException(100);
+                    new FileNameLengthLimitExceededException(100);
             FileSizeLimitExceededException sizeException =
-                new FileSizeLimitExceededException(10485760L);
+                    new FileSizeLimitExceededException(10485760L);
 
             // Assert
             // FileNameLengthLimitExceededException 使用 int
@@ -537,9 +551,9 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
         void shouldBothInheritFromFileException() {
             // Arrange
             FileNameLengthLimitExceededException nameException =
-                new FileNameLengthLimitExceededException(100);
+                    new FileNameLengthLimitExceededException(100);
             FileSizeLimitExceededException sizeException =
-                new FileSizeLimitExceededException(10485760L);
+                    new FileSizeLimitExceededException(10485760L);
 
             // Assert
             assertThat(nameException).isInstanceOf(FileException.class);
@@ -555,37 +569,43 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该能正确抛出和捕获 FileNameLengthLimitExceededException")
         void shouldThrowAndCatchFileNameLengthException() {
             // Assert
-            assertThatThrownBy(() -> {
-                throw new FileNameLengthLimitExceededException(100);
-            })
-                .isInstanceOf(FileNameLengthLimitExceededException.class)
-                .isInstanceOf(FileException.class)
-                .hasFieldOrPropertyWithValue("code", "upload.filename.exceed.length");
+            assertThatThrownBy(
+                            () -> {
+                                throw new FileNameLengthLimitExceededException(100);
+                            })
+                    .isInstanceOf(FileNameLengthLimitExceededException.class)
+                    .isInstanceOf(FileException.class)
+                    .hasFieldOrPropertyWithValue("code", "upload.filename.exceed.length");
         }
 
         @Test
         @DisplayName("应该能正确抛出和捕获 FileSizeLimitExceededException")
         void shouldThrowAndCatchFileSizeException() {
             // Assert
-            assertThatThrownBy(() -> {
-                throw new FileSizeLimitExceededException(10485760L);
-            })
-                .isInstanceOf(FileSizeLimitExceededException.class)
-                .isInstanceOf(FileException.class)
-                .hasFieldOrPropertyWithValue("code", "upload.exceed.maxSize");
+            assertThatThrownBy(
+                            () -> {
+                                throw new FileSizeLimitExceededException(10485760L);
+                            })
+                    .isInstanceOf(FileSizeLimitExceededException.class)
+                    .isInstanceOf(FileException.class)
+                    .hasFieldOrPropertyWithValue("code", "upload.exceed.maxSize");
         }
 
         @Test
         @DisplayName("应该能通过 FileException 类型捕获文件异常")
         void shouldCatchAsFileException() {
             // Arrange & Act
-            Throwable nameException = catchThrowable(() -> {
-                throw new FileNameLengthLimitExceededException(100);
-            });
+            Throwable nameException =
+                    catchThrowable(
+                            () -> {
+                                throw new FileNameLengthLimitExceededException(100);
+                            });
 
-            Throwable sizeException = catchThrowable(() -> {
-                throw new FileSizeLimitExceededException(10485760L);
-            });
+            Throwable sizeException =
+                    catchThrowable(
+                            () -> {
+                                throw new FileSizeLimitExceededException(10485760L);
+                            });
 
             // Assert
             assertThat(nameException).isInstanceOf(FileException.class);
@@ -596,13 +616,17 @@ class FileSubExceptionsIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该能通过 RuntimeException 类型捕获文件异常")
         void shouldCatchAsRuntimeException() {
             // Arrange & Act
-            Throwable nameException = catchThrowable(() -> {
-                throw new FileNameLengthLimitExceededException(100);
-            });
+            Throwable nameException =
+                    catchThrowable(
+                            () -> {
+                                throw new FileNameLengthLimitExceededException(100);
+                            });
 
-            Throwable sizeException = catchThrowable(() -> {
-                throw new FileSizeLimitExceededException(10485760L);
-            });
+            Throwable sizeException =
+                    catchThrowable(
+                            () -> {
+                                throw new FileSizeLimitExceededException(10485760L);
+                            });
 
             // Assert
             assertThat(nameException).isInstanceOf(RuntimeException.class);

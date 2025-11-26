@@ -20,21 +20,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class MybatisExceptionHandler {
 
-    /**
-     * 主键或UNIQUE索引，数据重复异常
-     */
+    /** 主键或UNIQUE索引，数据重复异常 */
     @ExceptionHandler(DuplicateKeyException.class)
-    public R<Void> handleDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+    public R<Void> handleDuplicateKeyException(
+            DuplicateKeyException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',数据库中已存在记录'{}'", requestURI, e.getMessage());
         return R.fail(HttpStatus.HTTP_CONFLICT, "数据库中已存在该记录，请联系管理员确认");
     }
 
-    /**
-     * Mybatis系统异常 通用处理
-     */
+    /** Mybatis系统异常 通用处理 */
     @ExceptionHandler(MyBatisSystemException.class)
-    public R<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
+    public R<Void> handleCannotFindDataSourceException(
+            MyBatisSystemException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         Throwable root = getRootCause(e);
         if (root instanceof NotLoginException) {
@@ -42,8 +40,9 @@ public class MybatisExceptionHandler {
             return R.fail(HttpStatus.HTTP_UNAUTHORIZED, "认证失败，无法访问系统资源");
         }
         // 检查是否是 CannotFindDataSourceException 类型或消息中包含该关键字
-        if (root instanceof CannotFindDataSourceException ||
-            (root.getMessage() != null && root.getMessage().contains("CannotFindDataSourceException"))) {
+        if (root instanceof CannotFindDataSourceException
+                || (root.getMessage() != null
+                        && root.getMessage().contains("CannotFindDataSourceException"))) {
             log.error("请求地址'{}', 未找到数据源", requestURI);
             return R.fail(HttpStatus.HTTP_INTERNAL_ERROR, "未找到数据源，请联系管理员确认");
         }
@@ -56,11 +55,8 @@ public class MybatisExceptionHandler {
      *
      * @param e 当前异常
      * @return 根因异常（最底层的 cause）
-     * <p>
-     * 逻辑说明：
-     * 1. 如果 e 没有 cause，说明 e 本身就是根因，直接返回
-     * 2. 如果 e 的 cause 和自身相同（防止循环引用），也返回 e
-     * 3. 否则递归调用，继续向下寻找最底层的 cause
+     *     <p>逻辑说明： 1. 如果 e 没有 cause，说明 e 本身就是根因，直接返回 2. 如果 e 的 cause 和自身相同（防止循环引用），也返回 e 3.
+     *     否则递归调用，继续向下寻找最底层的 cause
      */
     public static Throwable getRootCause(Throwable e) {
         Throwable cause = e.getCause();
@@ -73,7 +69,7 @@ public class MybatisExceptionHandler {
     /**
      * 在异常链中查找指定类型的异常
      *
-     * @param e     当前异常
+     * @param e 当前异常
      * @param clazz 目标异常类
      * @return 找到的指定类型异常，如果没有找到返回 null
      */
@@ -87,5 +83,4 @@ public class MybatisExceptionHandler {
         }
         return null;
     }
-
 }

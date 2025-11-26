@@ -22,5 +22,4 @@ public interface RemoteDataScopeService {
      * @return 返回部门及其下级的权限语句，如果没有找到则返回 null
      */
     String getDeptAndChild(Long deptId);
-
 }

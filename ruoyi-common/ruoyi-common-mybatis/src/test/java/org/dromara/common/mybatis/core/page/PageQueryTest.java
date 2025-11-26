@@ -1,5 +1,8 @@
 package org.dromara.common.mybatis.core.page;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.dromara.common.core.exception.ServiceException;
@@ -8,8 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * PageQuery 分页查询测试
@@ -287,8 +288,8 @@ class PageQueryTest {
 
             // Act & Assert
             assertThatThrownBy(query::build)
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("排序参数有误");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("排序参数有误");
         }
 
         @Test
@@ -301,8 +302,8 @@ class PageQueryTest {
 
             // Act & Assert
             assertThatThrownBy(query::build)
-                .isInstanceOf(ServiceException.class)
-                .hasMessage("排序参数有误");
+                    .isInstanceOf(ServiceException.class)
+                    .hasMessage("排序参数有误");
         }
 
         @Test
@@ -356,12 +357,12 @@ class PageQueryTest {
 
         @ParameterizedTest
         @CsvSource({
-            "10, 1, 0",      // 第1页，每页10条，起始索引0
-            "10, 2, 10",     // 第2页，每页10条，起始索引10
-            "10, 3, 20",     // 第3页，每页10条，起始索引20
-            "20, 1, 0",      // 第1页，每页20条，起始索引0
-            "20, 5, 80",     // 第5页，每页20条，起始索引80
-            "1, 100, 99"     // 第100页，每页1条，起始索引99
+            "10, 1, 0", // 第1页，每页10条，起始索引0
+            "10, 2, 10", // 第2页，每页10条，起始索引10
+            "10, 3, 20", // 第3页，每页10条，起始索引20
+            "20, 1, 0", // 第1页，每页20条，起始索引0
+            "20, 5, 80", // 第5页，每页20条，起始索引80
+            "1, 100, 99" // 第100页，每页1条，起始索引99
         })
         @DisplayName("应该正确计算起始索引")
         void shouldCalculateCorrectFirstNum(int pageSize, int pageNum, int expected) {

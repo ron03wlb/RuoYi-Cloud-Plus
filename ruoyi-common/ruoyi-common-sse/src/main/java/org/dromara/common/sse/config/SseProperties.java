@@ -14,8 +14,6 @@ public class SseProperties {
 
     private Boolean enabled;
 
-    /**
-     * 路径
-     */
+    /** 路径 */
     private String path;
 }

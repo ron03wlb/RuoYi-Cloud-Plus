@@ -22,13 +22,11 @@ public class FilterConfig {
     @Bean
     @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
     @FilterRegistration(
-        name = "xssFilter",
-        urlPatterns = "/*",
-        order = FilterRegistrationBean.HIGHEST_PRECEDENCE + 1,
-        dispatcherTypes = DispatcherType.REQUEST
-    )
+            name = "xssFilter",
+            urlPatterns = "/*",
+            order = FilterRegistrationBean.HIGHEST_PRECEDENCE + 1,
+            dispatcherTypes = DispatcherType.REQUEST)
     public XssFilter xssFilter() {
         return new XssFilter();
     }
-
 }

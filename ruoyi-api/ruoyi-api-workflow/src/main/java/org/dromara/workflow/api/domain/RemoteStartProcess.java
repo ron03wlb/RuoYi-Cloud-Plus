@@ -1,14 +1,12 @@
 package org.dromara.workflow.api.domain;
 
-
 import cn.hutool.core.util.ObjectUtil;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Data;
 
 /**
  * 启动流程对象
@@ -18,32 +16,21 @@ import java.util.Objects;
 @Data
 public class RemoteStartProcess implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 业务唯一值id
-     */
+    /** 业务唯一值id */
     private String businessId;
 
-    /**
-     * 流程定义编码
-     */
+    /** 流程定义编码 */
     private String flowCode;
 
-    /**
-     * 办理人(可不填 用于覆盖当前节点办理人)
-     */
+    /** 办理人(可不填 用于覆盖当前节点办理人) */
     private String handler;
 
-    /**
-     * 流程变量，前端会提交一个元素{'entity': {业务详情数据对象}}
-     */
+    /** 流程变量，前端会提交一个元素{'entity': {业务详情数据对象}} */
     private Map<String, Object> variables;
 
-    /**
-     * 流程业务扩展信息
-     */
+    /** 流程业务扩展信息 */
     private RemoteFlowInstanceBizExt bizExt;
 
     public Map<String, Object> getVariables() {
@@ -60,5 +47,4 @@ public class RemoteStartProcess implements Serializable {
         }
         return bizExt;
     }
-
 }

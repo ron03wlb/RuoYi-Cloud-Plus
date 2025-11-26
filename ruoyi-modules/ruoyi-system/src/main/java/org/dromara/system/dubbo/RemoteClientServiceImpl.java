@@ -21,13 +21,10 @@ public class RemoteClientServiceImpl implements RemoteClientService {
 
     private final ISysClientService sysClientService;
 
-    /**
-     * 根据客户端id获取客户端详情
-     */
+    /** 根据客户端id获取客户端详情 */
     @Override
     public RemoteClientVo queryByClientId(String clientId) {
         SysClientVo vo = sysClientService.queryByClientId(clientId);
         return MapstructUtils.convert(vo, RemoteClientVo.class);
     }
-
 }

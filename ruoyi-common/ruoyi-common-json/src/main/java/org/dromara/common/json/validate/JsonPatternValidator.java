@@ -12,9 +12,7 @@ import org.dromara.common.json.utils.JsonUtils;
  */
 public class JsonPatternValidator implements ConstraintValidator<JsonPattern, String> {
 
-    /**
-     * 注解中指定的 JSON 类型枚举
-     */
+    /** 注解中指定的 JSON 类型枚举 */
     private JsonType jsonType;
 
     /**
@@ -30,7 +28,7 @@ public class JsonPatternValidator implements ConstraintValidator<JsonPattern, St
     /**
      * 校验字符串是否为合法 JSON
      *
-     * @param value   待校验字符串
+     * @param value 待校验字符串
      * @param context 校验上下文，可用于自定义错误信息
      * @return true = 合法 JSON 或为空，false = 非法 JSON
      */
@@ -47,5 +45,4 @@ public class JsonPatternValidator implements ConstraintValidator<JsonPattern, St
             case ARRAY -> JsonUtils.isJsonArray(value);
         };
     }
-
 }

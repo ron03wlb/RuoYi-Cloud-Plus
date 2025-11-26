@@ -3,13 +3,12 @@ package org.dromara.system.mapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.vo.SysPostVo;
-
-import java.util.List;
 
 /**
  * 岗位信息 数据层
@@ -21,7 +20,7 @@ public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
     /**
      * 分页查询岗位列表
      *
-     * @param page         分页对象
+     * @param page 分页对象
      * @param queryWrapper 查询条件
      * @return 包含岗位信息的分页结果
      */
@@ -68,8 +67,10 @@ public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
      * @return 岗位信息列表
      */
     default List<SysPostVo> selectPostsByUserId(Long userId) {
-        return this.selectVoList(new LambdaQueryWrapper<SysPost>()
-            .inSql(SysPost::getPostId, "select post_id from sys_user_post where user_id = " + userId));
+        return this.selectVoList(
+                new LambdaQueryWrapper<SysPost>()
+                        .inSql(
+                                SysPost::getPostId,
+                                "select post_id from sys_user_post where user_id = " + userId));
     }
-
 }

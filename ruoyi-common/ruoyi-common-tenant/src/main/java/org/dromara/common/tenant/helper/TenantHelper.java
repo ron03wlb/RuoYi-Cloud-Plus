@@ -8,6 +8,8 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import java.util.Stack;
+import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +20,6 @@ import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 
-import java.util.Stack;
-import java.util.function.Supplier;
-
 /**
  * 租户助手
  *
@@ -30,26 +29,30 @@ import java.util.function.Supplier;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TenantHelper {
 
-    private static final String DYNAMIC_TENANT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
+    private static final String DYNAMIC_TENANT_KEY =
+            GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
 
-    private static final TransmittableThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<String> TEMP_DYNAMIC_TENANT =
+            new TransmittableThreadLocal<>();
 
-    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE = new TransmittableThreadLocal<Stack<Integer>>() {
-        @Override
-        protected Stack<Integer> initialValue() {
-            return new Stack<>();
-        }
-    };
+    private static final TransmittableThreadLocal<Stack<Integer>> REENTRANT_IGNORE =
+            new TransmittableThreadLocal<Stack<Integer>>() {
+                @Override
+                protected Stack<Integer> initialValue() {
+                    return new Stack<>();
+                }
+            };
 
-    /**
-     * 租户功能是否启用
-     */
+    /** 租户功能是否启用 */
     public static boolean isEnable() {
         return Convert.toBool(SpringUtils.getProperty("tenant.enable"), false);
     }
 
     private static IgnoreStrategy getIgnoreStrategy() {
-        Object ignoreStrategyLocal = ReflectUtils.getStaticFieldValue(ReflectUtils.getField(InterceptorIgnoreHelper.class, "IGNORE_STRATEGY_LOCAL"));
+        Object ignoreStrategyLocal =
+                ReflectUtils.getStaticFieldValue(
+                        ReflectUtils.getField(
+                                InterceptorIgnoreHelper.class, "IGNORE_STRATEGY_LOCAL"));
         if (ignoreStrategyLocal instanceof ThreadLocal<?> IGNORE_STRATEGY_LOCAL) {
             if (IGNORE_STRATEGY_LOCAL.get() instanceof IgnoreStrategy ignoreStrategy) {
                 return ignoreStrategy;
@@ -58,9 +61,7 @@ public class TenantHelper {
         return null;
     }
 
-    /**
-     * 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
-     */
+    /** 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭) */
     public static void enableIgnore() {
         IgnoreStrategy ignoreStrategy = getIgnoreStrategy();
         if (ObjectUtil.isNull(ignoreStrategy)) {
@@ -72,17 +73,16 @@ public class TenantHelper {
         reentrantStack.push(reentrantStack.size() + 1);
     }
 
-    /**
-     * 关闭忽略租户
-     */
+    /** 关闭忽略租户 */
     public static void disableIgnore() {
         IgnoreStrategy ignoreStrategy = getIgnoreStrategy();
         if (ObjectUtil.isNotNull(ignoreStrategy)) {
-            boolean noOtherIgnoreStrategy = !Boolean.TRUE.equals(ignoreStrategy.getDynamicTableName())
-                && !Boolean.TRUE.equals(ignoreStrategy.getBlockAttack())
-                && !Boolean.TRUE.equals(ignoreStrategy.getIllegalSql())
-                && !Boolean.TRUE.equals(ignoreStrategy.getDataPermission())
-                && CollectionUtil.isEmpty(ignoreStrategy.getOthers());
+            boolean noOtherIgnoreStrategy =
+                    !Boolean.TRUE.equals(ignoreStrategy.getDynamicTableName())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getBlockAttack())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getIllegalSql())
+                            && !Boolean.TRUE.equals(ignoreStrategy.getDataPermission())
+                            && CollectionUtil.isEmpty(ignoreStrategy.getOthers());
             Stack<Integer> reentrantStack = REENTRANT_IGNORE.get();
             boolean empty = reentrantStack.isEmpty() || reentrantStack.pop() == 1;
             if (noOtherIgnoreStrategy && empty) {
@@ -127,11 +127,11 @@ public class TenantHelper {
 
     /**
      * 设置动态租户(一直有效 需要手动清理)
-     * <p>
-     * 如果为未登录状态下 那么只在当前线程内生效
+     *
+     * <p>如果为未登录状态下 那么只在当前线程内生效
      *
      * @param tenantId 租户id
-     * @param global   是否全局生效
+     * @param global 是否全局生效
      */
     public static void setDynamic(String tenantId, boolean global) {
         if (!isEnable()) {
@@ -148,8 +148,8 @@ public class TenantHelper {
 
     /**
      * 获取动态租户(一直有效 需要手动清理)
-     * <p>
-     * 如果为未登录状态下 那么只在当前线程内生效
+     *
+     * <p>如果为未登录状态下 那么只在当前线程内生效
      */
     public static String getDynamic() {
         if (!isEnable()) {
@@ -175,9 +175,7 @@ public class TenantHelper {
         return tenantId;
     }
 
-    /**
-     * 清除动态租户
-     */
+    /** 清除动态租户 */
     public static void clearDynamic() {
         if (!isEnable()) {
             return;
@@ -220,9 +218,7 @@ public class TenantHelper {
         }
     }
 
-    /**
-     * 获取当前租户id(动态租户优先)
-     */
+    /** 获取当前租户id(动态租户优先) */
     public static String getTenantId() {
         if (!isEnable()) {
             return null;
@@ -233,5 +229,4 @@ public class TenantHelper {
         }
         return tenantId;
     }
-
 }

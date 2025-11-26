@@ -1,12 +1,11 @@
 package org.dromara.workflow.api;
 
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.workflow.api.domain.RemoteCompleteTask;
 import org.dromara.workflow.api.domain.RemoteStartProcess;
 import org.dromara.workflow.api.domain.RemoteStartProcessReturn;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 工作流服务(降级处理)
@@ -79,5 +78,4 @@ public class RemoteWorkflowServiceMock implements RemoteWorkflowService {
         log.warn("服务调用异常 -> 降级处理");
         return false;
     }
-
 }

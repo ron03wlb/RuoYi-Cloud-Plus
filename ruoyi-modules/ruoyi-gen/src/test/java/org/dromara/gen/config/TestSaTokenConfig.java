@@ -1,6 +1,8 @@
 package org.dromara.gen.config;
 
 import cn.dev33.satoken.dao.SaTokenDao;
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.common.core.service.PermissionService;
 import org.dromara.common.satoken.core.dao.PlusSaTokenDao;
 import org.dromara.system.api.RemoteClientService;
@@ -9,14 +11,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * 测试配置类
- * <p>
- * 提供所有测试需要的 Mock Bean
- * </p>
+ *
+ * <p>提供所有测试需要的 Mock Bean
  *
  * @author Lion Li
  * @since 2025-11-09
@@ -24,9 +22,7 @@ import java.util.Set;
 @TestConfiguration
 public class TestSaTokenConfig {
 
-    /**
-     * Sa-Token DAO (使用 @Primary 确保优先使用)
-     */
+    /** Sa-Token DAO (使用 @Primary 确保优先使用) */
     @Bean
     @Primary
     public SaTokenDao saTokenDao() {
@@ -35,9 +31,8 @@ public class TestSaTokenConfig {
 
     /**
      * Mock PermissionService
-     * <p>
-     * Sa-Token权限验证需要此服务
-     * </p>
+     *
+     * <p>Sa-Token权限验证需要此服务
      */
     @Bean
     @Primary
@@ -62,9 +57,8 @@ public class TestSaTokenConfig {
 
     /**
      * Mock RemoteClientService
-     * <p>
-     * Dubbo 远程服务，避免 Dubbo 初始化错误
-     * </p>
+     *
+     * <p>Dubbo 远程服务，避免 Dubbo 初始化错误
      */
     @Bean
     @Primary

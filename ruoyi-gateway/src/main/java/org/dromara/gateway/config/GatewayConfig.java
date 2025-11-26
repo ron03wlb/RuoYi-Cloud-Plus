@@ -8,6 +8,4 @@ import org.springframework.context.annotation.Configuration;
  * @author ruoyi
  */
 @Configuration
-public class GatewayConfig {
-
-}
+public class GatewayConfig {}

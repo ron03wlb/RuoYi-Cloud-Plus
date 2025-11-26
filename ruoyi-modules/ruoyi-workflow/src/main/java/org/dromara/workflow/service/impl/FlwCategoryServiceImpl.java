@@ -6,6 +6,8 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.core.exception.ServiceException;
@@ -25,9 +27,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 流程分类Service业务层处理
@@ -54,9 +53,13 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
         if (ObjectUtil.isNull(category)) {
             return null;
         }
-        FlowCategoryVo parentCategory = baseMapper.selectVoOne(new LambdaQueryWrapper<FlowCategory>()
-            .select(FlowCategory::getCategoryName).eq(FlowCategory::getCategoryId, category.getParentId()));
-        category.setParentName(ObjectUtils.notNullGetter(parentCategory, FlowCategoryVo::getCategoryName));
+        FlowCategoryVo parentCategory =
+                baseMapper.selectVoOne(
+                        new LambdaQueryWrapper<FlowCategory>()
+                                .select(FlowCategory::getCategoryName)
+                                .eq(FlowCategory::getCategoryId, category.getParentId()));
+        category.setParentName(
+                ObjectUtils.notNullGetter(parentCategory, FlowCategoryVo::getCategoryName));
         return category;
     }
 
@@ -72,8 +75,11 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
         if (ObjectUtil.isNull(categoryId)) {
             return null;
         }
-        FlowCategory category = baseMapper.selectOne(new LambdaQueryWrapper<FlowCategory>()
-            .select(FlowCategory::getCategoryName).eq(FlowCategory::getCategoryId, categoryId));
+        FlowCategory category =
+                baseMapper.selectOne(
+                        new LambdaQueryWrapper<FlowCategory>()
+                                .select(FlowCategory::getCategoryName)
+                                .eq(FlowCategory::getCategoryId, categoryId));
         return ObjectUtils.notNullGetter(category, FlowCategory::getCategoryName);
     }
 
@@ -102,15 +108,14 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
             return CollUtil.newArrayList();
         }
         return TreeBuildUtils.buildMultiRoot(
-            categoryList,
-            node -> Convert.toStr(node.getCategoryId()),
-            node -> Convert.toStr(node.getParentId()),
-            (node, treeNode) -> treeNode
-                .setId(Convert.toStr(node.getCategoryId()))
-                .setParentId(Convert.toStr(node.getParentId()))
-                .setName(node.getCategoryName())
-                .setWeight(node.getOrderNum())
-        );
+                categoryList,
+                node -> Convert.toStr(node.getCategoryId()),
+                node -> Convert.toStr(node.getParentId()),
+                (node, treeNode) ->
+                        treeNode.setId(Convert.toStr(node.getCategoryId()))
+                                .setParentId(Convert.toStr(node.getParentId()))
+                                .setName(node.getCategoryName())
+                                .setWeight(node.getOrderNum()));
     }
 
     /**
@@ -121,11 +126,13 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
     @Override
     public List<org.dromara.warm.flow.core.dto.Tree> queryCategory() {
         List<FlowCategoryVo> list = this.queryList(new FlowCategoryBo());
-        return StreamUtils.toList(list, category -> new org.dromara.warm.flow.core.dto.Tree()
-            .setId(Convert.toStr(category.getCategoryId()))
-            .setName(category.getCategoryName())
-            .setParentId(Convert.toStr(category.getParentId()))
-        );
+        return StreamUtils.toList(
+                list,
+                category ->
+                        new org.dromara.warm.flow.core.dto.Tree()
+                                .setId(Convert.toStr(category.getCategoryId()))
+                                .setName(category.getCategoryName())
+                                .setParentId(Convert.toStr(category.getParentId())));
     }
 
     /**
@@ -136,10 +143,15 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
      */
     @Override
     public boolean checkCategoryNameUnique(FlowCategoryBo category) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<FlowCategory>()
-            .eq(FlowCategory::getCategoryName, category.getCategoryName())
-            .eq(FlowCategory::getParentId, category.getParentId())
-            .ne(ObjectUtil.isNotNull(category.getCategoryId()), FlowCategory::getCategoryId, category.getCategoryId()));
+        boolean exist =
+                baseMapper.exists(
+                        new LambdaQueryWrapper<FlowCategory>()
+                                .eq(FlowCategory::getCategoryName, category.getCategoryName())
+                                .eq(FlowCategory::getParentId, category.getParentId())
+                                .ne(
+                                        ObjectUtil.isNotNull(category.getCategoryId()),
+                                        FlowCategory::getCategoryId,
+                                        category.getCategoryId()));
         return !exist;
     }
 
@@ -164,16 +176,22 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
      */
     @Override
     public boolean hasChildByCategoryId(Long categoryId) {
-        return baseMapper.exists(new LambdaQueryWrapper<FlowCategory>()
-            .eq(FlowCategory::getParentId, categoryId));
+        return baseMapper.exists(
+                new LambdaQueryWrapper<FlowCategory>().eq(FlowCategory::getParentId, categoryId));
     }
 
     private LambdaQueryWrapper<FlowCategory> buildQueryWrapper(FlowCategoryBo bo) {
         LambdaQueryWrapper<FlowCategory> lqw = Wrappers.lambdaQuery();
         lqw.eq(FlowCategory::getDelFlag, SystemConstants.NORMAL);
-        lqw.eq(ObjectUtil.isNotNull(bo.getCategoryId()), FlowCategory::getCategoryId, bo.getCategoryId());
+        lqw.eq(
+                ObjectUtil.isNotNull(bo.getCategoryId()),
+                FlowCategory::getCategoryId,
+                bo.getCategoryId());
         lqw.eq(ObjectUtil.isNotNull(bo.getParentId()), FlowCategory::getParentId, bo.getParentId());
-        lqw.like(StringUtils.isNotBlank(bo.getCategoryName()), FlowCategory::getCategoryName, bo.getCategoryName());
+        lqw.like(
+                StringUtils.isNotBlank(bo.getCategoryName()),
+                FlowCategory::getCategoryName,
+                bo.getCategoryName());
         lqw.orderByAsc(FlowCategory::getAncestors);
         lqw.orderByAsc(FlowCategory::getParentId);
         lqw.orderByAsc(FlowCategory::getOrderNum);
@@ -216,7 +234,10 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
         if (!oldCategory.getParentId().equals(category.getParentId())) {
             FlowCategory newParentCategory = baseMapper.selectById(category.getParentId());
             if (ObjectUtil.isNotNull(newParentCategory)) {
-                String newAncestors = newParentCategory.getAncestors() + StringUtils.SEPARATOR + newParentCategory.getCategoryId();
+                String newAncestors =
+                        newParentCategory.getAncestors()
+                                + StringUtils.SEPARATOR
+                                + newParentCategory.getCategoryId();
                 String oldAncestors = oldCategory.getAncestors();
                 category.setAncestors(newAncestors);
                 updateCategoryChildren(category.getCategoryId(), newAncestors, oldAncestors);
@@ -232,13 +253,15 @@ public class FlwCategoryServiceImpl implements IFlwCategoryService, CategoryServ
     /**
      * 修改子元素关系
      *
-     * @param categoryId   被修改的流程分类ID
+     * @param categoryId 被修改的流程分类ID
      * @param newAncestors 新的父ID集合
      * @param oldAncestors 旧的父ID集合
      */
     private void updateCategoryChildren(Long categoryId, String newAncestors, String oldAncestors) {
-        List<FlowCategory> children = baseMapper.selectList(new LambdaQueryWrapper<FlowCategory>()
-            .apply(DataBaseHelper.findInSet(categoryId, "ancestors")));
+        List<FlowCategory> children =
+                baseMapper.selectList(
+                        new LambdaQueryWrapper<FlowCategory>()
+                                .apply(DataBaseHelper.findInSet(categoryId, "ancestors")));
         List<FlowCategory> list = new ArrayList<>();
         for (FlowCategory child : children) {
             FlowCategory category = new FlowCategory();

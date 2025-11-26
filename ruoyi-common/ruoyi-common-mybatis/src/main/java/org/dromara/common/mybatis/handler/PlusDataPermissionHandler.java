@@ -2,6 +2,8 @@ package org.dromara.common.mybatis.handler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import java.util.*;
+import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -26,9 +28,6 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.*;
-import java.util.function.Function;
-
 /**
  * 数据权限过滤
  *
@@ -38,21 +37,19 @@ import java.util.function.Function;
 @Slf4j
 public class PlusDataPermissionHandler {
 
-    /**
-     * spel 解析器
-     */
+    /** spel 解析器 */
     private final ExpressionParser parser = new SpelExpressionParser();
+
     private final ParserContext parserContext = new TemplateParserContext();
-    /**
-     * bean解析器 用于处理 spel 表达式中对 bean 的调用
-     */
+
+    /** bean解析器 用于处理 spel 表达式中对 bean 的调用 */
     private final BeanResolver beanResolver = new BeanFactoryResolver(SpringUtils.getBeanFactory());
 
     /**
      * 获取数据过滤条件的 SQL 片段
      *
-     * @param where             原始的查询条件表达式
-     * @param isSelect          是否为查询语句
+     * @param where 原始的查询条件表达式
+     * @param isSelect 是否为查询语句
      * @return 数据过滤条件的 SQL 片段
      */
     public Expression getSqlSegment(Expression where, boolean isSelect) {
@@ -76,7 +73,8 @@ public class PlusDataPermissionHandler {
             }
             Expression expression = CCJSqlParserUtil.parseExpression(dataFilterSql);
             // 数据权限使用单独的括号 防止与其他条件冲突
-            ParenthesedExpressionList<Expression> parenthesis = new ParenthesedExpressionList<>(expression);
+            ParenthesedExpressionList<Expression> parenthesis =
+                    new ParenthesedExpressionList<>(expression);
             if (ObjectUtil.isNotNull(where)) {
                 return new AndExpression(where, parenthesis);
             } else {
@@ -93,7 +91,7 @@ public class PlusDataPermissionHandler {
      * 构建数据过滤条件的 SQL 语句
      *
      * @param dataPermission 数据权限注解
-     * @param isSelect       标志当前操作是否为查询操作，查询操作和更新或删除操作在处理过滤条件时会有不同的处理方式
+     * @param isSelect 标志当前操作是否为查询操作，查询操作和更新或删除操作在处理过滤条件时会有不同的处理方式
      * @return 构建的数据过滤条件的 SQL 语句
      * @throws ServiceException 如果角色的数据范围异常或者 key 与 value 的长度不匹配，则抛出 ServiceException 异常
      */
@@ -105,8 +103,10 @@ public class PlusDataPermissionHandler {
         }
         LoginUser user = DataPermissionHelper.getVariable("user");
         Object defaultValue = "-1";
-        NullSafeStandardEvaluationContext context = new NullSafeStandardEvaluationContext(defaultValue);
-        context.addPropertyAccessor(new NullSafePropertyAccessor(context.getPropertyAccessors().get(0), defaultValue));
+        NullSafeStandardEvaluationContext context =
+                new NullSafeStandardEvaluationContext(defaultValue);
+        context.addPropertyAccessor(
+                new NullSafePropertyAccessor(context.getPropertyAccessors().get(0), defaultValue));
         context.setBeanResolver(beanResolver);
         DataPermissionHelper.getContext().forEach(context::setVariable);
         Set<String> conditions = new HashSet<>();
@@ -118,9 +118,8 @@ public class PlusDataPermissionHandler {
                 throw new ServiceException("角色数据范围异常 => key与value长度不匹配");
             }
             // 包含权限标识符 这直接跳过
-            if (StringUtils.isNotBlank(dataColumn.permission()) &&
-                CollUtil.contains(user.getMenuPermission(), dataColumn.permission())
-            ) {
+            if (StringUtils.isNotBlank(dataColumn.permission())
+                    && CollUtil.contains(user.getMenuPermission(), dataColumn.permission())) {
                 ignoreMap.put(dataColumn, Boolean.TRUE);
                 continue;
             }
@@ -160,9 +159,11 @@ public class PlusDataPermissionHandler {
                     continue;
                 }
                 // 忽略数据权限 防止spel表达式内有其他sql查询导致死循环调用
-                String sql = DataPermissionHelper.ignore(() ->
-                    parser.parseExpression(type.getSqlTemplate(), parserContext).getValue(context, String.class)
-                );
+                String sql =
+                        DataPermissionHelper.ignore(
+                                () ->
+                                        parser.parseExpression(type.getSqlTemplate(), parserContext)
+                                                .getValue(context, String.class));
                 // 解析sql模板并填充
                 conditions.add(joinStr + sql);
                 isSuccess = true;
@@ -198,9 +199,7 @@ public class PlusDataPermissionHandler {
         return getDataPermission() == null;
     }
 
-    /**
-     * 对所有null变量找不到的变量返回默认值
-     */
+    /** 对所有null变量找不到的变量返回默认值 */
     @AllArgsConstructor
     private static class NullSafeStandardEvaluationContext extends StandardEvaluationContext {
 
@@ -215,12 +214,9 @@ public class PlusDataPermissionHandler {
             }
             return obj;
         }
-
     }
 
-    /**
-     * 对所有null变量找不到的变量返回默认值 委托模式 将不需要处理的方法委托给原处理器
-     */
+    /** 对所有null变量找不到的变量返回默认值 委托模式 将不需要处理的方法委托给原处理器 */
     @AllArgsConstructor
     private static class NullSafePropertyAccessor implements PropertyAccessor {
 
@@ -233,12 +229,14 @@ public class PlusDataPermissionHandler {
         }
 
         @Override
-        public boolean canRead(EvaluationContext context, Object target, String name) throws AccessException {
+        public boolean canRead(EvaluationContext context, Object target, String name)
+                throws AccessException {
             return delegate.canRead(context, target, name);
         }
 
         @Override
-        public TypedValue read(EvaluationContext context, Object target, String name) throws AccessException {
+        public TypedValue read(EvaluationContext context, Object target, String name)
+                throws AccessException {
             TypedValue value = delegate.read(context, target, name);
             // 如果读取到的值是 null，则返回默认值
             if (value.getValue() == null) {
@@ -248,14 +246,15 @@ public class PlusDataPermissionHandler {
         }
 
         @Override
-        public boolean canWrite(EvaluationContext context, Object target, String name) throws AccessException {
+        public boolean canWrite(EvaluationContext context, Object target, String name)
+                throws AccessException {
             return delegate.canWrite(context, target, name);
         }
 
         @Override
-        public void write(EvaluationContext context, Object target, String name, Object newValue) throws AccessException {
+        public void write(EvaluationContext context, Object target, String name, Object newValue)
+                throws AccessException {
             delegate.write(context, target, name, newValue);
         }
     }
-
 }

@@ -8,9 +8,8 @@ import org.mapstruct.MappingConstants;
 
 /**
  * 租户vo转换器
+ *
  * @author zhujie
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TenantVoConvert extends BaseMapper<RemoteTenantVo, TenantListVo> {
-
-}
+public interface TenantVoConvert extends BaseMapper<RemoteTenantVo, TenantListVo> {}

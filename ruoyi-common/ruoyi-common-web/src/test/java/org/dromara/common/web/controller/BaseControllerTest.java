@@ -1,5 +1,7 @@
 package org.dromara.common.web.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.common.core.domain.R;
 import org.dromara.common.web.BaseUnitTest;
 import org.dromara.common.web.core.BaseController;
@@ -9,22 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * BaseController (控制器基类) 单元测试
- * <p>
- * 用途: 提供toAjax()便捷方法将操作结果转换为统一响应
- * 测试范围: toAjax(int)、toAjax(boolean)方法的各种场景
+ *
+ * <p>用途: 提供toAjax()便捷方法将操作结果转换为统一响应 测试范围: toAjax(int)、toAjax(boolean)方法的各种场景
  *
  * @author Test Team
  */
 @DisplayName("BaseController (控制器基类) 单元测试")
 class BaseControllerTest extends BaseUnitTest {
 
-    /**
-     * 测试用的BaseController实现
-     */
+    /** 测试用的BaseController实现 */
     private static class TestController extends BaseController {
         // 公开protected方法用于测试
         @Override

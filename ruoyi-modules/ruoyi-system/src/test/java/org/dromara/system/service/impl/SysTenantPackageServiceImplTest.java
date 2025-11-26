@@ -1,9 +1,16 @@
 package org.dromara.system.service.impl;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -20,14 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 /**
  * SysTenantPackageServiceImpl 单元测试
  *
@@ -37,14 +36,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("SysTenantPackageServiceImpl 单元测试")
 class SysTenantPackageServiceImplTest extends BaseUnitTest {
 
-    @Mock
-    private SysTenantPackageMapper baseMapper;
+    @Mock private SysTenantPackageMapper baseMapper;
 
-    @Mock
-    private SysTenantMapper tenantMapper;
+    @Mock private SysTenantMapper tenantMapper;
 
-    @InjectMocks
-    private SysTenantPackageServiceImpl packageService;
+    @InjectMocks private SysTenantPackageServiceImpl packageService;
 
     @BeforeAll
     static void initMybatisPlusTableInfo() {
@@ -86,7 +82,8 @@ class SysTenantPackageServiceImplTest extends BaseUnitTest {
             vo.setPackageId(1L);
             page.setRecords(Collections.singletonList(vo));
 
-            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class))).thenReturn(page);
+            when(baseMapper.selectVoPage(any(Page.class), any(LambdaQueryWrapper.class)))
+                    .thenReturn(page);
 
             TableDataInfo<SysTenantPackageVo> result = packageService.queryPageList(bo, pageQuery);
 
@@ -103,7 +100,7 @@ class SysTenantPackageServiceImplTest extends BaseUnitTest {
             vo2.setPackageId(2L);
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Arrays.asList(vo1, vo2));
+                    .thenReturn(Arrays.asList(vo1, vo2));
 
             List<SysTenantPackageVo> result = packageService.selectList();
 
@@ -120,12 +117,11 @@ class SysTenantPackageServiceImplTest extends BaseUnitTest {
             vo.setPackageName("基础套餐");
 
             when(baseMapper.selectVoList(any(LambdaQueryWrapper.class)))
-                .thenReturn(Collections.singletonList(vo));
+                    .thenReturn(Collections.singletonList(vo));
 
             List<SysTenantPackageVo> result = packageService.queryList(bo);
 
             assertThat(result).hasSize(1);
         }
     }
-
 }

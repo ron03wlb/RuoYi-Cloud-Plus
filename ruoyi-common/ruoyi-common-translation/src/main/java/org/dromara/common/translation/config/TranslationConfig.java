@@ -1,18 +1,17 @@
 package org.dromara.common.translation.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.core.TranslationInterface;
 import org.dromara.common.translation.core.handler.TranslationBeanSerializerModifier;
 import org.dromara.common.translation.core.handler.TranslationHandler;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 翻译模块配置类
@@ -23,11 +22,9 @@ import java.util.Map;
 @AutoConfiguration
 public class TranslationConfig {
 
-    @Autowired
-    private List<TranslationInterface<?>> list;
+    @Autowired private List<TranslationInterface<?>> list;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
     @PostConstruct
     public void init() {
@@ -43,8 +40,8 @@ public class TranslationConfig {
         TranslationHandler.TRANSLATION_MAPPER.putAll(map);
         // 设置 Bean 序列化修改器
         objectMapper.setSerializerFactory(
-            objectMapper.getSerializerFactory()
-                .withSerializerModifier(new TranslationBeanSerializerModifier()));
+                objectMapper
+                        .getSerializerFactory()
+                        .withSerializerModifier(new TranslationBeanSerializerModifier()));
     }
-
 }

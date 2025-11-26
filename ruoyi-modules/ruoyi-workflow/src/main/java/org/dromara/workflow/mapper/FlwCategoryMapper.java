@@ -1,14 +1,13 @@
 package org.dromara.workflow.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.workflow.domain.FlowCategory;
 import org.dromara.workflow.domain.vo.FlowCategoryVo;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 流程分类Mapper接口
@@ -25,9 +24,10 @@ public interface FlwCategoryMapper extends BaseMapperPlus<FlowCategory, FlowCate
      * @return 包含子流程分类的列表
      */
     default List<FlowCategory> selectListByParentId(Long parentId) {
-        return this.selectList(new LambdaQueryWrapper<FlowCategory>()
-            .select(FlowCategory::getCategoryId)
-            .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
+        return this.selectList(
+                new LambdaQueryWrapper<FlowCategory>()
+                        .select(FlowCategory::getCategoryId)
+                        .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
     }
 
     /**
@@ -38,10 +38,9 @@ public interface FlwCategoryMapper extends BaseMapperPlus<FlowCategory, FlowCate
      */
     default List<Long> selectCategoryIdsByParentId(Long parentId) {
         return Stream.concat(
-            this.selectListByParentId(parentId).stream()
-                .map(FlowCategory::getCategoryId),
-            Stream.of(parentId)
-        ).collect(Collectors.toList());
+                        this.selectListByParentId(parentId).stream()
+                                .map(FlowCategory::getCategoryId),
+                        Stream.of(parentId))
+                .collect(Collectors.toList());
     }
-
 }

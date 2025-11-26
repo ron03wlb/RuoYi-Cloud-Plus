@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class ShardingOrder {
 
-
     private Long orderId;
 
     private Long userId;

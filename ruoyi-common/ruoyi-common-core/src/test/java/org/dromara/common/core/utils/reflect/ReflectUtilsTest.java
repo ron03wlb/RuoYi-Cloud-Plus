@@ -1,12 +1,12 @@
 package org.dromara.common.core.utils.reflect;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * ReflectUtils 测试类
@@ -16,9 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("ReflectUtils 工具类测试")
 class ReflectUtilsTest {
 
-    /**
-     * 测试用Person类
-     */
+    /** 测试用Person类 */
     static class Person {
         private String name;
         private Integer age;
@@ -49,9 +47,7 @@ class ReflectUtilsTest {
         }
     }
 
-    /**
-     * 测试用Address类
-     */
+    /** 测试用Address类 */
     static class Address {
         private String city;
         private String street;
@@ -82,9 +78,7 @@ class ReflectUtilsTest {
         }
     }
 
-    /**
-     * 测试用ZipCode类（三层嵌套）
-     */
+    /** 测试用ZipCode类（三层嵌套） */
     static class ZipCode {
         private String code;
         private String areaCode;
@@ -197,8 +191,10 @@ class ReflectUtilsTest {
 
             // Act & Assert
             assertThatThrownBy(() -> ReflectUtils.invokeGetter(person, "address.city"))
-                .isInstanceOf(RuntimeException.class)  // Hutool ReflectUtil 抛出 IllegalArgumentException
-                .hasMessageContaining("must be not null");
+                    .isInstanceOf(
+                            RuntimeException
+                                    .class) // Hutool ReflectUtil 抛出 IllegalArgumentException
+                    .hasMessageContaining("must be not null");
         }
 
         @Test
@@ -206,7 +202,7 @@ class ReflectUtilsTest {
         void shouldThrowExceptionWhenMethodNotExists() {
             // Act & Assert
             assertThatThrownBy(() -> ReflectUtils.invokeGetter(person, "nonExistentProperty"))
-                .isInstanceOf(RuntimeException.class);
+                    .isInstanceOf(RuntimeException.class);
         }
 
         @Test
@@ -229,10 +225,7 @@ class ReflectUtilsTest {
             Integer age = ReflectUtils.invokeGetter(person, "age");
 
             // Assert
-            assertThat(age)
-                .isNotNull()
-                .isInstanceOf(Integer.class)
-                .isEqualTo(30);
+            assertThat(age).isNotNull().isInstanceOf(Integer.class).isEqualTo(30);
         }
     }
 
@@ -311,10 +304,7 @@ class ReflectUtilsTest {
             ReflectUtils.invokeSetter(person, "age", 40);
 
             // Assert
-            assertThat(person.getAge())
-                .isNotNull()
-                .isInstanceOf(Integer.class)
-                .isEqualTo(40);
+            assertThat(person.getAge()).isNotNull().isInstanceOf(Integer.class).isEqualTo(40);
         }
 
         @Test
@@ -341,15 +331,17 @@ class ReflectUtilsTest {
 
             // Act & Assert
             assertThatThrownBy(() -> ReflectUtils.invokeSetter(person, "address.city", "深圳"))
-                .isInstanceOf(NullPointerException.class);  // invokeSetter 中调用 getClass() 时抛出 NPE
+                    .isInstanceOf(
+                            NullPointerException.class); // invokeSetter 中调用 getClass() 时抛出 NPE
         }
 
         @Test
         @DisplayName("当setter方法不存在时应该抛出异常")
         void shouldThrowExceptionWhenSetterNotExists() {
             // Act & Assert
-            assertThatThrownBy(() -> ReflectUtils.invokeSetter(person, "nonExistentProperty", "value"))
-                .isInstanceOf(RuntimeException.class);
+            assertThatThrownBy(
+                            () -> ReflectUtils.invokeSetter(person, "nonExistentProperty", "value"))
+                    .isInstanceOf(RuntimeException.class);
         }
 
         @Test

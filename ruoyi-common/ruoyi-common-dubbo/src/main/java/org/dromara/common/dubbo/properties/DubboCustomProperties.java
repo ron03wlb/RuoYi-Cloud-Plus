@@ -15,14 +15,9 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ConfigurationProperties(prefix = "dubbo.custom")
 public class DubboCustomProperties {
 
-    /**
-     * 是否开启请求日志记录
-     */
+    /** 是否开启请求日志记录 */
     private Boolean requestLog;
 
-    /**
-     * 日志级别
-     */
+    /** 日志级别 */
     private RequestLogEnum logLevel;
-
 }

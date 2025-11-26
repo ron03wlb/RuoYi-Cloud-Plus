@@ -19,9 +19,7 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         super(keyPrefix);
     }
 
-    /**
-     * 增加前缀
-     */
+    /** 增加前缀 */
     @Override
     public String map(String name) {
         if (StringUtils.isBlank(name)) {
@@ -49,9 +47,7 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         return super.map(tenantId + ":" + name);
     }
 
-    /**
-     * 去除前缀
-     */
+    /** 去除前缀 */
     @Override
     public String unmap(String name) {
         String unmap = super.unmap(name);
@@ -79,5 +75,4 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         }
         return unmap;
     }
-
 }

@@ -11,15 +11,14 @@ import cn.idev.excel.write.handler.context.CellWriteHandlerContext;
 import cn.idev.excel.write.metadata.holder.WriteSheetHolder;
 import cn.idev.excel.write.metadata.style.WriteCellStyle;
 import cn.idev.excel.write.metadata.style.WriteFont;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.dromara.common.excel.annotation.ExcelNotation;
 import org.dromara.common.excel.annotation.ExcelRequired;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 批注、必填
@@ -28,16 +27,11 @@ import java.util.Map;
  */
 public class DataWriteHandler implements SheetWriteHandler, CellWriteHandler {
 
-    /**
-     * 批注
-     */
+    /** 批注 */
     private final Map<String, String> notationMap;
 
-    /**
-     * 头列字体颜色
-     */
+    /** 头列字体颜色 */
     private final Map<String, Short> headColumnMap;
-
 
     public DataWriteHandler(Class<?> clazz) {
         notationMap = getNotationMap(clazz);
@@ -68,7 +62,8 @@ public class DataWriteHandler implements SheetWriteHandler, CellWriteHandler {
             WriteFont headWriteFont = new WriteFont();
             // 加粗
             headWriteFont.setBold(true);
-            if (CollUtil.isNotEmpty(headColumnMap) && headColumnMap.containsKey(cell.getStringCellValue())) {
+            if (CollUtil.isNotEmpty(headColumnMap)
+                    && headColumnMap.containsKey(cell.getStringCellValue())) {
                 // 设置字体颜色
                 headWriteFont.setColor(headColumnMap.get(cell.getStringCellValue()));
             }
@@ -76,20 +71,29 @@ public class DataWriteHandler implements SheetWriteHandler, CellWriteHandler {
             CellStyle cellStyle = StyleUtil.buildCellStyle(workbook, null, writeCellStyle);
             cell.setCellStyle(cellStyle);
 
-            if (CollUtil.isNotEmpty(notationMap) && notationMap.containsKey(cell.getStringCellValue())) {
+            if (CollUtil.isNotEmpty(notationMap)
+                    && notationMap.containsKey(cell.getStringCellValue())) {
                 // 批注内容
                 String notationContext = notationMap.get(cell.getStringCellValue());
                 // 创建绘图对象
-                Comment comment = drawing.createCellComment(new XSSFClientAnchor(0, 0, 0, 0, (short) cell.getColumnIndex(), 0, (short) 5, 5));
+                Comment comment =
+                        drawing.createCellComment(
+                                new XSSFClientAnchor(
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        (short) cell.getColumnIndex(),
+                                        0,
+                                        (short) 5,
+                                        5));
                 comment.setString(new XSSFRichTextString(notationContext));
                 cell.setCellComment(comment);
             }
         }
     }
 
-    /**
-     * 获取必填列
-     */
+    /** 获取必填列 */
     private static Map<String, Short> getRequiredMap(Class<?> clazz) {
         Map<String, Short> requiredMap = new HashMap<>();
         Field[] fields = clazz.getDeclaredFields();
@@ -104,9 +108,7 @@ public class DataWriteHandler implements SheetWriteHandler, CellWriteHandler {
         return requiredMap;
     }
 
-    /**
-     * 获取批注
-     */
+    /** 获取批注 */
     private static Map<String, String> getNotationMap(Class<?> clazz) {
         Map<String, String> notationMap = new HashMap<>();
         Field[] fields = clazz.getDeclaredFields();

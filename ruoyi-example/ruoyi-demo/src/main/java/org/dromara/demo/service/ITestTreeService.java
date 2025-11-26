@@ -1,10 +1,9 @@
 package org.dromara.demo.service;
 
-import org.dromara.demo.domain.bo.TestTreeBo;
-import org.dromara.demo.domain.vo.TestTreeVo;
-
 import java.util.Collection;
 import java.util.List;
+import org.dromara.demo.domain.bo.TestTreeBo;
+import org.dromara.demo.domain.vo.TestTreeVo;
 
 /**
  * 测试树表Service接口
@@ -20,9 +19,7 @@ public interface ITestTreeService {
      */
     TestTreeVo queryById(Long id);
 
-    /**
-     * 查询列表
-     */
+    /** 查询列表 */
     List<TestTreeVo> queryList(TestTreeBo bo);
 
     /**
@@ -44,7 +41,7 @@ public interface ITestTreeService {
     /**
      * 校验并删除数据
      *
-     * @param ids     主键集合
+     * @param ids 主键集合
      * @param isValid 是否校验,true-删除前校验,false-不校验
      * @return
      */

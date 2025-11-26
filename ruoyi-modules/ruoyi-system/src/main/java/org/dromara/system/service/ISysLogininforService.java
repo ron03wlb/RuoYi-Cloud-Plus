@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysLogininforBo;
 import org.dromara.system.domain.vo.SysLogininforVo;
-
-import java.util.List;
 
 /**
  * 系统访问日志情况信息 服务层
@@ -18,10 +17,11 @@ public interface ISysLogininforService {
      * 分页查询登录日志列表
      *
      * @param logininfor 查询条件
-     * @param pageQuery  分页参数
+     * @param pageQuery 分页参数
      * @return 登录日志分页列表
      */
-    TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor, PageQuery pageQuery);
+    TableDataInfo<SysLogininforVo> selectPageLogininforList(
+            SysLogininforBo logininfor, PageQuery pageQuery);
 
     /**
      * 新增系统登录日志
@@ -46,8 +46,6 @@ public interface ISysLogininforService {
      */
     int deleteLogininforByIds(Long[] infoIds);
 
-    /**
-     * 清空系统登录日志
-     */
+    /** 清空系统登录日志 */
     void cleanLogininfor();
 }

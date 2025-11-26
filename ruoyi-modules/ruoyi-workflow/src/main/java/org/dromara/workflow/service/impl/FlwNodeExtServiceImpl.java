@@ -3,6 +3,8 @@ package org.dromara.workflow.service.impl;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ObjectUtil;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -25,9 +27,6 @@ import org.dromara.workflow.domain.vo.NodeExtVo;
 import org.dromara.workflow.service.IFlwNodeExtService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * 流程设计器-节点扩展属性
  *
@@ -39,42 +38,51 @@ import java.util.stream.Collectors;
 @Service
 public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService {
 
-    /**
-     * 存储不同 dictType 对应的配置信息
-     */
+    /** 存储不同 dictType 对应的配置信息 */
     private static final Map<String, Map<String, Object>> CHILD_NODE_MAP;
 
     static {
-        CHILD_NODE_MAP = Map.of(
-            CopySettingEnum.class.getSimpleName(),
-            Map.of(
-                "label", "抄送对象",
-                "type", 5,
-                "must", false,
-                "multiple", false,
-                "desc", "设置该节点的抄送办理人"
-            ),
-            VariablesEnum.class.getSimpleName(),
-            Map.of(
-                "label", "自定义参数",
-                "type", 2,
-                "must", false,
-                "multiple", false,
-                "desc", "节点执行时可设置自定义参数，多个参数以逗号分隔，如：key1=value1,key2=value2"
-            ),
-            ButtonPermissionEnum.class.getSimpleName(),
-            Map.of(
-                "label", "权限按钮",
-                "type", 4,
-                "must", false,
-                "multiple", true,
-                "desc", "控制该节点的按钮权限"
-            )
-        );
+        CHILD_NODE_MAP =
+                Map.of(
+                        CopySettingEnum.class.getSimpleName(),
+                        Map.of(
+                                "label",
+                                "抄送对象",
+                                "type",
+                                5,
+                                "must",
+                                false,
+                                "multiple",
+                                false,
+                                "desc",
+                                "设置该节点的抄送办理人"),
+                        VariablesEnum.class.getSimpleName(),
+                        Map.of(
+                                "label",
+                                "自定义参数",
+                                "type",
+                                2,
+                                "must",
+                                false,
+                                "multiple",
+                                false,
+                                "desc",
+                                "节点执行时可设置自定义参数，多个参数以逗号分隔，如：key1=value1,key2=value2"),
+                        ButtonPermissionEnum.class.getSimpleName(),
+                        Map.of(
+                                "label",
+                                "权限按钮",
+                                "type",
+                                4,
+                                "must",
+                                false,
+                                "multiple",
+                                true,
+                                "desc",
+                                "控制该节点的按钮权限"));
     }
 
-    @DubboReference
-    private RemoteDictService remoteDictService;
+    @DubboReference private RemoteDictService remoteDictService;
 
     /**
      * 获取节点扩展属性
@@ -85,11 +93,15 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
     public List<NodeExt> getNodeExt() {
         List<NodeExt> nodeExtList = new ArrayList<>();
         // 构建基础设置页面
-        nodeExtList.add(buildNodeExt("wf_basic_tab", "基础设置", 1,
-            List.of(CopySettingEnum.class, VariablesEnum.class)));
+        nodeExtList.add(
+                buildNodeExt(
+                        "wf_basic_tab",
+                        "基础设置",
+                        1,
+                        List.of(CopySettingEnum.class, VariablesEnum.class)));
         // 构建按钮权限页面
-        nodeExtList.add(buildNodeExt("wf_button_tab", "权限", 2,
-            List.of(ButtonPermissionEnum.class)));
+        nodeExtList.add(
+                buildNodeExt("wf_button_tab", "权限", 2, List.of(ButtonPermissionEnum.class)));
         // 自定义构建 规则参考 NodeExt 与 warm-flow文档说明
         // nodeExtList.add(buildNodeExt("xxx_xxx", "xxx", 1, List);
         return nodeExtList;
@@ -98,9 +110,9 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
     /**
      * 构建一个 `NodeExt` 对象
      *
-     * @param code    唯一编码
-     * @param name    名称（新页签时，作为页签名称）
-     * @param type    节点类型（1: 基础设置，2: 新页签）
+     * @param code 唯一编码
+     * @param name 名称（新页签时，作为页签名称）
+     * @param type 节点类型（1: 基础设置，2: 新页签）
      * @param sources 数据来源（枚举类或字典类型）
      * @return 构建的 `NodeExt` 对象
      */
@@ -110,18 +122,20 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
         nodeExt.setCode(code);
         nodeExt.setType(type);
         nodeExt.setName(name);
-        nodeExt.setChilds(sources.stream()
-            .map(source -> {
-                if (source instanceof Class<?> clazz && NodeExtEnum.class.isAssignableFrom(clazz)) {
-                    return buildChildNode((Class<? extends NodeExtEnum>) clazz);
-                } else if (source instanceof String dictType) {
-                    return buildChildNode(dictType);
-                }
-                return null;
-            })
-            .filter(ObjectUtil::isNotNull)
-            .toList()
-        );
+        nodeExt.setChilds(
+                sources.stream()
+                        .map(
+                                source -> {
+                                    if (source instanceof Class<?> clazz
+                                            && NodeExtEnum.class.isAssignableFrom(clazz)) {
+                                        return buildChildNode((Class<? extends NodeExtEnum>) clazz);
+                                    } else if (source instanceof String dictType) {
+                                        return buildChildNode(dictType);
+                                    }
+                                    return null;
+                                })
+                        .filter(ObjectUtil::isNotNull)
+                        .toList());
         return nodeExt;
     }
 
@@ -151,11 +165,11 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
         // 描述
         childNode.setDesc(Convert.toStr(map.get("desc"), null));
         // 字典，下拉框和复选框时用到
-        childNode.setDict(Arrays.stream(enumClass.getEnumConstants())
-            .map(NodeExtEnum.class::cast)
-            .map(x ->
-                new NodeExt.DictItem(x.getLabel(), x.getValue(), x.isSelected())
-            ).toList());
+        childNode.setDict(
+                Arrays.stream(enumClass.getEnumConstants())
+                        .map(NodeExtEnum.class::cast)
+                        .map(x -> new NodeExt.DictItem(x.getLabel(), x.getValue(), x.isSelected()))
+                        .toList());
         return childNode;
     }
 
@@ -184,29 +198,29 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
         // 描述 (可根据描述参数解析更多配置，如type，must，multiple等)
         childNode.setDesc(dictTypeDTO.getRemark());
         // 字典，下拉框和复选框时用到
-        childNode.setDict(remoteDictService.selectDictDataByType(dictType)
-            .stream().map(x ->
-                new NodeExt.DictItem(x.getDictLabel(), x.getDictValue(), Convert.toBool(x.getIsDefault(), false))
-            ).toList());
+        childNode.setDict(
+                remoteDictService.selectDictDataByType(dictType).stream()
+                        .map(
+                                x ->
+                                        new NodeExt.DictItem(
+                                                x.getDictLabel(),
+                                                x.getDictValue(),
+                                                Convert.toBool(x.getIsDefault(), false)))
+                        .toList());
         return childNode;
     }
 
     /**
      * 解析扩展属性 JSON 并构建 Node 扩展属性对象
-     * <p>
-     * 根据传入的 JSON 字符串，将扩展属性分为三类：
-     * 1. ButtonPermissionEnum：解析为按钮权限列表，标记每个按钮是否勾选
-     * 2. CopySettingEnum：解析为抄送对象 ID 集合
-     * 3. VariablesEnum：解析为自定义参数 Map
      *
-     * <p>示例 JSON：
-     * [
-     * {"code": "ButtonPermissionEnum", "value": "back,termination"},
-     * {"code": "CopySettingEnum", "value": "1,3,4,#{@spelRuleComponent.selectDeptLeaderById(#deptId", "#roleId)}"},
-     * {"code": "VariablesEnum", "value": "key1=value1,key2=value2"}
-     * ]
+     * <p>根据传入的 JSON 字符串，将扩展属性分为三类： 1. ButtonPermissionEnum：解析为按钮权限列表，标记每个按钮是否勾选 2.
+     * CopySettingEnum：解析为抄送对象 ID 集合 3. VariablesEnum：解析为自定义参数 Map
      *
-     * @param ext      扩展属性 JSON 字符串
+     * <p>示例 JSON： [ {"code": "ButtonPermissionEnum", "value": "back,termination"}, {"code":
+     * "CopySettingEnum", "value": "1,3,4,#{@spelRuleComponent.selectDeptLeaderById(#deptId",
+     * "#roleId)}"}, {"code": "VariablesEnum", "value": "key1=value1,key2=value2"} ]
+     *
+     * @param ext 扩展属性 JSON 字符串
      * @param variable 流程变量
      * @return NodeExtVo 对象，封装按钮权限列表、抄送对象集合和自定义参数 Map
      */
@@ -233,38 +247,49 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
                 NodeExt.ChildNode childNode = buildChildNode(ButtonPermissionEnum.class);
 
                 // 构建 ButtonPermissionVo 列表
-                List<ButtonPermissionVo> buttonList = Optional.ofNullable(childNode)
-                    .map(NodeExt.ChildNode::getDict)
-                    .orElse(List.of())
-                    .stream()
-                    .map(dict -> new ButtonPermissionVo(dict.getValue(), buttonSet.contains(dict.getValue())))
-                    .toList();
+                List<ButtonPermissionVo> buttonList =
+                        Optional.ofNullable(childNode)
+                                .map(NodeExt.ChildNode::getDict)
+                                .orElse(List.of())
+                                .stream()
+                                .map(
+                                        dict ->
+                                                new ButtonPermissionVo(
+                                                        dict.getValue(),
+                                                        buttonSet.contains(dict.getValue())))
+                                .toList();
 
                 nodeExtVo.setButtonPermissions(buttonList);
 
             } else if (CopySettingEnum.class.getSimpleName().equals(code)) {
-                List<String> permissions = spelSmartSplit(value).stream()
-                    .map(s -> {
-                        List<String> result = ExpressionUtil.evalVariable(s, variable);
-                        if (CollUtil.isNotEmpty(result)) {
-                            return result;
-                        }
-                        return Collections.singletonList(s);
-                    }).filter(Objects::nonNull)
-                    .flatMap(List::stream)
-                    .distinct()
-                    .collect(Collectors.toList());
-                List<String> copySettings = FlowEngine.permissionHandler().convertPermissions(permissions);
+                List<String> permissions =
+                        spelSmartSplit(value).stream()
+                                .map(
+                                        s -> {
+                                            List<String> result =
+                                                    ExpressionUtil.evalVariable(s, variable);
+                                            if (CollUtil.isNotEmpty(result)) {
+                                                return result;
+                                            }
+                                            return Collections.singletonList(s);
+                                        })
+                                .filter(Objects::nonNull)
+                                .flatMap(List::stream)
+                                .distinct()
+                                .collect(Collectors.toList());
+                List<String> copySettings =
+                        FlowEngine.permissionHandler().convertPermissions(permissions);
                 // 解析抄送对象 ID 集合
                 nodeExtVo.setCopySettings(new HashSet<>(copySettings));
 
             } else if (VariablesEnum.class.getSimpleName().equals(code)) {
                 // 解析自定义参数
                 // 将 key=value 字符串拆分为 Map
-                Map<String, String> variables = Arrays.stream(StringUtils.split(value, StringUtils.SEPARATOR))
-                    .map(s -> StringUtils.split(s, "="))
-                    .filter(arr -> arr.length == 2)
-                    .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
+                Map<String, String> variables =
+                        Arrays.stream(StringUtils.split(value, StringUtils.SEPARATOR))
+                                .map(s -> StringUtils.split(s, "="))
+                                .filter(arr -> arr.length == 2)
+                                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
 
                 nodeExtVo.setVariables(variables);
             } else {
@@ -275,9 +300,7 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
         return nodeExtVo;
     }
 
-    /**
-     * 按逗号分割字符串，但保留 #{...} 表达式和字符串常量中的逗号
-     */
+    /** 按逗号分割字符串，但保留 #{...} 表达式和字符串常量中的逗号 */
     private static List<String> spelSmartSplit(String str) {
         List<String> result = new ArrayList<>();
         if (str == null || str.trim().isEmpty()) {
@@ -352,5 +375,4 @@ public class FlwNodeExtServiceImpl implements NodeExtService, IFlwNodeExtService
     private static boolean checkNext(String str, int index, char expected) {
         return index + 1 < str.length() && str.charAt(index + 1) == expected;
     }
-
 }

@@ -1,10 +1,9 @@
 package org.dromara.common.core.utils;
 
 import cn.hutool.core.util.ObjectUtil;
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.util.function.Function;
 
 /**
  * 对象工具类
@@ -31,8 +30,8 @@ public class ObjectUtils extends ObjectUtil {
     /**
      * 如果对象不为空，则获取对象中的某个字段，否则返回默认值
      *
-     * @param obj          对象
-     * @param func         获取方法
+     * @param obj 对象
+     * @param func 获取方法
      * @param defaultValue 默认值
      * @return 对象字段
      */
@@ -46,7 +45,7 @@ public class ObjectUtils extends ObjectUtil {
     /**
      * 如果值不为空，则返回值，否则返回默认值
      *
-     * @param obj          对象
+     * @param obj 对象
      * @param defaultValue 默认值
      * @return 对象字段
      */
@@ -56,5 +55,4 @@ public class ObjectUtils extends ObjectUtil {
         }
         return defaultValue;
     }
-
 }

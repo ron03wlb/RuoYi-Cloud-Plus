@@ -15,9 +15,7 @@ import me.zhyd.oauth.utils.StringUtils;
 import me.zhyd.oauth.utils.UrlBuilder;
 
 /**
- * <p>
  * 企业微信登录父类
- * </p>
  *
  * @author liguanhua (347826496(a)qq.com)
  * @since 1.15.9
@@ -25,11 +23,11 @@ import me.zhyd.oauth.utils.UrlBuilder;
 public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultRequest {
 
     public AbstractAuthWeChatEnterpriseRequest(AuthConfig config, AuthSource source) {
-        super(config,source);
+        super(config, source);
     }
 
-
-    public AbstractAuthWeChatEnterpriseRequest(AuthConfig config, AuthSource source, AuthStateCache authStateCache) {
+    public AbstractAuthWeChatEnterpriseRequest(
+            AuthConfig config, AuthSource source, AuthStateCache authStateCache) {
         super(config, source, authStateCache);
     }
 
@@ -40,10 +38,10 @@ public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultReq
         JSONObject object = this.checkResponse(response);
 
         return AuthToken.builder()
-            .accessToken(object.getString("access_token"))
-            .expireIn(object.getIntValue("expires_in"))
-            .code(authCallback.getCode())
-            .build();
+                .accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in"))
+                .code(authCallback.getCode())
+                .build();
     }
 
     @Override
@@ -60,17 +58,17 @@ public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultReq
         JSONObject userDetail = getUserDetail(authToken.getAccessToken(), userId, userTicket);
 
         return AuthUser.builder()
-            .rawUserInfo(userDetail)
-            .username(userDetail.getString("name"))
-            .nickname(userDetail.getString("alias"))
-            .avatar(userDetail.getString("avatar"))
-            .location(userDetail.getString("address"))
-            .email(userDetail.getString("email"))
-            .uuid(userId)
-            .gender(AuthUserGender.getWechatRealGender(userDetail.getString("gender")))
-            .token(authToken)
-            .source(source.toString())
-            .build();
+                .rawUserInfo(userDetail)
+                .username(userDetail.getString("name"))
+                .nickname(userDetail.getString("alias"))
+                .avatar(userDetail.getString("avatar"))
+                .location(userDetail.getString("address"))
+                .email(userDetail.getString("email"))
+                .uuid(userId)
+                .gender(AuthUserGender.getWechatRealGender(userDetail.getString("gender")))
+                .token(authToken)
+                .source(source.toString())
+                .build();
     }
 
     /**
@@ -89,7 +87,6 @@ public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultReq
         return object;
     }
 
-
     /**
      * 返回获取accessToken的url
      *
@@ -99,9 +96,9 @@ public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultReq
     @Override
     protected String accessTokenUrl(String code) {
         return UrlBuilder.fromBaseUrl(source.accessToken())
-            .queryParam("corpid", config.getClientId())
-            .queryParam("corpsecret", config.getClientSecret())
-            .build();
+                .queryParam("corpid", config.getClientId())
+                .queryParam("corpsecret", config.getClientSecret())
+                .build();
     }
 
     /**
@@ -113,41 +110,45 @@ public abstract class AbstractAuthWeChatEnterpriseRequest extends AuthDefaultReq
     @Override
     protected String userInfoUrl(AuthToken authToken) {
         return UrlBuilder.fromBaseUrl(source.userInfo())
-            .queryParam("access_token", authToken.getAccessToken())
-            .queryParam("code", authToken.getCode())
-            .build();
+                .queryParam("access_token", authToken.getAccessToken())
+                .queryParam("code", authToken.getCode())
+                .build();
     }
 
     /**
      * 用户详情
      *
      * @param accessToken accessToken
-     * @param userId      企业内用户id
-     * @param userTicket  成员票据，用于获取用户信息或敏感信息
+     * @param userId 企业内用户id
+     * @param userTicket 成员票据，用于获取用户信息或敏感信息
      * @return 用户详情
      */
     private JSONObject getUserDetail(String accessToken, String userId, String userTicket) {
         // 用户基础信息
-        String userInfoUrl = UrlBuilder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
-            .queryParam("access_token", accessToken)
-            .queryParam("userid", userId)
-            .build();
+        String userInfoUrl =
+                UrlBuilder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
+                        .queryParam("access_token", accessToken)
+                        .queryParam("userid", userId)
+                        .build();
         String userInfoResponse = new HttpUtils(config.getHttpConfig()).get(userInfoUrl).getBody();
         JSONObject userInfo = checkResponse(userInfoResponse);
 
         // 用户敏感信息
         if (StringUtils.isNotEmpty(userTicket)) {
-            String userDetailUrl = UrlBuilder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
-                .queryParam("access_token", accessToken)
-                .build();
+            String userDetailUrl =
+                    UrlBuilder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
+                            .queryParam("access_token", accessToken)
+                            .build();
             JSONObject param = new JSONObject();
             param.put("user_ticket", userTicket);
-            String userDetailResponse = new HttpUtils(config.getHttpConfig()).post(userDetailUrl, param.toJSONString()).getBody();
+            String userDetailResponse =
+                    new HttpUtils(config.getHttpConfig())
+                            .post(userDetailUrl, param.toJSONString())
+                            .getBody();
             JSONObject userDetail = checkResponse(userDetailResponse);
 
             userInfo.putAll(userDetail);
         }
         return userInfo;
     }
-
 }

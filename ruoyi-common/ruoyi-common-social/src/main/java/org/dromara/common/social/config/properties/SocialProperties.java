@@ -1,10 +1,9 @@
 package org.dromara.common.social.config.properties;
 
+import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * Social 配置属性
@@ -16,9 +15,6 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "justauth")
 public class SocialProperties {
 
-    /**
-     * 授权类型
-     */
+    /** 授权类型 */
     private Map<String, SocialLoginConfigProperties> type;
-
 }

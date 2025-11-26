@@ -31,23 +31,17 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 public class LogEventListener {
 
-    @DubboReference
-    private RemoteLogService remoteLogService;
-    @DubboReference
-    private RemoteClientService remoteClientService;
+    @DubboReference private RemoteLogService remoteLogService;
+    @DubboReference private RemoteClientService remoteClientService;
 
-    /**
-     * 保存系统日志记录
-     */
+    /** 保存系统日志记录 */
     @EventListener
     public void saveLog(OperLogEvent operLogEvent) {
         RemoteOperLogBo sysOperLog = BeanUtil.toBean(operLogEvent, RemoteOperLogBo.class);
         remoteLogService.saveLog(sysOperLog);
     }
 
-    /**
-     * 保存系统访问记录
-     */
+    /** 保存系统访问记录 */
     @EventListener
     public void saveLogininfor(LogininforEvent logininforEvent) {
         HttpServletRequest request = ServletUtils.getRequest();
@@ -87,7 +81,11 @@ public class LogEventListener {
         logininfor.setOs(os);
         logininfor.setMsg(logininforEvent.getMessage());
         // 日志状态
-        if (StringUtils.equalsAny(logininforEvent.getStatus(), Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
+        if (StringUtils.equalsAny(
+                logininforEvent.getStatus(),
+                Constants.LOGIN_SUCCESS,
+                Constants.LOGOUT,
+                Constants.REGISTER)) {
             logininfor.setStatus(Constants.SUCCESS);
         } else if (Constants.LOGIN_FAIL.equals(logininforEvent.getStatus())) {
             logininfor.setStatus(Constants.FAIL);
@@ -101,5 +99,4 @@ public class LogEventListener {
         }
         return "[" + msg + "]";
     }
-
 }

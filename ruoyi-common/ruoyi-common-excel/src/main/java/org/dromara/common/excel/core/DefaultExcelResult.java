@@ -1,10 +1,9 @@
 package org.dromara.common.excel.core;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Setter;
 
 /**
  * 默认excel返回对象
@@ -14,17 +13,11 @@ import java.util.List;
  */
 public class DefaultExcelResult<T> implements ExcelResult<T> {
 
-    /**
-     * 数据对象list
-     */
-    @Setter
-    private List<T> list;
+    /** 数据对象list */
+    @Setter private List<T> list;
 
-    /**
-     * 错误信息列表
-     */
-    @Setter
-    private List<String> errorList;
+    /** 错误信息列表 */
+    @Setter private List<String> errorList;
 
     public DefaultExcelResult() {
         this.list = new ArrayList<>();

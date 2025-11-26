@@ -39,7 +39,10 @@
       "Bash(unzip:*)",
       "Bash(./gradlew clean:*)",
       "Bash(./gradlew :ruoyi-modules:ruoyi-system:build:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(chmod:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

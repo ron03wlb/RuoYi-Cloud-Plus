@@ -1,5 +1,6 @@
 package org.dromara.common.ratelimiter.aspectj;
 
+import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,8 +26,6 @@ import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-import java.lang.reflect.Method;
-
 /**
  * 限流处理
  *
@@ -36,19 +35,14 @@ import java.lang.reflect.Method;
 @Aspect
 public class RateLimiterAspect {
 
-    /**
-     * 定义spel表达式解析器
-     */
+    /** 定义spel表达式解析器 */
     private final ExpressionParser parser = new SpelExpressionParser();
-    /**
-     * 定义spel解析模版
-     */
-    private final ParserContext parserContext = new TemplateParserContext();
-    /**
-     * 方法参数解析器
-     */
-    private final ParameterNameDiscoverer pnd = new DefaultParameterNameDiscoverer();
 
+    /** 定义spel解析模版 */
+    private final ParserContext parserContext = new TemplateParserContext();
+
+    /** 方法参数解析器 */
+    private final ParameterNameDiscoverer pnd = new DefaultParameterNameDiscoverer();
 
     @Before("@annotation(rateLimiter)")
     public void doBefore(JoinPoint point, RateLimiter rateLimiter) {
@@ -65,7 +59,9 @@ public class RateLimiterAspect {
             if (number == -1) {
                 String message = rateLimiter.message();
                 if (StringUtils.startsWith(message, "{") && StringUtils.endsWith(message, "}")) {
-                    message = MessageUtils.message(StringUtils.substring(message, 1, message.length() - 1));
+                    message =
+                            MessageUtils.message(
+                                    StringUtils.substring(message, 1, message.length() - 1));
                 }
                 throw new ServiceException(message);
             }
@@ -87,11 +83,11 @@ public class RateLimiterAspect {
             Method targetMethod = signature.getMethod();
             Object[] args = point.getArgs();
             MethodBasedEvaluationContext context =
-                new MethodBasedEvaluationContext(null, targetMethod, args, pnd);
+                    new MethodBasedEvaluationContext(null, targetMethod, args, pnd);
             context.setBeanResolver(new BeanFactoryResolver(SpringUtils.getBeanFactory()));
             Expression expression;
             if (StringUtils.startsWith(key, parserContext.getExpressionPrefix())
-                && StringUtils.endsWith(key, parserContext.getExpressionSuffix())) {
+                    && StringUtils.endsWith(key, parserContext.getExpressionSuffix())) {
                 expression = parser.parseExpression(key, parserContext);
             } else {
                 expression = parser.parseExpression(key);

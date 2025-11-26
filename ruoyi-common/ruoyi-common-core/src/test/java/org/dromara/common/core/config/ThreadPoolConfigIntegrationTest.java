@@ -1,5 +1,12 @@
 package org.dromara.common.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -7,29 +14,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 /**
  * ThreadPoolConfig 集成测试类
- * <p>
- * 测试线程池配置的 Bean 创建、参数配置、线程命名、虚拟线程支持等功能。
+ *
+ * <p>测试线程池配置的 Bean 创建、参数配置、线程命名、虚拟线程支持等功能。
  *
  * @author Test Team
  */
 @DisplayName("ThreadPoolConfig 集成测试")
 class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    @Autowired private ApplicationContext applicationContext;
 
-    @Autowired
-    private ScheduledExecutorService scheduledExecutorService;
+    @Autowired private ScheduledExecutorService scheduledExecutorService;
 
     @Nested
     @DisplayName("Bean 创建测试")
@@ -44,7 +41,9 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         @Test
         @DisplayName("应该能够从 ApplicationContext 获取 scheduledExecutorService")
         void shouldGetBeanFromApplicationContext() {
-            ScheduledExecutorService bean = applicationContext.getBean("scheduledExecutorService", ScheduledExecutorService.class);
+            ScheduledExecutorService bean =
+                    applicationContext.getBean(
+                            "scheduledExecutorService", ScheduledExecutorService.class);
 
             assertThat(bean).isNotNull();
             assertThat(bean).isSameAs(scheduledExecutorService);
@@ -53,8 +52,10 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         @Test
         @DisplayName("scheduledExecutorService 应该是单例")
         void shouldBeSingleton() {
-            ScheduledExecutorService bean1 = applicationContext.getBean(ScheduledExecutorService.class);
-            ScheduledExecutorService bean2 = applicationContext.getBean(ScheduledExecutorService.class);
+            ScheduledExecutorService bean1 =
+                    applicationContext.getBean(ScheduledExecutorService.class);
+            ScheduledExecutorService bean2 =
+                    applicationContext.getBean(ScheduledExecutorService.class);
 
             assertThat(bean1).isSameAs(bean2);
         }
@@ -85,7 +86,7 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldUseCallerRunsPolicy() {
             if (scheduledExecutorService instanceof ScheduledThreadPoolExecutor executor) {
                 assertThat(executor.getRejectedExecutionHandler().getClass().getSimpleName())
-                    .isEqualTo("CallerRunsPolicy");
+                        .isEqualTo("CallerRunsPolicy");
             }
         }
 
@@ -112,18 +113,25 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             AtomicInteger threadNameChecked = new AtomicInteger(0);
 
             // 提交一个任务来检查线程名称
-            scheduledExecutorService.submit(() -> {
-                String threadName = Thread.currentThread().getName();
+            scheduledExecutorService
+                    .submit(
+                            () -> {
+                                String threadName = Thread.currentThread().getName();
 
-                // 线程名称应该匹配 "schedule-pool-N" 或 "virtual-schedule-pool-N"
-                assertThat(threadName)
-                    .satisfiesAnyOf(
-                        name -> assertThat(name).matches("schedule-pool-\\d+"),
-                        name -> assertThat(name).matches("virtual-schedule-pool-\\d+")
-                    );
+                                // 线程名称应该匹配 "schedule-pool-N" 或 "virtual-schedule-pool-N"
+                                assertThat(threadName)
+                                        .satisfiesAnyOf(
+                                                name ->
+                                                        assertThat(name)
+                                                                .matches("schedule-pool-\\d+"),
+                                                name ->
+                                                        assertThat(name)
+                                                                .matches(
+                                                                        "virtual-schedule-pool-\\d+"));
 
-                threadNameChecked.incrementAndGet();
-            }).get(5, TimeUnit.SECONDS);
+                                threadNameChecked.incrementAndGet();
+                            })
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(threadNameChecked.get()).isEqualTo(1);
         }
@@ -133,13 +141,16 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldBeDaemonThread() throws Exception {
             AtomicInteger daemonChecked = new AtomicInteger(0);
 
-            scheduledExecutorService.submit(() -> {
-                // BasicThreadFactory 配置的线程应该是守护线程
-                boolean isDaemon = Thread.currentThread().isDaemon();
-                assertThat(isDaemon).isTrue();
+            scheduledExecutorService
+                    .submit(
+                            () -> {
+                                // BasicThreadFactory 配置的线程应该是守护线程
+                                boolean isDaemon = Thread.currentThread().isDaemon();
+                                assertThat(isDaemon).isTrue();
 
-                daemonChecked.incrementAndGet();
-            }).get(5, TimeUnit.SECONDS);
+                                daemonChecked.incrementAndGet();
+                            })
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(daemonChecked.get()).isEqualTo(1);
         }
@@ -154,7 +165,9 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldExecuteRunnableTask() throws Exception {
             AtomicInteger counter = new AtomicInteger(0);
 
-            scheduledExecutorService.submit(() -> counter.incrementAndGet()).get(5, TimeUnit.SECONDS);
+            scheduledExecutorService
+                    .submit(() -> counter.incrementAndGet())
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(counter.get()).isEqualTo(1);
         }
@@ -162,7 +175,10 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         @Test
         @DisplayName("应该能够提交并执行 Callable 任务")
         void shouldExecuteCallableTask() throws Exception {
-            String result = scheduledExecutorService.submit(() -> "Hello from ThreadPool").get(5, TimeUnit.SECONDS);
+            String result =
+                    scheduledExecutorService
+                            .submit(() -> "Hello from ThreadPool")
+                            .get(5, TimeUnit.SECONDS);
 
             assertThat(result).isEqualTo("Hello from ThreadPool");
         }
@@ -173,11 +189,9 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             AtomicInteger counter = new AtomicInteger(0);
             long startTime = System.currentTimeMillis();
 
-            scheduledExecutorService.schedule(
-                () -> counter.incrementAndGet(),
-                100,
-                TimeUnit.MILLISECONDS
-            ).get(5, TimeUnit.SECONDS);
+            scheduledExecutorService
+                    .schedule(() -> counter.incrementAndGet(), 100, TimeUnit.MILLISECONDS)
+                    .get(5, TimeUnit.SECONDS);
 
             long duration = System.currentTimeMillis() - startTime;
 
@@ -190,12 +204,12 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldSchedulePeriodicTask() throws Exception {
             AtomicInteger counter = new AtomicInteger(0);
 
-            var future = scheduledExecutorService.scheduleAtFixedRate(
-                () -> counter.incrementAndGet(),
-                0,    // 初始延迟
-                50,   // 周期
-                TimeUnit.MILLISECONDS
-            );
+            var future =
+                    scheduledExecutorService.scheduleAtFixedRate(
+                            () -> counter.incrementAndGet(),
+                            0, // 初始延迟
+                            50, // 周期
+                            TimeUnit.MILLISECONDS);
 
             // 等待一段时间让任务执行多次
             Thread.sleep(250);
@@ -210,11 +224,11 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldCancelScheduledTask() throws Exception {
             AtomicInteger counter = new AtomicInteger(0);
 
-            var future = scheduledExecutorService.schedule(
-                () -> counter.incrementAndGet(),
-                1000, // 延迟1秒
-                TimeUnit.MILLISECONDS
-            );
+            var future =
+                    scheduledExecutorService.schedule(
+                            () -> counter.incrementAndGet(),
+                            1000, // 延迟1秒
+                            TimeUnit.MILLISECONDS);
 
             // 立即取消任务
             boolean cancelled = future.cancel(false);
@@ -236,15 +250,18 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             AtomicInteger successCount = new AtomicInteger(0);
 
             // 提交一个会抛异常的任务
-            scheduledExecutorService.submit(() -> {
-                throw new RuntimeException("Test exception");
-            });
+            scheduledExecutorService.submit(
+                    () -> {
+                        throw new RuntimeException("Test exception");
+                    });
 
             // 稍等片刻让异常任务完成
             Thread.sleep(100);
 
             // 线程池应该仍然可用,能够执行后续任务
-            scheduledExecutorService.submit(() -> successCount.incrementAndGet()).get(5, TimeUnit.SECONDS);
+            scheduledExecutorService
+                    .submit(() -> successCount.incrementAndGet())
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(successCount.get()).isEqualTo(1);
             assertThat(scheduledExecutorService.isShutdown()).isFalse();
@@ -253,13 +270,15 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         @Test
         @DisplayName("应该能够捕获任务执行中的异常")
         void shouldCatchTaskException() {
-            var future = scheduledExecutorService.submit(() -> {
-                throw new IllegalStateException("Test exception");
-            });
+            var future =
+                    scheduledExecutorService.submit(
+                            () -> {
+                                throw new IllegalStateException("Test exception");
+                            });
 
             assertThatThrownBy(() -> future.get(5, TimeUnit.SECONDS))
-                .hasCauseInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Test exception");
+                    .hasCauseInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("Test exception");
         }
     }
 
@@ -276,11 +295,13 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             var futures = new java.util.ArrayList<java.util.concurrent.Future<?>>();
 
             for (int i = 0; i < taskCount; i++) {
-                futures.add(scheduledExecutorService.submit(() -> {
-                    counter.incrementAndGet();
-                    Thread.sleep(10);
-                    return null;
-                }));
+                futures.add(
+                        scheduledExecutorService.submit(
+                                () -> {
+                                    counter.incrementAndGet();
+                                    Thread.sleep(10);
+                                    return null;
+                                }));
             }
 
             // 等待所有任务完成
@@ -300,9 +321,11 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             var futures = new java.util.ArrayList<java.util.concurrent.Future<?>>();
 
             for (int i = 0; i < taskCount; i++) {
-                futures.add(scheduledExecutorService.submit(() -> {
-                    successCount.incrementAndGet();
-                }));
+                futures.add(
+                        scheduledExecutorService.submit(
+                                () -> {
+                                    successCount.incrementAndGet();
+                                }));
             }
 
             // 等待所有任务完成
@@ -324,15 +347,15 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             AtomicInteger syncCount = new AtomicInteger(0);
 
             // 模拟每50ms执行一次数据同步
-            var future = scheduledExecutorService.scheduleAtFixedRate(
-                () -> {
-                    // 模拟数据同步逻辑
-                    syncCount.incrementAndGet();
-                },
-                0,
-                50,
-                TimeUnit.MILLISECONDS
-            );
+            var future =
+                    scheduledExecutorService.scheduleAtFixedRate(
+                            () -> {
+                                // 模拟数据同步逻辑
+                                syncCount.incrementAndGet();
+                            },
+                            0,
+                            50,
+                            TimeUnit.MILLISECONDS);
 
             Thread.sleep(250);
             future.cancel(false);
@@ -346,14 +369,15 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
             AtomicInteger cleanupExecuted = new AtomicInteger(0);
 
             // 模拟延迟100ms执行缓存清理
-            scheduledExecutorService.schedule(
-                () -> {
-                    // 模拟缓存清理逻辑
-                    cleanupExecuted.incrementAndGet();
-                },
-                100,
-                TimeUnit.MILLISECONDS
-            ).get(5, TimeUnit.SECONDS);
+            scheduledExecutorService
+                    .schedule(
+                            () -> {
+                                // 模拟缓存清理逻辑
+                                cleanupExecuted.incrementAndGet();
+                            },
+                            100,
+                            TimeUnit.MILLISECONDS)
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(cleanupExecuted.get()).isEqualTo(1);
         }
@@ -363,12 +387,15 @@ class ThreadPoolConfigIntegrationTest extends BaseIntegrationTest {
         void shouldExecuteAsyncLoggingTask() throws Exception {
             var logMessages = new java.util.concurrent.CopyOnWriteArrayList<String>();
 
-            scheduledExecutorService.submit(() -> {
-                // 模拟异步日志记录
-                logMessages.add("User login");
-                logMessages.add("Data processed");
-                logMessages.add("Request completed");
-            }).get(5, TimeUnit.SECONDS);
+            scheduledExecutorService
+                    .submit(
+                            () -> {
+                                // 模拟异步日志记录
+                                logMessages.add("User login");
+                                logMessages.add("Data processed");
+                                logMessages.add("Request completed");
+                            })
+                    .get(5, TimeUnit.SECONDS);
 
             assertThat(logMessages).hasSize(3);
         }

@@ -1,16 +1,15 @@
 package org.dromara.common.core.exception.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.util.Locale;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.exception.base.BaseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * UserException 集成测试
@@ -53,7 +52,8 @@ class UserExceptionIntegrationTest extends BaseIntegrationTest {
         @DisplayName("应该支持多个参数")
         void shouldCreateWithMultipleArgs() {
             // Act
-            UserException exception = new UserException("user.password.retry.limit.count", 3, "admin");
+            UserException exception =
+                    new UserException("user.password.retry.limit.count", 3, "admin");
 
             // Assert
             assertThat(exception.getModule()).isEqualTo("user");
@@ -226,12 +226,14 @@ class UserExceptionIntegrationTest extends BaseIntegrationTest {
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
 
             // Act & Assert
-            assertThat(catchThrowable(() -> {
-                throw new UserException("user.not.exists");
-            }))
-                .isInstanceOf(UserException.class)
-                .isInstanceOf(BaseException.class)
-                .hasMessage("用户不存在");
+            assertThat(
+                            catchThrowable(
+                                    () -> {
+                                        throw new UserException("user.not.exists");
+                                    }))
+                    .isInstanceOf(UserException.class)
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage("用户不存在");
         }
 
         @Test
@@ -297,7 +299,8 @@ class UserExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleNullArgs() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            UserException exception = new UserException("user.password.retry.limit.count", (Object) null);
+            UserException exception =
+                    new UserException("user.password.retry.limit.count", (Object) null);
 
             // Act
             String message = exception.getMessage();
@@ -311,7 +314,9 @@ class UserExceptionIntegrationTest extends BaseIntegrationTest {
         void shouldHandleSpecialCharactersInArgs() {
             // Arrange
             LocaleContextHolder.setLocale(Locale.SIMPLIFIED_CHINESE);
-            UserException exception = new UserException("user.password.retry.limit.count", "<script>alert('xss')</script>");
+            UserException exception =
+                    new UserException(
+                            "user.password.retry.limit.count", "<script>alert('xss')</script>");
 
             // Act
             String message = exception.getMessage();

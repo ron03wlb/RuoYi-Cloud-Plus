@@ -1,14 +1,13 @@
 package org.dromara.system.api;
 
+import java.util.List;
+import java.util.Map;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.exception.user.UserException;
 import org.dromara.system.api.domain.bo.RemoteUserBo;
 import org.dromara.system.api.domain.vo.RemoteUserVo;
 import org.dromara.system.api.model.LoginUser;
 import org.dromara.system.api.model.XcxLoginUser;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 用户服务
@@ -29,7 +28,7 @@ public interface RemoteUserService {
     /**
      * 通过用户id查询用户信息
      *
-     * @param userId   用户id
+     * @param userId 用户id
      * @param tenantId 租户id
      * @return 结果
      */
@@ -39,7 +38,7 @@ public interface RemoteUserService {
      * 通过手机号查询用户信息
      *
      * @param phonenumber 手机号
-     * @param tenantId    租户id
+     * @param tenantId 租户id
      * @return 结果
      */
     LoginUser getUserInfoByPhonenumber(String phonenumber, String tenantId) throws UserException;
@@ -47,7 +46,7 @@ public interface RemoteUserService {
     /**
      * 通过邮箱查询用户信息
      *
-     * @param email    邮箱
+     * @param email 邮箱
      * @param tenantId 租户id
      * @return 结果
      */
@@ -113,7 +112,7 @@ public interface RemoteUserService {
      * 更新用户信息
      *
      * @param userId 用户ID
-     * @param ip     IP地址
+     * @param ip IP地址
      */
     void recordLoginInfo(Long userId, String ip);
 
@@ -164,5 +163,4 @@ public interface RemoteUserService {
      * @return Map，其中 key 为用户 ID，value 为对应的用户名称
      */
     Map<Long, String> selectUserNamesByIds(List<Long> userIds);
-
 }

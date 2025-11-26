@@ -25,7 +25,7 @@ public class AddressUtils {
 
     public static String getRealAddressByIP(String ip) {
         // 处理空串并过滤HTML标签
-        ip = HtmlUtil.cleanHtmlTag(StringUtils.blankToDefault(ip,""));
+        ip = HtmlUtil.cleanHtmlTag(StringUtils.blankToDefault(ip, ""));
         // 判断是否为IPv4
         if (NetUtils.isIPv4(ip)) {
             return resolverIPv4Region(ip);
@@ -40,10 +40,11 @@ public class AddressUtils {
 
     /**
      * 根据IPv4地址查询IP归属行政区域
+     *
      * @param ip ipv4地址
      * @return 归属行政区域
      */
-    private static String resolverIPv4Region(String ip){
+    private static String resolverIPv4Region(String ip) {
         // 内网不查询
         if (NetUtils.isInnerIP(ip)) {
             return LOCAL_ADDRESS;
@@ -53,10 +54,11 @@ public class AddressUtils {
 
     /**
      * 根据IPv6地址查询IP归属行政区域
+     *
      * @param ip ipv6地址
      * @return 归属行政区域
      */
-    private static String resolverIPv6Region(String ip){
+    private static String resolverIPv6Region(String ip) {
         // 内网不查询
         if (NetUtils.isInnerIPv6(ip)) {
             return LOCAL_ADDRESS;
@@ -66,5 +68,4 @@ public class AddressUtils {
         // 如有需要，可自行实现IPv6地址信息解析逻辑，并在这里返回
         return UNKNOWN_ADDRESS;
     }
-
 }

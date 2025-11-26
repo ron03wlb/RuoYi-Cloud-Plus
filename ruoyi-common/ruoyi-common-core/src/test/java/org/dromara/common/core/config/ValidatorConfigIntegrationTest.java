@@ -1,8 +1,11 @@
 package org.dromara.common.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
+import java.util.Set;
 import org.dromara.common.core.BaseIntegrationTest;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
@@ -12,31 +15,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * ValidatorConfig 集成测试类
- * <p>
- * 测试验证器配置的 Bean 创建、快速失败模式、国际化消息、分组验证等功能。
+ *
+ * <p>测试验证器配置的 Bean 创建、快速失败模式、国际化消息、分组验证等功能。
  *
  * @author Test Team
  */
 @DisplayName("ValidatorConfig 集成测试")
 class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    @Autowired private ApplicationContext applicationContext;
 
-    @Autowired
-    private Validator validator;
+    @Autowired private Validator validator;
 
-    /**
-     * 测试用户类 - 用于验证功能测试
-     */
+    /** 测试用户类 - 用于验证功能测试 */
     static class TestUser {
-        @NotBlank(message = "用户名不能为空", groups = {AddGroup.class, EditGroup.class})
+        @NotBlank(
+                message = "用户名不能为空",
+                groups = {AddGroup.class, EditGroup.class})
         @Size(min = 3, max = 20, message = "用户名长度必须在3-20之间", groups = AddGroup.class)
         private String username;
 
@@ -130,12 +127,13 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
         @DisplayName("快速失败模式：应该只返回第一个验证错误")
         void shouldReturnOnlyFirstValidationError() {
             TestUser user = new TestUser();
-            user.setUsername("");     // 违反 @NotBlank
-            user.setPassword("");     // 违反 @NotBlank
+            user.setUsername(""); // 违反 @NotBlank
+            user.setPassword(""); // 违反 @NotBlank
             user.setEmail("invalid"); // 违反 @Email
-            user.setAge(10);          // 违反 @Min(18)
+            user.setAge(10); // 违反 @Min(18)
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             // 快速失败模式下,应该只返回1个错误（第一个遇到的错误）
             assertThat(violations).hasSize(1);
@@ -146,11 +144,12 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
         void shouldStopValidationOnFirstError() {
             TestUser user = new TestUser();
             // 设置多个违反约束的字段
-            user.setUsername("a");    // 长度不足
-            user.setPassword("123");  // 长度不足
-            user.setAge(200);         // 超过最大值
+            user.setUsername("a"); // 长度不足
+            user.setPassword("123"); // 长度不足
+            user.setAge(200); // 超过最大值
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             // 快速失败：只返回第一个错误
             assertThat(violations).hasSize(1);
@@ -182,11 +181,11 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             user.setUsername(null); // 使用 null 来触发 @NotBlank,避免同时触发 @Size
             user.setPassword("validPassword123"); // 提供有效密码,确保只有用户名验证失败
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             assertThat(violations).isNotEmpty();
-            assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("用户名不能为空");
+            assertThat(violations.iterator().next().getMessage()).isEqualTo("用户名不能为空");
         }
 
         @Test
@@ -195,7 +194,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser user = new TestUser();
             user.setUsername("ab"); // 长度小于3
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             assertThat(violations).isNotEmpty();
         }
@@ -211,8 +211,7 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             Set<ConstraintViolation<TestUser>> violations = validator.validate(user);
 
             assertThat(violations).isNotEmpty();
-            assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("邮箱格式不正确");
+            assertThat(violations.iterator().next().getMessage()).isEqualTo("邮箱格式不正确");
         }
 
         @Test
@@ -226,8 +225,7 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             Set<ConstraintViolation<TestUser>> violations = validator.validate(user);
 
             assertThat(violations).isNotEmpty();
-            assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("年龄不能小于18岁");
+            assertThat(violations.iterator().next().getMessage()).isEqualTo("年龄不能小于18岁");
         }
     }
 
@@ -241,7 +239,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser user = new TestUser();
             user.setUsername("ab"); // 违反 AddGroup 的 @Size 约束
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             assertThat(violations).isNotEmpty();
             // 应该检测到用户名长度错误
@@ -254,11 +253,11 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             user.setUsername(""); // 违反 EditGroup 的 @NotBlank 约束
             // EditGroup 不包含 @Size 约束,所以不会验证长度
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, EditGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, EditGroup.class);
 
             assertThat(violations).isNotEmpty();
-            assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("用户名不能为空");
+            assertThat(violations.iterator().next().getMessage()).isEqualTo("用户名不能为空");
         }
 
         @Test
@@ -279,7 +278,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser user = new TestUser();
             user.setUsername(""); // 违反两个分组的约束
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class, EditGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class, EditGroup.class);
 
             assertThat(violations).isNotEmpty();
         }
@@ -295,18 +295,19 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser user = new TestUser();
             user.setEmail("invalid-email");
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validateProperty(user, "email");
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validateProperty(user, "email");
 
             assertThat(violations).isNotEmpty();
             assertThat(violations.iterator().next().getPropertyPath().toString())
-                .isEqualTo("email");
+                    .isEqualTo("email");
         }
 
         @Test
         @DisplayName("应该能够验证属性值")
         void shouldValidatePropertyValue() {
             Set<ConstraintViolation<TestUser>> violations =
-                validator.validateValue(TestUser.class, "email", "invalid-email");
+                    validator.validateValue(TestUser.class, "email", "invalid-email");
 
             assertThat(violations).isNotEmpty();
         }
@@ -317,7 +318,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser user = new TestUser();
             user.setEmail("valid@example.com");
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validateProperty(user, "email");
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validateProperty(user, "email");
 
             assertThat(violations).isEmpty();
         }
@@ -334,7 +336,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             user.setUsername(null); // 使用 null 来触发 @NotBlank,避免同时触发 @Size
             user.setPassword("validPassword123"); // 提供有效密码
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(user, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(user, AddGroup.class);
 
             assertThat(violations).isNotEmpty();
             // 验证消息应该是中文（来自我们的 messages.properties）
@@ -368,7 +371,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             newUser.setEmail("test@example.com");
             newUser.setAge(25);
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(newUser, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(newUser, AddGroup.class);
 
             assertThat(violations).isNotEmpty();
             // 应该检测到用户名和密码缺失（快速失败,只返回第一个）
@@ -381,7 +385,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             TestUser existingUser = new TestUser();
             existingUser.setUsername(""); // EditGroup 要求不能为空
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(existingUser, EditGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(existingUser, EditGroup.class);
 
             assertThat(violations).isNotEmpty();
         }
@@ -396,7 +401,8 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             formData.setEmail("invalid");
             formData.setAge(150);
 
-            Set<ConstraintViolation<TestUser>> violations = validator.validate(formData, AddGroup.class);
+            Set<ConstraintViolation<TestUser>> violations =
+                    validator.validate(formData, AddGroup.class);
 
             // 快速失败模式：只返回第一个错误
             assertThat(violations).hasSize(1);
@@ -414,8 +420,7 @@ class ValidatorConfigIntegrationTest extends BaseIntegrationTest {
             Set<ConstraintViolation<TestUser>> violations = validator.validate(apiRequest);
 
             assertThat(violations).isNotEmpty();
-            assertThat(violations.iterator().next().getMessage())
-                .contains("邮箱");
+            assertThat(violations.iterator().next().getMessage()).contains("邮箱");
         }
     }
 }

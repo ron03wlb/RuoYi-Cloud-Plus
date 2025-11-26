@@ -1,12 +1,11 @@
 package org.dromara.common.core.utils;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Validator 校验框架工具
@@ -31,5 +30,4 @@ public class ValidatorUtils {
             throw new ConstraintViolationException("参数校验异常", validate);
         }
     }
-
 }

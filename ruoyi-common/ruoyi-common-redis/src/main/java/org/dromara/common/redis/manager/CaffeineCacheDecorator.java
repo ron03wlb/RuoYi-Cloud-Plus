@@ -1,9 +1,8 @@
 package org.dromara.common.redis.manager;
 
+import java.util.concurrent.Callable;
 import org.dromara.common.core.utils.SpringUtils;
 import org.springframework.cache.Cache;
-
-import java.util.concurrent.Callable;
 
 /**
  * Cache 装饰器模式(用于扩展 Caffeine 一级缓存)
@@ -12,8 +11,8 @@ import java.util.concurrent.Callable;
  */
 public class CaffeineCacheDecorator implements Cache {
 
-    private static final com.github.benmanes.caffeine.cache.Cache<Object, Object>
-        CAFFEINE = SpringUtils.getBean("caffeine");
+    private static final com.github.benmanes.caffeine.cache.Cache<Object, Object> CAFFEINE =
+            SpringUtils.getBean("caffeine");
 
     private final String name;
     private final Cache cache;
@@ -93,5 +92,4 @@ public class CaffeineCacheDecorator implements Cache {
         Object o = CAFFEINE.get(getUniqueKey(key), k -> cache.get(key, valueLoader));
         return (T) o;
     }
-
 }

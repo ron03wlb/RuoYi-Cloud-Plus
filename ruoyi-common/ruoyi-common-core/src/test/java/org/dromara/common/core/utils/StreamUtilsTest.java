@@ -1,26 +1,16 @@
 package org.dromara.common.core.utils;
 
-import org.dromara.common.core.BaseUnitTest;
-import org.junit.jupiter.api.Test;
-
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.util.*;
+import org.dromara.common.core.BaseUnitTest;
+import org.junit.jupiter.api.Test;
+
 /**
  * StreamUtils 工具类测试
- * <p>
- * 测试覆盖：
- * - 集合过滤
- * - 查找元素
- * - 字符串拼接
- * - 集合排序
- * - 集合转 Map
- * - 集合分组
- * - 类型转换
- * - Map 合并
- * </p>
+ *
+ * <p>测试覆盖： - 集合过滤 - 查找元素 - 字符串拼接 - 集合排序 - 集合转 Map - 集合分组 - 类型转换 - Map 合并
  *
  * @author Test Team
  */
@@ -79,9 +69,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
         List<Integer> result = StreamUtils.filter(numbers, n -> n > 3);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly(4, 5, 6);
+        assertThat(result).hasSize(3).containsExactly(4, 5, 6);
     }
 
     @Test
@@ -111,18 +99,15 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldFilterComplexObjects() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Charlie", 30)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Charlie", 30));
 
         List<User> result = StreamUtils.filter(users, u -> u.getAge() >= 25);
 
-        assertThat(result)
-            .hasSize(2)
-            .extracting(User::getName)
-            .containsExactly("Bob", "Charlie");
+        assertThat(result).hasSize(2).extracting(User::getName).containsExactly("Bob", "Charlie");
     }
 
     // ========================================
@@ -135,9 +120,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
         Optional<Integer> result = StreamUtils.findFirst(numbers, n -> n > 2);
 
-        assertThat(result)
-            .isPresent()
-            .hasValue(3);
+        assertThat(result).isPresent().hasValue(3);
     }
 
     @Test
@@ -247,11 +230,11 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldJoinCollectionWithDefaultDelimiter() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Charlie", 30)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Charlie", 30));
 
         String result = StreamUtils.join(users, User::getName);
 
@@ -260,10 +243,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldJoinCollectionWithCustomDelimiter() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25)
-        );
+        List<User> users = Arrays.asList(new User(1L, "Alice", 20), new User(2L, "Bob", 25));
 
         String result = StreamUtils.join(users, User::getName, " | ");
 
@@ -301,18 +281,18 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldSortCollectionByComparator() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Charlie", 30),
-            new User(2L, "Alice", 20),
-            new User(3L, "Bob", 25)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Charlie", 30),
+                        new User(2L, "Alice", 20),
+                        new User(3L, "Bob", 25));
 
         List<User> result = StreamUtils.sorted(users, Comparator.comparing(User::getAge));
 
         assertThat(result)
-            .hasSize(3)
-            .extracting(User::getName)
-            .containsExactly("Alice", "Bob", "Charlie");
+                .hasSize(3)
+                .extracting(User::getName)
+                .containsExactly("Alice", "Bob", "Charlie");
     }
 
     @Test
@@ -348,17 +328,15 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldConvertCollectionToIdentityMap() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Charlie", 30)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Charlie", 30));
 
         Map<Long, User> result = StreamUtils.toIdentityMap(users, User::getId);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsKeys(1L, 2L, 3L);
+        assertThat(result).hasSize(3).containsKeys(1L, 2L, 3L);
         assertThat(result.get(1L).getName()).isEqualTo("Alice");
     }
 
@@ -373,10 +351,10 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldHandleDuplicateKeysInToIdentityMap() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(1L, "Bob", 25)  // 重复的 ID
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20), new User(1L, "Bob", 25) // 重复的 ID
+                        );
 
         Map<Long, User> result = StreamUtils.toIdentityMap(users, User::getId);
 
@@ -391,19 +369,19 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldConvertCollectionToMap() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Charlie", 30)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Charlie", 30));
 
         Map<Long, String> result = StreamUtils.toMap(users, User::getId, User::getName);
 
         assertThat(result)
-            .hasSize(3)
-            .containsEntry(1L, "Alice")
-            .containsEntry(2L, "Bob")
-            .containsEntry(3L, "Charlie");
+                .hasSize(3)
+                .containsEntry(1L, "Alice")
+                .containsEntry(2L, "Bob")
+                .containsEntry(3L, "Charlie");
     }
 
     @Test
@@ -417,10 +395,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldHandleDuplicateKeysInToMap() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(1L, "Bob", 25)
-        );
+        List<User> users = Arrays.asList(new User(1L, "Alice", 20), new User(1L, "Bob", 25));
 
         Map<Long, String> result = StreamUtils.toMap(users, User::getId, User::getName);
 
@@ -439,22 +414,21 @@ class StreamUtilsTest extends BaseUnitTest {
         sourceMap.put("two", 2);
         sourceMap.put("three", 3);
 
-        Map<String, String> result = StreamUtils.toMap(sourceMap,
-            (key, value) -> key + "=" + value);
+        Map<String, String> result =
+                StreamUtils.toMap(sourceMap, (key, value) -> key + "=" + value);
 
         assertThat(result)
-            .hasSize(3)
-            .containsEntry("one", "one=1")
-            .containsEntry("two", "two=2")
-            .containsEntry("three", "three=3");
+                .hasSize(3)
+                .containsEntry("one", "one=1")
+                .containsEntry("two", "two=2")
+                .containsEntry("three", "three=3");
     }
 
     @Test
     void shouldReturnEmptyMapWhenTransformEmptyMap() {
         Map<String, Integer> empty = Collections.emptyMap();
 
-        Map<String, String> result = StreamUtils.toMap(empty,
-            (key, value) -> key + "=" + value);
+        Map<String, String> result = StreamUtils.toMap(empty, (key, value) -> key + "=" + value);
 
         assertThat(result).isEmpty();
     }
@@ -465,18 +439,16 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldGroupCollectionByKey() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20, "1", "A"),
-            new User(2L, "Bob", 25, "1", "B"),
-            new User(3L, "Charlie", 30, "2", "A"),
-            new User(4L, "David", 35, "2", "B")
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20, "1", "A"),
+                        new User(2L, "Bob", 25, "1", "B"),
+                        new User(3L, "Charlie", 30, "2", "A"),
+                        new User(4L, "David", 35, "2", "B"));
 
         Map<String, List<User>> result = StreamUtils.groupByKey(users, User::getGrade);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsKeys("1", "2");
+        assertThat(result).hasSize(2).containsKeys("1", "2");
         assertThat(result.get("1")).hasSize(2);
         assertThat(result.get("2")).hasSize(2);
     }
@@ -492,11 +464,11 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldMaintainInsertionOrderInGroupByKey() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20, "C", "A"),
-            new User(2L, "Bob", 25, "A", "B"),
-            new User(3L, "Charlie", 30, "B", "A")
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20, "C", "A"),
+                        new User(2L, "Bob", 25, "A", "B"),
+                        new User(3L, "Charlie", 30, "B", "A"));
 
         Map<String, List<User>> result = StreamUtils.groupByKey(users, User::getGrade);
 
@@ -511,19 +483,17 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldGroupCollectionByTwoKeys() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20, "1", "A"),
-            new User(2L, "Bob", 25, "1", "B"),
-            new User(3L, "Charlie", 30, "1", "A"),
-            new User(4L, "David", 35, "2", "A")
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20, "1", "A"),
+                        new User(2L, "Bob", 25, "1", "B"),
+                        new User(3L, "Charlie", 30, "1", "A"),
+                        new User(4L, "David", 35, "2", "A"));
 
         Map<String, Map<String, List<User>>> result =
-            StreamUtils.groupBy2Key(users, User::getGrade, User::getClazz);
+                StreamUtils.groupBy2Key(users, User::getGrade, User::getClazz);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsKeys("1", "2");
+        assertThat(result).hasSize(2).containsKeys("1", "2");
         assertThat(result.get("1")).hasSize(2);
         assertThat(result.get("1").get("A")).hasSize(2);
         assertThat(result.get("1").get("B")).hasSize(1);
@@ -535,7 +505,7 @@ class StreamUtilsTest extends BaseUnitTest {
         List<User> empty = Collections.emptyList();
 
         Map<String, Map<String, List<User>>> result =
-            StreamUtils.groupBy2Key(empty, User::getGrade, User::getClazz);
+                StreamUtils.groupBy2Key(empty, User::getGrade, User::getClazz);
 
         assertThat(result).isEmpty();
     }
@@ -546,18 +516,16 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldGroupCollectionToNestedMap() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20, "1", "A"),
-            new User(2L, "Bob", 25, "1", "B"),
-            new User(3L, "Charlie", 30, "2", "A")
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20, "1", "A"),
+                        new User(2L, "Bob", 25, "1", "B"),
+                        new User(3L, "Charlie", 30, "2", "A"));
 
         Map<String, Map<String, User>> result =
-            StreamUtils.group2Map(users, User::getGrade, User::getClazz);
+                StreamUtils.group2Map(users, User::getGrade, User::getClazz);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsKeys("1", "2");
+        assertThat(result).hasSize(2).containsKeys("1", "2");
         assertThat(result.get("1").get("A").getName()).isEqualTo("Alice");
         assertThat(result.get("1").get("B").getName()).isEqualTo("Bob");
         assertThat(result.get("2").get("A").getName()).isEqualTo("Charlie");
@@ -568,7 +536,7 @@ class StreamUtilsTest extends BaseUnitTest {
         List<User> empty = Collections.emptyList();
 
         Map<String, Map<String, User>> result =
-            StreamUtils.group2Map(empty, User::getGrade, User::getClazz);
+                StreamUtils.group2Map(empty, User::getGrade, User::getClazz);
 
         assertThat(result).isEmpty();
     }
@@ -579,17 +547,15 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldConvertCollectionToList() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Charlie", 30)
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Charlie", 30));
 
         List<String> result = StreamUtils.toList(users, User::getName);
 
-        assertThat(result)
-            .hasSize(3)
-            .containsExactly("Alice", "Bob", "Charlie");
+        assertThat(result).hasSize(3).containsExactly("Alice", "Bob", "Charlie");
     }
 
     @Test
@@ -603,11 +569,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldFilterNullValuesInToList() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            null,
-            new User(2L, "Bob", 25)
-        );
+        List<User> users = Arrays.asList(new User(1L, "Alice", 20), null, new User(2L, "Bob", 25));
 
         List<String> result = StreamUtils.toList(users, u -> u != null ? u.getName() : null);
 
@@ -621,17 +583,16 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldConvertCollectionToSet() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            new User(2L, "Bob", 25),
-            new User(3L, "Alice", 30)  // 重复名字
-        );
+        List<User> users =
+                Arrays.asList(
+                        new User(1L, "Alice", 20),
+                        new User(2L, "Bob", 25),
+                        new User(3L, "Alice", 30) // 重复名字
+                        );
 
         Set<String> result = StreamUtils.toSet(users, User::getName);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsExactlyInAnyOrder("Alice", "Bob");
+        assertThat(result).hasSize(2).containsExactlyInAnyOrder("Alice", "Bob");
     }
 
     @Test
@@ -645,11 +606,7 @@ class StreamUtilsTest extends BaseUnitTest {
 
     @Test
     void shouldFilterNullValuesInToSet() {
-        List<User> users = Arrays.asList(
-            new User(1L, "Alice", 20),
-            null,
-            new User(2L, "Bob", 25)
-        );
+        List<User> users = Arrays.asList(new User(1L, "Alice", 20), null, new User(2L, "Bob", 25));
 
         Set<String> result = StreamUtils.toSet(users, u -> u != null ? u.getName() : null);
 
@@ -670,14 +627,15 @@ class StreamUtilsTest extends BaseUnitTest {
         map2.put("b", 3);
         map2.put("c", 4);
 
-        Map<String, Integer> result = StreamUtils.merge(map1, map2,
-            (v1, v2) -> (v1 == null ? 0 : v1) + (v2 == null ? 0 : v2));
+        Map<String, Integer> result =
+                StreamUtils.merge(
+                        map1, map2, (v1, v2) -> (v1 == null ? 0 : v1) + (v2 == null ? 0 : v2));
 
         assertThat(result)
-            .hasSize(3)
-            .containsEntry("a", 1)  // 只在 map1
-            .containsEntry("b", 5)  // 2 + 3
-            .containsEntry("c", 4); // 只在 map2
+                .hasSize(3)
+                .containsEntry("a", 1) // 只在 map1
+                .containsEntry("b", 5) // 2 + 3
+                .containsEntry("c", 4); // 只在 map2
     }
 
     @Test
@@ -696,13 +654,10 @@ class StreamUtilsTest extends BaseUnitTest {
         map2.put("a", 1);
         map2.put("b", 2);
 
-        Map<String, Integer> result = StreamUtils.merge(null, map2,
-            (v1, v2) -> v2 == null ? 0 : v2);
+        Map<String, Integer> result =
+                StreamUtils.merge(null, map2, (v1, v2) -> v2 == null ? 0 : v2);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsEntry("a", 1)
-            .containsEntry("b", 2);
+        assertThat(result).hasSize(2).containsEntry("a", 1).containsEntry("b", 2);
     }
 
     @Test
@@ -711,13 +666,10 @@ class StreamUtilsTest extends BaseUnitTest {
         map1.put("a", 1);
         map1.put("b", 2);
 
-        Map<String, Integer> result = StreamUtils.merge(map1, null,
-            (v1, v2) -> v1 == null ? 0 : v1);
+        Map<String, Integer> result =
+                StreamUtils.merge(map1, null, (v1, v2) -> v1 == null ? 0 : v1);
 
-        assertThat(result)
-            .hasSize(2)
-            .containsEntry("a", 1)
-            .containsEntry("b", 2);
+        assertThat(result).hasSize(2).containsEntry("a", 1).containsEntry("b", 2);
     }
 
     @Test
@@ -730,19 +682,22 @@ class StreamUtilsTest extends BaseUnitTest {
         map2.put("b", 3);
         map2.put("c", null);
 
-        Map<String, Integer> result = StreamUtils.merge(map1, map2,
-            (v1, v2) -> {
-                if (v1 == null && v2 == null) return 0;
-                if (v1 == null) return v2;
-                if (v2 == null) return v1;
-                return v1 + v2;
-            });
+        Map<String, Integer> result =
+                StreamUtils.merge(
+                        map1,
+                        map2,
+                        (v1, v2) -> {
+                            if (v1 == null && v2 == null) return 0;
+                            if (v1 == null) return v2;
+                            if (v2 == null) return v1;
+                            return v1 + v2;
+                        });
 
         assertThat(result)
-            .hasSize(3)
-            .containsEntry("a", 1)
-            .containsEntry("b", 3)
-            .containsEntry("c", 0);
+                .hasSize(3)
+                .containsEntry("a", 1)
+                .containsEntry("b", 3)
+                .containsEntry("c", 0);
     }
 
     // ========================================

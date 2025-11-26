@@ -1,8 +1,8 @@
 package org.dromara.resource.runner;
 
-import org.dromara.resource.service.ISysOssConfigService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.resource.service.ISysOssConfigService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -24,5 +24,4 @@ public class ResourceApplicationRunner implements ApplicationRunner {
         ossConfigService.init();
         log.info("初始化OSS配置成功");
     }
-
 }

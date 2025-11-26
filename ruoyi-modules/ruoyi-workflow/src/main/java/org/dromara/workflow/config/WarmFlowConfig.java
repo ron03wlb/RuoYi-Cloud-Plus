@@ -10,7 +10,4 @@ import org.springframework.context.annotation.Configuration;
  */
 @ConditionalOnEnable
 @Configuration
-public class WarmFlowConfig {
-
-}
-
+public class WarmFlowConfig {}

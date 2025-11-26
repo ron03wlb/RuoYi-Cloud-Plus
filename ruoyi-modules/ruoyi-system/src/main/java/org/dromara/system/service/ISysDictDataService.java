@@ -1,11 +1,10 @@
 package org.dromara.system.service;
 
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.bo.SysDictDataBo;
 import org.dromara.system.domain.vo.SysDictDataVo;
-
-import java.util.List;
 
 /**
  * 字典 业务层
@@ -17,11 +16,12 @@ public interface ISysDictDataService {
     /**
      * 分页查询字典数据列表
      *
-     * @param dictData  查询条件
+     * @param dictData 查询条件
      * @param pageQuery 分页参数
      * @return 字典数据分页列表
      */
-    TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataBo dictData, PageQuery pageQuery);
+    TableDataInfo<SysDictDataVo> selectPageDictDataList(
+            SysDictDataBo dictData, PageQuery pageQuery);
 
     /**
      * 根据条件分页查询字典数据
@@ -34,7 +34,7 @@ public interface ISysDictDataService {
     /**
      * 根据字典类型和字典键值查询字典数据信息
      *
-     * @param dictType  字典类型
+     * @param dictType 字典类型
      * @param dictValue 字典键值
      * @return 字典标签
      */
@@ -78,5 +78,4 @@ public interface ISysDictDataService {
      * @return 结果
      */
     boolean checkDictDataUnique(SysDictDataBo dict);
-
 }

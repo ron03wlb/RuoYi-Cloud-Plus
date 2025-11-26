@@ -1,6 +1,8 @@
 package org.dromara.system.dubbo;
 
 import cn.hutool.core.convert.Convert;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.dromara.common.core.constant.SystemConstants;
@@ -22,9 +24,6 @@ import org.dromara.system.service.ISysPostService;
 import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 工作流设计器获取任务执行人
@@ -60,8 +59,14 @@ public class RemoteTaskAssigneeServiceImpl implements RemoteTaskAssigneeService 
         params.put("endTime", taskQuery.getEndTime());
         TableDataInfo<SysRoleVo> page = roleService.selectPageRoleList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
-        List<RemoteTaskAssigneeVo.TaskHandler> handlers = RemoteTaskAssigneeVo.convertToHandlerList(page.getRows(),
-            item -> Convert.toStr(item.getRoleId()), SysRoleVo::getRoleKey, SysRoleVo::getRoleName, item -> "", SysRoleVo::getCreateTime);
+        List<RemoteTaskAssigneeVo.TaskHandler> handlers =
+                RemoteTaskAssigneeVo.convertToHandlerList(
+                        page.getRows(),
+                        item -> Convert.toStr(item.getRoleId()),
+                        SysRoleVo::getRoleKey,
+                        SysRoleVo::getRoleName,
+                        item -> "",
+                        SysRoleVo::getCreateTime);
         return new RemoteTaskAssigneeVo(page.getTotal(), handlers);
     }
 
@@ -84,8 +89,14 @@ public class RemoteTaskAssigneeServiceImpl implements RemoteTaskAssigneeService 
         bo.setBelongDeptId(Convert.toLong(taskQuery.getGroupId()));
         TableDataInfo<SysPostVo> page = postService.selectPagePostList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
-        List<RemoteTaskAssigneeVo.TaskHandler> handlers = RemoteTaskAssigneeVo.convertToHandlerList(page.getRows(),
-            item -> Convert.toStr(item.getPostId()), SysPostVo::getPostCategory, SysPostVo::getPostName, item -> Convert.toStr(item.getDeptId()), SysPostVo::getCreateTime);
+        List<RemoteTaskAssigneeVo.TaskHandler> handlers =
+                RemoteTaskAssigneeVo.convertToHandlerList(
+                        page.getRows(),
+                        item -> Convert.toStr(item.getPostId()),
+                        SysPostVo::getPostCategory,
+                        SysPostVo::getPostName,
+                        item -> Convert.toStr(item.getDeptId()),
+                        SysPostVo::getCreateTime);
         return new RemoteTaskAssigneeVo(page.getTotal(), handlers);
     }
 
@@ -108,8 +119,14 @@ public class RemoteTaskAssigneeServiceImpl implements RemoteTaskAssigneeService 
         bo.setBelongDeptId(Convert.toLong(taskQuery.getGroupId()));
         TableDataInfo<SysDeptVo> page = deptService.selectPageDeptList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
-        List<RemoteTaskAssigneeVo.TaskHandler> handlers = RemoteTaskAssigneeVo.convertToHandlerList(page.getRows(),
-            item -> Convert.toStr(item.getDeptId()), SysDeptVo::getDeptCategory, SysDeptVo::getDeptName, item -> Convert.toStr(item.getParentId()), SysDeptVo::getCreateTime);
+        List<RemoteTaskAssigneeVo.TaskHandler> handlers =
+                RemoteTaskAssigneeVo.convertToHandlerList(
+                        page.getRows(),
+                        item -> Convert.toStr(item.getDeptId()),
+                        SysDeptVo::getDeptCategory,
+                        SysDeptVo::getDeptName,
+                        item -> Convert.toStr(item.getParentId()),
+                        SysDeptVo::getCreateTime);
         return new RemoteTaskAssigneeVo(page.getTotal(), handlers);
     }
 
@@ -132,9 +149,14 @@ public class RemoteTaskAssigneeServiceImpl implements RemoteTaskAssigneeService 
         bo.setDeptId(Convert.toLong(taskQuery.getGroupId()));
         TableDataInfo<SysUserVo> page = userService.selectPageUserList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
-        List<RemoteTaskAssigneeVo.TaskHandler> handlers = RemoteTaskAssigneeVo.convertToHandlerList(page.getRows(),
-            item -> Convert.toStr(item.getUserId()), SysUserVo::getUserName, SysUserVo::getNickName, item -> Convert.toStr(item.getDeptId()), SysUserVo::getCreateTime);
+        List<RemoteTaskAssigneeVo.TaskHandler> handlers =
+                RemoteTaskAssigneeVo.convertToHandlerList(
+                        page.getRows(),
+                        item -> Convert.toStr(item.getUserId()),
+                        SysUserVo::getUserName,
+                        SysUserVo::getNickName,
+                        item -> Convert.toStr(item.getDeptId()),
+                        SysUserVo::getCreateTime);
         return new RemoteTaskAssigneeVo(page.getTotal(), handlers);
     }
-
 }

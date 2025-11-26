@@ -1,7 +1,6 @@
 package org.dromara.common.core.domain;
 
 import io.github.linpeilie.annotations.AutoMapper;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,8 +13,7 @@ import java.time.LocalDateTime;
 @AutoMapper(target = User.class)
 public class UserVO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Long id;
     private String username;
@@ -23,8 +21,7 @@ public class UserVO implements Serializable {
     private Integer age;
     private LocalDateTime createTime;
 
-    public UserVO() {
-    }
+    public UserVO() {}
 
     public UserVO(Long id, String username, String email, Integer age, LocalDateTime createTime) {
         this.id = id;

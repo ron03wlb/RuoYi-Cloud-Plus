@@ -1,8 +1,7 @@
 package org.dromara.workflow.service;
 
-import org.dromara.system.api.domain.vo.RemoteUserVo;
-
 import java.util.List;
+import org.dromara.system.api.domain.vo.RemoteUserVo;
 
 /**
  * 通用 工作流服务
@@ -14,9 +13,9 @@ public interface IFlwCommonService {
     /**
      * 发送消息
      *
-     * @param flowName    流程定义名称
+     * @param flowName 流程定义名称
      * @param messageType 消息类型
-     * @param message     消息内容，为空则发送默认配置的消息内容
+     * @param message 消息内容，为空则发送默认配置的消息内容
      */
     void sendMessage(String flowName, Long instId, List<String> messageType, String message);
 
@@ -24,11 +23,12 @@ public interface IFlwCommonService {
      * 发送消息
      *
      * @param messageType 消息类型
-     * @param message     消息内容
-     * @param subject     邮件标题
-     * @param userList    接收用户
+     * @param message 消息内容
+     * @param subject 邮件标题
+     * @param userList 接收用户
      */
-    void sendMessage(List<String> messageType, String message, String subject, List<RemoteUserVo> userList);
+    void sendMessage(
+            List<String> messageType, String message, String subject, List<RemoteUserVo> userList);
 
     /**
      * 申请人节点编码
@@ -37,5 +37,4 @@ public interface IFlwCommonService {
      * @return 申请人节点编码
      */
     String applyNodeCode(Long definitionId);
-
 }

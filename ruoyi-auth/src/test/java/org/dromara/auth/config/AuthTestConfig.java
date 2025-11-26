@@ -1,6 +1,5 @@
 package org.dromara.auth.config;
 
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.dromara.resource.api.RemoteMessageService;
 import org.dromara.system.api.*;
 import org.mockito.Mockito;
@@ -10,15 +9,15 @@ import org.springframework.context.annotation.Primary;
 
 /**
  * 測試配置類
- * <p>
- * 提供所有測試需要的 Mock Bean
- * </p>
  *
- * <p>功能:</p>
+ * <p>提供所有測試需要的 Mock Bean
+ *
+ * <p>功能:
+ *
  * <ul>
- *   <li>Mock 所有 Dubbo RPC 服務</li>
- *   <li>使用 @Primary 覆蓋默認 Bean</li>
- *   <li>避免真實 Dubbo 連接</li>
+ *   <li>Mock 所有 Dubbo RPC 服務
+ *   <li>使用 @Primary 覆蓋默認 Bean
+ *   <li>避免真實 Dubbo 連接
  * </ul>
  *
  * @author Test Team
@@ -26,63 +25,49 @@ import org.springframework.context.annotation.Primary;
 @TestConfiguration
 public class AuthTestConfig {
 
-    /**
-     * Mock RemoteClientService
-     */
+    /** Mock RemoteClientService */
     @Bean
     @Primary
     public RemoteClientService mockRemoteClientService() {
         return Mockito.mock(RemoteClientService.class);
     }
 
-    /**
-     * Mock RemoteUserService
-     */
+    /** Mock RemoteUserService */
     @Bean
     @Primary
     public RemoteUserService mockRemoteUserService() {
         return Mockito.mock(RemoteUserService.class);
     }
 
-    /**
-     * Mock RemoteTenantService
-     */
+    /** Mock RemoteTenantService */
     @Bean
     @Primary
     public RemoteTenantService mockRemoteTenantService() {
         return Mockito.mock(RemoteTenantService.class);
     }
 
-    /**
-     * Mock RemoteConfigService
-     */
+    /** Mock RemoteConfigService */
     @Bean
     @Primary
     public RemoteConfigService mockRemoteConfigService() {
         return Mockito.mock(RemoteConfigService.class);
     }
 
-    /**
-     * Mock RemoteSocialService
-     */
+    /** Mock RemoteSocialService */
     @Bean
     @Primary
     public RemoteSocialService mockRemoteSocialService() {
         return Mockito.mock(RemoteSocialService.class);
     }
 
-    /**
-     * Mock RemoteLogService
-     */
+    /** Mock RemoteLogService */
     @Bean
     @Primary
     public RemoteLogService mockRemoteLogService() {
         return Mockito.mock(RemoteLogService.class);
     }
 
-    /**
-     * Mock RemoteMessageService
-     */
+    /** Mock RemoteMessageService */
     @Bean
     @Primary
     public RemoteMessageService mockRemoteMessageService() {

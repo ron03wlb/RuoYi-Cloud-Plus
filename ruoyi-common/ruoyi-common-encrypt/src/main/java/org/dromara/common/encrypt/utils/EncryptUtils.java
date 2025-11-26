@@ -8,7 +8,6 @@ import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.asymmetric.SM2;
-
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +19,10 @@ import java.util.Map;
  */
 public class EncryptUtils {
 
-    /**
-     * 公钥
-     */
+    /** 公钥 */
     public static final String PUBLIC_KEY = "publicKey";
 
-    /**
-     * 私钥
-     */
+    /** 私钥 */
     public static final String PRIVATE_KEY = "privateKey";
 
     /**
@@ -53,7 +48,7 @@ public class EncryptUtils {
     /**
      * AES加密
      *
-     * @param data     待加密数据
+     * @param data 待加密数据
      * @param password 秘钥字符串
      * @return 加密后字符串, 采用Base64编码
      */
@@ -66,13 +61,14 @@ public class EncryptUtils {
         if (!ArrayUtil.contains(array, password.length())) {
             throw new IllegalArgumentException("AES秘钥长度要求为16位、24位、32位");
         }
-        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8)).encryptBase64(data, StandardCharsets.UTF_8);
+        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8))
+                .encryptBase64(data, StandardCharsets.UTF_8);
     }
 
     /**
      * AES加密
      *
-     * @param data     待加密数据
+     * @param data 待加密数据
      * @param password 秘钥字符串
      * @return 加密后字符串, 采用Hex编码
      */
@@ -85,13 +81,14 @@ public class EncryptUtils {
         if (!ArrayUtil.contains(array, password.length())) {
             throw new IllegalArgumentException("AES秘钥长度要求为16位、24位、32位");
         }
-        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8)).encryptHex(data, StandardCharsets.UTF_8);
+        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8))
+                .encryptHex(data, StandardCharsets.UTF_8);
     }
 
     /**
      * AES解密
      *
-     * @param data     待解密数据
+     * @param data 待解密数据
      * @param password 秘钥字符串
      * @return 解密后字符串
      */
@@ -104,13 +101,14 @@ public class EncryptUtils {
         if (!ArrayUtil.contains(array, password.length())) {
             throw new IllegalArgumentException("AES秘钥长度要求为16位、24位、32位");
         }
-        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8)).decryptStr(data, StandardCharsets.UTF_8);
+        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8))
+                .decryptStr(data, StandardCharsets.UTF_8);
     }
 
     /**
      * SM4加密（Base64编码）
      *
-     * @param data     待加密数据
+     * @param data 待加密数据
      * @param password 秘钥字符串
      * @return 加密后字符串, 采用Base64编码
      */
@@ -123,13 +121,14 @@ public class EncryptUtils {
         if (sm4PasswordLength != password.length()) {
             throw new IllegalArgumentException("SM4秘钥长度要求为16位");
         }
-        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8)).encryptBase64(data, StandardCharsets.UTF_8);
+        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8))
+                .encryptBase64(data, StandardCharsets.UTF_8);
     }
 
     /**
      * SM4加密（Hex编码）
      *
-     * @param data     待加密数据
+     * @param data 待加密数据
      * @param password 秘钥字符串
      * @return 加密后字符串, 采用Hex编码
      */
@@ -142,13 +141,14 @@ public class EncryptUtils {
         if (sm4PasswordLength != password.length()) {
             throw new IllegalArgumentException("SM4秘钥长度要求为16位");
         }
-        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8)).encryptHex(data, StandardCharsets.UTF_8);
+        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8))
+                .encryptHex(data, StandardCharsets.UTF_8);
     }
 
     /**
      * sm4解密
      *
-     * @param data     待解密数据（可以是Base64或Hex编码）
+     * @param data 待解密数据（可以是Base64或Hex编码）
      * @param password 秘钥字符串
      * @return 解密后字符串
      */
@@ -161,7 +161,8 @@ public class EncryptUtils {
         if (sm4PasswordLength != password.length()) {
             throw new IllegalArgumentException("SM4秘钥长度要求为16位");
         }
-        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8)).decryptStr(data, StandardCharsets.UTF_8);
+        return SmUtil.sm4(password.getBytes(StandardCharsets.UTF_8))
+                .decryptStr(data, StandardCharsets.UTF_8);
     }
 
     /**
@@ -180,7 +181,7 @@ public class EncryptUtils {
     /**
      * sm2公钥加密
      *
-     * @param data      待加密数据
+     * @param data 待加密数据
      * @param publicKey 公钥
      * @return 加密后字符串, 采用Base64编码
      */
@@ -195,7 +196,7 @@ public class EncryptUtils {
     /**
      * sm2公钥加密
      *
-     * @param data      待加密数据
+     * @param data 待加密数据
      * @param publicKey 公钥
      * @return 加密后字符串, 采用Hex编码
      */
@@ -210,7 +211,7 @@ public class EncryptUtils {
     /**
      * sm2私钥解密
      *
-     * @param data       待解密数据
+     * @param data 待解密数据
      * @param privateKey 私钥
      * @return 解密后字符串
      */
@@ -238,7 +239,7 @@ public class EncryptUtils {
     /**
      * rsa公钥加密
      *
-     * @param data      待加密数据
+     * @param data 待加密数据
      * @param publicKey 公钥
      * @return 加密后字符串, 采用Base64编码
      */
@@ -253,7 +254,7 @@ public class EncryptUtils {
     /**
      * rsa公钥加密
      *
-     * @param data      待加密数据
+     * @param data 待加密数据
      * @param publicKey 公钥
      * @return 加密后字符串, 采用Hex编码
      */
@@ -268,7 +269,7 @@ public class EncryptUtils {
     /**
      * rsa私钥解密
      *
-     * @param data       待解密数据
+     * @param data 待解密数据
      * @param privateKey 私钥
      * @return 解密后字符串
      */
@@ -309,5 +310,4 @@ public class EncryptUtils {
     public static String encryptBySm3(String data) {
         return SmUtil.sm3(data);
     }
-
 }

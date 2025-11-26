@@ -6,6 +6,7 @@ import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
@@ -13,17 +14,13 @@ import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.system.api.model.LoginUser;
 
-import java.util.Set;
-
 /**
  * 登录鉴权助手
- * <p>
- * user_type 为 用户类型 同一个用户表 可以有多种用户类型 例如 pc,app
- * deivce 为 设备类型 同一个用户类型 可以有 多种设备类型 例如 web,ios
- * 可以组成 用户类型与设备类型多对多的 权限灵活控制
- * <p>
- * 多用户体系 针对 多种用户类型 但权限控制不一致
- * 可以组成 多用户类型表与多设备类型 分别控制权限
+ *
+ * <p>user_type 为 用户类型 同一个用户表 可以有多种用户类型 例如 pc,app deivce 为 设备类型 同一个用户类型 可以有 多种设备类型 例如 web,ios 可以组成
+ * 用户类型与设备类型多对多的 权限灵活控制
+ *
+ * <p>多用户体系 针对 多种用户类型 但权限控制不一致 可以组成 多用户类型表与多设备类型 分别控制权限
  *
  * @author Lion Li
  */
@@ -40,28 +37,25 @@ public class LoginHelper {
     public static final String CLIENT_KEY = "clientid";
 
     /**
-     * 登录系统 基于 设备类型
-     * 针对相同用户体系不同设备
+     * 登录系统 基于 设备类型 针对相同用户体系不同设备
      *
      * @param loginUser 登录用户信息
-     * @param model     配置参数
+     * @param model 配置参数
      */
     public static void login(LoginUser loginUser, SaLoginParameter model) {
         model = ObjectUtil.defaultIfNull(model, new SaLoginParameter());
-        StpUtil.login(loginUser.getLoginId(),
-            model.setExtra(TENANT_KEY, loginUser.getTenantId())
-                .setExtra(USER_KEY, loginUser.getUserId())
-                .setExtra(USER_NAME_KEY, loginUser.getUsername())
-                .setExtra(DEPT_KEY, loginUser.getDeptId())
-                .setExtra(DEPT_NAME_KEY, loginUser.getDeptName())
-                .setExtra(DEPT_CATEGORY_KEY, loginUser.getDeptCategory())
-        );
+        StpUtil.login(
+                loginUser.getLoginId(),
+                model.setExtra(TENANT_KEY, loginUser.getTenantId())
+                        .setExtra(USER_KEY, loginUser.getUserId())
+                        .setExtra(USER_NAME_KEY, loginUser.getUsername())
+                        .setExtra(DEPT_KEY, loginUser.getDeptId())
+                        .setExtra(DEPT_NAME_KEY, loginUser.getDeptName())
+                        .setExtra(DEPT_CATEGORY_KEY, loginUser.getDeptCategory()));
         StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
     }
 
-    /**
-     * 获取用户(多级缓存)
-     */
+    /** 获取用户(多级缓存) */
     @SuppressWarnings("unchecked cast")
     public static <T extends LoginUser> T getLoginUser() {
         SaSession session = StpUtil.getTokenSession();
@@ -71,9 +65,7 @@ public class LoginHelper {
         return (T) session.get(LOGIN_USER_KEY);
     }
 
-    /**
-     * 获取用户基于token
-     */
+    /** 获取用户基于token */
     @SuppressWarnings("unchecked cast")
     public static <T extends LoginUser> T getLoginUser(String token) {
         SaSession session = StpUtil.getTokenSessionByToken(token);
@@ -83,51 +75,37 @@ public class LoginHelper {
         return (T) session.get(LOGIN_USER_KEY);
     }
 
-    /**
-     * 获取用户id
-     */
+    /** 获取用户id */
     public static Long getUserId() {
         return Convert.toLong(getExtra(USER_KEY));
     }
 
-    /**
-     * 获取用户id
-     */
+    /** 获取用户id */
     public static String getUserIdStr() {
         return Convert.toStr(getExtra(USER_KEY));
     }
 
-    /**
-     * 获取用户账户
-     */
+    /** 获取用户账户 */
     public static String getUsername() {
         return Convert.toStr(getExtra(USER_NAME_KEY));
     }
 
-    /**
-     * 获取租户ID
-     */
+    /** 获取租户ID */
     public static String getTenantId() {
         return Convert.toStr(getExtra(TENANT_KEY));
     }
 
-    /**
-     * 获取部门ID
-     */
+    /** 获取部门ID */
     public static Long getDeptId() {
         return Convert.toLong(getExtra(DEPT_KEY));
     }
 
-    /**
-     * 获取部门名
-     */
+    /** 获取部门名 */
     public static String getDeptName() {
         return Convert.toStr(getExtra(DEPT_NAME_KEY));
     }
 
-    /**
-     * 获取部门类别编码
-     */
+    /** 获取部门类别编码 */
     public static String getDeptCategory() {
         return Convert.toStr(getExtra(DEPT_CATEGORY_KEY));
     }
@@ -144,12 +122,9 @@ public class LoginHelper {
         } catch (Exception e) {
             return null;
         }
-
     }
 
-    /**
-     * 获取用户类型
-     */
+    /** 获取用户类型 */
     public static UserType getUserType() {
         String loginType = StpUtil.getLoginIdAsString();
         return UserType.getUserType(loginType);
@@ -213,5 +188,4 @@ public class LoginHelper {
             return false;
         }
     }
-
 }

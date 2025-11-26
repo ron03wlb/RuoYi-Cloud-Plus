@@ -4,6 +4,11 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.idev.excel.write.metadata.WriteSheet;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
@@ -16,12 +21,6 @@ import org.dromara.common.excel.utils.ExcelWriterWrapper;
 import org.dromara.demo.domain.vo.ExportDemoVo;
 import org.dromara.demo.service.IExportExcelService;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 导出下拉框Excel示例
@@ -57,35 +56,33 @@ public class ExportExcelServiceImpl implements IExportExcelService {
         // 首先从数据库中查询下拉框内的可选项
         // 这里模拟查询结果
         List<DemoCityData> provinceList = getProvinceList(),
-            cityList = getCityList(provinceList),
-            areaList = getAreaList(cityList);
+                cityList = getCityList(provinceList),
+                areaList = getAreaList(cityList);
         int provinceIndex = 5, cityIndex = 6, areaIndex = 7;
 
-        DropDownOptions provinceToCity = DropDownOptions.buildLinkedOptions(
-            provinceList,
-            provinceIndex,
-            cityList,
-            cityIndex,
-            DemoCityData::getId,
-            DemoCityData::getPid,
-            everyOptions -> DropDownOptions.createOptionValue(
-                everyOptions.getName(),
-                everyOptions.getId()
-            )
-        );
+        DropDownOptions provinceToCity =
+                DropDownOptions.buildLinkedOptions(
+                        provinceList,
+                        provinceIndex,
+                        cityList,
+                        cityIndex,
+                        DemoCityData::getId,
+                        DemoCityData::getPid,
+                        everyOptions ->
+                                DropDownOptions.createOptionValue(
+                                        everyOptions.getName(), everyOptions.getId()));
 
-        DropDownOptions cityToArea = DropDownOptions.buildLinkedOptions(
-            cityList,
-            cityIndex,
-            areaList,
-            areaIndex,
-            DemoCityData::getId,
-            DemoCityData::getPid,
-            everyOptions -> DropDownOptions.createOptionValue(
-                everyOptions.getName(),
-                everyOptions.getId()
-            )
-        );
+        DropDownOptions cityToArea =
+                DropDownOptions.buildLinkedOptions(
+                        cityList,
+                        cityIndex,
+                        areaList,
+                        areaIndex,
+                        DemoCityData::getId,
+                        DemoCityData::getPid,
+                        everyOptions ->
+                                DropDownOptions.createOptionValue(
+                                        everyOptions.getName(), everyOptions.getId()));
 
         // 把所有的下拉框存储
         List<DropDownOptions> options = new ArrayList<>();
@@ -95,21 +92,25 @@ public class ExportExcelServiceImpl implements IExportExcelService {
         // 到此为止所有的下拉框可选项已全部配置完毕
 
         // 接下来需要将Excel中的展示数据转换为对应的下拉选
-        List<ExportDemoVo> outList = StreamUtils.toList(excelDataList, everyRowData -> {
-            // 只需要处理没有使用@ExcelDictFormat注解的下拉框
-            // 一般来说，可以直接在数据库查询即查询出省市县信息，这里通过模拟操作赋值
-            everyRowData.setProvince(buildOptions(provinceList, everyRowData.getProvinceId()));
-            everyRowData.setCity(buildOptions(cityList, everyRowData.getCityId()));
-            everyRowData.setArea(buildOptions(areaList, everyRowData.getAreaId()));
-            return everyRowData;
-        });
+        List<ExportDemoVo> outList =
+                StreamUtils.toList(
+                        excelDataList,
+                        everyRowData -> {
+                            // 只需要处理没有使用@ExcelDictFormat注解的下拉框
+                            // 一般来说，可以直接在数据库查询即查询出省市县信息，这里通过模拟操作赋值
+                            everyRowData.setProvince(
+                                    buildOptions(provinceList, everyRowData.getProvinceId()));
+                            everyRowData.setCity(buildOptions(cityList, everyRowData.getCityId()));
+                            everyRowData.setArea(buildOptions(areaList, everyRowData.getAreaId()));
+                            return everyRowData;
+                        });
 
         ExcelUtil.exportExcel(outList, "下拉框示例", ExportDemoVo.class, response, options);
     }
 
     private String buildOptions(List<DemoCityData> cityDataList, Integer id) {
         Map<Integer, List<DemoCityData>> groupByIdMap =
-            cityDataList.stream().collect(Collectors.groupingBy(DemoCityData::getId));
+                cityDataList.stream().collect(Collectors.groupingBy(DemoCityData::getId));
         if (groupByIdMap.containsKey(id)) {
             DemoCityData demoCityData = groupByIdMap.get(id).get(0);
             return DropDownOptions.createOptionValue(demoCityData.getName(), demoCityData.getId());
@@ -197,39 +198,33 @@ public class ExportExcelServiceImpl implements IExportExcelService {
      * 模拟数据库的查询父数据操作
      *
      * @param parentList /
-     * @param sonList    /
+     * @param sonList /
      */
     private void selectParentData(List<DemoCityData> parentList, List<DemoCityData> sonList) {
         Map<Integer, List<DemoCityData>> parentGroupByIdMap =
-            parentList.stream().collect(Collectors.groupingBy(DemoCityData::getId));
+                parentList.stream().collect(Collectors.groupingBy(DemoCityData::getId));
 
-        sonList.forEach(everySon -> {
-            if (parentGroupByIdMap.containsKey(everySon.getPid())) {
-                everySon.setPData(parentGroupByIdMap.get(everySon.getPid()).get(0));
-            }
-        });
+        sonList.forEach(
+                everySon -> {
+                    if (parentGroupByIdMap.containsKey(everySon.getPid())) {
+                        everySon.setPData(parentGroupByIdMap.get(everySon.getPid()).get(0));
+                    }
+                });
     }
 
-    /**
-     * 模拟的数据库省市县
-     */
+    /** 模拟的数据库省市县 */
     @Data
     private static class DemoCityData {
-        /**
-         * 数据库id字段
-         */
+        /** 数据库id字段 */
         private Integer id;
-        /**
-         * 数据库pid字段
-         */
+
+        /** 数据库pid字段 */
         private Integer pid;
-        /**
-         * 数据库name字段
-         */
+
+        /** 数据库name字段 */
         private String name;
-        /**
-         * MyBatisPlus连带查询父数据
-         */
+
+        /** MyBatisPlus连带查询父数据 */
         private DemoCityData pData;
 
         public DemoCityData(Integer id, Integer pid, String name) {
@@ -243,55 +238,60 @@ public class ExportExcelServiceImpl implements IExportExcelService {
     public void customExport(HttpServletResponse response) throws IOException {
         String filename = ExcelUtil.encodingFilename("自定义导出");
         FileUtils.setAttachmentResponseHeader(response, filename);
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
+        response.setContentType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
 
-        ExcelUtil.exportExcel(ExportDemoVo.class, response.getOutputStream(), wrapper -> {
-            // 创建表格数据，业务中一般通过数据库查询
-            List<ExportDemoVo> excelDataList = new ArrayList<>();
-            for (int i = 0; i < 30; i++) {
-                // 模拟数据库中的一条数据
-                ExportDemoVo everyRowData = new ExportDemoVo();
-                everyRowData.setNickName("用户-" + i);
-                everyRowData.setUserStatus(SystemConstants.NORMAL);
-                everyRowData.setGender("1");
-                everyRowData.setPhoneNumber(String.format("175%08d", i));
-                everyRowData.setEmail(String.format("175%08d", i) + "@163.com");
-                everyRowData.setProvinceId(i);
-                everyRowData.setCityId(i);
-                everyRowData.setAreaId(i);
-                excelDataList.add(everyRowData);
-            }
+        ExcelUtil.exportExcel(
+                ExportDemoVo.class,
+                response.getOutputStream(),
+                wrapper -> {
+                    // 创建表格数据，业务中一般通过数据库查询
+                    List<ExportDemoVo> excelDataList = new ArrayList<>();
+                    for (int i = 0; i < 30; i++) {
+                        // 模拟数据库中的一条数据
+                        ExportDemoVo everyRowData = new ExportDemoVo();
+                        everyRowData.setNickName("用户-" + i);
+                        everyRowData.setUserStatus(SystemConstants.NORMAL);
+                        everyRowData.setGender("1");
+                        everyRowData.setPhoneNumber(String.format("175%08d", i));
+                        everyRowData.setEmail(String.format("175%08d", i) + "@163.com");
+                        everyRowData.setProvinceId(i);
+                        everyRowData.setCityId(i);
+                        everyRowData.setAreaId(i);
+                        excelDataList.add(everyRowData);
+                    }
 
-            // 创建表格
-            WriteSheet sheet = ExcelWriterWrapper.sheetBuilder("自定义导出demo")
-                // 合并单元格
-                // .registerWriteHandler(new CellMergeStrategy(excelDataList, true))
-                .build();
+                    // 创建表格
+                    WriteSheet sheet =
+                            ExcelWriterWrapper.sheetBuilder("自定义导出demo")
+                                    // 合并单元格
+                                    // .registerWriteHandler(new CellMergeStrategy(excelDataList,
+                                    // true))
+                                    .build();
 
+                    wrapper.write(excelDataList, sheet);
 
-            wrapper.write(excelDataList, sheet);
+                    List<ExportDemoVo> excelDataList2 = new ArrayList<>();
+                    for (int i = 0; i < 20; i++) {
+                        int index = 1000 + i;
+                        // 模拟数据库中的一条数据
+                        ExportDemoVo everyRowData = new ExportDemoVo();
+                        everyRowData.setNickName("用户-" + index);
+                        everyRowData.setUserStatus(SystemConstants.NORMAL);
+                        everyRowData.setGender("1");
+                        everyRowData.setPhoneNumber(String.format("175%08d", index));
+                        everyRowData.setEmail(String.format("175%08d", index) + "@163.com");
+                        everyRowData.setProvinceId(index);
+                        everyRowData.setCityId(index);
+                        everyRowData.setAreaId(index);
+                        excelDataList2.add(everyRowData);
+                    }
 
-            List<ExportDemoVo> excelDataList2 = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                int index = 1000 + i;
-                // 模拟数据库中的一条数据
-                ExportDemoVo everyRowData = new ExportDemoVo();
-                everyRowData.setNickName("用户-" + index);
-                everyRowData.setUserStatus(SystemConstants.NORMAL);
-                everyRowData.setGender("1");
-                everyRowData.setPhoneNumber(String.format("175%08d", index));
-                everyRowData.setEmail(String.format("175%08d", index) + "@163.com");
-                everyRowData.setProvinceId(index);
-                everyRowData.setCityId(index);
-                everyRowData.setAreaId(index);
-                excelDataList2.add(everyRowData);
-            }
+                    wrapper.write(excelDataList2, sheet);
 
-            wrapper.write(excelDataList2, sheet);
-
-            // 或者在同一个excel中创建多个表格
-            // WriteSheet sheet2 = ExcelWriterWrapper.sheetBuilder("自定义导出demo2").build();
-            // wrapper.write(excelDataList2, sheet2);
-        });
+                    // 或者在同一个excel中创建多个表格
+                    // WriteSheet sheet2 = ExcelWriterWrapper.sheetBuilder("自定义导出demo2").build();
+                    // wrapper.write(excelDataList2, sheet2);
+                });
     }
 }

@@ -1,6 +1,7 @@
 package org.dromara.resource.dubbo;
 
 import cn.hutool.core.convert.Convert;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -20,8 +21,6 @@ import org.dromara.resource.service.ISysOssService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * 文件请求处理
  *
@@ -35,14 +34,17 @@ public class RemoteFileServiceImpl implements RemoteFileService {
 
     private final ISysOssService sysOssService;
 
-    /**
-     * 文件上传请求
-     */
+    /** 文件上传请求 */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public RemoteFile upload(String name, String originalFilename, String contentType, byte[] file) throws ServiceException {
+    public RemoteFile upload(String name, String originalFilename, String contentType, byte[] file)
+            throws ServiceException {
         try {
-            String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf("."), originalFilename.length());
+            String suffix =
+                    StringUtils.substring(
+                            originalFilename,
+                            originalFilename.lastIndexOf("."),
+                            originalFilename.length());
             OssClient storage = OssFactory.instance();
             UploadResult uploadResult = storage.uploadSuffix(file, suffix, contentType);
             // 保存文件信息
@@ -89,8 +91,9 @@ public class RemoteFileServiceImpl implements RemoteFileService {
      * @return 列表
      */
     @Override
-    public List<RemoteFile> selectByIds(String ossIds){
-        List<SysOssVo> sysOssVos = sysOssService.listByIds(StringUtils.splitTo(ossIds, Convert::toLong));
+    public List<RemoteFile> selectByIds(String ossIds) {
+        List<SysOssVo> sysOssVos =
+                sysOssService.listByIds(StringUtils.splitTo(ossIds, Convert::toLong));
         return MapstructUtils.convert(sysOssVos, RemoteFile.class);
     }
 }

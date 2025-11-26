@@ -12,19 +12,12 @@ import lombok.Data;
 @Builder
 public class UploadResult {
 
-    /**
-     * 文件路径
-     */
+    /** 文件路径 */
     private String url;
 
-    /**
-     * 文件名
-     */
+    /** 文件名 */
     private String filename;
 
-    /**
-     * 已上传对象的实体标记（用来校验文件）
-     */
+    /** 已上传对象的实体标记（用来校验文件） */
     private String eTag;
-
 }

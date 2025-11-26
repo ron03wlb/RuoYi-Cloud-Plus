@@ -1,14 +1,13 @@
 package org.dromara.common.core.factory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.regex.Pattern;
 import org.dromara.common.core.BaseUnitTest;
 import org.dromara.common.core.constant.RegexConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.regex.Pattern;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * RegexPatternPoolFactory (正则表达式模式池工厂) 单元测试
@@ -29,7 +28,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE).isNotNull();
             assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE).isInstanceOf(Pattern.class);
             assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.pattern())
-                .isEqualTo(RegexConstants.DICTIONARY_TYPE);
+                    .isEqualTo(RegexConstants.DICTIONARY_TYPE);
         }
 
         @Test
@@ -39,7 +38,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6).isNotNull();
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6).isInstanceOf(Pattern.class);
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.pattern())
-                .isEqualTo(RegexConstants.ID_CARD_LAST_6);
+                    .isEqualTo(RegexConstants.ID_CARD_LAST_6);
         }
 
         @Test
@@ -49,7 +48,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.QQ_NUMBER).isNotNull();
             assertThat(RegexPatternPoolFactory.QQ_NUMBER).isInstanceOf(Pattern.class);
             assertThat(RegexPatternPoolFactory.QQ_NUMBER.pattern())
-                .isEqualTo(RegexConstants.QQ_NUMBER);
+                    .isEqualTo(RegexConstants.QQ_NUMBER);
         }
 
         @Test
@@ -59,7 +58,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.POSTAL_CODE).isNotNull();
             assertThat(RegexPatternPoolFactory.POSTAL_CODE).isInstanceOf(Pattern.class);
             assertThat(RegexPatternPoolFactory.POSTAL_CODE.pattern())
-                .isEqualTo(RegexConstants.POSTAL_CODE);
+                    .isEqualTo(RegexConstants.POSTAL_CODE);
         }
 
         @Test
@@ -68,8 +67,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             // Assert
             assertThat(RegexPatternPoolFactory.ACCOUNT).isNotNull();
             assertThat(RegexPatternPoolFactory.ACCOUNT).isInstanceOf(Pattern.class);
-            assertThat(RegexPatternPoolFactory.ACCOUNT.pattern())
-                .isEqualTo(RegexConstants.ACCOUNT);
+            assertThat(RegexPatternPoolFactory.ACCOUNT.pattern()).isEqualTo(RegexConstants.ACCOUNT);
         }
 
         @Test
@@ -79,7 +77,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.PASSWORD).isNotNull();
             assertThat(RegexPatternPoolFactory.PASSWORD).isInstanceOf(Pattern.class);
             assertThat(RegexPatternPoolFactory.PASSWORD.pattern())
-                .isEqualTo(RegexConstants.PASSWORD);
+                    .isEqualTo(RegexConstants.PASSWORD);
         }
 
         @Test
@@ -88,8 +86,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             // Assert
             assertThat(RegexPatternPoolFactory.STATUS).isNotNull();
             assertThat(RegexPatternPoolFactory.STATUS).isInstanceOf(Pattern.class);
-            assertThat(RegexPatternPoolFactory.STATUS.pattern())
-                .isEqualTo(RegexConstants.STATUS);
+            assertThat(RegexPatternPoolFactory.STATUS.pattern()).isEqualTo(RegexConstants.STATUS);
         }
     }
 
@@ -107,10 +104,14 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             String invalidDict2 = "Invalid_Type"; // 大写字母
 
             // Assert
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDict1).matches()).isTrue();
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDict2).matches()).isTrue();
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDict1).matches()).isFalse();
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDict2).matches()).isFalse();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDict1).matches())
+                    .isTrue();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDict2).matches())
+                    .isTrue();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDict1).matches())
+                    .isFalse();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDict2).matches())
+                    .isFalse();
         }
 
         @Test
@@ -130,10 +131,14 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(valid1).matches()).isTrue();
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(valid2).matches()).isTrue();
             assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(valid3).matches()).isTrue();
-            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid1).matches()).isFalse();
-            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid2).matches()).isFalse();
-            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid3).matches()).isFalse();
-            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid4).matches()).isFalse();
+            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid1).matches())
+                    .isFalse();
+            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid2).matches())
+                    .isFalse();
+            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid3).matches())
+                    .isFalse();
+            assertThat(RegexPatternPoolFactory.ID_CARD_LAST_6.matcher(invalid4).matches())
+                    .isFalse();
         }
 
         @Test
@@ -245,7 +250,7 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
         void shouldExtendHutoolPatternPool() {
             // Assert
             assertThat(RegexPatternPoolFactory.class.getSuperclass().getSimpleName())
-                .isEqualTo("PatternPool");
+                    .isEqualTo("PatternPool");
         }
 
         @Test
@@ -292,34 +297,52 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
         @DisplayName("所有 Pattern 常量应该是静态的")
         void shouldAllPatternsBeStatic() throws NoSuchFieldException {
             // Assert
-            assertThat(java.lang.reflect.Modifier.isStatic(
-                RegexPatternPoolFactory.class.getDeclaredField("DICTIONARY_TYPE").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isStatic(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("DICTIONARY_TYPE")
+                                            .getModifiers()))
+                    .isTrue();
 
-            assertThat(java.lang.reflect.Modifier.isStatic(
-                RegexPatternPoolFactory.class.getDeclaredField("ID_CARD_LAST_6").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isStatic(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("ID_CARD_LAST_6")
+                                            .getModifiers()))
+                    .isTrue();
 
-            assertThat(java.lang.reflect.Modifier.isStatic(
-                RegexPatternPoolFactory.class.getDeclaredField("QQ_NUMBER").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isStatic(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("QQ_NUMBER")
+                                            .getModifiers()))
+                    .isTrue();
         }
 
         @Test
         @DisplayName("所有 Pattern 常量应该是 final 的")
         void shouldAllPatternsBeFinal() throws NoSuchFieldException {
             // Assert
-            assertThat(java.lang.reflect.Modifier.isFinal(
-                RegexPatternPoolFactory.class.getDeclaredField("DICTIONARY_TYPE").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isFinal(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("DICTIONARY_TYPE")
+                                            .getModifiers()))
+                    .isTrue();
 
-            assertThat(java.lang.reflect.Modifier.isFinal(
-                RegexPatternPoolFactory.class.getDeclaredField("ID_CARD_LAST_6").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isFinal(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("ID_CARD_LAST_6")
+                                            .getModifiers()))
+                    .isTrue();
 
-            assertThat(java.lang.reflect.Modifier.isFinal(
-                RegexPatternPoolFactory.class.getDeclaredField("PASSWORD").getModifiers()
-            )).isTrue();
+            assertThat(
+                            java.lang.reflect.Modifier.isFinal(
+                                    RegexPatternPoolFactory.class
+                                            .getDeclaredField("PASSWORD")
+                                            .getModifiers()))
+                    .isTrue();
         }
     }
 
@@ -390,8 +413,10 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             String invalidDictType = "SysUserSex"; // 不符合命名规范
 
             // Act & Assert
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDictType).matches()).isTrue();
-            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDictType).matches()).isFalse();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(validDictType).matches())
+                    .isTrue();
+            assertThat(RegexPatternPoolFactory.DICTIONARY_TYPE.matcher(invalidDictType).matches())
+                    .isFalse();
         }
 
         @Test
@@ -402,8 +427,10 @@ class RegexPatternPoolFactoryTest extends BaseUnitTest {
             String invalidPostalCode = "ABCDEF";
 
             // Act & Assert
-            assertThat(RegexPatternPoolFactory.POSTAL_CODE.matcher(validPostalCode).matches()).isTrue();
-            assertThat(RegexPatternPoolFactory.POSTAL_CODE.matcher(invalidPostalCode).matches()).isFalse();
+            assertThat(RegexPatternPoolFactory.POSTAL_CODE.matcher(validPostalCode).matches())
+                    .isTrue();
+            assertThat(RegexPatternPoolFactory.POSTAL_CODE.matcher(invalidPostalCode).matches())
+                    .isFalse();
         }
     }
 }

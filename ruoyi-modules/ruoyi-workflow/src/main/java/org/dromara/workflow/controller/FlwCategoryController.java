@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.lang.tree.Tree;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
@@ -21,8 +22,6 @@ import org.dromara.workflow.service.IFlwCategoryService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 流程分类
  *
@@ -37,9 +36,7 @@ public class FlwCategoryController extends BaseController {
 
     private final IFlwCategoryService flwCategoryService;
 
-    /**
-     * 查询流程分类列表
-     */
+    /** 查询流程分类列表 */
     @SaCheckPermission("workflow:category:list")
     @GetMapping("/list")
     public R<List<FlowCategoryVo>> list(FlowCategoryBo bo) {
@@ -47,9 +44,7 @@ public class FlwCategoryController extends BaseController {
         return R.ok(list);
     }
 
-    /**
-     * 导出流程分类列表
-     */
+    /** 导出流程分类列表 */
     @SaCheckPermission("workflow:category:export")
     @Log(title = "流程分类", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -69,9 +64,7 @@ public class FlwCategoryController extends BaseController {
         return R.ok(flwCategoryService.queryById(categoryId));
     }
 
-    /**
-     * 新增流程分类
-     */
+    /** 新增流程分类 */
     @SaCheckPermission("workflow:category:add")
     @Log(title = "流程分类", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -83,9 +76,7 @@ public class FlwCategoryController extends BaseController {
         return toAjax(flwCategoryService.insertByBo(category));
     }
 
-    /**
-     * 修改流程分类
-     */
+    /** 修改流程分类 */
     @SaCheckPermission("workflow:category:edit")
     @Log(title = "流程分类", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -130,5 +121,4 @@ public class FlwCategoryController extends BaseController {
     public R<List<Tree<String>>> categoryTree(FlowCategoryBo categoryBo) {
         return R.ok(flwCategoryService.selectCategoryTreeList(categoryBo));
     }
-
 }

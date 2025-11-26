@@ -1,8 +1,7 @@
 package org.dromara.auth.domain.vo;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 /**
  * 登录租户对象
@@ -12,14 +11,9 @@ import java.util.List;
 @Data
 public class LoginTenantVo {
 
-    /**
-     * 租户开关
-     */
+    /** 租户开关 */
     private Boolean tenantEnabled;
 
-    /**
-     * 租户对象列表
-     */
+    /** 租户对象列表 */
     private List<TenantListVo> voList;
-
 }

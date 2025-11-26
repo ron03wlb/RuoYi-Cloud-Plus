@@ -1,12 +1,11 @@
 package org.dromara.workflow.domain.bo;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import org.dromara.common.core.validate.AddGroup;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Data;
+import org.dromara.common.core.validate.AddGroup;
 
 /**
  * 流程变量参数
@@ -16,23 +15,16 @@ import java.util.List;
 @Data
 public class FlowUrgeTaskBo implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
-    /**
-     * 任务id
-     */
+    /** 任务id */
     @NotNull(message = "任务id为空", groups = AddGroup.class)
     private List<Long> taskIdList;
 
-    /**
-     * 消息类型
-     */
+    /** 消息类型 */
     private List<String> messageType;
 
-    /**
-     * 催办内容
-     */
+    /** 催办内容 */
     @NotNull(message = "催办内容为空", groups = AddGroup.class)
     private String message;
 }

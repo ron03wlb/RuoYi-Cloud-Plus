@@ -1,5 +1,8 @@
 package org.dromara.common.mybatis.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import cn.hutool.http.HttpStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.dromara.common.core.domain.R;
@@ -13,25 +16,19 @@ import org.mockito.Mock;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DuplicateKeyException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 /**
  * MybatisExceptionHandler 测试
- * <p>
- * 测试 MyBatis 异常处理器
- * </p>
+ *
+ * <p>测试 MyBatis 异常处理器
  *
  * @author Test Team
  */
 @DisplayName("MybatisExceptionHandler 测试")
 class MybatisExceptionHandlerTest extends BaseUnitTest {
 
-    @InjectMocks
-    private MybatisExceptionHandler handler;
+    @InjectMocks private MybatisExceptionHandler handler;
 
-    @Mock
-    private HttpServletRequest request;
+    @Mock private HttpServletRequest request;
 
     private static final String TEST_URI = "/api/user/add";
 
@@ -48,9 +45,8 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该返回409状态码和数据重复提示消息")
         void shouldReturn409ForDuplicateKey() {
             // Arrange
-            DuplicateKeyException exception = new DuplicateKeyException(
-                "Duplicate entry 'admin' for key 'uk_username'"
-            );
+            DuplicateKeyException exception =
+                    new DuplicateKeyException("Duplicate entry 'admin' for key 'uk_username'");
 
             // Act
             R<Void> result = handler.handleDuplicateKeyException(exception, request);
@@ -65,9 +61,8 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理主键重复异常")
         void shouldHandlePrimaryKeyDuplicate() {
             // Arrange
-            DuplicateKeyException exception = new DuplicateKeyException(
-                "Duplicate entry '1' for key 'PRIMARY'"
-            );
+            DuplicateKeyException exception =
+                    new DuplicateKeyException("Duplicate entry '1' for key 'PRIMARY'");
 
             // Act
             R<Void> result = handler.handleDuplicateKeyException(exception, request);
@@ -82,9 +77,9 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理唯一索引重复异常")
         void shouldHandleUniqueIndexDuplicate() {
             // Arrange
-            DuplicateKeyException exception = new DuplicateKeyException(
-                "Duplicate entry 'test@example.com' for key 'uk_email'"
-            );
+            DuplicateKeyException exception =
+                    new DuplicateKeyException(
+                            "Duplicate entry 'test@example.com' for key 'uk_email'");
 
             // Act
             R<Void> result = handler.handleDuplicateKeyException(exception, request);
@@ -117,9 +112,10 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理未找到数据源异常并返回500状态码")
         void shouldHandleCannotFindDataSourceException() {
             // Arrange
-            MyBatisSystemException exception = new MyBatisSystemException(
-                new RuntimeException("CannotFindDataSourceException: No datasource set")
-            );
+            MyBatisSystemException exception =
+                    new MyBatisSystemException(
+                            new RuntimeException(
+                                    "CannotFindDataSourceException: No datasource set"));
 
             // Act
             R<Void> result = handler.handleCannotFindDataSourceException(exception, request);
@@ -134,9 +130,11 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理包含CannotFindDataSourceException关键字的异常")
         void shouldDetectCannotFindDataSourceKeyword() {
             // Arrange
-            MyBatisSystemException exception = new MyBatisSystemException(
-                new RuntimeException("Error getting datasource: CannotFindDataSourceException occurred")
-            );
+            MyBatisSystemException exception =
+                    new MyBatisSystemException(
+                            new RuntimeException(
+                                    "Error getting datasource: CannotFindDataSourceException"
+                                            + " occurred"));
 
             // Act
             R<Void> result = handler.handleCannotFindDataSourceException(exception, request);
@@ -152,9 +150,8 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         void shouldHandleGeneralMyBatisSystemException() {
             // Arrange
             String errorMessage = "Error querying database. Cause: java.sql.SQLException";
-            MyBatisSystemException exception = new MyBatisSystemException(
-                new RuntimeException(errorMessage)
-            );
+            MyBatisSystemException exception =
+                    new MyBatisSystemException(new RuntimeException(errorMessage));
 
             // Act
             R<Void> result = handler.handleCannotFindDataSourceException(exception, request);
@@ -169,9 +166,10 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理SQL执行异常")
         void shouldHandleSQLExecutionException() {
             // Arrange
-            MyBatisSystemException exception = new MyBatisSystemException(
-                new RuntimeException("PreparedStatementCallback; SQL [SELECT * FROM user]; error")
-            );
+            MyBatisSystemException exception =
+                    new MyBatisSystemException(
+                            new RuntimeException(
+                                    "PreparedStatementCallback; SQL [SELECT * FROM user]; error"));
 
             // Act
             R<Void> result = handler.handleCannotFindDataSourceException(exception, request);
@@ -185,9 +183,7 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理空消息的MyBatis异常")
         void shouldHandleEmptyMessageMyBatisException() {
             // Arrange
-            MyBatisSystemException exception = new MyBatisSystemException(
-                new RuntimeException("")
-            );
+            MyBatisSystemException exception = new MyBatisSystemException(new RuntimeException(""));
 
             // Act
             R<Void> result = handler.handleCannotFindDataSourceException(exception, request);
@@ -221,9 +217,8 @@ class MybatisExceptionHandlerTest extends BaseUnitTest {
         @DisplayName("应该处理长URI路径")
         void shouldHandleLongURI() {
             // Arrange
-            when(request.getRequestURI()).thenReturn(
-                "/api/very/long/path/to/resource/with/many/segments/user/add"
-            );
+            when(request.getRequestURI())
+                    .thenReturn("/api/very/long/path/to/resource/with/many/segments/user/add");
             DuplicateKeyException exception = new DuplicateKeyException("Duplicate key");
 
             // Act

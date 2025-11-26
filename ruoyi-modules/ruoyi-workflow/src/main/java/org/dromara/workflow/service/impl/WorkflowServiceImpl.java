@@ -2,6 +2,9 @@ package org.dromara.workflow.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
@@ -19,10 +22,6 @@ import org.dromara.workflow.service.IFlwInstanceService;
 import org.dromara.workflow.service.IFlwTaskService;
 import org.dromara.workflow.service.WorkflowService;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 通用 工作流服务实现
@@ -57,7 +56,9 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public String getBusinessStatusByTaskId(Long taskId) {
         FlowInstance flowInstance = flwInstanceService.selectByTaskId(taskId);
-        return ObjectUtil.isNotNull(flowInstance) ? flowInstance.getFlowStatus() : StringUtils.EMPTY;
+        return ObjectUtil.isNotNull(flowInstance)
+                ? flowInstance.getFlowStatus()
+                : StringUtils.EMPTY;
     }
 
     /**
@@ -68,14 +69,16 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public String getBusinessStatus(String businessId) {
         FlowInstance flowInstance = flwInstanceService.selectInstByBusinessId(businessId);
-        return ObjectUtil.isNotNull(flowInstance) ? flowInstance.getFlowStatus() : StringUtils.EMPTY;
+        return ObjectUtil.isNotNull(flowInstance)
+                ? flowInstance.getFlowStatus()
+                : StringUtils.EMPTY;
     }
 
     /**
      * 设置流程变量
      *
      * @param instanceId 流程实例id
-     * @param variables  流程变量
+     * @param variables 流程变量
      */
     @Override
     public void setVariable(Long instanceId, Map<String, Object> variables) {
@@ -125,9 +128,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     /**
-     * 办理任务
-     * 系统后台发起审批 无用户信息 需要忽略权限
-     * completeTask.getVariables().put("ignore", true);
+     * 办理任务 系统后台发起审批 无用户信息 需要忽略权限 completeTask.getVariables().put("ignore", true);
      *
      * @param completeTask 参数
      */
@@ -139,7 +140,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     /**
      * 办理任务
      *
-     * @param taskId  任务ID
+     * @param taskId 任务ID
      * @param message 办理意见
      */
     @Override
@@ -165,12 +166,14 @@ public class WorkflowServiceImpl implements WorkflowService {
             processBo.setFlowCode(startProcess.getFlowCode());
             processBo.setVariables(startProcess.getVariables());
             processBo.setHandler(startProcess.getHandler());
-            processBo.setBizExt(BeanUtil.toBean(startProcess.getBizExt(), FlowInstanceBizExt.class));
+            processBo.setBizExt(
+                    BeanUtil.toBean(startProcess.getBizExt(), FlowInstanceBizExt.class));
 
             RemoteStartProcessReturn result = flwTaskService.startWorkFlow(processBo);
             CompleteTaskBo taskBo = new CompleteTaskBo();
             taskBo.setTaskId(result.getTaskId());
-            taskBo.setMessageType(Collections.singletonList(MessageTypeEnum.SYSTEM_MESSAGE.getCode()));
+            taskBo.setMessageType(
+                    Collections.singletonList(MessageTypeEnum.SYSTEM_MESSAGE.getCode()));
             taskBo.setVariables(startProcess.getVariables());
             taskBo.setHandler(startProcess.getHandler());
 

@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 /**
  * 测试应用配置
- * <p>
- * 为集成测试提供最小化的 Spring Boot 配置
+ *
+ * <p>为集成测试提供最小化的 Spring Boot 配置
  *
  * @author Lion Li
  * @since 2025-11-09

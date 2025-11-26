@@ -1,5 +1,7 @@
 package org.dromara.auth.properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.dromara.auth.BaseUnitTest;
 import org.dromara.auth.enums.CaptchaCategory;
 import org.dromara.auth.enums.CaptchaType;
@@ -7,13 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * 认证配置类测试
- * <p>
- * 测试 Properties 配置类的基本功能
- * </p>
+ *
+ * <p>测试 Properties 配置类的基本功能
  *
  * @author Test Team
  */
@@ -44,9 +43,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setType(CaptchaType.MATH);
 
             // Assert
-            assertThat(properties.getType())
-                .isNotNull()
-                .isEqualTo(CaptchaType.MATH);
+            assertThat(properties.getType()).isNotNull().isEqualTo(CaptchaType.MATH);
         }
 
         @Test
@@ -59,9 +56,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setCategory(CaptchaCategory.LINE);
 
             // Assert
-            assertThat(properties.getCategory())
-                .isNotNull()
-                .isEqualTo(CaptchaCategory.LINE);
+            assertThat(properties.getCategory()).isNotNull().isEqualTo(CaptchaCategory.LINE);
         }
 
         @Test
@@ -74,9 +69,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setNumberLength(4);
 
             // Assert
-            assertThat(properties.getNumberLength())
-                .isNotNull()
-                .isEqualTo(4);
+            assertThat(properties.getNumberLength()).isNotNull().isEqualTo(4);
         }
 
         @Test
@@ -89,9 +82,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setCharLength(5);
 
             // Assert
-            assertThat(properties.getCharLength())
-                .isNotNull()
-                .isEqualTo(5);
+            assertThat(properties.getCharLength()).isNotNull().isEqualTo(5);
         }
 
         @Test
@@ -104,9 +95,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setEnabled(true);
 
             // Assert
-            assertThat(properties.getEnabled())
-                .isNotNull()
-                .isTrue();
+            assertThat(properties.getEnabled()).isNotNull().isTrue();
         }
 
         @Test
@@ -236,9 +225,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setMaxRetryCount(5);
 
             // Assert
-            assertThat(properties.getMaxRetryCount())
-                .isNotNull()
-                .isEqualTo(5);
+            assertThat(properties.getMaxRetryCount()).isNotNull().isEqualTo(5);
         }
 
         @Test
@@ -251,9 +238,7 @@ class AuthPropertiesTest extends BaseUnitTest {
             properties.setLockTime(10);
 
             // Assert
-            assertThat(properties.getLockTime())
-                .isNotNull()
-                .isEqualTo(10);
+            assertThat(properties.getLockTime()).isNotNull().isEqualTo(10);
         }
 
         @Test

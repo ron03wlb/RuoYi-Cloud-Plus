@@ -1,9 +1,8 @@
 package org.dromara.resource.api;
 
-import org.dromara.resource.api.domain.RemoteSms;
-
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.dromara.resource.api.domain.RemoteSms;
 
 /**
  * 短信服务
@@ -15,7 +14,7 @@ public interface RemoteSmsService {
     /**
      * 同步方法：发送固定消息模板短信
      *
-     * @param phone   目标手机号
+     * @param phone 目标手机号
      * @param message 短信内容
      * @return 封装了短信发送结果的 RemoteSms 对象
      */
@@ -24,7 +23,7 @@ public interface RemoteSmsService {
     /**
      * 同步方法：发送固定消息模板多模板参数短信
      *
-     * @param phone    目标手机号
+     * @param phone 目标手机号
      * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      * @return 封装了短信发送结果的 RemoteSms 对象
      */
@@ -33,9 +32,9 @@ public interface RemoteSmsService {
     /**
      * 同步方法：使用自定义模板发送短信
      *
-     * @param phone      目标手机号
+     * @param phone 目标手机号
      * @param templateId 短信模板ID
-     * @param messages   短信模板参数，使用 LinkedHashMap 以保持参数顺序
+     * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      * @return 封装了短信发送结果的 RemoteSms 对象
      */
     RemoteSms sendMessage(String phone, String templateId, LinkedHashMap<String, String> messages);
@@ -43,7 +42,7 @@ public interface RemoteSmsService {
     /**
      * 同步方法：群发固定模板短信
      *
-     * @param phones  目标手机号列表（1~1000）
+     * @param phones 目标手机号列表（1~1000）
      * @param message 短信内容
      * @return 封装了短信发送结果的 RemoteSms 对象
      */
@@ -52,17 +51,18 @@ public interface RemoteSmsService {
     /**
      * 同步方法：使用自定义模板群发短信
      *
-     * @param phones     目标手机号列表（1~1000）（1~1000）
+     * @param phones 目标手机号列表（1~1000）（1~1000）
      * @param templateId 短信模板ID
-     * @param messages   短信模板参数，使用 LinkedHashMap 以保持参数顺序
+     * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      * @return 封装了短信发送结果的 RemoteSms 对象
      */
-    RemoteSms messageTexting(List<String> phones, String templateId, LinkedHashMap<String, String> messages);
+    RemoteSms messageTexting(
+            List<String> phones, String templateId, LinkedHashMap<String, String> messages);
 
     /**
      * 异步方法：发送固定消息模板短信
      *
-     * @param phone   目标手机号
+     * @param phone 目标手机号
      * @param message 短信内容
      */
     void sendMessageAsync(String phone, String message);
@@ -70,17 +70,17 @@ public interface RemoteSmsService {
     /**
      * 异步方法：使用自定义模板发送短信
      *
-     * @param phone      目标手机号
+     * @param phone 目标手机号
      * @param templateId 短信模板ID
-     * @param messages   短信模板参数，使用 LinkedHashMap 以保持参数顺序
+     * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      */
     void sendMessageAsync(String phone, String templateId, LinkedHashMap<String, String> messages);
 
     /**
      * 延迟发送：发送固定消息模板短信
      *
-     * @param phone       目标手机号
-     * @param message     短信内容
+     * @param phone 目标手机号
+     * @param message 短信内容
      * @param delayedTime 延迟发送时间（毫秒）
      */
     void delayMessage(String phone, String message, Long delayedTime);
@@ -88,18 +88,22 @@ public interface RemoteSmsService {
     /**
      * 延迟发送：使用自定义模板发送定时短信
      *
-     * @param phone       目标手机号
-     * @param templateId  短信模板ID
-     * @param messages    短信模板参数，使用 LinkedHashMap 以保持参数顺序
+     * @param phone 目标手机号
+     * @param templateId 短信模板ID
+     * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      * @param delayedTime 延迟发送时间（毫秒）
      */
-    void delayMessage(String phone, String templateId, LinkedHashMap<String, String> messages, Long delayedTime);
+    void delayMessage(
+            String phone,
+            String templateId,
+            LinkedHashMap<String, String> messages,
+            Long delayedTime);
 
     /**
      * 延迟群发：群发延迟短信
      *
-     * @param phones      目标手机号列表（1~1000）
-     * @param message     短信内容
+     * @param phones 目标手机号列表（1~1000）
+     * @param message 短信内容
      * @param delayedTime 延迟发送时间（毫秒）
      */
     void delayMessageTexting(List<String> phones, String message, Long delayedTime);
@@ -107,12 +111,16 @@ public interface RemoteSmsService {
     /**
      * 延迟群发：使用自定义模板发送群体延迟短信
      *
-     * @param phones      目标手机号列表（1~1000）
-     * @param templateId  短信模板ID
-     * @param messages    短信模板参数，使用 LinkedHashMap 以保持参数顺序
+     * @param phones 目标手机号列表（1~1000）
+     * @param templateId 短信模板ID
+     * @param messages 短信模板参数，使用 LinkedHashMap 以保持参数顺序
      * @param delayedTime 延迟发送时间（毫秒）
      */
-    void delayMessageTexting(List<String> phones, String templateId, LinkedHashMap<String, String> messages, Long delayedTime);
+    void delayMessageTexting(
+            List<String> phones,
+            String templateId,
+            LinkedHashMap<String, String> messages,
+            Long delayedTime);
 
     /**
      * 加入黑名单
@@ -141,5 +149,4 @@ public interface RemoteSmsService {
      * @param phones 手机号
      */
     void removeBlacklist(List<String> phones);
-
 }

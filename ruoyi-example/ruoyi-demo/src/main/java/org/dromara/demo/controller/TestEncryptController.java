@@ -1,5 +1,7 @@
 package org.dromara.demo.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.dromara.common.core.domain.R;
 import org.dromara.demo.domain.TestDemoEncrypt;
 import org.dromara.demo.mapper.TestDemoEncryptMapper;
@@ -9,10 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
-
 
 /**
  * 测试数据库加解密功能
@@ -24,15 +22,15 @@ import java.util.Map;
 @RequestMapping("/encrypt")
 public class TestEncryptController {
 
-    @Autowired
-    private TestDemoEncryptMapper mapper;
+    @Autowired private TestDemoEncryptMapper mapper;
+
     @Value("${mybatis-encryptor.enable}")
     private Boolean encryptEnable;
 
     /**
      * 测试数据库加解密
      *
-     * @param key   测试key
+     * @param key 测试key
      * @param value 测试value
      */
     @GetMapping()
@@ -50,6 +48,4 @@ public class TestEncryptController {
         map.put("解密", testDemo);
         return R.ok(map);
     }
-
-
 }

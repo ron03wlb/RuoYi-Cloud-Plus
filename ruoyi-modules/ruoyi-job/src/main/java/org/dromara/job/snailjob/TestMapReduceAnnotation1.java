@@ -10,16 +10,14 @@ import com.aizuda.snailjob.client.job.core.dto.MapArgs;
 import com.aizuda.snailjob.client.job.core.dto.ReduceArgs;
 import com.aizuda.snailjob.common.log.SnailJobLog;
 import com.aizuda.snailjob.model.dto.ExecuteResult;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.springframework.stereotype.Component;
 
 /**
- * MapReduce任务 动态分配 分片后合并结果
- * <a href="https://juejin.cn/post/7448551286506913802"></a>
+ * MapReduce任务 动态分配 分片后合并结果 <a href="https://juejin.cn/post/7448551286506913802"></a>
  *
  * @author 老马
  */
@@ -30,12 +28,13 @@ public class TestMapReduceAnnotation1 {
     @MapExecutor
     public ExecuteResult rootMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
         int partitionSize = 50;
-        List<List<Integer>> partition = IntStream.rangeClosed(1, 200)
-                .boxed()
-                .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
-                .values()
-                .stream()
-                .toList();
+        List<List<Integer>> partition =
+                IntStream.rangeClosed(1, 200)
+                        .boxed()
+                        .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
+                        .values()
+                        .stream()
+                        .toList();
         SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
         return mapHandler.doMap(partition, "doCalc");
     }
@@ -47,14 +46,19 @@ public class TestMapReduceAnnotation1 {
         int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
         // 打印日志到服务器
         ThreadUtil.sleep(3, TimeUnit.SECONDS);
-        SnailJobLog.REMOTE.info("端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
+        SnailJobLog.REMOTE.info(
+                "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
         return ExecuteResult.success(partitionTotal);
     }
 
     @ReduceExecutor
     public ExecuteResult reduceExecute(ReduceArgs reduceArgs) {
-        int reduceTotal = reduceArgs.getMapResult().stream().mapToInt(i -> Integer.parseInt((String) i)).sum();
-        SnailJobLog.REMOTE.info("端口:{},reduceTotal:{}", SpringUtil.getProperty("server.port"), reduceTotal);
+        int reduceTotal =
+                reduceArgs.getMapResult().stream()
+                        .mapToInt(i -> Integer.parseInt((String) i))
+                        .sum();
+        SnailJobLog.REMOTE.info(
+                "端口:{},reduceTotal:{}", SpringUtil.getProperty("server.port"), reduceTotal);
         return ExecuteResult.success(reduceTotal);
     }
 }

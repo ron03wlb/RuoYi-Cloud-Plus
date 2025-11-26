@@ -2,6 +2,7 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.convert.Convert;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.core.domain.R;
@@ -17,8 +18,6 @@ import org.dromara.system.service.ISysPostService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 部门信息
  *
@@ -33,9 +32,7 @@ public class SysDeptController extends BaseController {
     private final ISysDeptService deptService;
     private final ISysPostService postService;
 
-    /**
-     * 获取部门列表
-     */
+    /** 获取部门列表 */
     @SaCheckPermission("system:dept:list")
     @GetMapping("/list")
     public R<List<SysDeptVo>> list(SysDeptBo dept) {
@@ -50,10 +47,14 @@ public class SysDeptController extends BaseController {
      */
     @SaCheckPermission("system:dept:list")
     @GetMapping("/list/exclude/{deptId}")
-    public R<List<SysDeptVo>> excludeChild(@PathVariable(value = "deptId", required = false) Long deptId) {
+    public R<List<SysDeptVo>> excludeChild(
+            @PathVariable(value = "deptId", required = false) Long deptId) {
         List<SysDeptVo> depts = deptService.selectDeptList(new SysDeptBo());
-        depts.removeIf(d -> d.getDeptId().equals(deptId)
-            || StringUtils.splitList(d.getAncestors()).contains(Convert.toStr(deptId)));
+        depts.removeIf(
+                d ->
+                        d.getDeptId().equals(deptId)
+                                || StringUtils.splitList(d.getAncestors())
+                                        .contains(Convert.toStr(deptId)));
         return R.ok(depts);
     }
 
@@ -69,9 +70,7 @@ public class SysDeptController extends BaseController {
         return R.ok(deptService.selectDeptById(deptId));
     }
 
-    /**
-     * 新增部门
-     */
+    /** 新增部门 */
     @SaCheckPermission("system:dept:add")
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -83,9 +82,7 @@ public class SysDeptController extends BaseController {
         return toAjax(deptService.insertDept(dept));
     }
 
-    /**
-     * 修改部门
-     */
+    /** 修改部门 */
     @SaCheckPermission("system:dept:edit")
     @Log(title = "部门管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
@@ -142,5 +139,4 @@ public class SysDeptController extends BaseController {
     public R<List<SysDeptVo>> optionselect(@RequestParam(required = false) Long[] deptIds) {
         return R.ok(deptService.selectDeptByIds(deptIds == null ? null : List.of(deptIds)));
     }
-
 }

@@ -8,13 +8,11 @@ import cn.idev.excel.write.builder.ExcelWriterTableBuilder;
 import cn.idev.excel.write.metadata.WriteSheet;
 import cn.idev.excel.write.metadata.WriteTable;
 import cn.idev.excel.write.metadata.fill.FillConfig;
-
 import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
- * ExcelWriterWrapper Excel写出包装器
- * <br>
+ * ExcelWriterWrapper Excel写出包装器 <br>
  * 提供了一组与 ExcelWriter 一一对应的写出方法，避免直接提供 ExcelWriter 而导致的一些不可控问题（比如提前关闭了IO流等）
  *
  * @author 秋辞未寒
@@ -34,7 +32,8 @@ public record ExcelWriterWrapper<T>(ExcelWriter excelWriter) {
         excelWriter.write(data, writeSheet, writeTable);
     }
 
-    public void write(Supplier<Collection<T>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
+    public void write(
+            Supplier<Collection<T>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
         excelWriter.write(supplier.get(), writeSheet, writeTable);
     }
 
@@ -64,7 +63,7 @@ public record ExcelWriterWrapper<T>(ExcelWriter excelWriter) {
      * @param excelWriter ExcelWriter
      * @return ExcelWriterWrapper
      */
-    public static  <T> ExcelWriterWrapper<T> of(ExcelWriter excelWriter) {
+    public static <T> ExcelWriterWrapper<T> of(ExcelWriter excelWriter) {
         return new ExcelWriterWrapper<>(excelWriter);
     }
 

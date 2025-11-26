@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 使用方式 看官网文档扩展项目
- */
+/** 使用方式 看官网文档扩展项目 */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/sharding")
@@ -40,7 +38,5 @@ public class TestShardingController {
         }
 
         return R.ok("分库分表数据批量插入成功！");
-
     }
-
 }

@@ -1,16 +1,15 @@
 package org.dromara.resource.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.resource.domain.bo.SysOssBo;
 import org.dromara.resource.domain.vo.SysOssVo;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * 文件上传 服务层
@@ -22,7 +21,7 @@ public interface ISysOssService {
     /**
      * 查询OSS对象存储列表
      *
-     * @param sysOss    OSS对象存储分页查询对象
+     * @param sysOss OSS对象存储分页查询对象
      * @param pageQuery 分页查询实体类
      * @return 结果
      */
@@ -79,7 +78,7 @@ public interface ISysOssService {
     /**
      * 文件下载方法，支持一次性下载完整文件
      *
-     * @param ossId    OSS对象ID
+     * @param ossId OSS对象ID
      * @param response HttpServletResponse对象，用于设置响应头和向客户端发送文件内容
      */
     void download(Long ossId, HttpServletResponse response) throws IOException;
@@ -87,7 +86,7 @@ public interface ISysOssService {
     /**
      * 删除OSS对象存储
      *
-     * @param ids     OSS对象ID串
+     * @param ids OSS对象ID串
      * @param isValid 判断是否需要校验
      * @return 结果
      */

@@ -1,5 +1,9 @@
 package org.dromara.common.core.utils.file;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
+
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,10 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
 
 /**
  * FileUtils 测试类
@@ -43,8 +43,8 @@ class FileUtilsTest {
 
             // Assert
             assertThat(result)
-                .contains("%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6")
-                .doesNotContain("测试文件");
+                    .contains("%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6")
+                    .doesNotContain("测试文件");
         }
 
         @Test
@@ -54,9 +54,7 @@ class FileUtilsTest {
             String result = FileUtils.percentEncode("test file.txt");
 
             // Assert
-            assertThat(result)
-                .isEqualTo("test%20file.txt")
-                .doesNotContain("+");
+            assertThat(result).isEqualTo("test%20file.txt").doesNotContain("+");
         }
 
         @ParameterizedTest
@@ -92,8 +90,8 @@ class FileUtilsTest {
 
             // Assert
             assertThat(result)
-                .contains("%26")  // &
-                .contains("%3D");  // =
+                    .contains("%26") // &
+                    .contains("%3D"); // =
         }
 
         @Test
@@ -121,7 +119,7 @@ class FileUtilsTest {
         void shouldThrowNullPointerExceptionForNullInput() {
             // Act & Assert
             assertThatThrownBy(() -> FileUtils.percentEncode(null))
-                .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(NullPointerException.class);
         }
 
         @Test
@@ -151,10 +149,7 @@ class FileUtilsTest {
             String result = FileUtils.percentEncode("emoji😀.txt");
 
             // Assert
-            assertThat(result)
-                .startsWith("emoji")
-                .contains("%F0%9F%98%80")
-                .endsWith(".txt");
+            assertThat(result).startsWith("emoji").contains("%F0%9F%98%80").endsWith(".txt");
         }
 
         @Test
@@ -168,10 +163,10 @@ class FileUtilsTest {
 
             // Assert
             assertThat(result)
-                .isNotEmpty()
-                .startsWith("%")
-                .endsWith(".txt")
-                .hasSizeGreaterThan(longName.length());
+                    .isNotEmpty()
+                    .startsWith("%")
+                    .endsWith(".txt")
+                    .hasSizeGreaterThan(longName.length());
         }
     }
 
@@ -204,8 +199,8 @@ class FileUtilsTest {
             int contentDispIndex = headers.indexOf("Content-disposition");
             assertThat(contentDispIndex).isNotNegative();
             assertThat(values.get(contentDispIndex))
-                .startsWith("attachment; filename=")
-                .contains("filename*=utf-8''");
+                    .startsWith("attachment; filename=")
+                    .contains("filename*=utf-8''");
         }
 
         @Test
@@ -224,8 +219,8 @@ class FileUtilsTest {
 
             String contentDisposition = valueCaptor.getValue();
             assertThat(contentDisposition)
-                .contains("%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt")
-                .contains("filename*=utf-8''");
+                    .contains("%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt")
+                    .contains("filename*=utf-8''");
         }
 
         @Test
@@ -239,10 +234,10 @@ class FileUtilsTest {
             FileUtils.setAttachmentResponseHeader(response, fileName);
 
             // Assert
-            verify(response).addHeader(
-                "Access-Control-Expose-Headers",
-                "Content-Disposition,download-filename"
-            );
+            verify(response)
+                    .addHeader(
+                            "Access-Control-Expose-Headers",
+                            "Content-Disposition,download-filename");
         }
 
         @Test
@@ -256,10 +251,7 @@ class FileUtilsTest {
             FileUtils.setAttachmentResponseHeader(response, fileName);
 
             // Assert
-            verify(response).setHeader(
-                eq("download-filename"),
-                eq("report.pdf")
-            );
+            verify(response).setHeader(eq("download-filename"), eq("report.pdf"));
         }
 
         @Test
@@ -277,9 +269,9 @@ class FileUtilsTest {
             verify(response).setHeader(eq("download-filename"), valueCaptor.capture());
 
             assertThat(valueCaptor.getValue())
-                .isEqualTo("my%20file.txt")
-                .doesNotContain(" ")
-                .doesNotContain("+");
+                    .isEqualTo("my%20file.txt")
+                    .doesNotContain(" ")
+                    .doesNotContain("+");
         }
 
         @Test
@@ -299,13 +291,14 @@ class FileUtilsTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "测试.txt",
-            "report 2024.pdf",
-            "image(1).jpg",
-            "文档 (副本).docx",
-            "data&file.csv"
-        })
+        @ValueSource(
+                strings = {
+                    "测试.txt",
+                    "report 2024.pdf",
+                    "image(1).jpg",
+                    "文档 (副本).docx",
+                    "data&file.csv"
+                })
         @DisplayName("应该正确处理各种文件名格式")
         void shouldHandleVariousFileNameFormats(String fileName) {
             // Arrange
@@ -337,7 +330,7 @@ class FileUtilsTest {
             String contentDisposition = valueCaptor.getValue();
             // RFC 5987 格式: attachment; filename=xxx;filename*=utf-8''xxx
             assertThat(contentDisposition)
-                .matches("attachment; filename=[^;]+;filename\\*=utf-8''.*");
+                    .matches("attachment; filename=[^;]+;filename\\*=utf-8''.*");
         }
 
         @Test
@@ -355,8 +348,8 @@ class FileUtilsTest {
             verify(response).setHeader(eq("download-filename"), valueCaptor.capture());
 
             assertThat(valueCaptor.getValue())
-                .contains("%26")  // &
-                .contains("%3D");  // =
+                    .contains("%26") // &
+                    .contains("%3D"); // =
         }
     }
 }

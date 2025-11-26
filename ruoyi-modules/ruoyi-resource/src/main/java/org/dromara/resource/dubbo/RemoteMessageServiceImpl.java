@@ -1,5 +1,6 @@
 package org.dromara.resource.dubbo;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -7,8 +8,6 @@ import org.dromara.common.sse.dto.SseMessageDto;
 import org.dromara.common.sse.utils.SseMessageUtils;
 import org.dromara.resource.api.RemoteMessageService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 消息服务
@@ -25,7 +24,7 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
      * 发送消息
      *
      * @param sessionKey session主键 一般为用户id
-     * @param message    消息文本
+     * @param message 消息文本
      */
     @Override
     public void publishMessage(List<Long> sessionKey, String message) {
@@ -44,5 +43,4 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
     public void publishAll(String message) {
         SseMessageUtils.publishAll(message);
     }
-
 }

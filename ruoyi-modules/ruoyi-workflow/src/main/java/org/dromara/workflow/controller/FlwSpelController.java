@@ -3,6 +3,7 @@ package org.dromara.workflow.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
@@ -20,8 +21,6 @@ import org.dromara.workflow.service.IFlwSpelService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 流程spel达式定义
  *
@@ -37,9 +36,7 @@ public class FlwSpelController extends BaseController {
 
     private final IFlwSpelService flwSpelService;
 
-    /**
-     * 查询流程spel达式定义列表
-     */
+    /** 查询流程spel达式定义列表 */
     @SaCheckPermission("workflow:spel:list")
     @GetMapping("/list")
     public TableDataInfo<FlowSpelVo> list(FlowSpelBo bo, PageQuery pageQuery) {
@@ -57,9 +54,7 @@ public class FlwSpelController extends BaseController {
         return R.ok(flwSpelService.queryById(id));
     }
 
-    /**
-     * 新增流程spel达式定义
-     */
+    /** 新增流程spel达式定义 */
     @SaCheckPermission("workflow:spel:add")
     @Log(title = "流程spel达式定义", businessType = BusinessType.INSERT)
     @RepeatSubmit()
@@ -68,9 +63,7 @@ public class FlwSpelController extends BaseController {
         return toAjax(flwSpelService.insertByBo(bo));
     }
 
-    /**
-     * 修改流程spel达式定义
-     */
+    /** 修改流程spel达式定义 */
     @SaCheckPermission("workflow:spel:edit")
     @Log(title = "流程spel达式定义", businessType = BusinessType.UPDATE)
     @RepeatSubmit()

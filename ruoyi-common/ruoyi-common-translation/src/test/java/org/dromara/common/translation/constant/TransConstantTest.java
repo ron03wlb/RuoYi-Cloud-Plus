@@ -1,21 +1,19 @@
 package org.dromara.common.translation.constant;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 import org.dromara.common.translation.BaseUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.*;
-
 /**
  * TransConstant (翻译常量) 单元测试
- * <p>
- * 用途: 定义数据翻译的类型常量
- * 测试范围: 验证常量完整性、唯一性、命名规范
+ *
+ * <p>用途: 定义数据翻译的类型常量 测试范围: 验证常量完整性、唯一性、命名规范
  *
  * @author Test Team
  */
@@ -113,9 +111,7 @@ class TransConstantTest extends BaseUnitTest {
             for (Field field : fields) {
                 if (field.getType() == String.class) {
                     String name = field.getName();
-                    assertThat(name)
-                        .matches("^[A-Z][A-Z0-9_]*$")
-                        .as("常量名 %s 应该全部大写并使用下划线", name);
+                    assertThat(name).matches("^[A-Z][A-Z0-9_]*$").as("常量名 %s 应该全部大写并使用下划线", name);
                 }
             }
         }
@@ -135,9 +131,7 @@ class TransConstantTest extends BaseUnitTest {
             for (Field field : fields) {
                 if (field.getType() == String.class) {
                     String value = (String) field.get(null);
-                    assertThat(value)
-                        .matches("^[a-z][a-z0-9_]*$")
-                        .as("常量值 %s 应该使用小写加下划线格式", value);
+                    assertThat(value).matches("^[a-z][a-z0-9_]*$").as("常量值 %s 应该使用小写加下划线格式", value);
                 }
             }
         }
@@ -152,9 +146,7 @@ class TransConstantTest extends BaseUnitTest {
             for (Field field : fields) {
                 if (field.getType() == String.class) {
                     String value = (String) field.get(null);
-                    assertThat(value)
-                        .contains("_to_")
-                        .as("常量值 %s 应该包含 '_to_' 表示翻译关系", value);
+                    assertThat(value).contains("_to_").as("常量值 %s 应该包含 '_to_' 表示翻译关系", value);
                 }
             }
         }
@@ -169,10 +161,7 @@ class TransConstantTest extends BaseUnitTest {
             for (Field field : fields) {
                 if (field.getType() == String.class) {
                     String value = (String) field.get(null);
-                    assertThat(value)
-                        .isNotNull()
-                        .isNotEmpty()
-                        .as("常量值不应为空");
+                    assertThat(value).isNotNull().isNotEmpty().as("常量值不应为空");
                 }
             }
         }

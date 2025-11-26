@@ -4,11 +4,10 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.ShearCaptcha;
+import java.awt.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-
-import java.awt.*;
 
 /**
  * 验证码配置
@@ -23,9 +22,7 @@ public class CaptchaConfig {
     private static final Color BACKGROUND = Color.LIGHT_GRAY;
     private static final Font FONT = new Font("Arial", Font.BOLD, 48);
 
-    /**
-     * 圆圈干扰验证码
-     */
+    /** 圆圈干扰验证码 */
     @Lazy
     @Bean
     public CircleCaptcha circleCaptcha() {
@@ -35,9 +32,7 @@ public class CaptchaConfig {
         return captcha;
     }
 
-    /**
-     * 线段干扰的验证码
-     */
+    /** 线段干扰的验证码 */
     @Lazy
     @Bean
     public LineCaptcha lineCaptcha() {
@@ -47,9 +42,7 @@ public class CaptchaConfig {
         return captcha;
     }
 
-    /**
-     * 扭曲干扰验证码
-     */
+    /** 扭曲干扰验证码 */
     @Lazy
     @Bean
     public ShearCaptcha shearCaptcha() {
@@ -58,5 +51,4 @@ public class CaptchaConfig {
         captcha.setFont(FONT);
         return captcha;
     }
-
 }
