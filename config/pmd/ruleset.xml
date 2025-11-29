@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PMD 静态代码分析规则集配置
+  基于 PMD 7.x 的规则定义
+  用于检测常见的代码问题、潜在的 bug 和代码异味
+-->
+<ruleset name="RuoYi-Cloud-Plus PMD Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+                        https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        RuoYi-Cloud-Plus 项目的 PMD 规则配置
+        专为 Spring Boot + Dubbo 微服务架构定制
+    </description>
+
+    <!-- ===========================================
+         最佳实践 (Best Practices)
+         =========================================== -->
+    <rule ref="category/java/bestpractices.xml">
+        <!-- 排除：访问父类的私有字段（Lombok 生成的代码可能触发） -->
+        <exclude name="AccessorClassGeneration"/>
+        <!-- 排除：参数过多（某些业务方法可能需要多个参数） -->
+        <exclude name="AvoidReassigningParameters"/>
+        <!-- 排除：JUnit 断言应该有消息（不强制要求） -->
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <!-- 排除：JUnit 测试应该包含断言（某些测试可能只验证不抛异常） -->
+        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <!-- 排除：至少一个构造函数（Spring 依赖注入可能不需要显式构造函数） -->
+        <exclude name="AtLeastOneConstructor"/>
+        <!-- 排除：位置参数超过 3 个（某些 logger 调用可能超过） -->
+        <exclude name="UseVarargs"/>
+        <!-- 排除：守卫日志语句（Spring Boot 项目中可能过于严格） -->
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <!-- ===========================================
+         代码风格 (Code Style)
+         =========================================== -->
+    <rule ref="category/java/codestyle.xml">
+        <!-- 排除：至少一个构造函数（Spring 依赖注入） -->
+        <exclude name="AtLeastOneConstructor"/>
+        <!-- 排除：调用父类方法参数（Lombok @Data 可能触发） -->
+        <exclude name="CallSuperInConstructor"/>
+        <!-- 排除：过多的导入（某些类可能需要导入很多类） -->
+        <exclude name="TooManyStaticImports"/>
+        <!-- 排除：短变量名（i, j, k 在循环中是可接受的） -->
+        <exclude name="ShortVariable"/>
+        <!-- 排除：长变量名（某些业务变量名可能较长但更清晰） -->
+        <exclude name="LongVariable"/>
+        <!-- 排除：短方法名（某些工具方法名可能较短） -->
+        <exclude name="ShortMethodName"/>
+        <!-- 排除：短类名（某些 DTO、VO 类名可能较短） -->
+        <exclude name="ShortClassName"/>
+        <!-- 排除：默认包（项目都有包名） -->
+        <exclude name="DefaultPackage"/>
+        <!-- 排除：过多字段（某些配置类或 DTO 可能有很多字段） -->
+        <exclude name="TooManyFields"/>
+        <!-- 排除：注释默认访问修饰符（不强制要求） -->
+        <exclude name="CommentDefaultAccessModifier"/>
+        <!-- 排除：局部变量命名约定（不强制驼峰命名的特殊情况） -->
+        <exclude name="LocalVariableNamingConventions"/>
+        <!-- 排除：方法参数命名约定（不强制驼峰命名的特殊情况） -->
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <!-- 排除：局部变量应该是 final（过于严格） -->
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <!-- 排除：字段命名约定（Spring 中可能使用下划线） -->
+        <exclude name="FieldNamingConventions"/>
+        <!-- 排除：仅一个返回语句（某些方法可能有多个提前返回） -->
+        <exclude name="OnlyOneReturn"/>
+        <!-- 排除：混淆的名称（不强制要求） -->
+        <exclude name="ConfusingTernary"/>
+        <!-- 排除：简化的三元表达式（不强制要求） -->
+        <exclude name="UnnecessaryConstructor"/>
+    </rule>
+
+    <!-- ===========================================
+         设计 (Design)
+         =========================================== -->
+    <rule ref="category/java/design.xml">
+        <!-- 排除：数据类（DTO、VO 类是数据类，这是正常的） -->
+        <exclude name="DataClass"/>
+        <!-- 排除：过多方法（某些 Service 类可能有很多方法） -->
+        <exclude name="TooManyMethods"/>
+        <!-- 排除：法则的知识（某些业务类可能需要依赖多个类） -->
+        <exclude name="LawOfDemeter"/>
+        <!-- 排除：无 Lombok（我们使用 Lombok） -->
+        <exclude name="UseUtilityClass"/>
+        <!-- 排除：避免深度嵌套（某些业务逻辑可能较复杂） -->
+        <exclude name="AvoidDeeplyNestedIfStmts"/>
+        <!-- 排除：圈复杂度（某些业务方法可能较复杂） -->
+        <exclude name="CyclomaticComplexity"/>
+        <!-- 排除：认知复杂度（某些业务方法可能较复杂） -->
+        <exclude name="CognitiveComplexity"/>
+        <!-- 排除：NPath 复杂度（某些业务方法可能较复杂） -->
+        <exclude name="NPathComplexity"/>
+        <!-- 排除：过多公共方法（Service 接口可能有很多公共方法） -->
+        <exclude name="ExcessivePublicCount"/>
+        <!-- 排除：过多导入（某些类可能需要导入很多类） -->
+        <exclude name="ExcessiveImports"/>
+        <!-- 排除：类扇出复杂度（某些配置类可能引用很多类） -->
+        <exclude name="CouplingBetweenObjects"/>
+        <!-- 排除：避免捕获泛型异常（Spring 中经常需要捕获 Exception） -->
+        <exclude name="AvoidCatchingGenericException"/>
+        <!-- 排除：避免抛出原始异常类型（Spring 中可能抛出 RuntimeException） -->
+        <exclude name="AvoidThrowingRawExceptionTypes"/>
+        <!-- 排除：签名声明抛出（Spring 中不强制声明受检异常） -->
+        <exclude name="SignatureDeclareThrowsException"/>
+        <!-- 排除：可变的静态状态（Spring 配置类中可能需要） -->
+        <exclude name="MutableStaticState"/>
+        <!-- 排除：不可变字段（某些配置字段在初始化后可能会修改） -->
+        <exclude name="ImmutableField"/>
+        <!-- 排除：类数据应该是抽象的（DTO、VO 不需要抽象） -->
+        <exclude name="AbstractClassWithoutAbstractMethod"/>
+        <!-- 排除：简化布尔表达式（某些复杂条件可能更清晰） -->
+        <exclude name="SimplifyBooleanExpressions"/>
+        <!-- 排除：简化布尔返回（某些提前返回可能更清晰） -->
+        <exclude name="SimplifyBooleanReturns"/>
+        <!-- 排除：使用对象进行清晰度（某些基本类型参数是合理的） -->
+        <exclude name="UseObjectForClearerAPI"/>
+    </rule>
+
+    <!-- ===========================================
+         文档 (Documentation)
+         =========================================== -->
+    <rule ref="category/java/documentation.xml">
+        <!-- 排除：注释大小（不强制要求注释长度） -->
+        <exclude name="CommentSize"/>
+        <!-- 排除：注释必需（不强制要求每个方法都有注释） -->
+        <exclude name="CommentRequired"/>
+    </rule>
+
+    <!-- ===========================================
+         错误倾向 (Error Prone)
+         =========================================== -->
+    <rule ref="category/java/errorprone.xml">
+        <!-- 排除：Bean 成员应序列化（Spring Bean 通常不需要序列化） -->
+        <exclude name="BeanMembersShouldSerialize"/>
+        <!-- 排除：避免字面量作为 if 条件（某些情况下是合理的） -->
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <!-- 排除：空 catch 块（某些情况下可以接受，但要谨慎使用） -->
+        <exclude name="EmptyCatchBlock"/>
+        <!-- 排除：避免字段名与方法名重复（Lombok @Data 可能触发） -->
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <!-- 排除：空 if 语句（某些框架代码可能需要） -->
+        <exclude name="EmptyIfStmt"/>
+        <!-- 排除：Null 赋值（某些情况下需要显式设置为 null） -->
+        <exclude name="NullAssignment"/>
+        <!-- 排除：数据流异常路径分析（可能产生误报） -->
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <!-- 排除：避免使用硬编码 IP（配置文件中的 IP 是可接受的） -->
+        <exclude name="AvoidDuplicateLiterals"/>
+        <!-- 排除：使用 Locale 与区域敏感操作（不强制要求） -->
+        <exclude name="UseLocaleWithCaseConversions"/>
+    </rule>
+
+    <!-- ===========================================
+         多线程 (Multithreading)
+         =========================================== -->
+    <rule ref="category/java/multithreading.xml">
+        <!-- 排除：避免同步 AtomicTypes（某些情况下可能需要） -->
+        <exclude name="AvoidSynchronizedAtomicTypes"/>
+        <!-- 排除：使用 ConcurrentHashMap（不强制要求，根据业务需求选择） -->
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
+
+    <!-- ===========================================
+         性能 (Performance)
+         =========================================== -->
+    <rule ref="category/java/performance.xml">
+        <!-- 排除：避免使用 Calendar（Java 8+ 推荐使用 LocalDateTime，但项目可能兼容老代码） -->
+        <exclude name="AvoidCalendarDateCreation"/>
+        <!-- 排除：避免文件流对象创建（某些情况下是必需的） -->
+        <exclude name="AvoidFileStream"/>
+        <!-- 排除：不要在循环中实例化（某些情况下是必需的） -->
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
+
+    <!-- ===========================================
+         安全 (Security)
+         =========================================== -->
+    <rule ref="category/java/security.xml"/>
+
+</ruleset>

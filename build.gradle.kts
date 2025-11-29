@@ -14,6 +14,8 @@ plugins {
     id("com.diffplug.spotless") version "6.25.0"
     // Checkstyle 代码质量检查插件
     id("checkstyle")
+    // PMD 静态代码分析插件
+    id("pmd")
     // SpotBugs 静态分析插件
     id("com.github.spotbugs") version "6.0.26"
 }
@@ -433,6 +435,53 @@ subprojects {
             // 让 check 任务依赖 spotbugsMain（自动在 build 时运行）
             tasks.named("check") {
                 dependsOn("spotbugsMain")
+            }
+        }
+    }
+}
+
+// ===========================================
+// PMD 静态代码分析配置
+// ===========================================
+
+// 应用 PMD 到所有子项目（排除 BOM 和 example 模块）
+subprojects {
+    // 只对应用了 Java 插件的项目应用 PMD
+    plugins.withId("java") {
+        // 排除示例/演示模块
+        if (!project.name.contains("demo") && !project.name.contains("example")) {
+            apply(plugin = "pmd")
+
+            configure<PmdExtension> {
+                // PMD 工具版本
+                toolVersion = "7.9.0"
+
+                // 只分析 main 源代码，不分析 test
+                sourceSets = listOf(project.extensions.getByType<SourceSetContainer>()["main"])
+
+                // 规则集文件
+                ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
+
+                // 生成报告但不让构建失败
+                isIgnoreFailures = true
+            }
+
+            // 配置 PMD 任务
+            tasks.withType<Pmd> {
+                // 生成 HTML 报告（用于开发者本地查看）
+                reports {
+                    html.required.set(true)
+                    html.outputLocation.set(file("${project.layout.buildDirectory.get()}/reports/pmd/main.html"))
+
+                    // 生成 XML 报告（用于 CI/CD 集成）
+                    xml.required.set(true)
+                    xml.outputLocation.set(file("${project.layout.buildDirectory.get()}/reports/pmd/main.xml"))
+                }
+            }
+
+            // 让 check 任务依赖 pmdMain（自动在 build 时运行）
+            tasks.named("check") {
+                dependsOn("pmdMain")
             }
         }
     }
