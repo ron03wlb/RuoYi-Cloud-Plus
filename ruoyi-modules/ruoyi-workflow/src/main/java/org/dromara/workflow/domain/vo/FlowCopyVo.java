@@ -14,16 +14,16 @@ import org.dromara.common.translation.constant.TransConstant;
 @Data
 public class FlowCopyVo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 用户id */
-    private Long userId;
+  /** 用户id */
+  private Long userId;
 
-    /** 用户名称 */
-    @Translation(type = TransConstant.USER_ID_TO_NICKNAME, mapper = "userId")
-    private String userName;
+  /** 用户名称 */
+  @Translation(type = TransConstant.USER_ID_TO_NICKNAME, mapper = "userId")
+  private String userName;
 
-    public FlowCopyVo(Long userId) {
-        this.userId = userId;
-    }
+  public FlowCopyVo(Long userId) {
+    this.userId = userId;
+  }
 }

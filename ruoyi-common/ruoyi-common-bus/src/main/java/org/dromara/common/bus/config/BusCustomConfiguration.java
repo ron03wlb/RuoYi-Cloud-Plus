@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.cloud.bus.jackson.RemoteApplicationEventScan;
 
 /**
- * bus 配置
+ * bus 配置.
  *
  * @author Lion Li
  */

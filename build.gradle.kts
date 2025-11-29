@@ -12,6 +12,8 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     // Spotless 代码格式化插件
     id("com.diffplug.spotless") version "6.25.0"
+    // Checkstyle 代码质量检查插件
+    id("checkstyle")
 }
 
 // ===========================================
@@ -56,9 +58,9 @@ subprojects {
             options.encoding = "UTF-8"
 
             // 编译参数
+            // 保留参数名（Spring 需要）
             options.compilerArgs.addAll(
                 listOf(
-                    // 保留参数名（Spring 需要）
                     "-parameters",
                     "-Xlint:unchecked",
                     "-Xlint:deprecation",
@@ -257,8 +259,8 @@ allprojects {
             target("src/**/*.java")
             targetExclude("**/build/**", "**/target/**", "**/.gradle/**")
 
-            // 使用 Google Java Format
-            googleJavaFormat("1.19.2").aosp().reflowLongStrings()
+            // 使用 Google Java Format (标准 2 空格缩进)
+            googleJavaFormat("1.19.2").reflowLongStrings()
 
             // 导入顺序
             importOrder()
@@ -311,6 +313,58 @@ subprojects {
     plugins.withId("java") {
         tasks.named("compileJava") {
             dependsOn("spotlessApply")
+        }
+    }
+}
+
+// ===========================================
+// Checkstyle 代码质量检查配置
+// ===========================================
+
+// 应用 Checkstyle 到所有子项目（排除 BOM 和 example 模块）
+subprojects {
+    // 只对应用了 Java 插件的项目应用 Checkstyle
+    plugins.withId("java") {
+        // 排除示例/演示模块
+        if (!project.name.contains("demo") && !project.name.contains("example")) {
+            apply(plugin = "checkstyle")
+
+            configure<CheckstyleExtension> {
+                // 使用 Google Java Style
+                toolVersion = "12.1.2"
+                configFile = rootProject.file("config/checkstyle/google_checks.xml")
+
+                // 只检查 main 源代码，不检查 test
+                sourceSets = listOf(project.extensions.getByType<SourceSetContainer>()["main"])
+
+                // 忽略失败（如果需要严格模式，设为 false）
+                // 设置为 true 允许编译成功，但保留警告信息
+                isIgnoreFailures = true
+
+                // 最大警告数（0 表示不允许任何警告）
+                maxWarnings = 0
+
+                // 最大错误数（0 表示不允许任何错误）
+                maxErrors = 0
+            }
+
+            // 配置 Checkstyle 任务
+            tasks.withType<Checkstyle> {
+                reports {
+                    // 生成 HTML 报告
+                    html.required.set(true)
+                    html.outputLocation.set(file("build/reports/checkstyle/main.html"))
+
+                    // 生成 XML 报告（用于 CI 集成）
+                    xml.required.set(true)
+                    xml.outputLocation.set(file("build/reports/checkstyle/main.xml"))
+                }
+            }
+
+            // 让 check 任务依赖 checkstyleMain（自动在 build 时运行）
+            tasks.named("check") {
+                dependsOn("checkstyleMain")
+            }
         }
     }
 }

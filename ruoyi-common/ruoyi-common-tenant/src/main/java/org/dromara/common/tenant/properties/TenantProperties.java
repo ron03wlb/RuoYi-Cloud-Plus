@@ -5,7 +5,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 租户 配置属性
+ * 租户 配置属性.
  *
  * @author Lion Li
  */
@@ -13,9 +13,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tenant")
 public class TenantProperties {
 
-    /** 是否启用 */
-    private Boolean enable;
+  /** 是否启用. */
+  private Boolean enable;
 
-    /** 排除表 */
-    private List<String> excludes;
+  /** 排除表. */
+  private List<String> excludes;
 }

@@ -5,7 +5,11 @@ import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
 
 /**
- * 字段加密注解
+ * Field-level encryption annotation for automatic data encryption and decryption.
+ *
+ * <p>This annotation can be applied to String fields in entity classes to enable automatic
+ * encryption before database persistence and decryption after retrieval. It supports multiple
+ * encryption algorithms including AES, RSA, SM2, SM4, and BASE64.
  *
  * @author 老马
  */
@@ -15,18 +19,47 @@ import org.dromara.common.encrypt.enumd.EncodeType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EncryptField {
 
-    /** 加密算法 */
-    AlgorithmType algorithm() default AlgorithmType.DEFAULT;
+  /**
+   * Specifies the encryption algorithm to use.
+   *
+   * @return the algorithm type (default: DEFAULT, which uses the global configuration)
+   */
+  AlgorithmType algorithm() default AlgorithmType.DEFAULT;
 
-    /** 秘钥。AES、SM4需要 */
-    String password() default "";
+  /**
+   * Specifies the secret key for symmetric encryption algorithms.
+   *
+   * <p>Required for AES and SM4 algorithms. If not specified, uses the global configuration.
+   *
+   * @return the secret key (default: empty string, uses global configuration)
+   */
+  String password() default "";
 
-    /** 公钥。RSA、SM2需要 */
-    String publicKey() default "";
+  /**
+   * Specifies the public key for asymmetric encryption algorithms.
+   *
+   * <p>Required for RSA and SM2 algorithms. Used for encryption operations.
+   *
+   * @return the public key (default: empty string, uses global configuration)
+   */
+  String publicKey() default "";
 
-    /** 私钥。RSA、SM2需要 */
-    String privateKey() default "";
+  /**
+   * Specifies the private key for asymmetric encryption algorithms.
+   *
+   * <p>Required for RSA and SM2 algorithms. Used for decryption operations.
+   *
+   * @return the private key (default: empty string, uses global configuration)
+   */
+  String privateKey() default "";
 
-    /** 编码方式。对加密算法为BASE64的不起作用 */
-    EncodeType encode() default EncodeType.DEFAULT;
+  /**
+   * Specifies the encoding format for the encrypted output.
+   *
+   * <p>Determines whether the encrypted value should be encoded as BASE64 or HEX. This setting is
+   * ignored for BASE64 algorithm.
+   *
+   * @return the encode type (default: DEFAULT, which uses the global configuration)
+   */
+  EncodeType encode() default EncodeType.DEFAULT;
 }

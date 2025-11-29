@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 部门
+ * 部门.
  *
  * @author AprilWind
  */
@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RemoteDeptVo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 部门ID */
-    private Long deptId;
+  /** 部门ID. */
+  private Long deptId;
 
-    /** 父部门ID */
-    private Long parentId;
+  /** 父部门ID. */
+  private Long parentId;
 
-    /** 部门名称 */
-    private String deptName;
+  /** 部门名称. */
+  private String deptName;
 }

@@ -22,28 +22,28 @@ import org.dromara.common.tenant.core.TenantEntity;
 @TableName("flow_category")
 public class FlowCategory extends TenantEntity {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 流程分类ID */
-    @TableId(value = "category_id")
-    private Long categoryId;
+  /** 流程分类ID */
+  @TableId(value = "category_id")
+  private Long categoryId;
 
-    /** 父流程分类id */
-    private Long parentId;
+  /** 父流程分类id */
+  private Long parentId;
 
-    /** 祖级列表 */
-    private String ancestors;
+  /** 祖级列表 */
+  private String ancestors;
 
-    /** 流程分类名称 */
-    private String categoryName;
+  /** 流程分类名称 */
+  private String categoryName;
 
-    /** 显示顺序 */
-    private Long orderNum;
+  /** 显示顺序 */
+  private Long orderNum;
 
-    /** 删除标志（0代表存在 1代表删除） */
-    @TableLogic private String delFlag;
+  /** 删除标志（0代表存在 1代表删除） */
+  @TableLogic private String delFlag;
 
-    /** 子菜单 */
-    @TableField(exist = false)
-    private List<FlowCategory> children = new ArrayList<>();
+  /** 子菜单 */
+  @TableField(exist = false)
+  private List<FlowCategory> children = new ArrayList<>();
 }

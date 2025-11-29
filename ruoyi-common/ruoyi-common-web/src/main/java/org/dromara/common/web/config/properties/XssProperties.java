@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
- * XSS跨站脚本配置
+ * XSS跨站脚本配置.
  *
  * @author Lion Li
  */
@@ -16,9 +16,9 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ConfigurationProperties(prefix = "xss")
 public class XssProperties {
 
-    /** Xss开关 */
-    private Boolean enabled;
+  /** Xss开关. */
+  private Boolean enabled;
 
-    /** 排除路径 */
-    private List<String> excludeUrls = new ArrayList<>();
+  /** 排除路径. */
+  private List<String> excludeUrls = new ArrayList<>();
 }

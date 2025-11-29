@@ -8,7 +8,7 @@ import org.apache.dubbo.rpc.*;
 import org.dromara.common.mybatis.helper.DataPermissionHelper;
 
 /**
- * dubbo 数据权限参数传递
+ * dubbo 数据权限参数传递.
  *
  * @author Lion Li
  */
@@ -16,12 +16,11 @@ import org.dromara.common.mybatis.helper.DataPermissionHelper;
 @Activate(group = {CommonConstants.CONSUMER})
 public class DubboDataPermissionFilter implements Filter {
 
-    @Override
-    public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        RpcServiceContext context = RpcContext.getServiceContext();
-        Map<String, Object> dataPermissionContext = DataPermissionHelper.getContext();
-        context.setObjectAttachment(
-                DataPermissionHelper.DATA_PERMISSION_KEY, dataPermissionContext);
-        return invoker.invoke(invocation);
-    }
+  @Override
+  public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+    RpcServiceContext context = RpcContext.getServiceContext();
+    Map<String, Object> dataPermissionContext = DataPermissionHelper.getContext();
+    context.setObjectAttachment(DataPermissionHelper.DATA_PERMISSION_KEY, dataPermissionContext);
+    return invoker.invoke(invocation);
+  }
 }

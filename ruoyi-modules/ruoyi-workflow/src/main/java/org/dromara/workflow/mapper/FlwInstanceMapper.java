@@ -15,14 +15,14 @@ import org.dromara.workflow.domain.vo.FlowInstanceVo;
  */
 public interface FlwInstanceMapper {
 
-    /**
-     * 流程实例信息
-     *
-     * @param page 分页
-     * @param queryWrapper 条件
-     * @return 结果
-     */
-    Page<FlowInstanceVo> selectInstanceList(
-            @Param("page") Page<FlowInstanceVo> page,
-            @Param(Constants.WRAPPER) Wrapper<FlowInstanceBo> queryWrapper);
+  /**
+   * 流程实例信息
+   *
+   * @param page 分页
+   * @param queryWrapper 条件
+   * @return 结果
+   */
+  Page<FlowInstanceVo> selectInstanceList(
+      @Param("page") Page<FlowInstanceVo> page,
+      @Param(Constants.WRAPPER) Wrapper<FlowInstanceBo> queryWrapper);
 }

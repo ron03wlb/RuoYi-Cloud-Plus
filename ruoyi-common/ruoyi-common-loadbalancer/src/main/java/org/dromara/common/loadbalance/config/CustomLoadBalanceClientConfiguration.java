@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 /**
- * 自定义负载均衡客户端配置
+ * 自定义负载均衡客户端配置.
  *
  * @author LionLi
  */
@@ -19,13 +19,12 @@ import org.springframework.core.env.Environment;
 @Configuration(proxyBeanMethods = false)
 public class CustomLoadBalanceClientConfiguration {
 
-    @Bean
-    @ConditionalOnBean(LoadBalancerClientFactory.class)
-    public ReactorLoadBalancer<ServiceInstance> customLoadBalancer(
-            Environment environment, LoadBalancerClientFactory loadBalancerClientFactory) {
-        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
-        return new CustomSpringCloudLoadBalancer(
-                name,
-                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class));
-    }
+  @Bean
+  @ConditionalOnBean(LoadBalancerClientFactory.class)
+  public ReactorLoadBalancer<ServiceInstance> customLoadBalancer(
+      Environment environment, LoadBalancerClientFactory loadBalancerClientFactory) {
+    String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+    return new CustomSpringCloudLoadBalancer(
+        name, loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class));
+  }
 }

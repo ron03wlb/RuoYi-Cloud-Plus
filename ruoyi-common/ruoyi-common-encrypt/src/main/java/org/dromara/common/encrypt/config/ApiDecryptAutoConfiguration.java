@@ -11,7 +11,10 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
- * api 解密自动配置
+ * Auto-configuration for API request/response encryption and decryption.
+ *
+ * <p>This configuration is activated when the property "api-decrypt.enabled" is set to true. It
+ * registers a servlet filter to handle encryption and decryption of HTTP requests and responses.
  *
  * @author wdhcr
  */
@@ -20,13 +23,22 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnProperty(value = "api-decrypt.enabled", havingValue = "true")
 public class ApiDecryptAutoConfiguration {
 
-    @Bean
-    @FilterRegistration(
-            name = "cryptoFilter",
-            urlPatterns = "/*",
-            order = FilterRegistrationBean.HIGHEST_PRECEDENCE,
-            dispatcherTypes = DispatcherType.REQUEST)
-    public CryptoFilter cryptoFilter(ApiDecryptProperties properties) {
-        return new CryptoFilter(properties);
-    }
+  /**
+   * Creates and registers the crypto filter for handling encryption/decryption of HTTP traffic.
+   *
+   * <p>The filter is registered with the highest precedence to ensure it processes requests before
+   * other filters.
+   *
+   * @param properties the API decryption properties containing encryption keys and configuration
+   * @return the configured crypto filter
+   */
+  @Bean
+  @FilterRegistration(
+      name = "cryptoFilter",
+      urlPatterns = "/*",
+      order = FilterRegistrationBean.HIGHEST_PRECEDENCE,
+      dispatcherTypes = DispatcherType.REQUEST)
+  public CryptoFilter cryptoFilter(ApiDecryptProperties properties) {
+    return new CryptoFilter(properties);
+  }
 }

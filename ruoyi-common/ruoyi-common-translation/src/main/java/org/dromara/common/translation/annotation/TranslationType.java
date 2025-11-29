@@ -14,6 +14,6 @@ import org.dromara.common.translation.core.TranslationInterface;
 @Documented
 public @interface TranslationType {
 
-    /** 类型 */
-    String type();
+  /** 类型. */
+  String type();
 }

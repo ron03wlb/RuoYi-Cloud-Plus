@@ -16,63 +16,63 @@ import org.dromara.common.json.utils.JsonUtils;
  */
 public class AuthMaxKeyRequest extends AuthDefaultRequest {
 
-    public static final String SERVER_URL =
-            SpringUtils.getProperty("justauth.type.maxkey.server-url");
+  public static final String SERVER_URL =
+      SpringUtils.getProperty("justauth.type.maxkey.server-url");
 
-    /** 设定归属域 */
-    public AuthMaxKeyRequest(AuthConfig config) {
-        super(config, AuthMaxKeySource.MAXKEY);
-    }
+  /** 设定归属域. */
+  public AuthMaxKeyRequest(AuthConfig config) {
+    super(config, AuthMaxKeySource.MAXKEY);
+  }
 
-    public AuthMaxKeyRequest(AuthConfig config, AuthStateCache authStateCache) {
-        super(config, AuthMaxKeySource.MAXKEY, authStateCache);
-    }
+  public AuthMaxKeyRequest(AuthConfig config, AuthStateCache authStateCache) {
+    super(config, AuthMaxKeySource.MAXKEY, authStateCache);
+  }
 
-    @Override
-    public AuthToken getAccessToken(AuthCallback authCallback) {
-        String body = doPostAuthorizationCode(authCallback.getCode());
-        Dict object = JsonUtils.parseMap(body);
-        // oauth/token 验证异常
-        if (object.containsKey("error")) {
-            throw new AuthException(object.getStr("error_description"));
-        }
-        // user 验证异常
-        if (object.containsKey("message")) {
-            throw new AuthException(object.getStr("message"));
-        }
-        return AuthToken.builder()
-                .accessToken(object.getStr("access_token"))
-                .refreshToken(object.getStr("refresh_token"))
-                .idToken(object.getStr("id_token"))
-                .tokenType(object.getStr("token_type"))
-                .scope(object.getStr("scope"))
-                .build();
+  @Override
+  public AuthToken getAccessToken(AuthCallback authCallback) {
+    String body = doPostAuthorizationCode(authCallback.getCode());
+    Dict object = JsonUtils.parseMap(body);
+    // oauth/token 验证异常
+    if (object.containsKey("error")) {
+      throw new AuthException(object.getStr("error_description"));
     }
+    // user 验证异常
+    if (object.containsKey("message")) {
+      throw new AuthException(object.getStr("message"));
+    }
+    return AuthToken.builder()
+        .accessToken(object.getStr("access_token"))
+        .refreshToken(object.getStr("refresh_token"))
+        .idToken(object.getStr("id_token"))
+        .tokenType(object.getStr("token_type"))
+        .scope(object.getStr("scope"))
+        .build();
+  }
 
-    @Override
-    public AuthUser getUserInfo(AuthToken authToken) {
-        String body = doGetUserInfo(authToken);
-        Dict object = JsonUtils.parseMap(body);
-        // oauth/token 验证异常
-        if (object.containsKey("error")) {
-            throw new AuthException(object.getStr("error_description"));
-        }
-        // user 验证异常
-        if (object.containsKey("message")) {
-            throw new AuthException(object.getStr("message"));
-        }
-        return AuthUser.builder()
-                .uuid(object.getStr("userId"))
-                .username(object.getStr("username"))
-                .nickname(object.getStr("displayName"))
-                .avatar(object.getStr("avatar_url"))
-                .blog(object.getStr("web_url"))
-                .company(object.getStr("organization"))
-                .location(object.getStr("location"))
-                .email(object.getStr("email"))
-                .remark(object.getStr("bio"))
-                .token(authToken)
-                .source(source.toString())
-                .build();
+  @Override
+  public AuthUser getUserInfo(AuthToken authToken) {
+    String body = doGetUserInfo(authToken);
+    Dict object = JsonUtils.parseMap(body);
+    // oauth/token 验证异常
+    if (object.containsKey("error")) {
+      throw new AuthException(object.getStr("error_description"));
     }
+    // user 验证异常
+    if (object.containsKey("message")) {
+      throw new AuthException(object.getStr("message"));
+    }
+    return AuthUser.builder()
+        .uuid(object.getStr("userId"))
+        .username(object.getStr("username"))
+        .nickname(object.getStr("displayName"))
+        .avatar(object.getStr("avatar_url"))
+        .blog(object.getStr("web_url"))
+        .company(object.getStr("organization"))
+        .location(object.getStr("location"))
+        .email(object.getStr("email"))
+        .remark(object.getStr("bio"))
+        .token(authToken)
+        .source(source.toString())
+        .build();
+  }
 }

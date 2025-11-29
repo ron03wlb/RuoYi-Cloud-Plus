@@ -14,10 +14,10 @@ import org.mapstruct.ReportingPolicy;
  * @author zhujie
  */
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SysOssVoConvert extends BaseMapper<SysOssVo, RemoteFile> {
 
-    @Mapping(target = "name", source = "fileName")
-    RemoteFile convert(SysOssVo sysOssVo);
+  @Mapping(target = "name", source = "fileName")
+  RemoteFile convert(SysOssVo sysOssVo);
 }

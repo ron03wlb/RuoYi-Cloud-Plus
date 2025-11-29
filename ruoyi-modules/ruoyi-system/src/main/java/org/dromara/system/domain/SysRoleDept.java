@@ -14,10 +14,10 @@ import lombok.Data;
 @TableName("sys_role_dept")
 public class SysRoleDept {
 
-    /** 角色ID */
-    @TableId(type = IdType.INPUT)
-    private Long roleId;
+  /** 角色ID */
+  @TableId(type = IdType.INPUT)
+  private Long roleId;
 
-    /** 部门ID */
-    private Long deptId;
+  /** 部门ID */
+  private Long deptId;
 }

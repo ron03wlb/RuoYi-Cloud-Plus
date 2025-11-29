@@ -23,30 +23,30 @@ import org.springframework.stereotype.Component;
 @JobExecutor(name = "testMapJobAnnotation")
 public class TestMapJobAnnotation {
 
-    @MapExecutor
-    public ExecuteResult doJobMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
-        // 生成1~200数值并分片
-        int partitionSize = 50;
-        List<List<Integer>> partition =
-                IntStream.rangeClosed(1, 200)
-                        .boxed()
-                        .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
-                        .values()
-                        .stream()
-                        .toList();
-        SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
-        return mapHandler.doMap(partition, "doCalc");
-    }
+  @MapExecutor
+  public ExecuteResult doJobMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
+    // 生成1~200数值并分片
+    int partitionSize = 50;
+    List<List<Integer>> partition =
+        IntStream.rangeClosed(1, 200)
+            .boxed()
+            .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
+            .values()
+            .stream()
+            .toList();
+    SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
+    return mapHandler.doMap(partition, "doCalc");
+  }
 
-    @MapExecutor(taskName = "doCalc")
-    public ExecuteResult doCalc(MapArgs mapArgs) {
-        List<Integer> sourceList = (List<Integer>) mapArgs.getMapResult();
-        // 遍历sourceList的每一个元素,计算出一个累加值partitionTotal
-        int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
-        // 打印日志到服务器
-        ThreadUtil.sleep(3, TimeUnit.SECONDS);
-        SnailJobLog.REMOTE.info(
-                "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
-        return ExecuteResult.success(partitionTotal);
-    }
+  @MapExecutor(taskName = "doCalc")
+  public ExecuteResult doCalc(MapArgs mapArgs) {
+    List<Integer> sourceList = (List<Integer>) mapArgs.getMapResult();
+    // 遍历sourceList的每一个元素,计算出一个累加值partitionTotal
+    int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
+    // 打印日志到服务器
+    ThreadUtil.sleep(3, TimeUnit.SECONDS);
+    SnailJobLog.REMOTE.info(
+        "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
+    return ExecuteResult.success(partitionTotal);
+  }
 }

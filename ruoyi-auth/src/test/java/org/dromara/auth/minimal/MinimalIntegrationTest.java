@@ -16,29 +16,29 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @org.junit.jupiter.api.Disabled("Diagnostic test - mission accomplished")
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-            "spring.cloud.nacos.discovery.enabled=false",
-            "spring.cloud.nacos.config.enabled=false",
-            "spring.cloud.config.enabled=false",
-            "dubbo.application.qos-enable=false",
-            "dubbo.registry.address=N/A",
-            "dubbo.protocol.port=-1",
-            "dubbo.consumer.check=false",
-            "dubbo.provider.register=false",
-            // Redis 配置
-            "spring.data.redis.host=localhost",
-            "spring.data.redis.port=6379"
-        })
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {
+      "spring.cloud.nacos.discovery.enabled=false",
+      "spring.cloud.nacos.config.enabled=false",
+      "spring.cloud.config.enabled=false",
+      "dubbo.application.qos-enable=false",
+      "dubbo.registry.address=N/A",
+      "dubbo.protocol.port=-1",
+      "dubbo.consumer.check=false",
+      "dubbo.provider.register=false",
+      // Redis 配置
+      "spring.data.redis.host=localhost",
+      "spring.data.redis.port=6379"
+    })
 @ActiveProfiles("test")
 @Import(TestAutoConfiguration.class)
 @DisplayName("最小集成测试 - Spring容器启动诊断")
 class MinimalIntegrationTest {
 
-    @Test
-    @DisplayName("Spring 容器应该能够成功启动")
-    void shouldStartSpringContext() {
-        // 如果容器启动成功,这个测试就会通过
-        assertThat(true).isTrue();
-    }
+  @Test
+  @DisplayName("Spring 容器应该能够成功启动")
+  void shouldStartSpringContext() {
+    // 如果容器启动成功,这个测试就会通过
+    assertThat(true).isTrue();
+  }
 }

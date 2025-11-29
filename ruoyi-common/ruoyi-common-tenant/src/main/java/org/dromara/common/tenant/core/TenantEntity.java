@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
- * 租户基类
+ * 租户基类.
  *
  * @author Michelle.Chung
  */
@@ -13,6 +13,6 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class TenantEntity extends BaseEntity {
 
-    /** 租户编号 */
-    private String tenantId;
+  /** 租户编号. */
+  private String tenantId;
 }

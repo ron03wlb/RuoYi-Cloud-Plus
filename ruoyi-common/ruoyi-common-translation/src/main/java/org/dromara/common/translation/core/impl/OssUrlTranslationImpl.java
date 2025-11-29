@@ -9,7 +9,7 @@ import org.dromara.resource.api.RemoteFileService;
 import org.springframework.context.annotation.Profile;
 
 /**
- * OSS翻译实现
+ * OSS翻译实现.
  *
  * @author Lion Li
  */
@@ -18,11 +18,11 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class OssUrlTranslationImpl implements TranslationInterface<String> {
 
-    @DubboReference(mock = "true")
-    private RemoteFileService remoteFileService;
+  @DubboReference(mock = "true")
+  private RemoteFileService remoteFileService;
 
-    @Override
-    public String translation(Object key, String other) {
-        return remoteFileService.selectUrlByIds(key.toString());
-    }
+  @Override
+  public String translation(Object key, String other) {
+    return remoteFileService.selectUrlByIds(key.toString());
+  }
 }

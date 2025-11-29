@@ -17,30 +17,29 @@ import org.dromara.workflow.domain.vo.FlowCategoryVo;
  */
 public interface FlwCategoryMapper extends BaseMapperPlus<FlowCategory, FlowCategoryVo> {
 
-    /**
-     * 根据父流程分类ID查询其所有子流程分类的列表
-     *
-     * @param parentId 父流程分类ID
-     * @return 包含子流程分类的列表
-     */
-    default List<FlowCategory> selectListByParentId(Long parentId) {
-        return this.selectList(
-                new LambdaQueryWrapper<FlowCategory>()
-                        .select(FlowCategory::getCategoryId)
-                        .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
-    }
+  /**
+   * 根据父流程分类ID查询其所有子流程分类的列表
+   *
+   * @param parentId 父流程分类ID
+   * @return 包含子流程分类的列表
+   */
+  default List<FlowCategory> selectListByParentId(Long parentId) {
+    return this.selectList(
+        new LambdaQueryWrapper<FlowCategory>()
+            .select(FlowCategory::getCategoryId)
+            .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
+  }
 
-    /**
-     * 根据父流程分类ID查询包括父ID及其所有子流程分类ID的列表
-     *
-     * @param parentId 父流程分类ID
-     * @return 包含父ID和子流程分类ID的列表
-     */
-    default List<Long> selectCategoryIdsByParentId(Long parentId) {
-        return Stream.concat(
-                        this.selectListByParentId(parentId).stream()
-                                .map(FlowCategory::getCategoryId),
-                        Stream.of(parentId))
-                .collect(Collectors.toList());
-    }
+  /**
+   * 根据父流程分类ID查询包括父ID及其所有子流程分类ID的列表
+   *
+   * @param parentId 父流程分类ID
+   * @return 包含父ID和子流程分类ID的列表
+   */
+  default List<Long> selectCategoryIdsByParentId(Long parentId) {
+    return Stream.concat(
+            this.selectListByParentId(parentId).stream().map(FlowCategory::getCategoryId),
+            Stream.of(parentId))
+        .collect(Collectors.toList());
+  }
 }

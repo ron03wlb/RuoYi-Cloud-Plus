@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * WebSocket 配置项
+ * WebSocket 配置项.
  *
  * @author zendwang
  */
@@ -12,11 +12,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class WebSocketProperties {
 
-    private Boolean enabled;
+  private Boolean enabled;
 
-    /** 路径 */
-    private String path;
+  /** 路径. */
+  private String path;
 
-    /** 设置访问源地址 */
-    private String allowedOrigins;
+  /** 设置访问源地址 */
+  private String allowedOrigins;
 }

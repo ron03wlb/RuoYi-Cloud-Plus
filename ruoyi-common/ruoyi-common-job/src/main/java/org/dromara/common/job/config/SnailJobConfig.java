@@ -22,7 +22,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * 启动定时任务
+ * 启动定时任务.
  *
  * @author dhb52
  * @since 2024/3/12
@@ -34,41 +34,41 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableSnailJob
 public class SnailJobConfig {
 
-    @Autowired private SnailJobServerProperties properties;
-    @Autowired private DiscoveryClient discoveryClient;
+  @Autowired private SnailJobServerProperties properties;
+  @Autowired private DiscoveryClient discoveryClient;
 
-    @EventListener(SnailClientStartingEvent.class)
-    public void onStarting(SnailClientStartingEvent event) {
-        // 从 nacos 获取 server 服务连接
-        registerServer();
-        // 注册 日志监控配置
-        registerLogging();
-    }
+  @EventListener(SnailClientStartingEvent.class)
+  public void onStarting(SnailClientStartingEvent event) {
+    // 从 nacos 获取 server 服务连接
+    registerServer();
+    // 注册 日志监控配置
+    registerLogging();
+  }
 
-    @EventListener(SnailChannelReconnectEvent.class)
-    public void onReconnect(SnailChannelReconnectEvent event) {
-        // 连接中断 重新从 nacos 获取存活的服务连接(高可用配置)
-        registerServer();
-    }
+  @EventListener(SnailChannelReconnectEvent.class)
+  public void onReconnect(SnailChannelReconnectEvent event) {
+    // 连接中断 重新从 nacos 获取存活的服务连接(高可用配置)
+    registerServer();
+  }
 
-    private void registerServer() {
-        String serverName = properties.getServerName();
-        if (StringUtils.isNotBlank(serverName)) {
-            List<ServiceInstance> instances = discoveryClient.getInstances(serverName);
-            if (CollUtil.isNotEmpty(instances)) {
-                ServiceInstance instance = instances.get(0);
-                System.setProperty("snail-job.server.host", instance.getHost());
-                System.setProperty("snail-job.server.port", properties.getPort());
-            }
-        }
+  private void registerServer() {
+    String serverName = properties.getServerName();
+    if (StringUtils.isNotBlank(serverName)) {
+      List<ServiceInstance> instances = discoveryClient.getInstances(serverName);
+      if (CollUtil.isNotEmpty(instances)) {
+        ServiceInstance instance = instances.get(0);
+        System.setProperty("snail-job.server.host", instance.getHost());
+        System.setProperty("snail-job.server.port", properties.getPort());
+      }
     }
+  }
 
-    private void registerLogging() {
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        SnailLogbackAppender<ILoggingEvent> ca = new SnailLogbackAppender<>();
-        ca.setName("snail_log_appender");
-        ca.start();
-        Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        rootLogger.addAppender(ca);
-    }
+  private void registerLogging() {
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    SnailLogbackAppender<ILoggingEvent> ca = new SnailLogbackAppender<>();
+    ca.setName("snail_log_appender");
+    ca.start();
+    Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    rootLogger.addAppender(ca);
+  }
 }

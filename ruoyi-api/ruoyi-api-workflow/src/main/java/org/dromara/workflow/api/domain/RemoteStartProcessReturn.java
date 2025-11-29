@@ -5,18 +5,18 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 启动流程返回对象
+ * 启动流程返回对象.
  *
  * @author Lion Li
  */
 @Data
 public class RemoteStartProcessReturn implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 流程实例id */
-    private Long processInstanceId;
+  /** 流程实例id. */
+  private Long processInstanceId;
 
-    /** 任务id */
-    private Long taskId;
+  /** 任务id. */
+  private Long taskId;
 }

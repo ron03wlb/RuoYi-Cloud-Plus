@@ -18,47 +18,47 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class CompleteTaskBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 任务id */
-    @NotNull(
-            message = "任务id不能为空",
-            groups = {AddGroup.class})
-    private Long taskId;
+  /** 任务id */
+  @NotNull(
+      message = "任务id不能为空",
+      groups = {AddGroup.class})
+  private Long taskId;
 
-    /** 附件id */
-    private String fileId;
+  /** 附件id */
+  private String fileId;
 
-    /** 抄送人员 */
-    private List<FlowCopyBo> flowCopyList;
+  /** 抄送人员 */
+  private List<FlowCopyBo> flowCopyList;
 
-    /** 消息类型 */
-    private List<String> messageType;
+  /** 消息类型 */
+  private List<String> messageType;
 
-    /** 办理意见 */
-    private String message;
+  /** 办理意见 */
+  private String message;
 
-    /** 消息通知 */
-    private String notice;
+  /** 消息通知 */
+  private String notice;
 
-    /** 办理人(可不填 用于覆盖当前节点办理人) */
-    private String handler;
+  /** 办理人(可不填 用于覆盖当前节点办理人) */
+  private String handler;
 
-    /** 流程变量 */
-    private Map<String, Object> variables;
+  /** 流程变量 */
+  private Map<String, Object> variables;
 
-    /** 弹窗选择的办理人 */
-    private Map<String, Object> assigneeMap;
+  /** 弹窗选择的办理人 */
+  private Map<String, Object> assigneeMap;
 
-    /** 扩展变量(此处为逗号分隔的ossId) */
-    private String ext;
+  /** 扩展变量(此处为逗号分隔的ossId) */
+  private String ext;
 
-    public Map<String, Object> getVariables() {
-        if (variables == null) {
-            variables = new HashMap<>(16);
-            return variables;
-        }
-        variables.entrySet().removeIf(entry -> Objects.isNull(entry.getValue()));
-        return variables;
+  public Map<String, Object> getVariables() {
+    if (variables == null) {
+      variables = new HashMap<>(16);
+      return variables;
     }
+    variables.entrySet().removeIf(entry -> Objects.isNull(entry.getValue()));
+    return variables;
+  }
 }

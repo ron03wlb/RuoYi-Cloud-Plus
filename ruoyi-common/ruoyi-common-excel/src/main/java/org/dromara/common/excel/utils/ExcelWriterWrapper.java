@@ -20,107 +20,107 @@ import java.util.function.Supplier;
  */
 public record ExcelWriterWrapper<T>(ExcelWriter excelWriter) {
 
-    public void write(Collection<T> data, WriteSheet writeSheet) {
-        excelWriter.write(data, writeSheet);
-    }
+  public void write(Collection<T> data, WriteSheet writeSheet) {
+    excelWriter.write(data, writeSheet);
+  }
 
-    public void write(Supplier<Collection<T>> supplier, WriteSheet writeSheet) {
-        excelWriter.write(supplier.get(), writeSheet);
-    }
+  public void write(Supplier<Collection<T>> supplier, WriteSheet writeSheet) {
+    excelWriter.write(supplier.get(), writeSheet);
+  }
 
-    public void write(Collection<T> data, WriteSheet writeSheet, WriteTable writeTable) {
-        excelWriter.write(data, writeSheet, writeTable);
-    }
+  public void write(Collection<T> data, WriteSheet writeSheet, WriteTable writeTable) {
+    excelWriter.write(data, writeSheet, writeTable);
+  }
 
-    public void write(
-            Supplier<Collection<T>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
-        excelWriter.write(supplier.get(), writeSheet, writeTable);
-    }
+  public void write(
+      Supplier<Collection<T>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
+    excelWriter.write(supplier.get(), writeSheet, writeTable);
+  }
 
-    public void fill(Object data, WriteSheet writeSheet) {
-        excelWriter.fill(data, writeSheet);
-    }
+  public void fill(Object data, WriteSheet writeSheet) {
+    excelWriter.fill(data, writeSheet);
+  }
 
-    public void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet) {
-        excelWriter.fill(data, fillConfig, writeSheet);
-    }
+  public void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet) {
+    excelWriter.fill(data, fillConfig, writeSheet);
+  }
 
-    public void fill(Supplier<Object> supplier, WriteSheet writeSheet) {
-        excelWriter.fill(supplier, writeSheet);
-    }
+  public void fill(Supplier<Object> supplier, WriteSheet writeSheet) {
+    excelWriter.fill(supplier, writeSheet);
+  }
 
-    public void fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
-        excelWriter.fill(supplier, fillConfig, writeSheet);
-    }
+  public void fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
+    excelWriter.fill(supplier, fillConfig, writeSheet);
+  }
 
-    public WriteContext writeContext() {
-        return excelWriter.writeContext();
-    }
+  public WriteContext writeContext() {
+    return excelWriter.writeContext();
+  }
 
-    /**
-     * 创建一个 ExcelWriterWrapper
-     *
-     * @param excelWriter ExcelWriter
-     * @return ExcelWriterWrapper
-     */
-    public static <T> ExcelWriterWrapper<T> of(ExcelWriter excelWriter) {
-        return new ExcelWriterWrapper<>(excelWriter);
-    }
+  /**
+   * 创建一个 ExcelWriterWrapper.
+   *
+   * @param excelWriter ExcelWriter
+   * @return ExcelWriterWrapper
+   */
+  public static <T> ExcelWriterWrapper<T> of(ExcelWriter excelWriter) {
+    return new ExcelWriterWrapper<>(excelWriter);
+  }
 
-    // -------------------------------- sheet start
+  // -------------------------------- sheet start
 
-    public static WriteSheet buildSheet(Integer sheetNo, String sheetName) {
-        return sheetBuilder(sheetNo, sheetName).build();
-    }
+  public static WriteSheet buildSheet(Integer sheetNo, String sheetName) {
+    return sheetBuilder(sheetNo, sheetName).build();
+  }
 
-    public static WriteSheet buildSheet(Integer sheetNo) {
-        return sheetBuilder(sheetNo).build();
-    }
+  public static WriteSheet buildSheet(Integer sheetNo) {
+    return sheetBuilder(sheetNo).build();
+  }
 
-    public static WriteSheet buildSheet(String sheetName) {
-        return sheetBuilder(sheetName).build();
-    }
+  public static WriteSheet buildSheet(String sheetName) {
+    return sheetBuilder(sheetName).build();
+  }
 
-    public static WriteSheet buildSheet() {
-        return sheetBuilder().build();
-    }
+  public static WriteSheet buildSheet() {
+    return sheetBuilder().build();
+  }
 
-    public static ExcelWriterSheetBuilder sheetBuilder(Integer sheetNo, String sheetName) {
-        return FastExcel.writerSheet(sheetNo, sheetName);
-    }
+  public static ExcelWriterSheetBuilder sheetBuilder(Integer sheetNo, String sheetName) {
+    return FastExcel.writerSheet(sheetNo, sheetName);
+  }
 
-    public static ExcelWriterSheetBuilder sheetBuilder(Integer sheetNo) {
-        return FastExcel.writerSheet(sheetNo);
-    }
+  public static ExcelWriterSheetBuilder sheetBuilder(Integer sheetNo) {
+    return FastExcel.writerSheet(sheetNo);
+  }
 
-    public static ExcelWriterSheetBuilder sheetBuilder(String sheetName) {
-        return FastExcel.writerSheet(sheetName);
-    }
+  public static ExcelWriterSheetBuilder sheetBuilder(String sheetName) {
+    return FastExcel.writerSheet(sheetName);
+  }
 
-    public static ExcelWriterSheetBuilder sheetBuilder() {
-        return FastExcel.writerSheet();
-    }
+  public static ExcelWriterSheetBuilder sheetBuilder() {
+    return FastExcel.writerSheet();
+  }
 
-    // -------------------------------- sheet end
+  // -------------------------------- sheet end
 
-    // -------------------------------- table start
+  // -------------------------------- table start
 
-    public static WriteTable buildTable(Integer tableNo) {
-        return tableBuilder(tableNo).build();
-    }
+  public static WriteTable buildTable(Integer tableNo) {
+    return tableBuilder(tableNo).build();
+  }
 
-    public static WriteTable buildTable() {
-        return tableBuilder().build();
-    }
+  public static WriteTable buildTable() {
+    return tableBuilder().build();
+  }
 
-    public static ExcelWriterTableBuilder tableBuilder(Integer tableNo) {
-        return FastExcel.writerTable(tableNo);
-    }
+  public static ExcelWriterTableBuilder tableBuilder(Integer tableNo) {
+    return FastExcel.writerTable(tableNo);
+  }
 
-    public static ExcelWriterTableBuilder tableBuilder() {
-        return FastExcel.writerTable();
-    }
+  public static ExcelWriterTableBuilder tableBuilder() {
+    return FastExcel.writerTable();
+  }
 
-    // -------------------------------- table end
+  // -------------------------------- table end
 
 }

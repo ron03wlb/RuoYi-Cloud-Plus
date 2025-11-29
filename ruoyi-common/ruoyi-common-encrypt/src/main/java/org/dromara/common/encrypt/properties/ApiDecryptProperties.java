@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * api解密属性配置类
+ * Configuration properties for API request/response encryption and decryption.
+ *
+ * <p>These properties are bound from the "api-decrypt" prefix in application configuration.
  *
  * @author wdhcr
  */
@@ -12,15 +14,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "api-decrypt")
 public class ApiDecryptProperties {
 
-    /** 加密开关 */
-    private Boolean enabled;
+  /** Enable/disable API encryption feature. */
+  private Boolean enabled;
 
-    /** 头部标识 */
-    private String headerFlag;
+  /** Header name containing the encrypted AES key. */
+  private String headerFlag;
 
-    /** 响应加密公钥 */
-    private String publicKey;
+  /** RSA public key for encrypting response data. */
+  private String publicKey;
 
-    /** 请求解密私钥 */
-    private String privateKey;
+  /** RSA private key for decrypting request data. */
+  private String privateKey;
 }

@@ -1,7 +1,7 @@
 package org.dromara.common.core.constant;
 
 /**
- * 缓存组名称常量
+ * 缓存组名称常量.
  *
  * <p>key 格式为 cacheNames#ttl#maxIdleTime#maxSize#local
  *
@@ -14,45 +14,45 @@ package org.dromara.common.core.constant;
  */
 public interface CacheNames {
 
-    /** 演示案例 */
-    String DEMO_CACHE = "demo:cache#60s#10m#20";
+  /** 演示案例. */
+  String DEMO_CACHE = "demo:cache#60s#10m#20";
 
-    /** 系统配置 */
-    String SYS_CONFIG = "sys_config";
+  /** 系统配置. */
+  String SYS_CONFIG = "sys_config";
 
-    /** 数据字典 */
-    String SYS_DICT = "sys_dict";
+  /** 数据字典. */
+  String SYS_DICT = "sys_dict";
 
-    /** 数据字典类型 */
-    String SYS_DICT_TYPE = "sys_dict_type";
+  /** 数据字典类型. */
+  String SYS_DICT_TYPE = "sys_dict_type";
 
-    /** 租户 */
-    String SYS_TENANT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_tenant#30d";
+  /** 租户. */
+  String SYS_TENANT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_tenant#30d";
 
-    /** 客户端 */
-    String SYS_CLIENT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_client#30d";
+  /** 客户端. */
+  String SYS_CLIENT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_client#30d";
 
-    /** 用户账户 */
-    String SYS_USER_NAME = "sys_user_name#30d";
+  /** 用户账户. */
+  String SYS_USER_NAME = "sys_user_name#30d";
 
-    /** 用户名称 */
-    String SYS_NICKNAME = "sys_nickname#30d";
+  /** 用户名称. */
+  String SYS_NICKNAME = "sys_nickname#30d";
 
-    /** 部门 */
-    String SYS_DEPT = "sys_dept#30d";
+  /** 部门. */
+  String SYS_DEPT = "sys_dept#30d";
 
-    /** OSS内容 */
-    String SYS_OSS = "sys_oss#30d";
+  /** OSS内容. */
+  String SYS_OSS = "sys_oss#30d";
 
-    /** 角色自定义权限 */
-    String SYS_ROLE_CUSTOM = "sys_role_custom#30d";
+  /** 角色自定义权限. */
+  String SYS_ROLE_CUSTOM = "sys_role_custom#30d";
 
-    /** 部门及以下权限 */
-    String SYS_DEPT_AND_CHILD = "sys_dept_and_child#30d";
+  /** 部门及以下权限. */
+  String SYS_DEPT_AND_CHILD = "sys_dept_and_child#30d";
 
-    /** OSS配置 */
-    String SYS_OSS_CONFIG = GlobalConstants.GLOBAL_REDIS_KEY + "sys_oss_config";
+  /** OSS配置. */
+  String SYS_OSS_CONFIG = GlobalConstants.GLOBAL_REDIS_KEY + "sys_oss_config";
 
-    /** 在线用户 */
-    String ONLINE_TOKEN = "online_tokens";
+  /** 在线用户. */
+  String ONLINE_TOKEN = "online_tokens";
 }

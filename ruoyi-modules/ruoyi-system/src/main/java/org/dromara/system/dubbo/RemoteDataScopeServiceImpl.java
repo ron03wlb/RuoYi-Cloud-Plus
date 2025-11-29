@@ -29,51 +29,51 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemoteDataScopeServiceImpl implements RemoteDataScopeService {
 
-    private final SysRoleDeptMapper roleDeptMapper;
-    private final SysDeptMapper deptMapper;
+  private final SysRoleDeptMapper roleDeptMapper;
+  private final SysDeptMapper deptMapper;
 
-    /**
-     * 获取角色自定义权限语句
-     *
-     * @param roleId 角色ID
-     * @return 返回角色的自定义权限语句，如果没有找到则返回 null
-     */
-    @Cacheable(
-            cacheNames = CacheNames.SYS_ROLE_CUSTOM,
-            key = "#roleId",
-            condition = "#roleId != null")
-    @Override
-    public String getRoleCustom(Long roleId) {
-        if (ObjectUtil.isNull(roleId)) {
-            return "-1";
-        }
-        List<SysRoleDept> list =
-                roleDeptMapper.selectList(
-                        new LambdaQueryWrapper<SysRoleDept>()
-                                .select(SysRoleDept::getDeptId)
-                                .eq(SysRoleDept::getRoleId, roleId));
-        if (CollUtil.isNotEmpty(list)) {
-            return StreamUtils.join(list, rd -> Convert.toStr(rd.getDeptId()));
-        }
-        return "-1";
+  /**
+   * 获取角色自定义权限语句
+   *
+   * @param roleId 角色ID
+   * @return 返回角色的自定义权限语句，如果没有找到则返回 null
+   */
+  @Cacheable(
+      cacheNames = CacheNames.SYS_ROLE_CUSTOM,
+      key = "#roleId",
+      condition = "#roleId != null")
+  @Override
+  public String getRoleCustom(Long roleId) {
+    if (ObjectUtil.isNull(roleId)) {
+      return "-1";
     }
+    List<SysRoleDept> list =
+        roleDeptMapper.selectList(
+            new LambdaQueryWrapper<SysRoleDept>()
+                .select(SysRoleDept::getDeptId)
+                .eq(SysRoleDept::getRoleId, roleId));
+    if (CollUtil.isNotEmpty(list)) {
+      return StreamUtils.join(list, rd -> Convert.toStr(rd.getDeptId()));
+    }
+    return "-1";
+  }
 
-    /**
-     * 获取部门和下级权限语句
-     *
-     * @param deptId 部门ID
-     * @return 返回部门及其下级的权限语句，如果没有找到则返回 null
-     */
-    @Cacheable(
-            cacheNames = CacheNames.SYS_DEPT_AND_CHILD,
-            key = "#deptId",
-            condition = "#deptId != null")
-    @Override
-    public String getDeptAndChild(Long deptId) {
-        if (ObjectUtil.isNull(deptId)) {
-            return "-1";
-        }
-        List<Long> deptIds = deptMapper.selectDeptAndChildById(deptId);
-        return CollUtil.isNotEmpty(deptIds) ? StreamUtils.join(deptIds, Convert::toStr) : "-1";
+  /**
+   * 获取部门和下级权限语句
+   *
+   * @param deptId 部门ID
+   * @return 返回部门及其下级的权限语句，如果没有找到则返回 null
+   */
+  @Cacheable(
+      cacheNames = CacheNames.SYS_DEPT_AND_CHILD,
+      key = "#deptId",
+      condition = "#deptId != null")
+  @Override
+  public String getDeptAndChild(Long deptId) {
+    if (ObjectUtil.isNull(deptId)) {
+      return "-1";
     }
+    List<Long> deptIds = deptMapper.selectDeptAndChildById(deptId);
+    return CollUtil.isNotEmpty(deptIds) ? StreamUtils.join(deptIds, Convert::toStr) : "-1";
+  }
 }

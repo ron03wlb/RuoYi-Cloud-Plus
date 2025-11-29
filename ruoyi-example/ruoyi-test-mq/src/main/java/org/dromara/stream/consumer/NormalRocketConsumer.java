@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @RocketMQMessageListener(topic = "test-topic", consumerGroup = "test-consumer-group")
 public class NormalRocketConsumer implements RocketMQListener<MessageExt> {
 
-    @Override
-    public void onMessage(MessageExt ext) {
-        log.info("【消费者】接收消息：消息体 => {}, tag => {}", new String(ext.getBody()), ext.getTags());
-    }
+  @Override
+  public void onMessage(MessageExt ext) {
+    log.info("【消费者】接收消息：消息体 => {}, tag => {}", new String(ext.getBody()), ext.getTags());
+  }
 }

@@ -22,23 +22,23 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemoteDictServiceImpl implements RemoteDictService {
 
-    private final ISysDictTypeService sysDictTypeService;
+  private final ISysDictTypeService sysDictTypeService;
 
-    @Override
-    public RemoteDictTypeVo selectDictTypeByType(String dictType) {
-        SysDictTypeVo vo = sysDictTypeService.selectDictTypeByType(dictType);
-        return MapstructUtils.convert(vo, RemoteDictTypeVo.class);
-    }
+  @Override
+  public RemoteDictTypeVo selectDictTypeByType(String dictType) {
+    SysDictTypeVo vo = sysDictTypeService.selectDictTypeByType(dictType);
+    return MapstructUtils.convert(vo, RemoteDictTypeVo.class);
+  }
 
-    /**
-     * 根据字典类型查询字典数据
-     *
-     * @param dictType 字典类型
-     * @return 字典数据集合信息
-     */
-    @Override
-    public List<RemoteDictDataVo> selectDictDataByType(String dictType) {
-        List<SysDictDataVo> list = sysDictTypeService.selectDictDataByType(dictType);
-        return MapstructUtils.convert(list, RemoteDictDataVo.class);
-    }
+  /**
+   * 根据字典类型查询字典数据
+   *
+   * @param dictType 字典类型
+   * @return 字典数据集合信息
+   */
+  @Override
+  public List<RemoteDictDataVo> selectDictDataByType(String dictType) {
+    List<SysDictDataVo> list = sysDictTypeService.selectDictDataByType(dictType);
+    return MapstructUtils.convert(list, RemoteDictDataVo.class);
+  }
 }

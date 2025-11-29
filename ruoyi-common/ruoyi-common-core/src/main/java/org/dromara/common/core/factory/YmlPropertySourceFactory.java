@@ -9,23 +9,23 @@ import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
 
 /**
- * yml 配置源工厂
+ * YAML property source factory for loading configuration files.
  *
  * @author Lion Li
  */
 public class YmlPropertySourceFactory extends DefaultPropertySourceFactory {
 
-    @Override
-    public PropertySource<?> createPropertySource(String name, EncodedResource resource)
-            throws IOException {
-        String sourceName = resource.getResource().getFilename();
-        if (StringUtils.isNotBlank(sourceName)
-                && StringUtils.endsWithAny(sourceName, ".yml", ".yaml")) {
-            YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
-            factory.setResources(resource.getResource());
-            factory.afterPropertiesSet();
-            return new PropertiesPropertySource(sourceName, factory.getObject());
-        }
-        return super.createPropertySource(name, resource);
+  @Override
+  public PropertySource<?> createPropertySource(String name, EncodedResource resource)
+      throws IOException {
+    String sourceName = resource.getResource().getFilename();
+    if (StringUtils.isNotBlank(sourceName)
+        && StringUtils.endsWithAny(sourceName, ".yml", ".yaml")) {
+      YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
+      factory.setResources(resource.getResource());
+      factory.afterPropertiesSet();
+      return new PropertiesPropertySource(sourceName, factory.getObject());
     }
+    return super.createPropertySource(name, resource);
+  }
 }

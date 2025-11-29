@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/social")
 public class SysSocialController extends BaseController {
 
-    private final ISysSocialService socialUserService;
+  private final ISysSocialService socialUserService;
 
-    /** 查询社会化关系列表 */
-    @GetMapping("/list")
-    public R<List<SysSocialVo>> list() {
-        return R.ok(socialUserService.queryListByUserId(LoginHelper.getUserId()));
-    }
+  /** 查询社会化关系列表 */
+  @GetMapping("/list")
+  public R<List<SysSocialVo>> list() {
+    return R.ok(socialUserService.queryListByUserId(LoginHelper.getUserId()));
+  }
 }

@@ -32,68 +32,66 @@ import org.springframework.transaction.annotation.Transactional;
 @DubboService
 public class RemoteFileServiceImpl implements RemoteFileService {
 
-    private final ISysOssService sysOssService;
+  private final ISysOssService sysOssService;
 
-    /** 文件上传请求 */
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public RemoteFile upload(String name, String originalFilename, String contentType, byte[] file)
-            throws ServiceException {
-        try {
-            String suffix =
-                    StringUtils.substring(
-                            originalFilename,
-                            originalFilename.lastIndexOf("."),
-                            originalFilename.length());
-            OssClient storage = OssFactory.instance();
-            UploadResult uploadResult = storage.uploadSuffix(file, suffix, contentType);
-            // 保存文件信息
-            SysOssBo oss = new SysOssBo();
-            oss.setUrl(uploadResult.getUrl());
-            oss.setFileSuffix(suffix);
-            oss.setFileName(uploadResult.getFilename());
-            oss.setOriginalName(originalFilename);
-            oss.setService(storage.getConfigKey());
-            SysOssExt ext1 = new SysOssExt();
-            ext1.setFileSize((long) file.length);
-            String extStr = JsonUtils.toJsonString(ext1);
-            oss.setExt1(extStr);
-            sysOssService.insertByBo(oss);
-            RemoteFile sysFile = new RemoteFile();
-            sysFile.setOssId(oss.getOssId());
-            sysFile.setName(uploadResult.getFilename());
-            sysFile.setUrl(uploadResult.getUrl());
-            sysFile.setOriginalName(originalFilename);
-            sysFile.setFileSuffix(suffix);
-            sysFile.setExt1(extStr);
-            return sysFile;
-        } catch (Exception e) {
-            log.error("上传文件失败", e);
-            throw new ServiceException("上传文件失败");
-        }
+  /** 文件上传请求 */
+  @Transactional(rollbackFor = Exception.class)
+  @Override
+  public RemoteFile upload(String name, String originalFilename, String contentType, byte[] file)
+      throws ServiceException {
+    try {
+      String suffix =
+          StringUtils.substring(
+              originalFilename, originalFilename.lastIndexOf("."), originalFilename.length());
+      OssClient storage = OssFactory.instance();
+      UploadResult uploadResult = storage.uploadSuffix(file, suffix, contentType);
+      // 保存文件信息
+      SysOssBo oss = new SysOssBo();
+      oss.setUrl(uploadResult.getUrl());
+      oss.setFileSuffix(suffix);
+      oss.setFileName(uploadResult.getFilename());
+      oss.setOriginalName(originalFilename);
+      oss.setService(storage.getConfigKey());
+      SysOssExt ext1 = new SysOssExt();
+      ext1.setFileSize((long) file.length);
+      String extStr = JsonUtils.toJsonString(ext1);
+      oss.setExt1(extStr);
+      sysOssService.insertByBo(oss);
+      RemoteFile sysFile = new RemoteFile();
+      sysFile.setOssId(oss.getOssId());
+      sysFile.setName(uploadResult.getFilename());
+      sysFile.setUrl(uploadResult.getUrl());
+      sysFile.setOriginalName(originalFilename);
+      sysFile.setFileSuffix(suffix);
+      sysFile.setExt1(extStr);
+      return sysFile;
+    } catch (Exception e) {
+      log.error("上传文件失败", e);
+      throw new ServiceException("上传文件失败");
     }
+  }
 
-    /**
-     * 通过ossId查询对应的url
-     *
-     * @param ossIds ossId串逗号分隔
-     * @return url串逗号分隔
-     */
-    @Override
-    public String selectUrlByIds(String ossIds) {
-        return sysOssService.selectUrlByIds(ossIds);
-    }
+  /**
+   * 通过ossId查询对应的url
+   *
+   * @param ossIds ossId串逗号分隔
+   * @return url串逗号分隔
+   */
+  @Override
+  public String selectUrlByIds(String ossIds) {
+    return sysOssService.selectUrlByIds(ossIds);
+  }
 
-    /**
-     * 通过ossId查询列表
-     *
-     * @param ossIds ossId串逗号分隔
-     * @return 列表
-     */
-    @Override
-    public List<RemoteFile> selectByIds(String ossIds) {
-        List<SysOssVo> sysOssVos =
-                sysOssService.listByIds(StringUtils.splitTo(ossIds, Convert::toLong));
-        return MapstructUtils.convert(sysOssVos, RemoteFile.class);
-    }
+  /**
+   * 通过ossId查询列表
+   *
+   * @param ossIds ossId串逗号分隔
+   * @return 列表
+   */
+  @Override
+  public List<RemoteFile> selectByIds(String ossIds) {
+    List<SysOssVo> sysOssVos =
+        sysOssService.listByIds(StringUtils.splitTo(ossIds, Convert::toLong));
+    return MapstructUtils.convert(sysOssVos, RemoteFile.class);
+  }
 }

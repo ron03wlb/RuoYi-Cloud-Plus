@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
 /**
- * 租户vo转换器
+ * Tenant view object converter for mapping between RemoteTenantVo and TenantListVo.
  *
  * @author zhujie
  */

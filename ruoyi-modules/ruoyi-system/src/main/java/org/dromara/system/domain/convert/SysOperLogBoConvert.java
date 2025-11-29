@@ -14,16 +14,16 @@ import org.mapstruct.ReportingPolicy;
  * @author zhujie
  */
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SysOperLogBoConvert extends BaseMapper<RemoteOperLogBo, SysOperLogBo> {
 
-    /**
-     * RemoteOperLogBoToSysOperLogBo
-     *
-     * @param remoteOperLogBo 待转换对象
-     * @return 转换后对象
-     */
-    @Mapping(target = "businessTypes", ignore = true)
-    SysOperLogBo convert(RemoteOperLogBo remoteOperLogBo);
+  /**
+   * RemoteOperLogBoToSysOperLogBo
+   *
+   * @param remoteOperLogBo 待转换对象
+   * @return 转换后对象
+   */
+  @Mapping(target = "businessTypes", ignore = true)
+  SysOperLogBo convert(RemoteOperLogBo remoteOperLogBo);
 }

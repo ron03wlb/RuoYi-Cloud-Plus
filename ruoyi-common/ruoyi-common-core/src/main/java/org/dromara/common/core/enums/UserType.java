@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.dromara.common.core.utils.StringUtils;
 
 /**
- * 用户类型
+ * 用户类型.
  *
  * @author Lion Li
  */
@@ -13,21 +13,28 @@ import org.dromara.common.core.utils.StringUtils;
 @AllArgsConstructor
 public enum UserType {
 
-    /** 后台系统用户 */
-    SYS_USER("sys_user"),
+  /** 后台系统用户. */
+  SYS_USER("sys_user"),
 
-    /** 移动客户端用户 */
-    APP_USER("app_user");
+  /** 移动客户端用户. */
+  APP_USER("app_user");
 
-    /** 用户类型标识（用于 token、权限识别等） */
-    private final String userType;
+  /** 用户类型标识（用于 token、权限识别等）. */
+  private final String userType;
 
-    public static UserType getUserType(String str) {
-        for (UserType value : values()) {
-            if (StringUtils.contains(str, value.getUserType())) {
-                return value;
-            }
-        }
-        throw new RuntimeException("'UserType' not found By " + str);
+  /**
+   * Gets the UserType by matching the user type string.
+   *
+   * @param str the string to match against user types
+   * @return the matched UserType
+   * @throws RuntimeException if no matching UserType is found
+   */
+  public static UserType getUserType(String str) {
+    for (UserType value : values()) {
+      if (StringUtils.contains(str, value.getUserType())) {
+        return value;
+      }
     }
+    throw new RuntimeException("'UserType' not found By " + str);
+  }
 }

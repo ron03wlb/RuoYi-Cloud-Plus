@@ -12,7 +12,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 全局国际化处理
+ * 全局国际化处理.
  *
  * @author Lion Li
  */
@@ -20,20 +20,20 @@ import reactor.core.publisher.Mono;
 @Component
 public class WebI18nFilter implements WebFilter, Ordered {
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String language = exchange.getRequest().getHeaders().getFirst("content-language");
-        Locale locale = Locale.getDefault();
-        if (language != null && language.length() > 0) {
-            String[] split = language.split("_");
-            locale = new Locale(split[0], split[1]);
-        }
-        LocaleContextHolder.setLocaleContext(new SimpleLocaleContext(locale), true);
-        return chain.filter(exchange);
+  @Override
+  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    String language = exchange.getRequest().getHeaders().getFirst("content-language");
+    Locale locale = Locale.getDefault();
+    if (language != null && language.length() > 0) {
+      String[] split = language.split("_");
+      locale = new Locale(split[0], split[1]);
     }
+    LocaleContextHolder.setLocaleContext(new SimpleLocaleContext(locale), true);
+    return chain.filter(exchange);
+  }
 
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
+  @Override
+  public int getOrder() {
+    return Ordered.HIGHEST_PRECEDENCE;
+  }
 }

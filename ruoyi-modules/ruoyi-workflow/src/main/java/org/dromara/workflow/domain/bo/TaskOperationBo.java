@@ -16,24 +16,24 @@ import org.dromara.common.core.validate.EditGroup;
 @Data
 public class TaskOperationBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 委派/转办人的用户ID（必填，准对委派/转办人操作） */
-    @NotNull(
-            message = "委派/转办人id不能为空",
-            groups = {AddGroup.class})
-    private String userId;
+  /** 委派/转办人的用户ID（必填，准对委派/转办人操作） */
+  @NotNull(
+      message = "委派/转办人id不能为空",
+      groups = {AddGroup.class})
+  private String userId;
 
-    /** 加签/减签人的用户ID列表（必填，针对加签/减签操作） */
-    @NotNull(
-            message = "加签/减签id不能为空",
-            groups = {EditGroup.class})
-    private List<String> userIds;
+  /** 加签/减签人的用户ID列表（必填，针对加签/减签操作） */
+  @NotNull(
+      message = "加签/减签id不能为空",
+      groups = {EditGroup.class})
+  private List<String> userIds;
 
-    /** 任务ID（必填） */
-    @NotNull(message = "任务id不能为空")
-    private Long taskId;
+  /** 任务ID（必填） */
+  @NotNull(message = "任务id不能为空")
+  private Long taskId;
 
-    /** 意见或备注信息（可选） */
-    private String message;
+  /** 意见或备注信息（可选） */
+  private String message;
 }

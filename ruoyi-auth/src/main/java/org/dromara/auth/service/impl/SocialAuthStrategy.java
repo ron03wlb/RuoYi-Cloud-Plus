@@ -29,7 +29,7 @@ import org.dromara.system.api.model.LoginUser;
 import org.springframework.stereotype.Service;
 
 /**
- * 第三方授权策略
+ * Social authentication strategy implementation for third-party OAuth login.
  *
  * @author thiszhc is 三三
  */
@@ -38,68 +38,67 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SocialAuthStrategy implements IAuthStrategy {
 
-    private final SocialProperties socialProperties;
+  private final SocialProperties socialProperties;
 
-    @DubboReference private RemoteSocialService remoteSocialService;
-    @DubboReference private RemoteUserService remoteUserService;
+  @DubboReference private RemoteSocialService remoteSocialService;
+  @DubboReference private RemoteUserService remoteUserService;
 
-    /**
-     * 登录-第三方授权登录
-     *
-     * @param body 登录信息
-     * @param client 客户端信息
-     */
-    @Override
-    public LoginVo login(String body, RemoteClientVo client) {
-        SocialLoginBody loginBody = JsonUtils.parseObject(body, SocialLoginBody.class);
-        ValidatorUtils.validate(loginBody);
-        AuthResponse<AuthUser> response =
-                SocialUtils.loginAuth(
-                        loginBody.getSource(),
-                        loginBody.getSocialCode(),
-                        loginBody.getSocialState(),
-                        socialProperties);
-        if (!response.ok()) {
-            throw new ServiceException(response.getMsg());
-        }
-        AuthUser authUserData = response.getData();
-
-        List<RemoteSocialVo> list =
-                remoteSocialService.selectByAuthId(
-                        authUserData.getSource() + authUserData.getUuid());
-        if (CollUtil.isEmpty(list)) {
-            throw new ServiceException("你还没有绑定第三方账号，绑定后才可以登录！");
-        }
-        RemoteSocialVo socialVo;
-        if (TenantHelper.isEnable()) {
-            Optional<RemoteSocialVo> opt =
-                    StreamUtils.findAny(list, x -> x.getTenantId().equals(loginBody.getTenantId()));
-            if (opt.isEmpty()) {
-                throw new ServiceException("对不起，你没有权限登录当前租户！");
-            }
-            socialVo = opt.get();
-        } else {
-            socialVo = list.get(0);
-        }
-
-        LoginUser loginUser =
-                remoteUserService.getUserInfo(socialVo.getUserId(), socialVo.getTenantId());
-        loginUser.setClientKey(client.getClientKey());
-        loginUser.setDeviceType(client.getDeviceType());
-        SaLoginParameter model = new SaLoginParameter();
-        model.setDeviceType(client.getDeviceType());
-        // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
-        // 例如: 后台用户30分钟过期 app用户1天过期
-        model.setTimeout(client.getTimeout());
-        model.setActiveTimeout(client.getActiveTimeout());
-        model.setExtra(LoginHelper.CLIENT_KEY, client.getClientId());
-        // 生成token
-        LoginHelper.login(loginUser, model);
-
-        LoginVo loginVo = new LoginVo();
-        loginVo.setAccessToken(StpUtil.getTokenValue());
-        loginVo.setExpireIn(StpUtil.getTokenTimeout());
-        loginVo.setClientId(client.getClientId());
-        return loginVo;
+  /**
+   * 登录-第三方授权登录
+   *
+   * @param body 登录信息
+   * @param client 客户端信息
+   */
+  @Override
+  public LoginVo login(String body, RemoteClientVo client) {
+    SocialLoginBody loginBody = JsonUtils.parseObject(body, SocialLoginBody.class);
+    ValidatorUtils.validate(loginBody);
+    AuthResponse<AuthUser> response =
+        SocialUtils.loginAuth(
+            loginBody.getSource(),
+            loginBody.getSocialCode(),
+            loginBody.getSocialState(),
+            socialProperties);
+    if (!response.ok()) {
+      throw new ServiceException(response.getMsg());
     }
+    AuthUser authUserData = response.getData();
+
+    List<RemoteSocialVo> list =
+        remoteSocialService.selectByAuthId(authUserData.getSource() + authUserData.getUuid());
+    if (CollUtil.isEmpty(list)) {
+      throw new ServiceException("你还没有绑定第三方账号，绑定后才可以登录！");
+    }
+    RemoteSocialVo socialVo;
+    if (TenantHelper.isEnable()) {
+      Optional<RemoteSocialVo> opt =
+          StreamUtils.findAny(list, x -> x.getTenantId().equals(loginBody.getTenantId()));
+      if (opt.isEmpty()) {
+        throw new ServiceException("对不起，你没有权限登录当前租户！");
+      }
+      socialVo = opt.get();
+    } else {
+      socialVo = list.get(0);
+    }
+
+    LoginUser loginUser =
+        remoteUserService.getUserInfo(socialVo.getUserId(), socialVo.getTenantId());
+    loginUser.setClientKey(client.getClientKey());
+    loginUser.setDeviceType(client.getDeviceType());
+    SaLoginParameter model = new SaLoginParameter();
+    model.setDeviceType(client.getDeviceType());
+    // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
+    // 例如: 后台用户30分钟过期 app用户1天过期
+    model.setTimeout(client.getTimeout());
+    model.setActiveTimeout(client.getActiveTimeout());
+    model.setExtra(LoginHelper.CLIENT_KEY, client.getClientId());
+    // 生成token
+    LoginHelper.login(loginUser, model);
+
+    LoginVo loginVo = new LoginVo();
+    loginVo.setAccessToken(StpUtil.getTokenValue());
+    loginVo.setExpireIn(StpUtil.getTokenTimeout());
+    loginVo.setClientId(client.getClientId());
+    return loginVo;
+  }
 }

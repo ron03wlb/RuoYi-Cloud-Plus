@@ -6,7 +6,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
- * api解密属性配置类
+ * api解密属性配置类.
  *
  * @author wdhcr
  */
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "api-decrypt")
 public class ApiDecryptProperties {
 
-    /** 加密开关 */
-    private Boolean enabled;
+  /** 加密开关. */
+  private Boolean enabled;
 
-    /** 头部标识 */
-    private String headerFlag;
+  /** 头部标识. */
+  private String headerFlag;
 }

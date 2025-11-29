@@ -4,14 +4,25 @@ import org.dromara.common.encrypt.core.EncryptContext;
 import org.dromara.common.encrypt.core.IEncryptor;
 
 /**
- * 所有加密执行者的基类
+ * Abstract base class for all encryptor implementations.
+ *
+ * <p>This class provides a common constructor for all encryptors to receive encryption
+ * configuration through the {@link EncryptContext}.
  *
  * @author 老马
  * @version 4.6.0
  */
 public abstract class AbstractEncryptor implements IEncryptor {
 
-    public AbstractEncryptor(EncryptContext context) {
-        // 用户配置校验与配置注入
-    }
+  /**
+   * Constructs an encryptor with the given encryption context.
+   *
+   * <p>Subclasses should validate configuration parameters and perform necessary initialization in
+   * their constructors.
+   *
+   * @param context the encryption context containing algorithm and key configurations
+   */
+  public AbstractEncryptor(EncryptContext context) {
+    // User configuration validation and injection
+  }
 }

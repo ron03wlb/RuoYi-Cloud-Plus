@@ -25,52 +25,52 @@ import org.springframework.context.annotation.Primary;
 @TestConfiguration
 public class AuthTestConfig {
 
-    /** Mock RemoteClientService */
-    @Bean
-    @Primary
-    public RemoteClientService mockRemoteClientService() {
-        return Mockito.mock(RemoteClientService.class);
-    }
+  /** Mock RemoteClientService */
+  @Bean
+  @Primary
+  public RemoteClientService mockRemoteClientService() {
+    return Mockito.mock(RemoteClientService.class);
+  }
 
-    /** Mock RemoteUserService */
-    @Bean
-    @Primary
-    public RemoteUserService mockRemoteUserService() {
-        return Mockito.mock(RemoteUserService.class);
-    }
+  /** Mock RemoteUserService */
+  @Bean
+  @Primary
+  public RemoteUserService mockRemoteUserService() {
+    return Mockito.mock(RemoteUserService.class);
+  }
 
-    /** Mock RemoteTenantService */
-    @Bean
-    @Primary
-    public RemoteTenantService mockRemoteTenantService() {
-        return Mockito.mock(RemoteTenantService.class);
-    }
+  /** Mock RemoteTenantService */
+  @Bean
+  @Primary
+  public RemoteTenantService mockRemoteTenantService() {
+    return Mockito.mock(RemoteTenantService.class);
+  }
 
-    /** Mock RemoteConfigService */
-    @Bean
-    @Primary
-    public RemoteConfigService mockRemoteConfigService() {
-        return Mockito.mock(RemoteConfigService.class);
-    }
+  /** Mock RemoteConfigService */
+  @Bean
+  @Primary
+  public RemoteConfigService mockRemoteConfigService() {
+    return Mockito.mock(RemoteConfigService.class);
+  }
 
-    /** Mock RemoteSocialService */
-    @Bean
-    @Primary
-    public RemoteSocialService mockRemoteSocialService() {
-        return Mockito.mock(RemoteSocialService.class);
-    }
+  /** Mock RemoteSocialService */
+  @Bean
+  @Primary
+  public RemoteSocialService mockRemoteSocialService() {
+    return Mockito.mock(RemoteSocialService.class);
+  }
 
-    /** Mock RemoteLogService */
-    @Bean
-    @Primary
-    public RemoteLogService mockRemoteLogService() {
-        return Mockito.mock(RemoteLogService.class);
-    }
+  /** Mock RemoteLogService */
+  @Bean
+  @Primary
+  public RemoteLogService mockRemoteLogService() {
+    return Mockito.mock(RemoteLogService.class);
+  }
 
-    /** Mock RemoteMessageService */
-    @Bean
-    @Primary
-    public RemoteMessageService mockRemoteMessageService() {
-        return Mockito.mock(RemoteMessageService.class);
-    }
+  /** Mock RemoteMessageService */
+  @Bean
+  @Primary
+  public RemoteMessageService mockRemoteMessageService() {
+    return Mockito.mock(RemoteMessageService.class);
+  }
 }

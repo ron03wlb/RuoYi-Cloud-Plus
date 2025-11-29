@@ -13,6 +13,6 @@ import org.mapstruct.ReportingPolicy;
  * @author zhujie
  */
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SysTenantVoConvert extends BaseMapper<SysTenantVo, RemoteTenantVo> {}

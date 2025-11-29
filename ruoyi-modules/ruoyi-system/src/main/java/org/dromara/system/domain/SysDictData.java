@@ -17,35 +17,35 @@ import org.dromara.common.tenant.core.TenantEntity;
 @TableName("sys_dict_data")
 public class SysDictData extends TenantEntity {
 
-    /** 字典编码 */
-    @TableId(value = "dict_code")
-    private Long dictCode;
+  /** 字典编码 */
+  @TableId(value = "dict_code")
+  private Long dictCode;
 
-    /** 字典排序 */
-    private Integer dictSort;
+  /** 字典排序 */
+  private Integer dictSort;
 
-    /** 字典标签 */
-    private String dictLabel;
+  /** 字典标签 */
+  private String dictLabel;
 
-    /** 字典键值 */
-    private String dictValue;
+  /** 字典键值 */
+  private String dictValue;
 
-    /** 字典类型 */
-    private String dictType;
+  /** 字典类型 */
+  private String dictType;
 
-    /** 样式属性（其他样式扩展） */
-    private String cssClass;
+  /** 样式属性（其他样式扩展） */
+  private String cssClass;
 
-    /** 表格字典样式 */
-    private String listClass;
+  /** 表格字典样式 */
+  private String listClass;
 
-    /** 是否默认（Y是 N否） */
-    private String isDefault;
+  /** 是否默认（Y是 N否） */
+  private String isDefault;
 
-    /** 备注 */
-    private String remark;
+  /** 备注 */
+  private String remark;
 
-    public boolean getDefault() {
-        return SystemConstants.YES.equals(this.isDefault);
-    }
+  public boolean getDefault() {
+    return SystemConstants.YES.equals(this.isDefault);
+  }
 }

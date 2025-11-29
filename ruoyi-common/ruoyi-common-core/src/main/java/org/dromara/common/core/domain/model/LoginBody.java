@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户登录对象
+ * 用户登录对象.
  *
  * @author Lion Li
  */
@@ -13,20 +13,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginBody {
 
-    /** 客户端id */
-    @NotBlank(message = "{auth.clientid.not.blank}")
-    private String clientId;
+  /** 客户端id. */
+  @NotBlank(message = "{auth.clientid.not.blank}")
+  private String clientId;
 
-    /** 授权类型 */
-    @NotBlank(message = "{auth.grant.type.not.blank}")
-    private String grantType;
+  /** 授权类型. */
+  @NotBlank(message = "{auth.grant.type.not.blank}")
+  private String grantType;
 
-    /** 租户ID */
-    private String tenantId;
+  /** 租户ID. */
+  private String tenantId;
 
-    /** 验证码 */
-    private String code;
+  /** 验证码. */
+  private String code;
 
-    /** 唯一标识 */
-    private String uuid;
+  /** 唯一标识. */
+  private String uuid;
 }

@@ -20,55 +20,55 @@ import org.junit.jupiter.params.provider.ValueSource;
  * @author Lion Li
  */
 @Disabled(
-        "原因：ruoyi-demo 是示例模块，仅用于演示JUnit 5的参数化测试功能。"
-                + "此测试不依赖Spring容器，但为了统一管理，暂时禁用。"
-                + "如需启用，可移除@Disabled注解")
+    "原因：ruoyi-demo 是示例模块，仅用于演示JUnit 5的参数化测试功能。"
+        + "此测试不依赖Spring容器，但为了统一管理，暂时禁用。"
+        + "如需启用，可移除@Disabled注解")
 @DisplayName("带参数单元测试案例")
 public class ParamUnitTest {
 
-    @DisplayName("测试 @ValueSource 注解")
-    @ParameterizedTest
-    @ValueSource(strings = {"t1", "t2", "t3"})
-    public void testValueSource(String str) {
-        System.out.println(str);
-    }
+  @DisplayName("测试 @ValueSource 注解")
+  @ParameterizedTest
+  @ValueSource(strings = {"t1", "t2", "t3"})
+  public void testValueSource(String str) {
+    System.out.println(str);
+  }
 
-    @DisplayName("测试 @NullSource 注解")
-    @ParameterizedTest
-    @NullSource
-    public void testNullSource(String str) {
-        System.out.println(str);
-    }
+  @DisplayName("测试 @NullSource 注解")
+  @ParameterizedTest
+  @NullSource
+  public void testNullSource(String str) {
+    System.out.println(str);
+  }
 
-    @DisplayName("测试 @EnumSource 注解")
-    @ParameterizedTest
-    @EnumSource(UserType.class)
-    public void testEnumSource(UserType type) {
-        System.out.println(type.getUserType());
-    }
+  @DisplayName("测试 @EnumSource 注解")
+  @ParameterizedTest
+  @EnumSource(UserType.class)
+  public void testEnumSource(UserType type) {
+    System.out.println(type.getUserType());
+  }
 
-    @DisplayName("测试 @MethodSource 注解")
-    @ParameterizedTest
-    @MethodSource("getParam")
-    public void testMethodSource(String str) {
-        System.out.println(str);
-    }
+  @DisplayName("测试 @MethodSource 注解")
+  @ParameterizedTest
+  @MethodSource("getParam")
+  public void testMethodSource(String str) {
+    System.out.println(str);
+  }
 
-    public static Stream<String> getParam() {
-        List<String> list = new ArrayList<>();
-        list.add("t1");
-        list.add("t2");
-        list.add("t3");
-        return list.stream();
-    }
+  public static Stream<String> getParam() {
+    List<String> list = new ArrayList<>();
+    list.add("t1");
+    list.add("t2");
+    list.add("t3");
+    return list.stream();
+  }
 
-    @BeforeEach
-    public void testBeforeEach() {
-        System.out.println("@BeforeEach ==================");
-    }
+  @BeforeEach
+  public void testBeforeEach() {
+    System.out.println("@BeforeEach ==================");
+  }
 
-    @AfterEach
-    public void testAfterEach() {
-        System.out.println("@AfterEach ==================");
-    }
+  @AfterEach
+  public void testAfterEach() {
+    System.out.println("@AfterEach ==================");
+  }
 }

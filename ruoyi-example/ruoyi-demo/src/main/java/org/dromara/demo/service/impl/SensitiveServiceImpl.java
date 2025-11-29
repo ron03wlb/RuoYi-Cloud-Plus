@@ -15,27 +15,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class SensitiveServiceImpl implements SensitiveService {
 
-    /** 是否脱敏 */
-    @Override
-    public boolean isSensitive(String[] roleKey, String[] perms) {
-        if (!LoginHelper.isLogin()) {
-            return true;
-        }
-        boolean roleExist = ArrayUtil.isNotEmpty(roleKey);
-        boolean permsExist = ArrayUtil.isNotEmpty(perms);
-        if (roleExist && permsExist) {
-            if (StpUtil.hasRoleOr(roleKey) && StpUtil.hasPermissionOr(perms)) {
-                return false;
-            }
-        } else if (roleExist && StpUtil.hasRoleOr(roleKey)) {
-            return false;
-        } else if (permsExist && StpUtil.hasPermissionOr(perms)) {
-            return false;
-        }
-
-        if (TenantHelper.isEnable()) {
-            return !LoginHelper.isSuperAdmin() && !LoginHelper.isTenantAdmin();
-        }
-        return !LoginHelper.isSuperAdmin();
+  /** 是否脱敏 */
+  @Override
+  public boolean isSensitive(String[] roleKey, String[] perms) {
+    if (!LoginHelper.isLogin()) {
+      return true;
     }
+    boolean roleExist = ArrayUtil.isNotEmpty(roleKey);
+    boolean permsExist = ArrayUtil.isNotEmpty(perms);
+    if (roleExist && permsExist) {
+      if (StpUtil.hasRoleOr(roleKey) && StpUtil.hasPermissionOr(perms)) {
+        return false;
+      }
+    } else if (roleExist && StpUtil.hasRoleOr(roleKey)) {
+      return false;
+    } else if (permsExist && StpUtil.hasPermissionOr(perms)) {
+      return false;
+    }
+
+    if (TenantHelper.isEnable()) {
+      return !LoginHelper.isSuperAdmin() && !LoginHelper.isTenantAdmin();
+    }
+    return !LoginHelper.isSuperAdmin();
+  }
 }

@@ -27,32 +27,32 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WorkflowPermissionHandler implements PermissionHandler {
 
-    private final IFlwTaskAssigneeService flwTaskAssigneeService;
+  private final IFlwTaskAssigneeService flwTaskAssigneeService;
 
-    /** 办理人权限标识，比如用户，角色，部门等，用于校验是否有权限办理任务 后续在{@link FlowParams#getPermissionFlag} 中获取 返回当前用户权限集合 */
-    @Override
-    public List<String> permissions() {
-        return Collections.singletonList(LoginHelper.getUserIdStr());
-    }
+  /** 办理人权限标识，比如用户，角色，部门等，用于校验是否有权限办理任务 后续在{@link FlowParams#getPermissionFlag} 中获取 返回当前用户权限集合 */
+  @Override
+  public List<String> permissions() {
+    return Collections.singletonList(LoginHelper.getUserIdStr());
+  }
 
-    /**
-     * 获取当前办理人
-     *
-     * @return 当前办理人
-     */
-    @Override
-    public String getHandler() {
-        return LoginHelper.getUserIdStr();
-    }
+  /**
+   * 获取当前办理人
+   *
+   * @return 当前办理人
+   */
+  @Override
+  public String getHandler() {
+    return LoginHelper.getUserIdStr();
+  }
 
-    /** 转换办理人，比如设计器中预设了能办理的人，如果其中包含角色或者部门id等，可以通过此接口进行转换成用户id */
-    @Override
-    public List<String> convertPermissions(List<String> permissions) {
-        if (CollUtil.isEmpty(permissions)) {
-            return permissions;
-        }
-        String storageIds = CollUtil.join(permissions, StringUtils.SEPARATOR);
-        List<RemoteUserVo> users = flwTaskAssigneeService.fetchUsersByStorageIds(storageIds);
-        return StreamUtils.toList(users, userDTO -> Convert.toStr(userDTO.getUserId()));
+  /** 转换办理人，比如设计器中预设了能办理的人，如果其中包含角色或者部门id等，可以通过此接口进行转换成用户id */
+  @Override
+  public List<String> convertPermissions(List<String> permissions) {
+    if (CollUtil.isEmpty(permissions)) {
+      return permissions;
     }
+    String storageIds = CollUtil.join(permissions, StringUtils.SEPARATOR);
+    List<RemoteUserVo> users = flwTaskAssigneeService.fetchUsersByStorageIds(storageIds);
+    return StreamUtils.toList(users, userDTO -> Convert.toStr(userDTO.getUserId()));
+  }
 }

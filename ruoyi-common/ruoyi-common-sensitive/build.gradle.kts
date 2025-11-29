@@ -42,19 +42,19 @@ tasks.jacocoTestReport {
         csv.required.set(false)
     }
 
-    // 排除不需要覆盖的类
+    // 排除不需要覆盖的类：
+    // - 注解（元数据）
+    // - 接口
+    // - Handler（依赖Spring + Jackson）
+    // - 主程序
     classDirectories.setFrom(
         files(
             classDirectories.files.map {
                 fileTree(it) {
                     exclude(
-                        // 注解（元数据）
                         "**/annotation/**",
-                        // 接口
                         "**/core/SensitiveService.class",
-                        // Handler（依赖Spring + Jackson）
                         "**/handler/**",
-                        // 主程序
                         "**/*Application.class",
                     )
                 }

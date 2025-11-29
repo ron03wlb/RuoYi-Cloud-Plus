@@ -20,37 +20,37 @@ import org.dromara.workflow.domain.TestLeave;
 @AutoMapper(target = TestLeave.class)
 public class TestLeaveVo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键 */
-    @ExcelProperty(value = "主键")
-    private Long id;
+  /** 主键 */
+  @ExcelProperty(value = "主键")
+  private Long id;
 
-    /** 申请编号 */
-    @ExcelProperty(value = "申请编号")
-    private String applyCode;
+  /** 申请编号 */
+  @ExcelProperty(value = "申请编号")
+  private String applyCode;
 
-    /** 请假类型 */
-    @ExcelProperty(value = "请假类型")
-    private String leaveType;
+  /** 请假类型 */
+  @ExcelProperty(value = "请假类型")
+  private String leaveType;
 
-    /** 开始时间 */
-    @ExcelProperty(value = "开始时间")
-    private Date startDate;
+  /** 开始时间 */
+  @ExcelProperty(value = "开始时间")
+  private Date startDate;
 
-    /** 结束时间 */
-    @ExcelProperty(value = "结束时间")
-    private Date endDate;
+  /** 结束时间 */
+  @ExcelProperty(value = "结束时间")
+  private Date endDate;
 
-    /** 请假天数 */
-    @ExcelProperty(value = "请假天数")
-    private Integer leaveDays;
+  /** 请假天数 */
+  @ExcelProperty(value = "请假天数")
+  private Integer leaveDays;
 
-    /** 备注 */
-    @ExcelProperty(value = "请假原因")
-    private String remark;
+  /** 备注 */
+  @ExcelProperty(value = "请假原因")
+  private String remark;
 
-    /** 状态 */
-    @ExcelProperty(value = "状态")
-    private String status;
+  /** 状态 */
+  @ExcelProperty(value = "状态")
+  private String status;
 }

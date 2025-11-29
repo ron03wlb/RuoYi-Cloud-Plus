@@ -15,73 +15,73 @@ import org.dromara.workflow.service.WorkflowService;
 @RequiredArgsConstructor
 public class RemoteWorkflowServiceImpl implements RemoteWorkflowService {
 
-    private final WorkflowService workflowService;
+  private final WorkflowService workflowService;
 
-    @Override
-    public boolean deleteInstance(List<Long> businessIds) {
-        return workflowService.deleteInstance(businessIds);
-    }
+  @Override
+  public boolean deleteInstance(List<Long> businessIds) {
+    return workflowService.deleteInstance(businessIds);
+  }
 
-    @Override
-    public String getBusinessStatusByTaskId(Long taskId) {
-        return workflowService.getBusinessStatusByTaskId(taskId);
-    }
+  @Override
+  public String getBusinessStatusByTaskId(Long taskId) {
+    return workflowService.getBusinessStatusByTaskId(taskId);
+  }
 
-    @Override
-    public String getBusinessStatus(String businessId) {
-        return workflowService.getBusinessStatus(businessId);
-    }
+  @Override
+  public String getBusinessStatus(String businessId) {
+    return workflowService.getBusinessStatus(businessId);
+  }
 
-    @Override
-    public void setVariable(Long instanceId, Map<String, Object> variable) {
-        workflowService.setVariable(instanceId, variable);
-    }
+  @Override
+  public void setVariable(Long instanceId, Map<String, Object> variable) {
+    workflowService.setVariable(instanceId, variable);
+  }
 
-    @Override
-    public Map<String, Object> instanceVariable(Long instanceId) {
-        return workflowService.instanceVariable(instanceId);
-    }
+  @Override
+  public Map<String, Object> instanceVariable(Long instanceId) {
+    return workflowService.instanceVariable(instanceId);
+  }
 
-    @Override
-    public Long getInstanceIdByBusinessId(String businessId) {
-        return workflowService.getInstanceIdByBusinessId(businessId);
-    }
+  @Override
+  public Long getInstanceIdByBusinessId(String businessId) {
+    return workflowService.getInstanceIdByBusinessId(businessId);
+  }
 
-    @Override
-    public void syncDef(String tenantId) {
-        workflowService.syncDef(tenantId);
-    }
+  @Override
+  public void syncDef(String tenantId) {
+    workflowService.syncDef(tenantId);
+  }
 
-    @Override
-    public RemoteStartProcessReturn startWorkFlow(RemoteStartProcess startProcess) {
-        return workflowService.startWorkFlow(startProcess);
-    }
+  @Override
+  public RemoteStartProcessReturn startWorkFlow(RemoteStartProcess startProcess) {
+    return workflowService.startWorkFlow(startProcess);
+  }
 
-    @Override
-    public boolean completeTask(RemoteCompleteTask completeTask) {
-        return workflowService.completeTask(completeTask);
-    }
+  @Override
+  public boolean completeTask(RemoteCompleteTask completeTask) {
+    return workflowService.completeTask(completeTask);
+  }
 
-    /**
-     * 办理任务
-     *
-     * @param taskId 任务ID
-     * @param message 办理意见
-     * @return 结果
-     */
-    @Override
-    public boolean completeTask(Long taskId, String message) {
-        return workflowService.completeTask(taskId, message);
-    }
+  /**
+   * 办理任务
+   *
+   * @param taskId 任务ID
+   * @param message 办理意见
+   * @return 结果
+   */
+  @Override
+  public boolean completeTask(Long taskId, String message) {
+    return workflowService.completeTask(taskId, message);
+  }
 
-    /**
-     * 启动流程并办理第一个任务
-     *
-     * @param startProcess 参数
-     * @return 结果
-     */
-    @Override
-    public boolean startCompleteTask(RemoteStartProcess startProcess) {
-        return workflowService.startCompleteTask(startProcess);
-    }
+  /**
+   * 启动流程并办理第一个任务
+   *
+   * @param startProcess 参数
+   * @return 结果
+   */
+  @Override
+  public boolean startCompleteTask(RemoteStartProcess startProcess) {
+    return workflowService.startCompleteTask(startProcess);
+  }
 }

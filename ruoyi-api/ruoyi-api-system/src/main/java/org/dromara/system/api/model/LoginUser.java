@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户信息
+ * 用户信息.
  *
  * @author ruoyi
  */
@@ -16,85 +16,95 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginUser implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 租户ID */
-    private String tenantId;
+  /** 租户ID. */
+  private String tenantId;
 
-    /** 用户ID */
-    private Long userId;
+  /** 用户ID. */
+  private Long userId;
 
-    /** 部门ID */
-    private Long deptId;
+  /** 部门ID. */
+  private Long deptId;
 
-    /** 部门类别编码 */
-    private String deptCategory;
+  /** 部门类别编码. */
+  private String deptCategory;
 
-    /** 部门名 */
-    private String deptName;
+  /** 部门名. */
+  private String deptName;
 
-    /** 用户唯一标识 */
-    private String token;
+  /** 用户唯一标识. */
+  private String token;
 
-    /** 用户类型 */
-    private String userType;
+  /** 用户类型. */
+  private String userType;
 
-    /** 登录时间 */
-    private Long loginTime;
+  /** 登录时间. */
+  private Long loginTime;
 
-    /** 过期时间 */
-    private Long expireTime;
+  /** 过期时间. */
+  private Long expireTime;
 
-    /** 登录IP地址 */
-    private String ipaddr;
+  /** 登录IP地址. */
+  private String ipaddr;
 
-    /** 登录地点 */
-    private String loginLocation;
+  /** 登录地点. */
+  private String loginLocation;
 
-    /** 浏览器类型 */
-    private String browser;
+  /** 浏览器类型. */
+  private String browser;
 
-    /** 操作系统 */
-    private String os;
+  /** 操作系统. */
+  private String os;
 
-    /** 菜单权限 */
-    private Set<String> menuPermission;
+  /** 菜单权限. */
+  private Set<String> menuPermission;
 
-    /** 角色权限 */
-    private Set<String> rolePermission;
+  /** 角色权限. */
+  private Set<String> rolePermission;
 
-    /** 用户名 */
-    private String username;
+  /** 用户名. */
+  private String username;
 
-    /** 用户昵称 */
-    private String nickname;
+  /** 用户昵称. */
+  private String nickname;
 
-    /** 密码 */
-    private String password;
+  /** 密码. */
+  private String password;
 
-    /** 角色对象 */
-    private List<RoleDTO> roles;
+  /** 角色对象. */
+  private List<RoleDTO> roles;
 
-    /** 岗位对象 */
-    private List<PostDTO> posts;
+  /** 岗位对象. */
+  private List<PostDTO> posts;
 
-    /** 数据权限 当前角色ID */
-    private Long roleId;
+  /** 数据权限 当前角色ID. */
+  private Long roleId;
 
-    /** 客户端 */
-    private String clientKey;
+  /** 客户端. */
+  private String clientKey;
 
-    /** 设备类型 */
-    private String deviceType;
+  /** 设备类型. */
+  private String deviceType;
 
-    /** 获取登录id */
-    public String getLoginId() {
-        if (userType == null) {
-            throw new IllegalArgumentException("用户类型不能为空");
-        }
-        if (userId == null) {
-            throw new IllegalArgumentException("用户ID不能为空");
-        }
-        return userType + ":" + userId;
+  /**
+   * Retrieves the unique login identifier for the user.
+   *
+   * <p>This method constructs a composite login ID by combining the user type and user ID,
+   * separated by a colon. The format is: {@code userType:userId}. This unique identifier is used
+   * throughout the system for session management and user tracking.
+   *
+   * @return the login ID in the format "userType:userId"
+   * @throws IllegalArgumentException if userType is null
+   * @throws IllegalArgumentException if userId is null
+   */
+  public String getLoginId() {
+    if (userType == null) {
+      throw new IllegalArgumentException("用户类型不能为空");
     }
+    if (userId == null) {
+      throw new IllegalArgumentException("用户ID不能为空");
+    }
+    return userType + ":" + userId;
+  }
 }

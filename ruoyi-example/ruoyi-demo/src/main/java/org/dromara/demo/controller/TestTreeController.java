@@ -33,63 +33,63 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tree")
 public class TestTreeController extends BaseController {
 
-    private final ITestTreeService iTestTreeService;
+  private final ITestTreeService iTestTreeService;
 
-    /** 查询测试树表列表 */
-    @SaCheckPermission("demo:tree:list")
-    @GetMapping("/list")
-    public R<List<TestTreeVo>> list(TestTreeBo bo) {
-        List<TestTreeVo> list = iTestTreeService.queryList(bo);
-        return R.ok(list);
-    }
+  /** 查询测试树表列表 */
+  @SaCheckPermission("demo:tree:list")
+  @GetMapping("/list")
+  public R<List<TestTreeVo>> list(TestTreeBo bo) {
+    List<TestTreeVo> list = iTestTreeService.queryList(bo);
+    return R.ok(list);
+  }
 
-    /** 导出测试树表列表 */
-    @SaCheckPermission("demo:tree:export")
-    @Log(title = "测试树表", businessType = BusinessType.EXPORT)
-    @GetMapping("/export")
-    public void export(@Validated TestTreeBo bo, HttpServletResponse response) {
-        List<TestTreeVo> list = iTestTreeService.queryList(bo);
-        ExcelUtil.exportExcel(list, "测试树表", TestTreeVo.class, response);
-    }
+  /** 导出测试树表列表 */
+  @SaCheckPermission("demo:tree:export")
+  @Log(title = "测试树表", businessType = BusinessType.EXPORT)
+  @GetMapping("/export")
+  public void export(@Validated TestTreeBo bo, HttpServletResponse response) {
+    List<TestTreeVo> list = iTestTreeService.queryList(bo);
+    ExcelUtil.exportExcel(list, "测试树表", TestTreeVo.class, response);
+  }
 
-    /**
-     * 获取测试树表详细信息
-     *
-     * @param id 测试树ID
-     */
-    @SaCheckPermission("demo:tree:query")
-    @GetMapping("/{id}")
-    public R<TestTreeVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable("id") Long id) {
-        return R.ok(iTestTreeService.queryById(id));
-    }
+  /**
+   * 获取测试树表详细信息
+   *
+   * @param id 测试树ID
+   */
+  @SaCheckPermission("demo:tree:query")
+  @GetMapping("/{id}")
+  public R<TestTreeVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable("id") Long id) {
+    return R.ok(iTestTreeService.queryById(id));
+  }
 
-    /** 新增测试树表 */
-    @SaCheckPermission("demo:tree:add")
-    @Log(title = "测试树表", businessType = BusinessType.INSERT)
-    @RepeatSubmit
-    @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody TestTreeBo bo) {
-        return toAjax(iTestTreeService.insertByBo(bo));
-    }
+  /** 新增测试树表 */
+  @SaCheckPermission("demo:tree:add")
+  @Log(title = "测试树表", businessType = BusinessType.INSERT)
+  @RepeatSubmit
+  @PostMapping()
+  public R<Void> add(@Validated(AddGroup.class) @RequestBody TestTreeBo bo) {
+    return toAjax(iTestTreeService.insertByBo(bo));
+  }
 
-    /** 修改测试树表 */
-    @SaCheckPermission("demo:tree:edit")
-    @Log(title = "测试树表", businessType = BusinessType.UPDATE)
-    @RepeatSubmit
-    @PutMapping()
-    public R<Void> edit(@Validated(EditGroup.class) @RequestBody TestTreeBo bo) {
-        return toAjax(iTestTreeService.updateByBo(bo));
-    }
+  /** 修改测试树表 */
+  @SaCheckPermission("demo:tree:edit")
+  @Log(title = "测试树表", businessType = BusinessType.UPDATE)
+  @RepeatSubmit
+  @PutMapping()
+  public R<Void> edit(@Validated(EditGroup.class) @RequestBody TestTreeBo bo) {
+    return toAjax(iTestTreeService.updateByBo(bo));
+  }
 
-    /**
-     * 删除测试树表
-     *
-     * @param ids 测试树ID串
-     */
-    @SaCheckPermission("demo:tree:remove")
-    @Log(title = "测试树表", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return toAjax(iTestTreeService.deleteWithValidByIds(Arrays.asList(ids), true));
-    }
+  /**
+   * 删除测试树表
+   *
+   * @param ids 测试树ID串
+   */
+  @SaCheckPermission("demo:tree:remove")
+  @Log(title = "测试树表", businessType = BusinessType.DELETE)
+  @DeleteMapping("/{ids}")
+  public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+    return toAjax(iTestTreeService.deleteWithValidByIds(Arrays.asList(ids), true));
+  }
 }

@@ -1,19 +1,22 @@
 package org.dromara.common.encrypt.enumd;
 
 /**
- * 编码类型
+ * Enumeration of encoding types for encrypted output.
+ *
+ * <p>Defines the available encoding formats that can be used to represent encrypted binary data as
+ * text strings.
  *
  * @author 老马
  * @version 4.6.0
  */
 public enum EncodeType {
 
-    /** 默认使用yml配置 */
-    DEFAULT,
+  /** Default encoding, uses global configuration from YAML. */
+  DEFAULT,
 
-    /** base64编码 */
-    BASE64,
+  /** BASE64 encoding format. */
+  BASE64,
 
-    /** 16进制编码 */
-    HEX;
+  /** Hexadecimal (HEX) encoding format. */
+  HEX;
 }

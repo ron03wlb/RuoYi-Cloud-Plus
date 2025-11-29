@@ -36,77 +36,86 @@ import reactor.core.publisher.Mono;
  * @author Ryan Baxter
  */
 public class StripPrefixGatewayFilterFactory
-        extends AbstractGatewayFilterFactory<StripPrefixGatewayFilterFactory.Config> {
+    extends AbstractGatewayFilterFactory<StripPrefixGatewayFilterFactory.Config> {
 
-    /** Parts key. */
-    public static final String PARTS_KEY = "parts";
+  /** Parts key. */
+  public static final String PARTS_KEY = "parts";
 
-    public StripPrefixGatewayFilterFactory() {
-        super(Config.class);
-    }
+  /** Constructor that initializes the factory with Config class. */
+  public StripPrefixGatewayFilterFactory() {
+    super(Config.class);
+  }
 
-    @Override
-    public List<String> shortcutFieldOrder() {
-        return Arrays.asList(PARTS_KEY);
-    }
+  @Override
+  public List<String> shortcutFieldOrder() {
+    return Arrays.asList(PARTS_KEY);
+  }
 
-    @Override
-    public GatewayFilter apply(Config config) {
-        return new GatewayFilter() {
-            @Override
-            public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-                ServerHttpRequest request = exchange.getRequest();
-                addOriginalRequestUrl(exchange, request.getURI());
-                String path = request.getURI().getRawPath();
-                String[] originalParts = StringUtils.tokenizeToStringArray(path, "/");
+  @Override
+  public GatewayFilter apply(Config config) {
+    return new GatewayFilter() {
+      @Override
+      public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        addOriginalRequestUrl(exchange, request.getURI());
+        String path = request.getURI().getRawPath();
+        String[] originalParts = StringUtils.tokenizeToStringArray(path, "/");
 
-                // all new paths start with /
-                StringBuilder newPath = new StringBuilder("/");
-                for (int i = 0; i < originalParts.length; i++) {
-                    if (i >= config.getParts()) {
-                        // only append slash if this is the second part or greater
-                        if (newPath.length() > 1) {
-                            newPath.append('/');
-                        }
-                        newPath.append(originalParts[i]);
-                    }
-                }
-                if (newPath.length() > 1 && path.endsWith("/")) {
-                    newPath.append('/');
-                }
-                // 增加doc前缀传递
-                String prefix = "/" + originalParts[config.getParts() - 1];
-
-                ServerHttpRequest newRequest =
-                        request.mutate()
-                                .header("X-Forwarded-Prefix", prefix)
-                                .path(newPath.toString())
-                                .build();
-
-                exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
-
-                return chain.filter(exchange.mutate().request(newRequest).build());
+        // all new paths start with /
+        StringBuilder newPath = new StringBuilder("/");
+        for (int i = 0; i < originalParts.length; i++) {
+          if (i >= config.getParts()) {
+            // only append slash if this is the second part or greater
+            if (newPath.length() > 1) {
+              newPath.append('/');
             }
+            newPath.append(originalParts[i]);
+          }
+        }
+        if (newPath.length() > 1 && path.endsWith("/")) {
+          newPath.append('/');
+        }
+        // 增加doc前缀传递
+        String prefix = "/" + originalParts[config.getParts() - 1];
 
-            @Override
-            public String toString() {
-                return filterToStringCreator(StripPrefixGatewayFilterFactory.this)
-                        .append("parts", config.getParts())
-                        .toString();
-            }
-        };
+        ServerHttpRequest newRequest =
+            request.mutate().header("X-Forwarded-Prefix", prefix).path(newPath.toString()).build();
+
+        exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
+
+        return chain.filter(exchange.mutate().request(newRequest).build());
+      }
+
+      @Override
+      public String toString() {
+        return filterToStringCreator(StripPrefixGatewayFilterFactory.this)
+            .append("parts", config.getParts())
+            .toString();
+      }
+    };
+  }
+
+  /** Configuration class for StripPrefixGatewayFilterFactory. */
+  public static class Config {
+
+    private int parts = 1;
+
+    /**
+     * Gets the number of parts to strip from the path prefix.
+     *
+     * @return number of parts to strip
+     */
+    public int getParts() {
+      return parts;
     }
 
-    public static class Config {
-
-        private int parts = 1;
-
-        public int getParts() {
-            return parts;
-        }
-
-        public void setParts(int parts) {
-            this.parts = parts;
-        }
+    /**
+     * Sets the number of parts to strip from the path prefix.
+     *
+     * @param parts number of parts to strip
+     */
+    public void setParts(int parts) {
+      this.parts = parts;
     }
+  }
 }

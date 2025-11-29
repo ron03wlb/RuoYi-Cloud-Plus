@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaNormalProducer {
 
-    @Autowired private KafkaTemplate<String, String> kafkaTemplate;
+  @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendKafkaMsg() {
-        kafkaTemplate.send("test-topic", "hello", "kafkaTest");
-    }
+  public void sendKafkaMsg() {
+    kafkaTemplate.send("test-topic", "hello", "kafkaTest");
+  }
 }

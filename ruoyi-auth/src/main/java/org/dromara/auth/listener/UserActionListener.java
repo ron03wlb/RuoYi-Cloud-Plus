@@ -26,7 +26,7 @@ import org.dromara.system.api.domain.SysUserOnline;
 import org.springframework.stereotype.Component;
 
 /**
- * 用户行为 侦听器的实现
+ * User action listener implementation for handling Sa-Token authentication events.
  *
  * @author Lion Li
  */
@@ -35,116 +35,182 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class UserActionListener implements SaTokenListener {
 
-    @DubboReference private RemoteUserService remoteUserService;
-    @DubboReference private RemoteMessageService remoteMessageService;
+  @DubboReference private RemoteUserService remoteUserService;
+  @DubboReference private RemoteMessageService remoteMessageService;
 
-    /** 每次登录时触发 */
-    @Override
-    public void doLogin(
-            String loginType, Object loginId, String tokenValue, SaLoginParameter loginParameter) {
-        UserAgent userAgent =
-                UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
-        String ip = ServletUtils.getClientIP();
-        SysUserOnline userOnline = new SysUserOnline();
-        userOnline.setIpaddr(ip);
-        userOnline.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
-        userOnline.setBrowser(userAgent.getBrowser().getName());
-        userOnline.setOs(userAgent.getOs().getName());
-        userOnline.setLoginTime(System.currentTimeMillis());
-        userOnline.setTokenId(tokenValue);
-        String username = (String) loginParameter.getExtra(LoginHelper.USER_NAME_KEY);
-        String tenantId = (String) loginParameter.getExtra(LoginHelper.TENANT_KEY);
-        userOnline.setUserName(username);
-        userOnline.setClientKey((String) loginParameter.getExtra(LoginHelper.CLIENT_KEY));
-        userOnline.setDeviceType(loginParameter.getDeviceType());
-        userOnline.setDeptName((String) loginParameter.getExtra(LoginHelper.DEPT_NAME_KEY));
-        TenantHelper.dynamic(
-                tenantId,
-                () -> {
-                    if (loginParameter.getTimeout() == -1) {
-                        RedisUtils.setCacheObject(
-                                CacheConstants.ONLINE_TOKEN_KEY + tokenValue, userOnline);
-                    } else {
-                        RedisUtils.setCacheObject(
-                                CacheConstants.ONLINE_TOKEN_KEY + tokenValue,
-                                userOnline,
-                                Duration.ofSeconds(loginParameter.getTimeout()));
-                    }
-                });
-        // 记录登录日志
-        LogininforEvent logininforEvent = new LogininforEvent();
-        logininforEvent.setTenantId(tenantId);
-        logininforEvent.setUsername(username);
-        logininforEvent.setStatus(Constants.LOGIN_SUCCESS);
-        logininforEvent.setMessage(MessageUtils.message("user.login.success"));
-        SpringUtils.context().publishEvent(logininforEvent);
-        // 更新登录信息
-        remoteUserService.recordLoginInfo((Long) loginParameter.getExtra(LoginHelper.USER_KEY), ip);
-        log.info("user doLogin, useId:{}, token:{}", loginId, tokenValue);
-    }
+  /**
+   * Triggered on each successful user login to record login information and cache user online
+   * status.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param tokenValue the generated token value
+   * @param loginParameter additional login parameters containing user metadata
+   */
+  @Override
+  public void doLogin(
+      String loginType, Object loginId, String tokenValue, SaLoginParameter loginParameter) {
+    UserAgent userAgent = UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
+    String ip = ServletUtils.getClientIP();
+    SysUserOnline userOnline = new SysUserOnline();
+    userOnline.setIpaddr(ip);
+    userOnline.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
+    userOnline.setBrowser(userAgent.getBrowser().getName());
+    userOnline.setOs(userAgent.getOs().getName());
+    userOnline.setLoginTime(System.currentTimeMillis());
+    userOnline.setTokenId(tokenValue);
+    final String username = (String) loginParameter.getExtra(LoginHelper.USER_NAME_KEY);
+    final String tenantId = (String) loginParameter.getExtra(LoginHelper.TENANT_KEY);
+    userOnline.setUserName(username);
+    userOnline.setClientKey((String) loginParameter.getExtra(LoginHelper.CLIENT_KEY));
+    userOnline.setDeviceType(loginParameter.getDeviceType());
+    userOnline.setDeptName((String) loginParameter.getExtra(LoginHelper.DEPT_NAME_KEY));
+    TenantHelper.dynamic(
+        tenantId,
+        () -> {
+          if (loginParameter.getTimeout() == -1) {
+            RedisUtils.setCacheObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, userOnline);
+          } else {
+            RedisUtils.setCacheObject(
+                CacheConstants.ONLINE_TOKEN_KEY + tokenValue,
+                userOnline,
+                Duration.ofSeconds(loginParameter.getTimeout()));
+          }
+        });
+    // 记录登录日志
+    LogininforEvent logininforEvent = new LogininforEvent();
+    logininforEvent.setTenantId(tenantId);
+    logininforEvent.setUsername(username);
+    logininforEvent.setStatus(Constants.LOGIN_SUCCESS);
+    logininforEvent.setMessage(MessageUtils.message("user.login.success"));
+    SpringUtils.context().publishEvent(logininforEvent);
+    // 更新登录信息
+    remoteUserService.recordLoginInfo((Long) loginParameter.getExtra(LoginHelper.USER_KEY), ip);
+    log.info("user doLogin, useId:{}, token:{}", loginId, tokenValue);
+  }
 
-    /** 每次注销时触发 */
-    @Override
-    public void doLogout(String loginType, Object loginId, String tokenValue) {
-        String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
-        TenantHelper.dynamic(
-                tenantId,
-                () -> {
-                    RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
-                });
-        log.info("user doLogout, useId:{}, token:{}", loginId, tokenValue);
-    }
+  /**
+   * Triggered on user logout to clean up cached online status.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param tokenValue the token value being logged out
+   */
+  @Override
+  public void doLogout(String loginType, Object loginId, String tokenValue) {
+    String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
+    TenantHelper.dynamic(
+        tenantId,
+        () -> {
+          RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        });
+    log.info("user doLogout, useId:{}, token:{}", loginId, tokenValue);
+  }
 
-    /** 每次被踢下线时触发 */
-    @Override
-    public void doKickout(String loginType, Object loginId, String tokenValue) {
-        String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
-        TenantHelper.dynamic(
-                tenantId,
-                () -> {
-                    RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
-                });
-        log.info("user doLogoutByLoginId, useId:{}, token:{}", loginId, tokenValue);
-    }
+  /**
+   * Triggered when user is kicked offline by administrator.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param tokenValue the token value being kicked out
+   */
+  @Override
+  public void doKickout(String loginType, Object loginId, String tokenValue) {
+    String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
+    TenantHelper.dynamic(
+        tenantId,
+        () -> {
+          RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        });
+    log.info("user doLogoutByLoginId, useId:{}, token:{}", loginId, tokenValue);
+  }
 
-    /** 每次被顶下线时触发 */
-    @Override
-    public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
-        TenantHelper.dynamic(
-                tenantId,
-                () -> {
-                    RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
-                });
-        log.info("user doReplaced, useId:{}, token:{}", loginId, tokenValue);
-    }
+  /**
+   * Triggered when user is replaced by a new login session.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param tokenValue the token value being replaced
+   */
+  @Override
+  public void doReplaced(String loginType, Object loginId, String tokenValue) {
+    String tenantId = Convert.toStr(StpUtil.getExtra(tokenValue, LoginHelper.TENANT_KEY));
+    TenantHelper.dynamic(
+        tenantId,
+        () -> {
+          RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        });
+    log.info("user doReplaced, useId:{}, token:{}", loginId, tokenValue);
+  }
 
-    /** 每次被封禁时触发 */
-    @Override
-    public void doDisable(
-            String loginType, Object loginId, String service, int level, long disableTime) {}
+  /**
+   * Triggered when user account is disabled or banned.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param service the service name
+   * @param level the disable level
+   * @param disableTime the disable duration in seconds
+   */
+  @Override
+  public void doDisable(
+      String loginType, Object loginId, String service, int level, long disableTime) {}
 
-    /** 每次被解封时触发 */
-    @Override
-    public void doUntieDisable(String loginType, Object loginId, String service) {}
+  /**
+   * Triggered when user account is re-enabled or unbanned.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param service the service name
+   */
+  @Override
+  public void doUntieDisable(String loginType, Object loginId, String service) {}
 
-    /** 每次打开二级认证时触发 */
-    @Override
-    public void doOpenSafe(String loginType, String tokenValue, String service, long safeTime) {}
+  /**
+   * Triggered when two-factor authentication is enabled for a token.
+   *
+   * @param loginType the login type identifier
+   * @param tokenValue the token value
+   * @param service the service name
+   * @param safeTime the safe time duration
+   */
+  @Override
+  public void doOpenSafe(String loginType, String tokenValue, String service, long safeTime) {}
 
-    /** 每次创建Session时触发 */
-    @Override
-    public void doCloseSafe(String loginType, String tokenValue, String service) {}
+  /**
+   * Triggered when two-factor authentication is disabled for a token.
+   *
+   * @param loginType the login type identifier
+   * @param tokenValue the token value
+   * @param service the service name
+   */
+  @Override
+  public void doCloseSafe(String loginType, String tokenValue, String service) {}
 
-    /** 每次创建Session时触发 */
-    @Override
-    public void doCreateSession(String id) {}
+  /**
+   * Triggered when a new session is created.
+   *
+   * @param id the session ID
+   */
+  @Override
+  public void doCreateSession(String id) {}
 
-    /** 每次注销Session时触发 */
-    @Override
-    public void doLogoutSession(String id) {}
+  /**
+   * Triggered when a session is logged out.
+   *
+   * @param id the session ID
+   */
+  @Override
+  public void doLogoutSession(String id) {}
 
-    /** 每次Token续期时触发 */
-    @Override
-    public void doRenewTimeout(String loginType, Object loginId, String tokenValue, long timeout) {}
+  /**
+   * Triggered when a token timeout is renewed.
+   *
+   * @param loginType the login type identifier
+   * @param loginId the user login ID
+   * @param tokenValue the token value
+   * @param timeout the new timeout duration
+   */
+  @Override
+  public void doRenewTimeout(String loginType, Object loginId, String tokenValue, long timeout) {}
 }

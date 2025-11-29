@@ -43,21 +43,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public abstract class BaseUnitTest {
 
-    private AutoCloseable closeable;
+  private AutoCloseable closeable;
 
-    /** 测试前初始化 */
-    @BeforeEach
-    public void baseSetUp() {
-        // 初始化 Mockito 注解
-        closeable = MockitoAnnotations.openMocks(this);
-    }
+  /** 测试前初始化 */
+  @BeforeEach
+  public void baseSetUp() {
+    // 初始化 Mockito 注解
+    closeable = MockitoAnnotations.openMocks(this);
+  }
 
-    /** 测试后清理 */
-    @AfterEach
-    public void baseTearDown() throws Exception {
-        // 关闭 Mockito 资源
-        if (closeable != null) {
-            closeable.close();
-        }
+  /** 测试后清理 */
+  @AfterEach
+  public void baseTearDown() throws Exception {
+    // 关闭 Mockito 资源
+    if (closeable != null) {
+      closeable.close();
     }
+  }
 }

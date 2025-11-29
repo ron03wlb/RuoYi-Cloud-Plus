@@ -76,156 +76,156 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("SysSensitiveServiceImpl 单元测试 - 无法测试 (静态方法依赖)")
 class SysSensitiveServiceImplTest {
 
-    @InjectMocks private SysSensitiveServiceImpl sensitiveService;
+  @InjectMocks private SysSensitiveServiceImpl sensitiveService;
 
-    /**
-     * 基本结构测试 - 验证服务可以被实例化
-     *
-     * <p>这是唯一可以进行的"测试" - 验证服务类本身没有构造错误
-     */
-    @Test
-    @DisplayName("服务应该能够成功实例化")
-    void shouldInstantiateSuccessfully() {
-        // Assert
-        assertThat(sensitiveService).as("SysSensitiveServiceImpl 应该能够被成功创建").isNotNull();
-    }
+  /**
+   * 基本结构测试 - 验证服务可以被实例化
+   *
+   * <p>这是唯一可以进行的"测试" - 验证服务类本身没有构造错误
+   */
+  @Test
+  @DisplayName("服务应该能够成功实例化")
+  void shouldInstantiateSuccessfully() {
+    // Assert
+    assertThat(sensitiveService).as("SysSensitiveServiceImpl 应该能够被成功创建").isNotNull();
+  }
 
-    /**
-     * 文档测试 - 说明为什么无法测试 isSensitive 方法
-     *
-     * <p><b>无法测试的原因</b>:
-     *
-     * <ul>
-     *   <li>LoginHelper.isLogin() 是静态方法，需要 Sa-Token 会话上下文
-     *   <li>StpUtil.hasRoleOr() 是静态方法，需要 Sa-Token 会话和用户角色数据
-     *   <li>StpUtil.hasPermissionOr() 是静态方法，需要 Sa-Token 会话和用户权限数据
-     *   <li>TenantHelper.isEnable() 是静态方法，需要租户配置
-     *   <li>LoginHelper.isSuperAdmin() 是静态方法，需要用户角色判断逻辑
-     *   <li>LoginHelper.isTenantAdmin() 是静态方法，需要租户管理员判断逻辑
-     * </ul>
-     *
-     * <p><b>示例代码无法测试</b>:
-     *
-     * <pre>
-     * // 以下测试代码无法运行，因为静态方法无法 mock:
-     *
-     * &#64;Test
-     * void shouldReturnTrue_WhenUserNotLoggedIn() {
-     *     // 无法 mock LoginHelper.isLogin() 返回 false
-     *     // 会抛出异常或返回默认值
-     *     boolean result = sensitiveService.isSensitive(null, null);
-     *     // 无法验证预期结果
-     * }
-     *
-     * &#64;Test
-     * void shouldReturnFalse_WhenUserIsSuperAdmin() {
-     *     // 无法 mock LoginHelper.isLogin() 返回 true
-     *     // 无法 mock LoginHelper.isSuperAdmin() 返回 true
-     *     // 无法 mock TenantHelper.isEnable() 返回 false
-     *     boolean result = sensitiveService.isSensitive(null, null);
-     *     // 无法验证预期结果
-     * }
-     * </pre>
-     *
-     * <p><b>需要集成测试环境</b>:
-     *
-     * <pre>
-     * &#64;SpringBootTest
-     * class SysSensitiveServiceImplIntegrationTest {
-     *
-     *     &#64;Autowired
-     *     private SysSensitiveService sensitiveService;
-     *
-     *     &#64;Test
-     *     void shouldReturnFalse_WhenUserIsSuperAdmin() {
-     *         // 使用真实的登录逻辑
-     *         StpUtil.login(1L); // 超级管理员用户ID
-     *
-     *         // 测试脱敏逻辑
-     *         boolean result = sensitiveService.isSensitive(null, null);
-     *
-     *         assertThat(result).isFalse();
-     *
-     *         // 清理
-     *         StpUtil.logout();
-     *     }
-     * }
-     * </pre>
-     */
-    @Test
-    @DisplayName("文档说明: isSensitive 方法无法进行纯单元测试")
-    void documentWhyIsSensitiveCannotBeTested() {
-        // 此测试仅用于文档目的
-        // 实际上无法测试 isSensitive 方法的任何逻辑
+  /**
+   * 文档测试 - 说明为什么无法测试 isSensitive 方法
+   *
+   * <p><b>无法测试的原因</b>:
+   *
+   * <ul>
+   *   <li>LoginHelper.isLogin() 是静态方法，需要 Sa-Token 会话上下文
+   *   <li>StpUtil.hasRoleOr() 是静态方法，需要 Sa-Token 会话和用户角色数据
+   *   <li>StpUtil.hasPermissionOr() 是静态方法，需要 Sa-Token 会话和用户权限数据
+   *   <li>TenantHelper.isEnable() 是静态方法，需要租户配置
+   *   <li>LoginHelper.isSuperAdmin() 是静态方法，需要用户角色判断逻辑
+   *   <li>LoginHelper.isTenantAdmin() 是静态方法，需要租户管理员判断逻辑
+   * </ul>
+   *
+   * <p><b>示例代码无法测试</b>:
+   *
+   * <pre>
+   * // 以下测试代码无法运行，因为静态方法无法 mock:
+   *
+   * &#64;Test
+   * void shouldReturnTrue_WhenUserNotLoggedIn() {
+   *     // 无法 mock LoginHelper.isLogin() 返回 false
+   *     // 会抛出异常或返回默认值
+   *     boolean result = sensitiveService.isSensitive(null, null);
+   *     // 无法验证预期结果
+   * }
+   *
+   * &#64;Test
+   * void shouldReturnFalse_WhenUserIsSuperAdmin() {
+   *     // 无法 mock LoginHelper.isLogin() 返回 true
+   *     // 无法 mock LoginHelper.isSuperAdmin() 返回 true
+   *     // 无法 mock TenantHelper.isEnable() 返回 false
+   *     boolean result = sensitiveService.isSensitive(null, null);
+   *     // 无法验证预期结果
+   * }
+   * </pre>
+   *
+   * <p><b>需要集成测试环境</b>:
+   *
+   * <pre>
+   * &#64;SpringBootTest
+   * class SysSensitiveServiceImplIntegrationTest {
+   *
+   *     &#64;Autowired
+   *     private SysSensitiveService sensitiveService;
+   *
+   *     &#64;Test
+   *     void shouldReturnFalse_WhenUserIsSuperAdmin() {
+   *         // 使用真实的登录逻辑
+   *         StpUtil.login(1L); // 超级管理员用户ID
+   *
+   *         // 测试脱敏逻辑
+   *         boolean result = sensitiveService.isSensitive(null, null);
+   *
+   *         assertThat(result).isFalse();
+   *
+   *         // 清理
+   *         StpUtil.logout();
+   *     }
+   * }
+   * </pre>
+   */
+  @Test
+  @DisplayName("文档说明: isSensitive 方法无法进行纯单元测试")
+  void documentWhyIsSensitiveCannotBeTested() {
+    // 此测试仅用于文档目的
+    // 实际上无法测试 isSensitive 方法的任何逻辑
 
-        // 尝试调用方法会导致静态方法调用失败
-        // 因为没有 Sa-Token 会话上下文
+    // 尝试调用方法会导致静态方法调用失败
+    // 因为没有 Sa-Token 会话上下文
 
-        assertThat(true).as("此测试仅用于文档说明，实际业务逻辑无法测试").isTrue();
-    }
+    assertThat(true).as("此测试仅用于文档说明，实际业务逻辑无法测试").isTrue();
+  }
 
-    /**
-     * 架构改进建议
-     *
-     * <p>为了提高可测试性，建议进行以下架构改进:
-     *
-     * <h4>方案 1: 依赖注入重构</h4>
-     *
-     * <pre>
-     * // 创建可注入的服务接口
-     * public interface LoginService {
-     *     boolean isLogin();
-     *     boolean isSuperAdmin();
-     *     boolean isTenantAdmin();
-     * }
-     *
-     * public interface PermissionService {
-     *     boolean hasRoleOr(String[] roleKeys);
-     *     boolean hasPermissionOr(String[] perms);
-     * }
-     *
-     * public interface TenantService {
-     *     boolean isEnable();
-     * }
-     *
-     * // 在 SysSensitiveServiceImpl 中注入这些服务
-     * &#64;RequiredArgsConstructor
-     * public class SysSensitiveServiceImpl implements SensitiveService {
-     *     private final LoginService loginService;
-     *     private final PermissionService permissionService;
-     *     private final TenantService tenantService;
-     *
-     *     // 现在可以在单元测试中 mock 这些服务
-     * }
-     * </pre>
-     *
-     * <h4>方案 2: 添加 mockito-inline 依赖</h4>
-     *
-     * <pre>
-     * // build.gradle.kts
-     * testImplementation("org.mockito:mockito-inline:5.2.0")
-     *
-     * // 测试代码
-     * &#64;Test
-     * void testWithMockitoInline() {
-     *     try (MockedStatic&lt;LoginHelper&gt; loginHelper = mockStatic(LoginHelper.class)) {
-     *         loginHelper.when(LoginHelper::isLogin).thenReturn(true);
-     *         loginHelper.when(LoginHelper::isSuperAdmin).thenReturn(true);
-     *
-     *         boolean result = sensitiveService.isSensitive(null, null);
-     *
-     *         assertThat(result).isFalse();
-     *     }
-     * }
-     * </pre>
-     *
-     * <h4>方案 3: 保持现状，使用集成测试</h4>
-     *
-     * <pre>
-     * - 接受当前架构限制
-     * - 在 Spring Boot 集成测试中验证功能
-     * - 通过端到端测试覆盖脱敏场景
-     * - 文档说明单元测试不适用
-     * </pre>
-     */
+  /**
+   * 架构改进建议
+   *
+   * <p>为了提高可测试性，建议进行以下架构改进:
+   *
+   * <h4>方案 1: 依赖注入重构</h4>
+   *
+   * <pre>
+   * // 创建可注入的服务接口
+   * public interface LoginService {
+   *     boolean isLogin();
+   *     boolean isSuperAdmin();
+   *     boolean isTenantAdmin();
+   * }
+   *
+   * public interface PermissionService {
+   *     boolean hasRoleOr(String[] roleKeys);
+   *     boolean hasPermissionOr(String[] perms);
+   * }
+   *
+   * public interface TenantService {
+   *     boolean isEnable();
+   * }
+   *
+   * // 在 SysSensitiveServiceImpl 中注入这些服务
+   * &#64;RequiredArgsConstructor
+   * public class SysSensitiveServiceImpl implements SensitiveService {
+   *     private final LoginService loginService;
+   *     private final PermissionService permissionService;
+   *     private final TenantService tenantService;
+   *
+   *     // 现在可以在单元测试中 mock 这些服务
+   * }
+   * </pre>
+   *
+   * <h4>方案 2: 添加 mockito-inline 依赖</h4>
+   *
+   * <pre>
+   * // build.gradle.kts
+   * testImplementation("org.mockito:mockito-inline:5.2.0")
+   *
+   * // 测试代码
+   * &#64;Test
+   * void testWithMockitoInline() {
+   *     try (MockedStatic&lt;LoginHelper&gt; loginHelper = mockStatic(LoginHelper.class)) {
+   *         loginHelper.when(LoginHelper::isLogin).thenReturn(true);
+   *         loginHelper.when(LoginHelper::isSuperAdmin).thenReturn(true);
+   *
+   *         boolean result = sensitiveService.isSensitive(null, null);
+   *
+   *         assertThat(result).isFalse();
+   *     }
+   * }
+   * </pre>
+   *
+   * <h4>方案 3: 保持现状，使用集成测试</h4>
+   *
+   * <pre>
+   * - 接受当前架构限制
+   * - 在 Spring Boot 集成测试中验证功能
+   * - 通过端到端测试覆盖脱敏场景
+   * - 文档说明单元测试不适用
+   * </pre>
+   */
 }

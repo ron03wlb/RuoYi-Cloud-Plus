@@ -25,40 +25,38 @@ import org.springframework.stereotype.Component;
 @JobExecutor(name = "testMapReduceAnnotation1")
 public class TestMapReduceAnnotation1 {
 
-    @MapExecutor
-    public ExecuteResult rootMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
-        int partitionSize = 50;
-        List<List<Integer>> partition =
-                IntStream.rangeClosed(1, 200)
-                        .boxed()
-                        .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
-                        .values()
-                        .stream()
-                        .toList();
-        SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
-        return mapHandler.doMap(partition, "doCalc");
-    }
+  @MapExecutor
+  public ExecuteResult rootMapExecute(MapArgs mapArgs, MapHandler mapHandler) {
+    int partitionSize = 50;
+    List<List<Integer>> partition =
+        IntStream.rangeClosed(1, 200)
+            .boxed()
+            .collect(Collectors.groupingBy(i -> (i - 1) / partitionSize))
+            .values()
+            .stream()
+            .toList();
+    SnailJobLog.REMOTE.info("端口:{}完成分配任务", SpringUtil.getProperty("server.port"));
+    return mapHandler.doMap(partition, "doCalc");
+  }
 
-    @MapExecutor(taskName = "doCalc")
-    public ExecuteResult doCalc(MapArgs mapArgs) {
-        List<Integer> sourceList = (List<Integer>) mapArgs.getMapResult();
-        // 遍历sourceList的每一个元素,计算出一个累加值partitionTotal
-        int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
-        // 打印日志到服务器
-        ThreadUtil.sleep(3, TimeUnit.SECONDS);
-        SnailJobLog.REMOTE.info(
-                "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
-        return ExecuteResult.success(partitionTotal);
-    }
+  @MapExecutor(taskName = "doCalc")
+  public ExecuteResult doCalc(MapArgs mapArgs) {
+    List<Integer> sourceList = (List<Integer>) mapArgs.getMapResult();
+    // 遍历sourceList的每一个元素,计算出一个累加值partitionTotal
+    int partitionTotal = sourceList.stream().mapToInt(i -> i).sum();
+    // 打印日志到服务器
+    ThreadUtil.sleep(3, TimeUnit.SECONDS);
+    SnailJobLog.REMOTE.info(
+        "端口:{},partitionTotal:{}", SpringUtil.getProperty("server.port"), partitionTotal);
+    return ExecuteResult.success(partitionTotal);
+  }
 
-    @ReduceExecutor
-    public ExecuteResult reduceExecute(ReduceArgs reduceArgs) {
-        int reduceTotal =
-                reduceArgs.getMapResult().stream()
-                        .mapToInt(i -> Integer.parseInt((String) i))
-                        .sum();
-        SnailJobLog.REMOTE.info(
-                "端口:{},reduceTotal:{}", SpringUtil.getProperty("server.port"), reduceTotal);
-        return ExecuteResult.success(reduceTotal);
-    }
+  @ReduceExecutor
+  public ExecuteResult reduceExecute(ReduceArgs reduceArgs) {
+    int reduceTotal =
+        reduceArgs.getMapResult().stream().mapToInt(i -> Integer.parseInt((String) i)).sum();
+    SnailJobLog.REMOTE.info(
+        "端口:{},reduceTotal:{}", SpringUtil.getProperty("server.port"), reduceTotal);
+    return ExecuteResult.success(reduceTotal);
+  }
 }

@@ -47,6 +47,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith(MockitoExtension.class)
 public abstract class BaseUnitTest {
-    // 基类不需要额外的字段或方法
-    // 子类通过继承获得 Mockito 支持
+  // 基类不需要额外的字段或方法
+  // 子类通过继承获得 Mockito 支持
 }

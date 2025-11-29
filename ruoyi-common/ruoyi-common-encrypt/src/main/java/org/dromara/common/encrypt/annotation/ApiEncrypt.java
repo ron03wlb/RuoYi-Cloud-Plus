@@ -3,7 +3,10 @@ package org.dromara.common.encrypt.annotation;
 import java.lang.annotation.*;
 
 /**
- * 强制加密注解
+ * API encryption annotation for enforcing encryption on HTTP endpoints.
+ *
+ * <p>This annotation can be applied to controller methods to enforce encryption on HTTP responses.
+ * By default, responses are not encrypted unless explicitly enabled.
  *
  * @author Michelle.Chung
  */
@@ -12,6 +15,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiEncrypt {
 
-    /** 响应加密忽略，默认不加密，为 true 时加密 */
-    boolean response() default false;
+  /**
+   * Indicates whether response encryption should be enabled.
+   *
+   * @return {@code true} to enable response encryption, {@code false} otherwise (default: false)
+   */
+  boolean response() default false;
 }

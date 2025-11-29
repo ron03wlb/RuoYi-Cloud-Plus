@@ -14,24 +14,24 @@ import org.dromara.workflow.domain.vo.TestLeaveVo;
  */
 public interface ITestLeaveService {
 
-    /** 查询请假 */
-    TestLeaveVo queryById(Long id);
+  /** 查询请假 */
+  TestLeaveVo queryById(Long id);
 
-    /** 查询请假列表 */
-    TableDataInfo<TestLeaveVo> queryPageList(TestLeaveBo bo, PageQuery pageQuery);
+  /** 查询请假列表 */
+  TableDataInfo<TestLeaveVo> queryPageList(TestLeaveBo bo, PageQuery pageQuery);
 
-    /** 查询请假列表 */
-    List<TestLeaveVo> queryList(TestLeaveBo bo);
+  /** 查询请假列表 */
+  List<TestLeaveVo> queryList(TestLeaveBo bo);
 
-    /** 新增请假 */
-    TestLeaveVo insertByBo(TestLeaveBo bo);
+  /** 新增请假 */
+  TestLeaveVo insertByBo(TestLeaveBo bo);
 
-    /** 提交请假并发起流程 */
-    TestLeaveVo submitAndFlowStart(TestLeaveBo bo);
+  /** 提交请假并发起流程 */
+  TestLeaveVo submitAndFlowStart(TestLeaveBo bo);
 
-    /** 修改请假 */
-    TestLeaveVo updateByBo(TestLeaveBo bo);
+  /** 修改请假 */
+  TestLeaveVo updateByBo(TestLeaveBo bo);
 
-    /** 校验并批量删除请假信息 */
-    Boolean deleteWithValidByIds(List<Long> ids);
+  /** 校验并批量删除请假信息 */
+  Boolean deleteWithValidByIds(List<Long> ids);
 }

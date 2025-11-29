@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 @TranslationType(type = FlowConstant.CATEGORY_ID_TO_NAME)
 public class CategoryNameTranslationImpl implements TranslationInterface<String> {
 
-    private final IFlwCategoryService flwCategoryService;
+  private final IFlwCategoryService flwCategoryService;
 
-    @Override
-    public String translation(Object key, String other) {
-        return flwCategoryService.selectCategoryNameById(Convert.toLong(key));
-    }
+  @Override
+  public String translation(Object key, String other) {
+    return flwCategoryService.selectCategoryNameById(Convert.toLong(key));
+  }
 }

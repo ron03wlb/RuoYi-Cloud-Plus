@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 自定义枚举校验
+ * 自定义枚举校验.
  *
  * @author 秋辞未寒
  * @date 2024-12-09
@@ -23,22 +23,43 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {EnumPatternValidator.class})
 public @interface EnumPattern {
 
-    /** 需要校验的枚举类型 */
-    Class<? extends Enum<?>> type();
+  /** 需要校验的枚举类型. */
+  Class<? extends Enum<?>> type();
 
-    /** 枚举类型校验值字段名称 需确保该字段实现了 getter 方法 */
-    String fieldName();
+  /** 枚举类型校验值字段名称 需确保该字段实现了 getter 方法. */
+  String fieldName();
 
-    String message() default "输入值不在枚举范围内";
+  /**
+   * Validation error message.
+   *
+   * @return the error message template
+   */
+  String message() default "输入值不在枚举范围内";
 
-    Class<?>[] groups() default {};
+  /**
+   * Validation groups for this constraint.
+   *
+   * @return the groups the constraint belongs to
+   */
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  /**
+   * Payload type that can be attached to this constraint.
+   *
+   * @return the payload types
+   */
+  Class<? extends Payload>[] payload() default {};
 
-    @Documented
-    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-    @Retention(RUNTIME)
-    @interface List {
-        EnumPattern[] value();
-    }
+  /** Container annotation for repeatable EnumPattern constraints. */
+  @Documented
+  @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+  @Retention(RUNTIME)
+  @interface List {
+    /**
+     * Array of EnumPattern constraints.
+     *
+     * @return the array of EnumPattern annotations
+     */
+    EnumPattern[] value();
+  }
 }

@@ -22,30 +22,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/encrypt")
 public class TestEncryptController {
 
-    @Autowired private TestDemoEncryptMapper mapper;
+  @Autowired private TestDemoEncryptMapper mapper;
 
-    @Value("${mybatis-encryptor.enable}")
-    private Boolean encryptEnable;
+  @Value("${mybatis-encryptor.enable}")
+  private Boolean encryptEnable;
 
-    /**
-     * 测试数据库加解密
-     *
-     * @param key 测试key
-     * @param value 测试value
-     */
-    @GetMapping()
-    public R<Map<String, TestDemoEncrypt>> test(String key, String value) {
-        if (!encryptEnable) {
-            throw new RuntimeException("加密功能未开启!");
-        }
-        Map<String, TestDemoEncrypt> map = new HashMap<>(2);
-        TestDemoEncrypt demo = new TestDemoEncrypt();
-        demo.setTestKey(key);
-        demo.setValue(value);
-        mapper.insert(demo);
-        map.put("加密", demo);
-        TestDemoEncrypt testDemo = mapper.selectById(demo.getId());
-        map.put("解密", testDemo);
-        return R.ok(map);
+  /**
+   * 测试数据库加解密
+   *
+   * @param key 测试key
+   * @param value 测试value
+   */
+  @GetMapping()
+  public R<Map<String, TestDemoEncrypt>> test(String key, String value) {
+    if (!encryptEnable) {
+      throw new RuntimeException("加密功能未开启!");
     }
+    Map<String, TestDemoEncrypt> map = new HashMap<>(2);
+    TestDemoEncrypt demo = new TestDemoEncrypt();
+    demo.setTestKey(key);
+    demo.setValue(value);
+    mapper.insert(demo);
+    map.put("加密", demo);
+    TestDemoEncrypt testDemo = mapper.selectById(demo.getId());
+    map.put("解密", testDemo);
+    return R.ok(map);
+  }
 }

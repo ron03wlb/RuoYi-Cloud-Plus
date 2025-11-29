@@ -14,17 +14,17 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class FlowVariableBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 流程实例id */
-    @NotNull(message = "流程实例id为空", groups = AddGroup.class)
-    private Long instanceId;
+  /** 流程实例id */
+  @NotNull(message = "流程实例id为空", groups = AddGroup.class)
+  private Long instanceId;
 
-    /** 流程变量key */
-    @NotNull(message = "流程变量key为空", groups = AddGroup.class)
-    private String key;
+  /** 流程变量key */
+  @NotNull(message = "流程变量key为空", groups = AddGroup.class)
+  private String key;
 
-    /** 流程变量value */
-    @NotNull(message = "流程变量value为空", groups = AddGroup.class)
-    private String value;
+  /** 流程变量value */
+  @NotNull(message = "流程变量value为空", groups = AddGroup.class)
+  private String value;
 }

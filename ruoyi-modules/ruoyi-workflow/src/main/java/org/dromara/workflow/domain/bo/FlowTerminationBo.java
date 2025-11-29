@@ -14,12 +14,12 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class FlowTerminationBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 任务id */
-    @NotNull(message = "任务id为空", groups = AddGroup.class)
-    private Long taskId;
+  /** 任务id */
+  @NotNull(message = "任务id为空", groups = AddGroup.class)
+  private Long taskId;
 
-    /** 审批意见 */
-    private String comment;
+  /** 审批意见 */
+  private String comment;
 }

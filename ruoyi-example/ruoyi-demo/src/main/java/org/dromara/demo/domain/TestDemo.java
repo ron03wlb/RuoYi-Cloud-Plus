@@ -17,31 +17,31 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 @TableName("test_demo")
 public class TestDemo extends BaseEntity {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键 */
-    @TableId(value = "id")
-    private Long id;
+  /** 主键 */
+  @TableId(value = "id")
+  private Long id;
 
-    /** 部门id */
-    private Long deptId;
+  /** 部门id */
+  private Long deptId;
 
-    /** 用户id */
-    private Long userId;
+  /** 用户id */
+  private Long userId;
 
-    /** 排序号 */
-    @OrderBy(asc = false, sort = 1)
-    private Integer orderNum;
+  /** 排序号 */
+  @OrderBy(asc = false, sort = 1)
+  private Integer orderNum;
 
-    /** key键 */
-    private String testKey;
+  /** key键 */
+  private String testKey;
 
-    /** 值 */
-    private String value;
+  /** 值 */
+  private String value;
 
-    /** 版本 */
-    @Version private Long version;
+  /** 版本 */
+  @Version private Long version;
 
-    /** 删除标志 */
-    @TableLogic private Long delFlag;
+  /** 删除标志 */
+  @TableLogic private Long delFlag;
 }

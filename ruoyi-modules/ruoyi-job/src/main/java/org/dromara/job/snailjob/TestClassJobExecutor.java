@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestClassJobExecutor extends AbstractJobExecutor {
 
-    @Override
-    protected ExecuteResult doJobExecute(JobArgs jobArgs) {
-        return ExecuteResult.success("TestJobExecutor测试成功");
-    }
+  @Override
+  protected ExecuteResult doJobExecute(JobArgs jobArgs) {
+    return ExecuteResult.success("TestJobExecutor测试成功");
+  }
 }

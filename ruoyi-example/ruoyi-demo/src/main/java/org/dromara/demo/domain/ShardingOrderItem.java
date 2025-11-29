@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class ShardingOrderItem {
 
-    private Long orderItemId;
+  private Long orderItemId;
 
-    private Long orderId;
+  private Long orderId;
 
-    private Long userId;
+  private Long userId;
 
-    private int totalMoney;
+  private int totalMoney;
 }

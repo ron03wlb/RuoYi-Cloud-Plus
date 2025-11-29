@@ -11,7 +11,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Filter配置
+ * Filter配置.
  *
  * @author Lion Li
  */
@@ -19,14 +19,14 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(XssProperties.class)
 public class FilterConfig {
 
-    @Bean
-    @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
-    @FilterRegistration(
-            name = "xssFilter",
-            urlPatterns = "/*",
-            order = FilterRegistrationBean.HIGHEST_PRECEDENCE + 1,
-            dispatcherTypes = DispatcherType.REQUEST)
-    public XssFilter xssFilter() {
-        return new XssFilter();
-    }
+  @Bean
+  @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
+  @FilterRegistration(
+      name = "xssFilter",
+      urlPatterns = "/*",
+      order = FilterRegistrationBean.HIGHEST_PRECEDENCE + 1,
+      dispatcherTypes = DispatcherType.REQUEST)
+  public XssFilter xssFilter() {
+    return new XssFilter();
+  }
 }

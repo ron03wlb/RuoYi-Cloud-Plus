@@ -6,15 +6,15 @@ import lombok.Data;
 @Data
 public class BillDto {
 
-    /** 账单ID */
-    private Long billId;
+  /** 账单ID */
+  private Long billId;
 
-    /** 账单渠道 */
-    private String billChannel;
+  /** 账单渠道 */
+  private String billChannel;
 
-    /** 账单日期 */
-    private String billDate;
+  /** 账单日期 */
+  private String billDate;
 
-    /** 账单金额 */
-    private BigDecimal billAmount;
+  /** 账单金额 */
+  private BigDecimal billAmount;
 }

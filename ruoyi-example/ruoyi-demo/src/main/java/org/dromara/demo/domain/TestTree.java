@@ -20,27 +20,27 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 @TableName("test_tree")
 public class TestTree extends BaseEntity {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键 */
-    @TableId(value = "id")
-    private Long id;
+  /** 主键 */
+  @TableId(value = "id")
+  private Long id;
 
-    /** 父ID */
-    private Long parentId;
+  /** 父ID */
+  private Long parentId;
 
-    /** 部门id */
-    private Long deptId;
+  /** 部门id */
+  private Long deptId;
 
-    /** 用户id */
-    private Long userId;
+  /** 用户id */
+  private Long userId;
 
-    /** 树节点名 */
-    private String treeName;
+  /** 树节点名 */
+  private String treeName;
 
-    /** 版本 */
-    @Version private Long version;
+  /** 版本 */
+  @Version private Long version;
 
-    /** 删除标志 */
-    @TableLogic private Long delFlag;
+  /** 删除标志 */
+  @TableLogic private Long delFlag;
 }

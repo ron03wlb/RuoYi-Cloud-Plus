@@ -16,16 +16,16 @@ import org.dromara.common.tenant.core.TenantEntity;
 @TableName("sys_dict_type")
 public class SysDictType extends TenantEntity {
 
-    /** 字典主键 */
-    @TableId(value = "dict_id")
-    private Long dictId;
+  /** 字典主键 */
+  @TableId(value = "dict_id")
+  private Long dictId;
 
-    /** 字典名称 */
-    private String dictName;
+  /** 字典名称 */
+  private String dictName;
 
-    /** 字典类型 */
-    private String dictType;
+  /** 字典类型 */
+  private String dictType;
 
-    /** 备注 */
-    private String remark;
+  /** 备注 */
+  private String remark;
 }

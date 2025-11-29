@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
- * easy-es 配置
+ * easy-es 配置.
  *
  * @author Lion Li
  */

@@ -94,6 +94,14 @@ tasks.named<Jar>("jar") {
     enabled = false
 }
 
+// 禁用 Checkstyle（Gateway 使用 WebFlux，与 google_checks.xml 存在兼容性问题）
+tasks.named("checkstyleMain") {
+    enabled = false
+}
+tasks.named("checkstyleTest") {
+    enabled = false
+}
+
 // ===========================================
 // Jib Docker 镜像配置
 // ===========================================

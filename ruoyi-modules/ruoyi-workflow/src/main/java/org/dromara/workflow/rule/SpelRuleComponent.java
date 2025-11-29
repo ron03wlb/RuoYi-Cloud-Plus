@@ -21,14 +21,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SpelRuleComponent {
 
-    private final RemoteDeptService deptService;
+  private final RemoteDeptService deptService;
 
-    /** 通过发起人部门id获取部门负责人 */
-    public Long selectDeptLeaderById(Long initiatorDeptId) {
-        Long leaderId = deptService.selectDeptLeaderById(initiatorDeptId);
-        if (ObjectUtil.isNull(leaderId)) {
-            throw new ServiceException("当前部门未设置负责人，请联系管理员操作。");
-        }
-        return leaderId;
+  /** 通过发起人部门id获取部门负责人 */
+  public Long selectDeptLeaderById(Long initiatorDeptId) {
+    Long leaderId = deptService.selectDeptLeaderById(initiatorDeptId);
+    if (ObjectUtil.isNull(leaderId)) {
+      throw new ServiceException("当前部门未设置负责人，请联系管理员操作。");
     }
+    return leaderId;
+  }
 }

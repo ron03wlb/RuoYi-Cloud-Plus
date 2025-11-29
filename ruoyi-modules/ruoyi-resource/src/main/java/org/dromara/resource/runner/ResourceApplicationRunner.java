@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResourceApplicationRunner implements ApplicationRunner {
 
-    private final ISysOssConfigService ossConfigService;
+  private final ISysOssConfigService ossConfigService;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        ossConfigService.init();
-        log.info("初始化OSS配置成功");
-    }
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    ossConfigService.init();
+    log.info("初始化OSS配置成功");
+  }
 }

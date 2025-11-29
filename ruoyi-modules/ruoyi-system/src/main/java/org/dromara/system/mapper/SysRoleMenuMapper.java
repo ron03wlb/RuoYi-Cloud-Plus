@@ -12,14 +12,13 @@ import org.dromara.system.domain.SysRoleMenu;
  */
 public interface SysRoleMenuMapper extends BaseMapperPlus<SysRoleMenu, SysRoleMenu> {
 
-    /**
-     * 根据菜单ID串删除关联关系
-     *
-     * @param menuIds 菜单ID串
-     * @return 结果
-     */
-    default int deleteByMenuIds(List<Long> menuIds) {
-        return this.delete(
-                new LambdaUpdateWrapper<SysRoleMenu>().in(SysRoleMenu::getMenuId, menuIds));
-    }
+  /**
+   * 根据菜单ID串删除关联关系
+   *
+   * @param menuIds 菜单ID串
+   * @return 结果
+   */
+  default int deleteByMenuIds(List<Long> menuIds) {
+    return this.delete(new LambdaUpdateWrapper<SysRoleMenu>().in(SysRoleMenu::getMenuId, menuIds));
+  }
 }

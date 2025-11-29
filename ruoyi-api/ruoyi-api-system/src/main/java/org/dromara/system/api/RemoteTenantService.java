@@ -4,24 +4,24 @@ import java.util.List;
 import org.dromara.system.api.domain.vo.RemoteTenantVo;
 
 /**
- * 租户服务
+ * 租户服务.
  *
  * @author zhujie
  */
 public interface RemoteTenantService {
 
-    /**
-     * 根据租户id获取租户详情
-     *
-     * @param tenantId 租户id
-     * @return 结果
-     */
-    RemoteTenantVo queryByTenantId(String tenantId);
+  /**
+   * 根据租户id获取租户详情.
+   *
+   * @param tenantId 租户id
+   * @return 结果
+   */
+  RemoteTenantVo queryByTenantId(String tenantId);
 
-    /**
-     * 获取租户列表
-     *
-     * @return 结果
-     */
-    List<RemoteTenantVo> queryList();
+  /**
+   * 获取租户列表.
+   *
+   * @return 结果
+   */
+  List<RemoteTenantVo> queryList();
 }

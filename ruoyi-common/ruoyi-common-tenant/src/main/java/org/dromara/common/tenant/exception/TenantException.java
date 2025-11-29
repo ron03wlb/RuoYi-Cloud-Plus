@@ -4,15 +4,15 @@ import java.io.Serial;
 import org.dromara.common.core.exception.base.BaseException;
 
 /**
- * 租户异常类
+ * 租户异常类.
  *
  * @author Lion Li
  */
 public class TenantException extends BaseException {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    public TenantException(String code, Object... args) {
-        super("tenant", code, args, null);
-    }
+  public TenantException(String code, Object... args) {
+    super("tenant", code, args, null);
+  }
 }

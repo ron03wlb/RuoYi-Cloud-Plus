@@ -21,40 +21,36 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 @Configuration
 public class WebSecurityConfigurer {
 
-    private final String adminContextPath;
+  private final String adminContextPath;
 
-    public WebSecurityConfigurer(AdminServerProperties adminServerProperties) {
-        this.adminContextPath = adminServerProperties.getContextPath();
-    }
+  public WebSecurityConfigurer(AdminServerProperties adminServerProperties) {
+    this.adminContextPath = adminServerProperties.getContextPath();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        SavedRequestAwareAuthenticationSuccessHandler successHandler =
-                new SavedRequestAwareAuthenticationSuccessHandler();
-        successHandler.setTargetUrlParameter("redirectTo");
-        successHandler.setDefaultTargetUrl(adminContextPath + "/");
-        PathPatternRequestMatcher.Builder mvc = PathPatternRequestMatcher.withDefaults();
-        return httpSecurity
-                .headers(
-                        (header) ->
-                                header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .authorizeHttpRequests(
-                        (authorize) ->
-                                authorize
-                                        .requestMatchers(
-                                                mvc.matcher(adminContextPath + "/assets/**"),
-                                                mvc.matcher(adminContextPath + "/login"))
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .formLogin(
-                        (formLogin) ->
-                                formLogin
-                                        .loginPage(adminContextPath + "/login")
-                                        .successHandler(successHandler))
-                .logout((logout) -> logout.logoutUrl(adminContextPath + "/logout"))
-                .httpBasic(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    SavedRequestAwareAuthenticationSuccessHandler successHandler =
+        new SavedRequestAwareAuthenticationSuccessHandler();
+    successHandler.setTargetUrlParameter("redirectTo");
+    successHandler.setDefaultTargetUrl(adminContextPath + "/");
+    PathPatternRequestMatcher.Builder mvc = PathPatternRequestMatcher.withDefaults();
+    return httpSecurity
+        .headers((header) -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .authorizeHttpRequests(
+            (authorize) ->
+                authorize
+                    .requestMatchers(
+                        mvc.matcher(adminContextPath + "/assets/**"),
+                        mvc.matcher(adminContextPath + "/login"))
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .formLogin(
+            (formLogin) ->
+                formLogin.loginPage(adminContextPath + "/login").successHandler(successHandler))
+        .logout((logout) -> logout.logoutUrl(adminContextPath + "/logout"))
+        .httpBasic(Customizer.withDefaults())
+        .csrf(AbstractHttpConfigurer::disable)
+        .build();
+  }
 }

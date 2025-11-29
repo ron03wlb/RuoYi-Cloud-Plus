@@ -8,7 +8,7 @@ import org.dromara.common.core.utils.SpringUtils;
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 
 /**
- * 流程任务监听
+ * 流程任务监听.
  *
  * @author may
  */
@@ -16,42 +16,48 @@ import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 @EqualsAndHashCode(callSuper = true)
 public class ProcessTaskEvent extends RemoteApplicationEvent {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 租户ID */
-    private String tenantId;
+  /** 租户ID. */
+  private String tenantId;
 
-    /** 流程定义编码 */
-    private String flowCode;
+  /** 流程定义编码. */
+  private String flowCode;
 
-    /** 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关） */
-    private Integer nodeType;
+  /** 节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）. */
+  private Integer nodeType;
 
-    /** 流程节点编码 */
-    private String nodeCode;
+  /** 流程节点编码. */
+  private String nodeCode;
 
-    /** 流程节点名称 */
-    private String nodeName;
+  /** 流程节点名称. */
+  private String nodeName;
 
-    /** 任务id */
-    private Long taskId;
+  /** 任务id. */
+  private Long taskId;
 
-    /** 实例id */
-    private Long instanceId;
+  /** 实例id. */
+  private Long instanceId;
 
-    /** 业务id */
-    private String businessId;
+  /** 业务id. */
+  private String businessId;
 
-    /** 流程状态 */
-    private String status;
+  /** 流程状态. */
+  private String status;
 
-    /** 办理参数 */
-    private Map<String, Object> params;
+  /** 办理参数. */
+  private Map<String, Object> params;
 
-    public ProcessTaskEvent() {
-        super(
-                new Object(),
-                SpringUtils.getApplicationName(),
-                DEFAULT_DESTINATION_FACTORY.getDestination(null));
-    }
+  /**
+   * Default constructor for ProcessTaskEvent.
+   *
+   * <p>Initializes the remote application event with default source, origin service name, and
+   * destination configuration for process task event broadcasting.
+   */
+  public ProcessTaskEvent() {
+    super(
+        new Object(),
+        SpringUtils.getApplicationName(),
+        DEFAULT_DESTINATION_FACTORY.getDestination(null));
+  }
 }

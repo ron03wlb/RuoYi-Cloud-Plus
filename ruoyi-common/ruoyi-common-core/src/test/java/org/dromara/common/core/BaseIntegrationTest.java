@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
- * 集成测试基类
+ * 集成测试基类.
  *
  * <p>用于测试需要 Spring 容器的类，如：
  *
@@ -30,5 +30,5 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
 public abstract class BaseIntegrationTest {
-    // 可在此添加通用的测试工具方法
+  // 可在此添加通用的测试工具方法
 }

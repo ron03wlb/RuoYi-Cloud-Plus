@@ -13,14 +13,14 @@ import lombok.Data;
 @Data
 public class UserInfoVo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 用户基本信息 */
-    private SysUserVo user;
+  /** 用户基本信息 */
+  private SysUserVo user;
 
-    /** 菜单权限 */
-    private Set<String> permissions;
+  /** 菜单权限 */
+  private Set<String> permissions;
 
-    /** 角色权限 */
-    private Set<String> roles;
+  /** 角色权限 */
+  private Set<String> roles;
 }

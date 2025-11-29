@@ -14,17 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class DelayRabbitProducer {
 
-    @Autowired private RabbitTemplate rabbitTemplate;
+  @Autowired private RabbitTemplate rabbitTemplate;
 
-    public void sendDelayMessage(String message, long delay) {
-        rabbitTemplate.convertAndSend(
-                RabbitTtlQueueConfig.DELAY_EXCHANGE_NAME,
-                RabbitTtlQueueConfig.DELAY_ROUTING_KEY,
-                message,
-                message1 -> {
-                    message1.getMessageProperties().setDelayLong(delay);
-                    return message1;
-                });
-        log.info("【生产者】Delayed message send: " + message);
-    }
+  public void sendDelayMessage(String message, long delay) {
+    rabbitTemplate.convertAndSend(
+        RabbitTtlQueueConfig.DELAY_EXCHANGE_NAME,
+        RabbitTtlQueueConfig.DELAY_ROUTING_KEY,
+        message,
+        message1 -> {
+          message1.getMessageProperties().setDelayLong(delay);
+          return message1;
+        });
+    log.info("【生产者】Delayed message send: " + message);
+  }
 }

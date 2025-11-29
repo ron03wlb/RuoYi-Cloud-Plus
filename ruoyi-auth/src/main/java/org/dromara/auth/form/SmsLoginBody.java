@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.common.core.domain.model.LoginBody;
 
 /**
- * 短信登录对象
+ * SMS login request body.
  *
  * @author Lion Li
  */
@@ -14,11 +14,11 @@ import org.dromara.common.core.domain.model.LoginBody;
 @EqualsAndHashCode(callSuper = true)
 public class SmsLoginBody extends LoginBody {
 
-    /** 手机号 */
-    @NotBlank(message = "{user.phonenumber.not.blank}")
-    private String phonenumber;
+  /** 手机号. */
+  @NotBlank(message = "{user.phonenumber.not.blank}")
+  private String phonenumber;
 
-    /** 短信code */
-    @NotBlank(message = "{sms.code.not.blank}")
-    private String smsCode;
+  /** 短信code. */
+  @NotBlank(message = "{sms.code.not.blank}")
+  private String smsCode;
 }

@@ -14,12 +14,12 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class FlowCancelBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 任务ID */
-    @NotBlank(message = "业务ID不能为空", groups = AddGroup.class)
-    private String businessId;
+  /** 任务ID */
+  @NotBlank(message = "业务ID不能为空", groups = AddGroup.class)
+  private String businessId;
 
-    /** 办理意见 */
-    private String message;
+  /** 办理意见 */
+  private String message;
 }

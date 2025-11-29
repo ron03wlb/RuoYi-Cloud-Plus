@@ -10,4 +10,4 @@ import org.dromara.system.domain.vo.SysTenantPackageVo;
  * @author Michelle.Chung
  */
 public interface SysTenantPackageMapper
-        extends BaseMapperPlus<SysTenantPackage, SysTenantPackageVo> {}
+    extends BaseMapperPlus<SysTenantPackage, SysTenantPackageVo> {}

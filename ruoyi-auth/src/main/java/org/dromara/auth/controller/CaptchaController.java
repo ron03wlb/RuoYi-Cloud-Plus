@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 验证码操作处理
+ * Captcha controller for generating and validating verification codes.
  *
  * @author Lion Li
  */
@@ -36,53 +36,60 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CaptchaController {
 
-    private final CaptchaProperties captchaProperties;
+  private final CaptchaProperties captchaProperties;
 
-    /** 生成验证码 */
-    @GetMapping("/code")
-    public R<CaptchaVo> getCode() {
-        CaptchaVo captchaVo = new CaptchaVo();
-        boolean captchaEnabled = captchaProperties.getEnabled();
-        if (!captchaEnabled) {
-            captchaVo.setCaptchaEnabled(false);
-            return R.ok(captchaVo);
-        }
-        return R.ok(SpringUtils.getAopProxy(this).getCodeImpl());
+  /**
+   * Generates a new captcha image and stores the verification code in Redis.
+   *
+   * @return response containing captcha image and UUID
+   */
+  @GetMapping("/code")
+  public R<CaptchaVo> getCode() {
+    CaptchaVo captchaVo = new CaptchaVo();
+    boolean captchaEnabled = captchaProperties.getEnabled();
+    if (!captchaEnabled) {
+      captchaVo.setCaptchaEnabled(false);
+      return R.ok(captchaVo);
     }
+    return R.ok(SpringUtils.getAopProxy(this).getCodeImpl());
+  }
 
-    /** 生成验证码 独立方法避免验证码关闭之后仍然走限流 */
-    @RateLimiter(time = 60, count = 10, limitType = LimitType.IP)
-    public CaptchaVo getCodeImpl() {
-        // 保存验证码信息
-        String uuid = IdUtil.simpleUUID();
-        String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
-        // 生成验证码
-        CaptchaType captchaType = captchaProperties.getType();
-        CodeGenerator codeGenerator;
-        if (CaptchaType.MATH == captchaType) {
-            codeGenerator =
-                    ReflectUtils.newInstance(
-                            captchaType.getClazz(), captchaProperties.getNumberLength(), false);
-        } else {
-            codeGenerator =
-                    ReflectUtils.newInstance(
-                            captchaType.getClazz(), captchaProperties.getCharLength());
-        }
-        AbstractCaptcha captcha = SpringUtils.getBean(captchaProperties.getCategory().getClazz());
-        captcha.setGenerator(codeGenerator);
-        captcha.createCode();
-        // 如果是数学验证码，使用SpEL表达式处理验证码结果
-        String code = captcha.getCode();
-        if (CaptchaType.MATH == captchaType) {
-            ExpressionParser parser = new SpelExpressionParser();
-            Expression exp = parser.parseExpression(StringUtils.remove(code, "="));
-            code = exp.getValue(String.class);
-        }
-        RedisUtils.setCacheObject(
-                verifyKey, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        CaptchaVo captchaVo = new CaptchaVo();
-        captchaVo.setUuid(uuid);
-        captchaVo.setImg(captcha.getImageBase64());
-        return captchaVo;
+  /**
+   * Generates captcha implementation with rate limiting to prevent abuse. This method is separated
+   * to avoid rate limiting when captcha is disabled.
+   *
+   * @return CaptchaVo containing the generated captcha image and UUID
+   */
+  @RateLimiter(time = 60, count = 10, limitType = LimitType.IP)
+  public CaptchaVo getCodeImpl() {
+    // 保存验证码信息
+    String uuid = IdUtil.simpleUUID();
+    String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
+    // 生成验证码
+    CaptchaType captchaType = captchaProperties.getType();
+    CodeGenerator codeGenerator;
+    if (CaptchaType.MATH == captchaType) {
+      codeGenerator =
+          ReflectUtils.newInstance(
+              captchaType.getClazz(), captchaProperties.getNumberLength(), false);
+    } else {
+      codeGenerator =
+          ReflectUtils.newInstance(captchaType.getClazz(), captchaProperties.getCharLength());
     }
+    AbstractCaptcha captcha = SpringUtils.getBean(captchaProperties.getCategory().getClazz());
+    captcha.setGenerator(codeGenerator);
+    captcha.createCode();
+    // 如果是数学验证码，使用SpEL表达式处理验证码结果
+    String code = captcha.getCode();
+    if (CaptchaType.MATH == captchaType) {
+      ExpressionParser parser = new SpelExpressionParser();
+      Expression exp = parser.parseExpression(StringUtils.remove(code, "="));
+      code = exp.getValue(String.class);
+    }
+    RedisUtils.setCacheObject(verifyKey, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+    CaptchaVo captchaVo = new CaptchaVo();
+    captchaVo.setUuid(uuid);
+    captchaVo.setImg(captcha.getImageBase64());
+    return captchaVo;
+  }
 }

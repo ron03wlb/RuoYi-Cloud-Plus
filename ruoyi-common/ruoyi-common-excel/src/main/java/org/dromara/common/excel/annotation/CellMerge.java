@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 import org.dromara.common.excel.core.CellMergeStrategy;
 
 /**
- * excel 列单元格合并(合并列相同项)
+ * excel 列单元格合并(合并列相同项).
  *
  * <p>需搭配 {@link CellMergeStrategy} 策略使用
  *
@@ -15,9 +15,9 @@ import org.dromara.common.excel.core.CellMergeStrategy;
 @Inherited
 public @interface CellMerge {
 
-    /** col index */
-    int index() default -1;
+  /** col index. */
+  int index() default -1;
 
-    /** 合并需要依赖的其他字段名称 */
-    String[] mergeBy() default {};
+  /** 合并需要依赖的其他字段名称. */
+  String[] mergeBy() default {};
 }

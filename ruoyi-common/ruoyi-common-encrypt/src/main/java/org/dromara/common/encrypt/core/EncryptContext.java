@@ -5,7 +5,10 @@ import org.dromara.common.encrypt.enumd.AlgorithmType;
 import org.dromara.common.encrypt.enumd.EncodeType;
 
 /**
- * 加密上下文 用于encryptor传递必要的参数。
+ * Encryption context for passing necessary parameters to encryptors.
+ *
+ * <p>This class encapsulates all configuration parameters required for encryption and decryption
+ * operations, including algorithm selection, keys, and encoding preferences.
  *
  * @author 老马
  * @version 4.6.0
@@ -13,18 +16,18 @@ import org.dromara.common.encrypt.enumd.EncodeType;
 @Data
 public class EncryptContext {
 
-    /** 默认算法 */
-    private AlgorithmType algorithm;
+  /** The encryption algorithm to use. */
+  private AlgorithmType algorithm;
 
-    /** 安全秘钥 */
-    private String password;
+  /** The secret key for symmetric encryption algorithms (AES, SM4). */
+  private String password;
 
-    /** 公钥 */
-    private String publicKey;
+  /** The public key for asymmetric encryption algorithms (RSA, SM2). */
+  private String publicKey;
 
-    /** 私钥 */
-    private String privateKey;
+  /** The private key for asymmetric encryption algorithms (RSA, SM2). */
+  private String privateKey;
 
-    /** 编码方式，base64/hex */
-    private EncodeType encode;
+  /** The encoding format for encrypted output (BASE64 or HEX). */
+  private EncodeType encode;
 }

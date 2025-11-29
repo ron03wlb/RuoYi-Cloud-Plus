@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/bus")
 public class TestBusController {
 
-    //    @EventListener(condition = "#processEvent.key.startsWith('leave')")
-    //    public void processHandler(ProcessEvent processEvent) {
-    //        log.info(processEvent.toString());
-    //    }
-    //
-    //    @EventListener(condition = "#processTaskEvent.key=='leave1' &&
-    // #processTaskEvent.taskDefinitionKey=='Activity_14633hx'")
-    //    public void processTaskHandler(ProcessTaskEvent processTaskEvent) {
-    //        log.info(processTaskEvent.toString());
-    //    }
+  //    @EventListener(condition = "#processEvent.key.startsWith('leave')")
+  //    public void processHandler(ProcessEvent processEvent) {
+  //        log.info(processEvent.toString());
+  //    }
+  //
+  //    @EventListener(condition = "#processTaskEvent.key=='leave1' &&
+  // #processTaskEvent.taskDefinitionKey=='Activity_14633hx'")
+  //    public void processTaskHandler(ProcessTaskEvent processTaskEvent) {
+  //        log.info(processTaskEvent.toString());
+  //    }
 
 }

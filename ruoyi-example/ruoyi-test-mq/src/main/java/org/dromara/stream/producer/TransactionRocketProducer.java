@@ -20,22 +20,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionRocketProducer {
 
-    @Autowired private RocketMQTemplate rocketMQTemplate;
+  @Autowired private RocketMQTemplate rocketMQTemplate;
 
-    public void sendTransactionMessage() {
-        List<String> tags = Arrays.asList("TAG-1", "TAG-2", "TAG-3");
-        for (int i = 0; i < 3; i++) {
-            Message<String> message = MessageBuilder.withPayload("===>事务消息-" + i).build();
-            // destination formats: `topicName:tags` message – message Message arg – ext arg
-            TransactionSendResult res =
-                    rocketMQTemplate.sendMessageInTransaction(
-                            "transaction-topic:" + tags.get(i), message, i + 1);
-            if (res.getLocalTransactionState().equals(LocalTransactionState.COMMIT_MESSAGE)
-                    && res.getSendStatus().equals(SendStatus.SEND_OK)) {
-                log.info("【生产者】事物消息发送成功；成功结果：{}", res);
-            } else {
-                log.info("【生产者】事务发送失败：失败原因：{}", res);
-            }
-        }
+  public void sendTransactionMessage() {
+    List<String> tags = Arrays.asList("TAG-1", "TAG-2", "TAG-3");
+    for (int i = 0; i < 3; i++) {
+      Message<String> message = MessageBuilder.withPayload("===>事务消息-" + i).build();
+      // destination formats: `topicName:tags` message – message Message arg – ext arg
+      TransactionSendResult res =
+          rocketMQTemplate.sendMessageInTransaction(
+              "transaction-topic:" + tags.get(i), message, i + 1);
+      if (res.getLocalTransactionState().equals(LocalTransactionState.COMMIT_MESSAGE)
+          && res.getSendStatus().equals(SendStatus.SEND_OK)) {
+        log.info("【生产者】事物消息发送成功；成功结果：{}", res);
+      } else {
+        log.info("【生产者】事务发送失败：失败原因：{}", res);
+      }
     }
+  }
 }

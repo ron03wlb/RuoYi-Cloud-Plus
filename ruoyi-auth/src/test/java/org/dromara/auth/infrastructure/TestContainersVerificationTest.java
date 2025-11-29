@@ -22,34 +22,34 @@ import org.springframework.data.redis.core.RedisTemplate;
 @DisplayName("Testcontainers 基礎設施驗證測試")
 class TestContainersVerificationTest extends BaseIntegrationTestWithContainers {
 
-    @Autowired private ApplicationContext applicationContext;
+  @Autowired private ApplicationContext applicationContext;
 
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+  @Autowired(required = false)
+  private RedisTemplate<String, Object> redisTemplate;
 
-    @Test
-    @DisplayName("ApplicationContext 應該成功加載")
-    void shouldLoadApplicationContext() {
-        assertThat(applicationContext).isNotNull();
+  @Test
+  @DisplayName("ApplicationContext 應該成功加載")
+  void shouldLoadApplicationContext() {
+    assertThat(applicationContext).isNotNull();
+  }
+
+  @Test
+  @DisplayName("Redis 連接應該可用")
+  void shouldConnectToRedis() {
+    if (redisTemplate != null) {
+      // 嘗試 ping Redis
+      String pong = redisTemplate.getConnectionFactory().getConnection().ping();
+
+      assertThat(pong).isEqualTo("PONG");
+    } else {
+      // 如果 RedisTemplate 不可用，至少確認 ApplicationContext 已加載
+      assertThat(applicationContext).isNotNull();
     }
+  }
 
-    @Test
-    @DisplayName("Redis 連接應該可用")
-    void shouldConnectToRedis() {
-        if (redisTemplate != null) {
-            // 嘗試 ping Redis
-            String pong = redisTemplate.getConnectionFactory().getConnection().ping();
-
-            assertThat(pong).isEqualTo("PONG");
-        } else {
-            // 如果 RedisTemplate 不可用，至少確認 ApplicationContext 已加載
-            assertThat(applicationContext).isNotNull();
-        }
-    }
-
-    @Test
-    @DisplayName("MockMvc 應該可用")
-    void shouldHaveMockMvc() {
-        assertThat(mockMvc).isNotNull();
-    }
+  @Test
+  @DisplayName("MockMvc 應該可用")
+  void shouldHaveMockMvc() {
+    assertThat(mockMvc).isNotNull();
+  }
 }

@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * SSE 自动装配
+ * SSE 自动装配.
  *
  * @author Lion Li
  */
@@ -18,18 +18,18 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(SseProperties.class)
 public class SseAutoConfiguration {
 
-    @Bean
-    public SseEmitterManager sseEmitterManager() {
-        return new SseEmitterManager();
-    }
+  @Bean
+  public SseEmitterManager sseEmitterManager() {
+    return new SseEmitterManager();
+  }
 
-    @Bean
-    public SseTopicListener sseTopicListener() {
-        return new SseTopicListener();
-    }
+  @Bean
+  public SseTopicListener sseTopicListener() {
+    return new SseTopicListener();
+  }
 
-    @Bean
-    public SseController sseController(SseEmitterManager sseEmitterManager) {
-        return new SseController(sseEmitterManager);
-    }
+  @Bean
+  public SseController sseController(SseEmitterManager sseEmitterManager) {
+    return new SseController(sseEmitterManager);
+  }
 }

@@ -13,10 +13,10 @@ import org.dromara.system.domain.vo.SysDictDataVo;
  */
 public interface SysDictDataMapper extends BaseMapperPlus<SysDictData, SysDictDataVo> {
 
-    default List<SysDictDataVo> selectDictDataByType(String dictType) {
-        return selectVoList(
-                new LambdaQueryWrapper<SysDictData>()
-                        .eq(SysDictData::getDictType, dictType)
-                        .orderByAsc(SysDictData::getDictSort));
-    }
+  default List<SysDictDataVo> selectDictDataByType(String dictType) {
+    return selectVoList(
+        new LambdaQueryWrapper<SysDictData>()
+            .eq(SysDictData::getDictType, dictType)
+            .orderByAsc(SysDictData::getDictSort));
+  }
 }

@@ -12,8 +12,8 @@ import org.springframework.data.redis.connection.RedisConfiguration;
 @AutoConfiguration(after = RedisConfiguration.class)
 public class RateLimiterConfig {
 
-    @Bean
-    public RateLimiterAspect rateLimiterAspect() {
-        return new RateLimiterAspect();
-    }
+  @Bean
+  public RateLimiterAspect rateLimiterAspect() {
+    return new RateLimiterAspect();
+  }
 }

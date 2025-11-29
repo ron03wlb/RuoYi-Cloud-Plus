@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
- * 自定义配置
+ * 自定义配置.
  *
  * @author Lion Li
  */
@@ -15,9 +15,18 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ConfigurationProperties(prefix = "dubbo.custom")
 public class DubboCustomProperties {
 
-    /** 是否开启请求日志记录 */
-    private Boolean requestLog;
+  /** 是否开启请求日志记录. */
+  private Boolean requestLog;
 
-    /** 日志级别 */
-    private RequestLogEnum logLevel;
+  /** 日志级别. */
+  private RequestLogEnum logLevel;
+
+  // 手动添加 getter 方法（Lombok @Data 未生效时的临时解决方案）
+  public Boolean getRequestLog() {
+    return requestLog;
+  }
+
+  public RequestLogEnum getLogLevel() {
+    return logLevel;
+  }
 }

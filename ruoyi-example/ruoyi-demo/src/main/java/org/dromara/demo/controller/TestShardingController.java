@@ -16,27 +16,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sharding")
 public class TestShardingController {
 
-    private final ShardingOrderMapper torderMapper;
+  private final ShardingOrderMapper torderMapper;
 
-    @GetMapping("/page")
-    public R<Page<ShardingOrder>> page() {
-        Page<ShardingOrder> page = new Page<>();
-        page.setCurrent(3L);
-        LambdaQueryWrapper<ShardingOrder> lqw = new LambdaQueryWrapper<>();
-        lqw.orderByAsc(ShardingOrder::getOrderId);
-        torderMapper.selectPage(page, lqw);
-        return R.ok(page);
+  @GetMapping("/page")
+  public R<Page<ShardingOrder>> page() {
+    Page<ShardingOrder> page = new Page<>();
+    page.setCurrent(3L);
+    LambdaQueryWrapper<ShardingOrder> lqw = new LambdaQueryWrapper<>();
+    lqw.orderByAsc(ShardingOrder::getOrderId);
+    torderMapper.selectPage(page, lqw);
+    return R.ok(page);
+  }
+
+  @GetMapping("/insert")
+  public R<Void> insert() {
+    for (Long i = 1L; i <= 100L; i++) {
+      ShardingOrder torder = new ShardingOrder();
+      torder.setUserId(i);
+      torder.setTotalMoney(100 + Integer.parseInt(i + ""));
+      torderMapper.insert(torder);
     }
 
-    @GetMapping("/insert")
-    public R<Void> insert() {
-        for (Long i = 1L; i <= 100L; i++) {
-            ShardingOrder torder = new ShardingOrder();
-            torder.setUserId(i);
-            torder.setTotalMoney(100 + Integer.parseInt(i + ""));
-            torderMapper.insert(torder);
-        }
-
-        return R.ok("分库分表数据批量插入成功！");
-    }
+    return R.ok("分库分表数据批量插入成功！");
+  }
 }

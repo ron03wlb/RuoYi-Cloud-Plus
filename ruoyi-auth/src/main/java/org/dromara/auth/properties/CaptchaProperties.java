@@ -8,7 +8,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 验证码配置
+ * Captcha configuration properties for verification code generation and validation.
  *
  * @author ruoyi
  */
@@ -18,18 +18,18 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "security.captcha")
 public class CaptchaProperties {
 
-    /** 验证码类型 */
-    private CaptchaType type;
+  /** 验证码类型 */
+  private CaptchaType type;
 
-    /** 验证码类别 */
-    private CaptchaCategory category;
+  /** 验证码类别 */
+  private CaptchaCategory category;
 
-    /** 数字验证码位数 */
-    private Integer numberLength;
+  /** 数字验证码位数 */
+  private Integer numberLength;
 
-    /** 字符验证码长度 */
-    private Integer charLength;
+  /** 字符验证码长度 */
+  private Integer charLength;
 
-    /** 验证码开关 */
-    private Boolean enabled;
+  /** 验证码开关 */
+  private Boolean enabled;
 }

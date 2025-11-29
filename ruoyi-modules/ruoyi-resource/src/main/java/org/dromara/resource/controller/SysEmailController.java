@@ -32,36 +32,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/email")
 public class SysEmailController extends BaseController {
 
-    private final MailProperties mailProperties;
+  private final MailProperties mailProperties;
 
-    /**
-     * 邮箱验证码
-     *
-     * @param email 邮箱
-     */
-    @GetMapping("/code")
-    public R<Void> emailCode(@NotBlank(message = "{user.email.not.blank}") String email) {
-        if (!mailProperties.getEnabled()) {
-            return R.fail("当前系统没有开启邮箱功能！");
-        }
-        SpringUtils.getAopProxy(this).emailCodeImpl(email);
-        return R.ok();
+  /**
+   * 邮箱验证码
+   *
+   * @param email 邮箱
+   */
+  @GetMapping("/code")
+  public R<Void> emailCode(@NotBlank(message = "{user.email.not.blank}") String email) {
+    if (!mailProperties.getEnabled()) {
+      return R.fail("当前系统没有开启邮箱功能！");
     }
+    SpringUtils.getAopProxy(this).emailCodeImpl(email);
+    return R.ok();
+  }
 
-    /** 邮箱验证码 独立方法避免验证码关闭之后仍然走限流 */
-    @RateLimiter(key = "#email", time = 60, count = 1)
-    public void emailCodeImpl(String email) {
-        String key = GlobalConstants.CAPTCHA_CODE_KEY + email;
-        String code = RandomUtil.randomNumbers(4);
-        RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        try {
-            MailUtils.sendText(
-                    email,
-                    "登录验证码",
-                    "您本次验证码为：" + code + "，有效性为" + Constants.CAPTCHA_EXPIRATION + "分钟，请尽快填写。");
-        } catch (Exception e) {
-            log.error("验证码短信发送异常 => {}", e.getMessage());
-            throw new ServiceException(e.getMessage());
-        }
+  /** 邮箱验证码 独立方法避免验证码关闭之后仍然走限流 */
+  @RateLimiter(key = "#email", time = 60, count = 1)
+  public void emailCodeImpl(String email) {
+    String key = GlobalConstants.CAPTCHA_CODE_KEY + email;
+    String code = RandomUtil.randomNumbers(4);
+    RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+    try {
+      MailUtils.sendText(
+          email, "登录验证码", "您本次验证码为：" + code + "，有效性为" + Constants.CAPTCHA_EXPIRATION + "分钟，请尽快填写。");
+    } catch (Exception e) {
+      log.error("验证码短信发送异常 => {}", e.getMessage());
+      throw new ServiceException(e.getMessage());
     }
+  }
 }

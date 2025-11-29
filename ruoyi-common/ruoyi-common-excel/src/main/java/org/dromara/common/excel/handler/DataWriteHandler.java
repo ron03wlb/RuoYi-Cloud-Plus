@@ -21,105 +21,111 @@ import org.dromara.common.excel.annotation.ExcelNotation;
 import org.dromara.common.excel.annotation.ExcelRequired;
 
 /**
- * 批注、必填
+ * Excel data write handler for processing cell annotations and required field styling.
  *
  * @author guzhouyanyu
  */
 public class DataWriteHandler implements SheetWriteHandler, CellWriteHandler {
 
-    /** 批注 */
-    private final Map<String, String> notationMap;
+  /** Map of field names to annotation content. */
+  private final Map<String, String> notationMap;
 
-    /** 头列字体颜色 */
-    private final Map<String, Short> headColumnMap;
+  /** Map of header column names to font colors for required fields. */
+  private final Map<String, Short> headColumnMap;
 
-    public DataWriteHandler(Class<?> clazz) {
-        notationMap = getNotationMap(clazz);
-        headColumnMap = getRequiredMap(clazz);
+  /**
+   * Constructs a DataWriteHandler with the specified class.
+   *
+   * @param clazz the class containing Excel annotations
+   */
+  public DataWriteHandler(Class<?> clazz) {
+    notationMap = getNotationMap(clazz);
+    headColumnMap = getRequiredMap(clazz);
+  }
+
+  @Override
+  public void afterCellDispose(CellWriteHandlerContext context) {
+    if (CollUtil.isEmpty(notationMap) && CollUtil.isEmpty(headColumnMap)) {
+      return;
     }
+    // 第一行
+    WriteCellData<?> cellData = context.getFirstCellData();
+    // 第一个格子
+    WriteCellStyle writeCellStyle = cellData.getOrCreateStyle();
 
-    @Override
-    public void afterCellDispose(CellWriteHandlerContext context) {
-        if (CollUtil.isEmpty(notationMap) && CollUtil.isEmpty(headColumnMap)) {
-            return;
-        }
-        // 第一行
-        WriteCellData<?> cellData = context.getFirstCellData();
-        // 第一个格子
-        WriteCellStyle writeCellStyle = cellData.getOrCreateStyle();
+    if (context.getHead()) {
+      DataFormatData dataFormatData = new DataFormatData();
+      // 单元格设置为文本格式
+      dataFormatData.setIndex((short) 49);
+      writeCellStyle.setDataFormatData(dataFormatData);
+      Cell cell = context.getCell();
+      WriteSheetHolder writeSheetHolder = context.getWriteSheetHolder();
+      Sheet sheet = writeSheetHolder.getSheet();
+      Workbook workbook = writeSheetHolder.getSheet().getWorkbook();
+      Drawing<?> drawing = sheet.createDrawingPatriarch();
+      // 设置标题字体样式
+      WriteFont headWriteFont = new WriteFont();
+      // 加粗
+      headWriteFont.setBold(true);
+      if (CollUtil.isNotEmpty(headColumnMap)
+          && headColumnMap.containsKey(cell.getStringCellValue())) {
+        // 设置字体颜色
+        headWriteFont.setColor(headColumnMap.get(cell.getStringCellValue()));
+      }
+      writeCellStyle.setWriteFont(headWriteFont);
+      CellStyle cellStyle = StyleUtil.buildCellStyle(workbook, null, writeCellStyle);
+      cell.setCellStyle(cellStyle);
 
-        if (context.getHead()) {
-            DataFormatData dataFormatData = new DataFormatData();
-            // 单元格设置为文本格式
-            dataFormatData.setIndex((short) 49);
-            writeCellStyle.setDataFormatData(dataFormatData);
-            Cell cell = context.getCell();
-            WriteSheetHolder writeSheetHolder = context.getWriteSheetHolder();
-            Sheet sheet = writeSheetHolder.getSheet();
-            Workbook workbook = writeSheetHolder.getSheet().getWorkbook();
-            Drawing<?> drawing = sheet.createDrawingPatriarch();
-            // 设置标题字体样式
-            WriteFont headWriteFont = new WriteFont();
-            // 加粗
-            headWriteFont.setBold(true);
-            if (CollUtil.isNotEmpty(headColumnMap)
-                    && headColumnMap.containsKey(cell.getStringCellValue())) {
-                // 设置字体颜色
-                headWriteFont.setColor(headColumnMap.get(cell.getStringCellValue()));
-            }
-            writeCellStyle.setWriteFont(headWriteFont);
-            CellStyle cellStyle = StyleUtil.buildCellStyle(workbook, null, writeCellStyle);
-            cell.setCellStyle(cellStyle);
-
-            if (CollUtil.isNotEmpty(notationMap)
-                    && notationMap.containsKey(cell.getStringCellValue())) {
-                // 批注内容
-                String notationContext = notationMap.get(cell.getStringCellValue());
-                // 创建绘图对象
-                Comment comment =
-                        drawing.createCellComment(
-                                new XSSFClientAnchor(
-                                        0,
-                                        0,
-                                        0,
-                                        0,
-                                        (short) cell.getColumnIndex(),
-                                        0,
-                                        (short) 5,
-                                        5));
-                comment.setString(new XSSFRichTextString(notationContext));
-                cell.setCellComment(comment);
-            }
-        }
+      if (CollUtil.isNotEmpty(notationMap) && notationMap.containsKey(cell.getStringCellValue())) {
+        // 批注内容
+        String notationContext = notationMap.get(cell.getStringCellValue());
+        // 创建绘图对象
+        Comment comment =
+            drawing.createCellComment(
+                new XSSFClientAnchor(0, 0, 0, 0, (short) cell.getColumnIndex(), 0, (short) 5, 5));
+        comment.setString(new XSSFRichTextString(notationContext));
+        cell.setCellComment(comment);
+      }
     }
+  }
 
-    /** 获取必填列 */
-    private static Map<String, Short> getRequiredMap(Class<?> clazz) {
-        Map<String, Short> requiredMap = new HashMap<>();
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (!field.isAnnotationPresent(ExcelRequired.class)) {
-                continue;
-            }
-            ExcelRequired excelRequired = field.getAnnotation(ExcelRequired.class);
-            ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            requiredMap.put(excelProperty.value()[0], excelRequired.fontColor().getIndex());
-        }
-        return requiredMap;
+  /**
+   * Retrieves the map of required fields with their font colors.
+   *
+   * @param clazz the class to extract required field information from
+   * @return map of header column names to font color indices
+   */
+  private static Map<String, Short> getRequiredMap(Class<?> clazz) {
+    Map<String, Short> requiredMap = new HashMap<>();
+    Field[] fields = clazz.getDeclaredFields();
+    for (Field field : fields) {
+      if (!field.isAnnotationPresent(ExcelRequired.class)) {
+        continue;
+      }
+      ExcelRequired excelRequired = field.getAnnotation(ExcelRequired.class);
+      ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+      requiredMap.put(excelProperty.value()[0], excelRequired.fontColor().getIndex());
     }
+    return requiredMap;
+  }
 
-    /** 获取批注 */
-    private static Map<String, String> getNotationMap(Class<?> clazz) {
-        Map<String, String> notationMap = new HashMap<>();
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (!field.isAnnotationPresent(ExcelNotation.class)) {
-                continue;
-            }
-            ExcelNotation excelNotation = field.getAnnotation(ExcelNotation.class);
-            ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            notationMap.put(excelProperty.value()[0], excelNotation.value());
-        }
-        return notationMap;
+  /**
+   * Retrieves the map of field annotations (comments).
+   *
+   * @param clazz the class to extract annotation information from
+   * @return map of header column names to annotation content
+   */
+  private static Map<String, String> getNotationMap(Class<?> clazz) {
+    Map<String, String> notationMap = new HashMap<>();
+    Field[] fields = clazz.getDeclaredFields();
+    for (Field field : fields) {
+      if (!field.isAnnotationPresent(ExcelNotation.class)) {
+        continue;
+      }
+      ExcelNotation excelNotation = field.getAnnotation(ExcelNotation.class);
+      ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+      notationMap.put(excelProperty.value()[0], excelNotation.value());
     }
+    return notationMap;
+  }
 }

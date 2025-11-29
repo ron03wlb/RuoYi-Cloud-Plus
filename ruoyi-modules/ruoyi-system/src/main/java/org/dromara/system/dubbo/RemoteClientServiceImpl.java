@@ -19,12 +19,12 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemoteClientServiceImpl implements RemoteClientService {
 
-    private final ISysClientService sysClientService;
+  private final ISysClientService sysClientService;
 
-    /** 根据客户端id获取客户端详情 */
-    @Override
-    public RemoteClientVo queryByClientId(String clientId) {
-        SysClientVo vo = sysClientService.queryByClientId(clientId);
-        return MapstructUtils.convert(vo, RemoteClientVo.class);
-    }
+  /** 根据客户端id获取客户端详情 */
+  @Override
+  public RemoteClientVo queryByClientId(String clientId) {
+    SysClientVo vo = sysClientService.queryByClientId(clientId);
+    return MapstructUtils.convert(vo, RemoteClientVo.class);
+  }
 }

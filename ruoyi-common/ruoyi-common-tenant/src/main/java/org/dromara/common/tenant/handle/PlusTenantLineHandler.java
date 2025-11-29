@@ -13,7 +13,7 @@ import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.tenant.properties.TenantProperties;
 
 /**
- * 自定义租户处理器
+ * 自定义租户处理器.
  *
  * @author Lion Li
  */
@@ -21,31 +21,31 @@ import org.dromara.common.tenant.properties.TenantProperties;
 @AllArgsConstructor
 public class PlusTenantLineHandler implements TenantLineHandler {
 
-    private final TenantProperties tenantProperties;
+  private final TenantProperties tenantProperties;
 
-    @Override
-    public Expression getTenantId() {
-        String tenantId = TenantHelper.getTenantId();
-        if (StringUtils.isBlank(tenantId)) {
-            log.error("无法获取有效的租户id -> Null");
-            return new NullValue();
-        }
-        // 返回固定租户
-        return new StringValue(tenantId);
+  @Override
+  public Expression getTenantId() {
+    String tenantId = TenantHelper.getTenantId();
+    if (StringUtils.isBlank(tenantId)) {
+      log.error("无法获取有效的租户id -> Null");
+      return new NullValue();
     }
+    // 返回固定租户
+    return new StringValue(tenantId);
+  }
 
-    @Override
-    public boolean ignoreTable(String tableName) {
-        String tenantId = TenantHelper.getTenantId();
-        // 判断是否有租户
-        if (StringUtils.isNotBlank(tenantId)) {
-            // 不需要过滤租户的表
-            List<String> excludes = tenantProperties.getExcludes();
-            // 非业务表
-            List<String> tables = ListUtil.toList("gen_table", "gen_table_column");
-            tables.addAll(excludes);
-            return StringUtils.equalsAnyIgnoreCase(tableName, tables.toArray(new String[0]));
-        }
-        return true;
+  @Override
+  public boolean ignoreTable(String tableName) {
+    String tenantId = TenantHelper.getTenantId();
+    // 判断是否有租户
+    if (StringUtils.isNotBlank(tenantId)) {
+      // 不需要过滤租户的表
+      List<String> excludes = tenantProperties.getExcludes();
+      // 非业务表
+      List<String> tables = ListUtil.toList("gen_table", "gen_table_column");
+      tables.addAll(excludes);
+      return StringUtils.equalsAnyIgnoreCase(tableName, tables.toArray(new String[0]));
     }
+    return true;
+  }
 }

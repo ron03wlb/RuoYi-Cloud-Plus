@@ -9,7 +9,7 @@ import org.dromara.system.api.RemoteUserService;
 import org.springframework.context.annotation.Profile;
 
 /**
- * 用户名翻译实现
+ * 用户名翻译实现.
  *
  * @author Lion Li
  */
@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class UserNameTranslationImpl implements TranslationInterface<String> {
 
-    @DubboReference private RemoteUserService remoteUserService;
+  @DubboReference private RemoteUserService remoteUserService;
 
-    @Override
-    public String translation(Object key, String other) {
-        return remoteUserService.selectUserNameById((Long) key);
-    }
+  @Override
+  public String translation(Object key, String other) {
+    return remoteUserService.selectUserNameById((Long) key);
+  }
 }

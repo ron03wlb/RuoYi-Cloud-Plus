@@ -14,12 +14,12 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class FlowInvalidBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 流程实例id */
-    @NotNull(message = "流程实例id为空", groups = AddGroup.class)
-    private Long id;
+  /** 流程实例id */
+  @NotNull(message = "流程实例id为空", groups = AddGroup.class)
+  private Long id;
 
-    /** 审批意见 */
-    private String comment;
+  /** 审批意见 */
+  private String comment;
 }

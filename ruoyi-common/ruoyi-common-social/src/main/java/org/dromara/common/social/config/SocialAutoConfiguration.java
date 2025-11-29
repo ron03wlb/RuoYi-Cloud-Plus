@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * Social 配置属性
+ * Social 配置属性.
  *
  * @author thiszhc
  */
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(SocialProperties.class)
 public class SocialAutoConfiguration {
 
-    @Bean
-    public AuthStateCache authStateCache() {
-        return new AuthRedisStateCache();
-    }
+  @Bean
+  public AuthStateCache authStateCache() {
+    return new AuthRedisStateCache();
+  }
 }

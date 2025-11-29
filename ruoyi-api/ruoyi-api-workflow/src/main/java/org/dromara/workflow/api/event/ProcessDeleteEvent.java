@@ -7,7 +7,7 @@ import org.dromara.common.core.utils.SpringUtils;
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 
 /**
- * 删除流程监听
+ * 删除流程监听.
  *
  * @author AprilWind
  */
@@ -15,21 +15,27 @@ import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 @EqualsAndHashCode(callSuper = true)
 public class ProcessDeleteEvent extends RemoteApplicationEvent {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 租户ID */
-    private String tenantId;
+  /** 租户ID. */
+  private String tenantId;
 
-    /** 流程定义编码 */
-    private String flowCode;
+  /** 流程定义编码. */
+  private String flowCode;
 
-    /** 业务id */
-    private String businessId;
+  /** 业务id. */
+  private String businessId;
 
-    public ProcessDeleteEvent() {
-        super(
-                new Object(),
-                SpringUtils.getApplicationName(),
-                DEFAULT_DESTINATION_FACTORY.getDestination(null));
-    }
+  /**
+   * Default constructor for ProcessDeleteEvent.
+   *
+   * <p>Initializes the remote application event with default source, origin service name, and
+   * destination configuration for process deletion event broadcasting.
+   */
+  public ProcessDeleteEvent() {
+    super(
+        new Object(),
+        SpringUtils.getApplicationName(),
+        DEFAULT_DESTINATION_FACTORY.getDestination(null));
+  }
 }

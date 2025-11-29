@@ -15,19 +15,19 @@ import lombok.Data;
 @Data
 public class FlowNextNodeBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 任务id */
-    private Long taskId;
+  /** 任务id */
+  private Long taskId;
 
-    /** 流程变量 */
-    private Map<String, Object> variables;
+  /** 流程变量 */
+  private Map<String, Object> variables;
 
-    public Map<String, Object> getVariables() {
-        if (variables == null) {
-            return new HashMap<>(16);
-        }
-        variables.entrySet().removeIf(entry -> Objects.isNull(entry.getValue()));
-        return variables;
+  public Map<String, Object> getVariables() {
+    if (variables == null) {
+      return new HashMap<>(16);
     }
+    variables.entrySet().removeIf(entry -> Objects.isNull(entry.getValue()));
+    return variables;
+  }
 }

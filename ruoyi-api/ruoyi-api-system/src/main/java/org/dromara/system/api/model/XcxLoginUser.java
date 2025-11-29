@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 小程序登录用户身份权限
+ * 小程序登录用户身份权限.
  *
  * @author Lion Li
  */
@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class XcxLoginUser extends LoginUser {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** openid */
-    private String openid;
+  /** openid. */
+  private String openid;
 }

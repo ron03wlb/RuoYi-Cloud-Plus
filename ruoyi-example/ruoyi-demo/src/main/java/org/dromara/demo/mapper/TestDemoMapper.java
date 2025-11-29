@@ -22,45 +22,45 @@ import org.dromara.demo.domain.vo.TestDemoVo;
  */
 public interface TestDemoMapper extends BaseMapperPlus<TestDemo, TestDemoVo> {
 
-    @DataPermission({
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+    @DataColumn(key = "userName", value = "user_id")
+  })
+  Page<TestDemoVo> customPageList(
+      @Param("page") Page<TestDemo> page, @Param("ew") Wrapper<TestDemo> wrapper);
+
+  @Override
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+    @DataColumn(key = "userName", value = "user_id")
+  })
+  default <P extends IPage<TestDemoVo>> P selectVoPage(
+      IPage<TestDemo> page, Wrapper<TestDemo> wrapper) {
+    return selectVoPage(page, wrapper, this.currentVoClass());
+  }
+
+  @Override
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+    @DataColumn(key = "userName", value = "user_id")
+  })
+  default List<TestDemoVo> selectVoList(Wrapper<TestDemo> wrapper) {
+    return selectVoList(wrapper, this.currentVoClass());
+  }
+
+  @Override
+  @DataPermission(
+      value = {
         @DataColumn(key = "deptName", value = "dept_id"),
         @DataColumn(key = "userName", value = "user_id")
-    })
-    Page<TestDemoVo> customPageList(
-            @Param("page") Page<TestDemo> page, @Param("ew") Wrapper<TestDemo> wrapper);
+      },
+      joinStr = "AND")
+  List<TestDemo> selectByIds(@Param(Constants.COLL) Collection<? extends Serializable> idList);
 
-    @Override
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id"),
-        @DataColumn(key = "userName", value = "user_id")
-    })
-    default <P extends IPage<TestDemoVo>> P selectVoPage(
-            IPage<TestDemo> page, Wrapper<TestDemo> wrapper) {
-        return selectVoPage(page, wrapper, this.currentVoClass());
-    }
-
-    @Override
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id"),
-        @DataColumn(key = "userName", value = "user_id")
-    })
-    default List<TestDemoVo> selectVoList(Wrapper<TestDemo> wrapper) {
-        return selectVoList(wrapper, this.currentVoClass());
-    }
-
-    @Override
-    @DataPermission(
-            value = {
-                @DataColumn(key = "deptName", value = "dept_id"),
-                @DataColumn(key = "userName", value = "user_id")
-            },
-            joinStr = "AND")
-    List<TestDemo> selectByIds(@Param(Constants.COLL) Collection<? extends Serializable> idList);
-
-    @Override
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id"),
-        @DataColumn(key = "userName", value = "user_id")
-    })
-    int updateById(@Param(Constants.ENTITY) TestDemo entity);
+  @Override
+  @DataPermission({
+    @DataColumn(key = "deptName", value = "dept_id"),
+    @DataColumn(key = "userName", value = "user_id")
+  })
+  int updateById(@Param(Constants.ENTITY) TestDemo entity);
 }

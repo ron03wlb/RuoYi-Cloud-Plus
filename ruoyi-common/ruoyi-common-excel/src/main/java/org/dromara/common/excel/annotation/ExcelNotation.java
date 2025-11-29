@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 批注
+ * 批注.
  *
  * @author guzhouyanyu
  */
@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelNotation {
 
-    /** 批注内容 */
-    String value() default "";
+  /** 批注内容. */
+  String value() default "";
 }

@@ -26,7 +26,7 @@ import org.dromara.system.api.model.LoginUser;
 import org.springframework.stereotype.Service;
 
 /**
- * 短信认证策略
+ * SMS authentication strategy implementation for phone-based login.
  *
  * @author Michelle.Chung
  */
@@ -35,61 +35,66 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SmsAuthStrategy implements IAuthStrategy {
 
-    private final SysLoginService loginService;
+  private final SysLoginService loginService;
 
-    @DubboReference private RemoteUserService remoteUserService;
+  @DubboReference private RemoteUserService remoteUserService;
 
-    @Override
-    public LoginVo login(String body, RemoteClientVo client) {
-        SmsLoginBody loginBody = JsonUtils.parseObject(body, SmsLoginBody.class);
-        ValidatorUtils.validate(loginBody);
-        String tenantId = loginBody.getTenantId();
-        String phonenumber = loginBody.getPhonenumber();
-        String smsCode = loginBody.getSmsCode();
-        LoginUser loginUser =
-                TenantHelper.dynamic(
-                        tenantId,
-                        () -> {
-                            LoginUser user =
-                                    remoteUserService.getUserInfoByPhonenumber(
-                                            phonenumber, tenantId);
-                            loginService.checkLogin(
-                                    LoginType.SMS,
-                                    tenantId,
-                                    user.getUsername(),
-                                    () -> !validateSmsCode(tenantId, phonenumber, smsCode));
-                            return user;
-                        });
-        loginUser.setClientKey(client.getClientKey());
-        loginUser.setDeviceType(client.getDeviceType());
-        SaLoginParameter model = new SaLoginParameter();
-        model.setDeviceType(client.getDeviceType());
-        // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
-        // 例如: 后台用户30分钟过期 app用户1天过期
-        model.setTimeout(client.getTimeout());
-        model.setActiveTimeout(client.getActiveTimeout());
-        model.setExtra(LoginHelper.CLIENT_KEY, client.getClientId());
-        // 生成token
-        LoginHelper.login(loginUser, model);
+  @Override
+  public LoginVo login(String body, RemoteClientVo client) {
+    SmsLoginBody loginBody = JsonUtils.parseObject(body, SmsLoginBody.class);
+    ValidatorUtils.validate(loginBody);
+    String tenantId = loginBody.getTenantId();
+    String phonenumber = loginBody.getPhonenumber();
+    String smsCode = loginBody.getSmsCode();
+    LoginUser loginUser =
+        TenantHelper.dynamic(
+            tenantId,
+            () -> {
+              LoginUser user = remoteUserService.getUserInfoByPhonenumber(phonenumber, tenantId);
+              loginService.checkLogin(
+                  LoginType.SMS,
+                  tenantId,
+                  user.getUsername(),
+                  () -> !validateSmsCode(tenantId, phonenumber, smsCode));
+              return user;
+            });
+    loginUser.setClientKey(client.getClientKey());
+    loginUser.setDeviceType(client.getDeviceType());
+    SaLoginParameter model = new SaLoginParameter();
+    model.setDeviceType(client.getDeviceType());
+    // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
+    // 例如: 后台用户30分钟过期 app用户1天过期
+    model.setTimeout(client.getTimeout());
+    model.setActiveTimeout(client.getActiveTimeout());
+    model.setExtra(LoginHelper.CLIENT_KEY, client.getClientId());
+    // 生成token
+    LoginHelper.login(loginUser, model);
 
-        LoginVo loginVo = new LoginVo();
-        loginVo.setAccessToken(StpUtil.getTokenValue());
-        loginVo.setExpireIn(StpUtil.getTokenTimeout());
-        loginVo.setClientId(client.getClientId());
-        return loginVo;
+    LoginVo loginVo = new LoginVo();
+    loginVo.setAccessToken(StpUtil.getTokenValue());
+    loginVo.setExpireIn(StpUtil.getTokenTimeout());
+    loginVo.setClientId(client.getClientId());
+    return loginVo;
+  }
+
+  /**
+   * Validates the SMS verification code against the cached value.
+   *
+   * @param tenantId the tenant ID
+   * @param phonenumber the phone number
+   * @param smsCode the verification code to validate
+   * @return true if the code matches, false otherwise
+   */
+  private boolean validateSmsCode(String tenantId, String phonenumber, String smsCode) {
+    String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + phonenumber);
+    if (StringUtils.isBlank(code)) {
+      loginService.recordLogininfor(
+          tenantId,
+          phonenumber,
+          Constants.LOGIN_FAIL,
+          MessageUtils.message("user.jcaptcha.expire"));
+      throw new CaptchaExpireException();
     }
-
-    /** 校验短信验证码 */
-    private boolean validateSmsCode(String tenantId, String phonenumber, String smsCode) {
-        String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + phonenumber);
-        if (StringUtils.isBlank(code)) {
-            loginService.recordLogininfor(
-                    tenantId,
-                    phonenumber,
-                    Constants.LOGIN_FAIL,
-                    MessageUtils.message("user.jcaptcha.expire"));
-            throw new CaptchaExpireException();
-        }
-        return code.equals(smsCode);
-    }
+    return code.equals(smsCode);
+  }
 }

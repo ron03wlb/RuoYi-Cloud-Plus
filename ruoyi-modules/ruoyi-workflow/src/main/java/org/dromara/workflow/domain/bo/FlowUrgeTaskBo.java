@@ -15,16 +15,16 @@ import org.dromara.common.core.validate.AddGroup;
 @Data
 public class FlowUrgeTaskBo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 任务id */
-    @NotNull(message = "任务id为空", groups = AddGroup.class)
-    private List<Long> taskIdList;
+  /** 任务id */
+  @NotNull(message = "任务id为空", groups = AddGroup.class)
+  private List<Long> taskIdList;
 
-    /** 消息类型 */
-    private List<String> messageType;
+  /** 消息类型 */
+  private List<String> messageType;
 
-    /** 催办内容 */
-    @NotNull(message = "催办内容为空", groups = AddGroup.class)
-    private String message;
+  /** 催办内容 */
+  @NotNull(message = "催办内容为空", groups = AddGroup.class)
+  private String message;
 }

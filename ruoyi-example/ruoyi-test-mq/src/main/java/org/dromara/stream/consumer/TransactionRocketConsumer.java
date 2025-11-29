@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @RocketMQMessageListener(topic = "transaction-topic", consumerGroup = "transaction-group")
 public class TransactionRocketConsumer implements RocketMQListener<String> {
 
-    @Override
-    public void onMessage(String message) {
-        log.info("【消费者】===>接收事务消息：{}", message);
-    }
+  @Override
+  public void onMessage(String message) {
+    log.info("【消费者】===>接收事务消息：{}", message);
+  }
 }

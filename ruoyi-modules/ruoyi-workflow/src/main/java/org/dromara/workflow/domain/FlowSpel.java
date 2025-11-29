@@ -19,30 +19,30 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 @TableName("flow_spel")
 public class FlowSpel extends BaseEntity {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键id */
-    @TableId(value = "id")
-    private Long id;
+  /** 主键id */
+  @TableId(value = "id")
+  private Long id;
 
-    /** 组件名称 */
-    private String componentName;
+  /** 组件名称 */
+  private String componentName;
 
-    /** 方法名 */
-    private String methodName;
+  /** 方法名 */
+  private String methodName;
 
-    /** 参数 */
-    private String methodParams;
+  /** 参数 */
+  private String methodParams;
 
-    /** 预览spel表达式 */
-    private String viewSpel;
+  /** 预览spel表达式 */
+  private String viewSpel;
 
-    /** 状态（0正常 1停用） */
-    private String status;
+  /** 状态（0正常 1停用） */
+  private String status;
 
-    /** 备注 */
-    private String remark;
+  /** 备注 */
+  private String remark;
 
-    /** 删除标志 */
-    @TableLogic private String delFlag;
+  /** 删除标志 */
+  @TableLogic private String delFlag;
 }

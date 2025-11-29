@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
 /**
- * 是否必填
+ * 是否必填.
  *
  * @author guzhouyanyu
  */
@@ -15,6 +15,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelRequired {
 
-    /** 字体颜色 */
-    IndexedColors fontColor() default IndexedColors.RED;
+  /** 字体颜色. */
+  IndexedColors fontColor() default IndexedColors.RED;
 }

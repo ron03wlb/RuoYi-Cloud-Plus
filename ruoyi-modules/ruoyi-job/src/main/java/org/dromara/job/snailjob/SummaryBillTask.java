@@ -19,24 +19,24 @@ import org.springframework.stereotype.Component;
 @JobExecutor(name = "summaryBillTask")
 public class SummaryBillTask {
 
-    public ExecuteResult jobExecute(JobArgs jobArgs) throws InterruptedException {
-        // 获得微信账单
-        BigDecimal wechatAmount = BigDecimal.valueOf(0);
-        String wechat = (String) jobArgs.getWfContext("wechat");
-        if (StrUtil.isNotBlank(wechat)) {
-            BillDto wechatBillDto = JsonUtils.parseObject(wechat, BillDto.class);
-            wechatAmount = wechatBillDto.getBillAmount();
-        }
-        // 获得支付宝账单
-        BigDecimal alipayAmount = BigDecimal.valueOf(0);
-        String alipay = (String) jobArgs.getWfContext("alipay");
-        if (StrUtil.isNotBlank(alipay)) {
-            BillDto alipayBillDto = JsonUtils.parseObject(alipay, BillDto.class);
-            alipayAmount = alipayBillDto.getBillAmount();
-        }
-        // 汇总账单
-        BigDecimal totalAmount = wechatAmount.add(alipayAmount);
-        SnailJobLog.REMOTE.info("总金额: {}", totalAmount);
-        return ExecuteResult.success(totalAmount);
+  public ExecuteResult jobExecute(JobArgs jobArgs) throws InterruptedException {
+    // 获得微信账单
+    BigDecimal wechatAmount = BigDecimal.valueOf(0);
+    String wechat = (String) jobArgs.getWfContext("wechat");
+    if (StrUtil.isNotBlank(wechat)) {
+      BillDto wechatBillDto = JsonUtils.parseObject(wechat, BillDto.class);
+      wechatAmount = wechatBillDto.getBillAmount();
     }
+    // 获得支付宝账单
+    BigDecimal alipayAmount = BigDecimal.valueOf(0);
+    String alipay = (String) jobArgs.getWfContext("alipay");
+    if (StrUtil.isNotBlank(alipay)) {
+      BillDto alipayBillDto = JsonUtils.parseObject(alipay, BillDto.class);
+      alipayAmount = alipayBillDto.getBillAmount();
+    }
+    // 汇总账单
+    BigDecimal totalAmount = wechatAmount.add(alipayAmount);
+    SnailJobLog.REMOTE.info("总金额: {}", totalAmount);
+    return ExecuteResult.success(totalAmount);
+  }
 }

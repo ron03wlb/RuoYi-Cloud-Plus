@@ -8,24 +8,34 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自定义xss校验注解
+ * 自定义xss校验注解.
  *
  * @author Lion Li
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-        value = {
-            ElementType.METHOD,
-            ElementType.FIELD,
-            ElementType.CONSTRUCTOR,
-            ElementType.PARAMETER
-        })
+    value = {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
 @Constraint(validatedBy = {XssValidator.class})
 public @interface Xss {
 
-    String message() default "不允许任何脚本运行";
+  /**
+   * Validation error message.
+   *
+   * @return the error message template
+   */
+  String message() default "不允许任何脚本运行";
 
-    Class<?>[] groups() default {};
+  /**
+   * Validation groups for this constraint.
+   *
+   * @return the groups the constraint belongs to
+   */
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  /**
+   * Payload type that can be attached to this constraint.
+   *
+   * @return the payload types
+   */
+  Class<? extends Payload>[] payload() default {};
 }

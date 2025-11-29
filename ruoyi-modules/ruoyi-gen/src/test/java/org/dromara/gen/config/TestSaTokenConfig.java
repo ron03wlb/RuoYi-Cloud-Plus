@@ -22,47 +22,47 @@ import org.springframework.context.annotation.Primary;
 @TestConfiguration
 public class TestSaTokenConfig {
 
-    /** Sa-Token DAO (使用 @Primary 确保优先使用) */
-    @Bean
-    @Primary
-    public SaTokenDao saTokenDao() {
-        return new PlusSaTokenDao();
-    }
+  /** Sa-Token DAO (使用 @Primary 确保优先使用) */
+  @Bean
+  @Primary
+  public SaTokenDao saTokenDao() {
+    return new PlusSaTokenDao();
+  }
 
-    /**
-     * Mock PermissionService
-     *
-     * <p>Sa-Token权限验证需要此服务
-     */
-    @Bean
-    @Primary
-    public PermissionService mockPermissionService() {
-        PermissionService mock = Mockito.mock(PermissionService.class);
+  /**
+   * Mock PermissionService
+   *
+   * <p>Sa-Token权限验证需要此服务
+   */
+  @Bean
+  @Primary
+  public PermissionService mockPermissionService() {
+    PermissionService mock = Mockito.mock(PermissionService.class);
 
-        // 默认返回测试权限
-        Set<String> menuPermissions = new HashSet<>();
-        menuPermissions.add("tool:gen:list");
-        menuPermissions.add("tool:gen:query");
-        menuPermissions.add("tool:gen:add");
+    // 默认返回测试权限
+    Set<String> menuPermissions = new HashSet<>();
+    menuPermissions.add("tool:gen:list");
+    menuPermissions.add("tool:gen:query");
+    menuPermissions.add("tool:gen:add");
 
-        Set<String> rolePermissions = new HashSet<>();
-        rolePermissions.add("admin");
+    Set<String> rolePermissions = new HashSet<>();
+    rolePermissions.add("admin");
 
-        // 配置 mock 行为
-        Mockito.when(mock.getMenuPermission(Mockito.anyLong())).thenReturn(menuPermissions);
-        Mockito.when(mock.getRolePermission(Mockito.anyLong())).thenReturn(rolePermissions);
+    // 配置 mock 行为
+    Mockito.when(mock.getMenuPermission(Mockito.anyLong())).thenReturn(menuPermissions);
+    Mockito.when(mock.getRolePermission(Mockito.anyLong())).thenReturn(rolePermissions);
 
-        return mock;
-    }
+    return mock;
+  }
 
-    /**
-     * Mock RemoteClientService
-     *
-     * <p>Dubbo 远程服务，避免 Dubbo 初始化错误
-     */
-    @Bean
-    @Primary
-    public RemoteClientService mockRemoteClientService() {
-        return Mockito.mock(RemoteClientService.class);
-    }
+  /**
+   * Mock RemoteClientService
+   *
+   * <p>Dubbo 远程服务，避免 Dubbo 初始化错误
+   */
+  @Bean
+  @Primary
+  public RemoteClientService mockRemoteClientService() {
+    return Mockito.mock(RemoteClientService.class);
+  }
 }

@@ -19,24 +19,24 @@ import org.dromara.common.tenant.core.TenantEntity;
 @TableName("flow_instance_biz_ext")
 public class FlowInstanceBizExt extends TenantEntity {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键 */
-    @TableId(value = "id")
-    private Long id;
+  /** 主键 */
+  @TableId(value = "id")
+  private Long id;
 
-    /** 流程实例ID */
-    private Long instanceId;
+  /** 流程实例ID */
+  private Long instanceId;
 
-    /** 业务ID */
-    private String businessId;
+  /** 业务ID */
+  private String businessId;
 
-    /** 业务编码 */
-    private String businessCode;
+  /** 业务编码 */
+  private String businessCode;
 
-    /** 业务标题 */
-    private String businessTitle;
+  /** 业务标题 */
+  private String businessTitle;
 
-    /** 删除标志（0代表存在 1代表删除） */
-    @TableLogic private String delFlag;
+  /** 删除标志（0代表存在 1代表删除） */
+  @TableLogic private String delFlag;
 }

@@ -47,26 +47,26 @@ import org.springframework.test.web.servlet.MockMvc;
  * @author Test Team
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-            "spring.cloud.nacos.discovery.enabled=false",
-            "spring.cloud.nacos.config.enabled=false",
-            "dubbo.registry.address=N/A",
-            "dubbo.protocol.port=-1"
-        })
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {
+      "spring.cloud.nacos.discovery.enabled=false",
+      "spring.cloud.nacos.config.enabled=false",
+      "dubbo.registry.address=N/A",
+      "dubbo.protocol.port=-1"
+    })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public abstract class BaseIntegrationTest {
 
-    @Autowired protected MockMvc mockMvc;
+  @Autowired protected MockMvc mockMvc;
 
-    /**
-     * 测试前初始化
-     *
-     * <p>子类可以覆盖此方法进行自定义初始化
-     */
-    @BeforeEach
-    public void baseSetUp() {
-        // 子类可以覆盖此方法进行额外的初始化
-    }
+  /**
+   * 测试前初始化
+   *
+   * <p>子类可以覆盖此方法进行自定义初始化
+   */
+  @BeforeEach
+  public void baseSetUp() {
+    // 子类可以覆盖此方法进行额外的初始化
+  }
 }

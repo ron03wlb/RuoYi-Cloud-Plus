@@ -5,7 +5,10 @@ import lombok.Getter;
 import org.dromara.common.encrypt.core.encryptor.*;
 
 /**
- * 算法名称
+ * Enumeration of supported encryption algorithms.
+ *
+ * <p>Defines the available encryption algorithms and their corresponding encryptor implementations.
+ * Each algorithm type is associated with a specific encryptor class.
  *
  * @author 老马
  * @version 4.6.0
@@ -14,23 +17,24 @@ import org.dromara.common.encrypt.core.encryptor.*;
 @AllArgsConstructor
 public enum AlgorithmType {
 
-    /** 默认走yml配置 */
-    DEFAULT(null),
+  /** Default algorithm, uses global configuration from YAML. */
+  DEFAULT(null),
 
-    /** base64 */
-    BASE64(Base64Encryptor.class),
+  /** BASE64 encoding algorithm (not true encryption, just encoding). */
+  BASE64(Base64Encryptor.class),
 
-    /** aes */
-    AES(AesEncryptor.class),
+  /** AES (Advanced Encryption Standard) symmetric encryption algorithm. */
+  AES(AesEncryptor.class),
 
-    /** rsa */
-    RSA(RsaEncryptor.class),
+  /** RSA (Rivest-Shamir-Adleman) asymmetric encryption algorithm. */
+  RSA(RsaEncryptor.class),
 
-    /** sm2 */
-    SM2(Sm2Encryptor.class),
+  /** SM2 (Chinese national cryptographic standard) asymmetric encryption algorithm. */
+  SM2(Sm2Encryptor.class),
 
-    /** sm4 */
-    SM4(Sm4Encryptor.class);
+  /** SM4 (Chinese national cryptographic standard) symmetric encryption algorithm. */
+  SM4(Sm4Encryptor.class);
 
-    private final Class<? extends AbstractEncryptor> clazz;
+  /** The encryptor class implementation for this algorithm type. */
+  private final Class<? extends AbstractEncryptor> clazz;
 }

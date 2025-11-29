@@ -12,52 +12,50 @@ import java.math.BigDecimal;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 大数值转换 Excel 数值长度位15位 大于15位的数值转换位字符串
+ * 大数值转换 Excel 数值长度位15位 大于15位的数值转换位字符串.
  *
  * @author Lion Li
  */
 @Slf4j
 public class ExcelBigNumberConvert implements Converter<Long> {
 
-    @Override
-    public Class<Long> supportJavaTypeKey() {
-        return Long.class;
-    }
+  @Override
+  public Class<Long> supportJavaTypeKey() {
+    return Long.class;
+  }
 
-    @Override
-    public CellDataTypeEnum supportExcelTypeKey() {
-        return CellDataTypeEnum.STRING;
-    }
+  @Override
+  public CellDataTypeEnum supportExcelTypeKey() {
+    return CellDataTypeEnum.STRING;
+  }
 
-    @Override
-    public Long convertToJavaData(
-            ReadCellData<?> cellData,
-            ExcelContentProperty contentProperty,
-            GlobalConfiguration globalConfiguration) {
-        return Convert.toLong(cellData.getData());
-    }
+  @Override
+  public Long convertToJavaData(
+      ReadCellData<?> cellData,
+      ExcelContentProperty contentProperty,
+      GlobalConfiguration globalConfiguration) {
+    return Convert.toLong(cellData.getData());
+  }
 
-    @Override
-    public WriteCellData<Object> convertToExcelData(
-            Long object,
-            ExcelContentProperty contentProperty,
-            GlobalConfiguration globalConfiguration) {
-        if (ObjectUtil.isNull(object)) {
-            object = 0L;
-        }
-        String str = Convert.toStr(object);
-        if (str.length() > 15) {
-            WriteCellData<Object> stringCellData = new WriteCellData<>();
-            stringCellData.setType(CellDataTypeEnum.STRING);
-            stringCellData.setData(str);
-            stringCellData.setStringValue(str);
-            return stringCellData;
-        }
-        BigDecimal bigDecimal = new BigDecimal(object);
-        WriteCellData<Object> cellData = new WriteCellData<>();
-        cellData.setType(CellDataTypeEnum.NUMBER);
-        cellData.setData(bigDecimal);
-        cellData.setNumberValue(bigDecimal);
-        return cellData;
+  @Override
+  public WriteCellData<Object> convertToExcelData(
+      Long object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    if (ObjectUtil.isNull(object)) {
+      object = 0L;
     }
+    String str = Convert.toStr(object);
+    if (str.length() > 15) {
+      WriteCellData<Object> stringCellData = new WriteCellData<>();
+      stringCellData.setType(CellDataTypeEnum.STRING);
+      stringCellData.setData(str);
+      stringCellData.setStringValue(str);
+      return stringCellData;
+    }
+    BigDecimal bigDecimal = new BigDecimal(object);
+    WriteCellData<Object> cellData = new WriteCellData<>();
+    cellData.setType(CellDataTypeEnum.NUMBER);
+    cellData.setData(bigDecimal);
+    cellData.setNumberValue(bigDecimal);
+    return cellData;
+  }
 }

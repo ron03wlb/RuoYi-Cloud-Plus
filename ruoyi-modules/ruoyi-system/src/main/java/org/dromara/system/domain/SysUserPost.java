@@ -14,10 +14,10 @@ import lombok.Data;
 @TableName("sys_user_post")
 public class SysUserPost {
 
-    /** 用户ID */
-    @TableId(type = IdType.INPUT)
-    private Long userId;
+  /** 用户ID */
+  @TableId(type = IdType.INPUT)
+  private Long userId;
 
-    /** 岗位ID */
-    private Long postId;
+  /** 岗位ID */
+  private Long postId;
 }

@@ -23,24 +23,24 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemotePostServiceImpl implements RemotePostService {
 
-    private final SysPostMapper postMapper;
+  private final SysPostMapper postMapper;
 
-    /**
-     * 根据岗位 ID 列表查询岗位名称映射关系
-     *
-     * @param postIds 岗位 ID 列表
-     * @return Map，其中 key 为岗位 ID，value 为对应的岗位名称
-     */
-    @Override
-    public Map<Long, String> selectPostNamesByIds(List<Long> postIds) {
-        if (CollUtil.isEmpty(postIds)) {
-            return Collections.emptyMap();
-        }
-        List<SysPost> list =
-                postMapper.selectList(
-                        new LambdaQueryWrapper<SysPost>()
-                                .select(SysPost::getPostId, SysPost::getPostName)
-                                .in(SysPost::getPostId, postIds));
-        return StreamUtils.toMap(list, SysPost::getPostId, SysPost::getPostName);
+  /**
+   * 根据岗位 ID 列表查询岗位名称映射关系
+   *
+   * @param postIds 岗位 ID 列表
+   * @return Map，其中 key 为岗位 ID，value 为对应的岗位名称
+   */
+  @Override
+  public Map<Long, String> selectPostNamesByIds(List<Long> postIds) {
+    if (CollUtil.isEmpty(postIds)) {
+      return Collections.emptyMap();
     }
+    List<SysPost> list =
+        postMapper.selectList(
+            new LambdaQueryWrapper<SysPost>()
+                .select(SysPost::getPostId, SysPost::getPostName)
+                .in(SysPost::getPostId, postIds));
+    return StreamUtils.toMap(list, SysPost::getPostId, SysPost::getPostName);
+  }
 }

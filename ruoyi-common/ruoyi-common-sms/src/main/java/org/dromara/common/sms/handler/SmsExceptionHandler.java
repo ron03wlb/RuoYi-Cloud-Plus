@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * SMS异常处理器
+ * SMS异常处理器.
  *
  * @author AprilWind
  */
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class SmsExceptionHandler {
 
-    /** sms异常 */
-    @ExceptionHandler(SmsBlendException.class)
-    public R<Void> handleSmsBlendException(SmsBlendException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}',发生sms短信异常.", requestURI, e);
-        return R.fail(HttpStatus.HTTP_INTERNAL_ERROR, "短信发送失败，请稍后再试...");
-    }
+  /** sms异常. */
+  @ExceptionHandler(SmsBlendException.class)
+  public R<Void> handleSmsBlendException(SmsBlendException e, HttpServletRequest request) {
+    String requestURI = request.getRequestURI();
+    log.error("请求地址'{}',发生sms短信异常.", requestURI, e);
+    return R.fail(HttpStatus.HTTP_INTERNAL_ERROR, "短信发送失败，请稍后再试...");
+  }
 }

@@ -9,7 +9,7 @@ import org.dromara.system.api.RemoteDeptService;
 import org.springframework.context.annotation.Profile;
 
 /**
- * 部门翻译实现
+ * 部门翻译实现.
  *
  * @author Lion Li
  */
@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class DeptNameTranslationImpl implements TranslationInterface<String> {
 
-    @DubboReference private RemoteDeptService remoteDeptService;
+  @DubboReference private RemoteDeptService remoteDeptService;
 
-    @Override
-    public String translation(Object key, String other) {
-        return remoteDeptService.selectDeptNameByIds(key.toString());
-    }
+  @Override
+  public String translation(Object key, String other) {
+    return remoteDeptService.selectDeptNameByIds(key.toString());
+  }
 }

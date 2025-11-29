@@ -22,42 +22,40 @@ import org.springframework.context.annotation.FilterType;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(
-        excludeName = {
-            // 排除 Dubbo 自动配置
-            "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
-            "org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBindingAutoConfiguration",
-            // 排除 Nacos 配置
-            "com.alibaba.cloud.nacos.NacosConfigAutoConfiguration",
-            "com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration",
-            "com.alibaba.cloud.nacos.NacosServiceRegistryAutoConfiguration",
-            // 排除消息队列（如果不需要）
-            "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration",
-            "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration",
-            // 排除 Sa-Token Redis 自动配置，使用测试配置的内存实现
-            "cn.dev33.satoken.dao.alone.SaAloneDaoConfiguration",
-            "cn.dev33.satoken.spring.auto.config.SaTokenAutoConfiguration"
-        })
+    excludeName = {
+      // 排除 Dubbo 自动配置
+      "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
+      "org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBindingAutoConfiguration",
+      // 排除 Nacos 配置
+      "com.alibaba.cloud.nacos.NacosConfigAutoConfiguration",
+      "com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration",
+      "com.alibaba.cloud.nacos.NacosServiceRegistryAutoConfiguration",
+      // 排除消息队列（如果不需要）
+      "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration",
+      "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration",
+      // 排除 Sa-Token Redis 自动配置，使用测试配置的内存实现
+      "cn.dev33.satoken.dao.alone.SaAloneDaoConfiguration",
+      "cn.dev33.satoken.spring.auto.config.SaTokenAutoConfiguration"
+    })
 @ComponentScan(
-        basePackages = {
-            "org.dromara.resource.service", // Service 层
-            "org.dromara.resource.mapper", // Mapper 层
-            "org.dromara.resource.domain", // Domain 对象
-            "org.dromara.common.mybatis", // MyBatis 支持
-            "org.dromara.common.redis", // Redis 支持
-            "org.dromara.common.oss", // OSS 支持
-            "org.dromara.common.core", // 核心工具
-            "org.dromara.common.satoken", // Sa-Token 支持
-            "org.dromara.common.tenant", // 租户支持
-            "org.dromara.common.web" // Web 支持
-        },
-        excludeFilters = {
-            // 排除 Dubbo 服务实现
-            @ComponentScan.Filter(
-                    type = FilterType.REGEX,
-                    pattern = "org.dromara.resource.dubbo.*"),
-            // 排除通用 Dubbo 配置
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.dromara.common.dubbo.*")
-        })
+    basePackages = {
+      "org.dromara.resource.service", // Service 层
+      "org.dromara.resource.mapper", // Mapper 层
+      "org.dromara.resource.domain", // Domain 对象
+      "org.dromara.common.mybatis", // MyBatis 支持
+      "org.dromara.common.redis", // Redis 支持
+      "org.dromara.common.oss", // OSS 支持
+      "org.dromara.common.core", // 核心工具
+      "org.dromara.common.satoken", // Sa-Token 支持
+      "org.dromara.common.tenant", // 租户支持
+      "org.dromara.common.web" // Web 支持
+    },
+    excludeFilters = {
+      // 排除 Dubbo 服务实现
+      @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.dromara.resource.dubbo.*"),
+      // 排除通用 Dubbo 配置
+      @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.dromara.common.dubbo.*")
+    })
 public class TestResourceApplication {
-    // 测试专用的最小化启动类，不需要任何方法
+  // 测试专用的最小化启动类，不需要任何方法
 }

@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 字典项校验注解
+ * 字典项校验注解.
  *
  * @author AprilWind
  */
@@ -17,16 +17,26 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DictPattern {
 
-    /** 字典类型，如 "sys_user_sex" */
-    String dictType();
+  /** 字典类型，如 "sys_user_sex". */
+  String dictType();
 
-    /** 分隔符 */
-    String separator();
+  /** 分隔符. */
+  String separator();
 
-    /** 默认校验失败提示信息 */
-    String message() default "字典值无效";
+  /** 默认校验失败提示信息. */
+  String message() default "字典值无效";
 
-    Class<?>[] groups() default {};
+  /**
+   * Validation groups for this constraint.
+   *
+   * @return the groups the constraint belongs to
+   */
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  /**
+   * Payload type that can be attached to this constraint.
+   *
+   * @return the payload types
+   */
+  Class<? extends Payload>[] payload() default {};
 }

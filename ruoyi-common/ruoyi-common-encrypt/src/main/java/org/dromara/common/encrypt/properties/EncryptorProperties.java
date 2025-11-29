@@ -6,7 +6,11 @@ import org.dromara.common.encrypt.enumd.EncodeType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 加解密属性配置类
+ * Configuration properties for MyBatis field-level encryption and decryption.
+ *
+ * <p>These properties are bound from the "mybatis-encryptor" prefix in application configuration
+ * and provide default values for fields not explicitly configured with {@link
+ * org.dromara.common.encrypt.annotation.EncryptField}.
  *
  * @author 老马
  * @version 4.6.0
@@ -15,21 +19,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mybatis-encryptor")
 public class EncryptorProperties {
 
-    /** 过滤开关 */
-    private Boolean enable;
+  /** Enable/disable MyBatis encryption feature. */
+  private Boolean enable;
 
-    /** 默认算法 */
-    private AlgorithmType algorithm;
+  /** Default encryption algorithm to use. */
+  private AlgorithmType algorithm;
 
-    /** 安全秘钥 */
-    private String password;
+  /** Default secret key for symmetric encryption algorithms (AES, SM4). */
+  private String password;
 
-    /** 公钥 */
-    private String publicKey;
+  /** Default public key for asymmetric encryption algorithms (RSA, SM2). */
+  private String publicKey;
 
-    /** 私钥 */
-    private String privateKey;
+  /** Default private key for asymmetric encryption algorithms (RSA, SM2). */
+  private String privateKey;
 
-    /** 编码方式，base64/hex */
-    private EncodeType encode;
+  /** Default encoding format for encrypted output (BASE64 or HEX). */
+  private EncodeType encode;
 }

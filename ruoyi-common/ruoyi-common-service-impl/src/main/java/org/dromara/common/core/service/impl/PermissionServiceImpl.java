@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
- * 权限服务
+ * 权限服务.
  *
  * @author Lion Li
  */
@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 @Profile("!test")
 public class PermissionServiceImpl implements PermissionService {
 
-    @DubboReference private RemotePermissionService remotePermissionService;
+  @DubboReference private RemotePermissionService remotePermissionService;
 
-    @Override
-    public Set<String> getRolePermission(Long userId) {
-        return remotePermissionService.getRolePermission(userId);
-    }
+  @Override
+  public Set<String> getRolePermission(Long userId) {
+    return remotePermissionService.getRolePermission(userId);
+  }
 
-    @Override
-    public Set<String> getMenuPermission(Long userId) {
-        return remotePermissionService.getMenuPermission(userId);
-    }
+  @Override
+  public Set<String> getMenuPermission(Long userId) {
+    return remotePermissionService.getMenuPermission(userId);
+  }
 }

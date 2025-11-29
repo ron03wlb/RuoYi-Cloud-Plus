@@ -13,18 +13,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${spring.cloud.nacos.discovery.metadata.username}")
-    private String username;
+  @Value("${spring.cloud.nacos.discovery.metadata.username}")
+  private String username;
 
-    @Value("${spring.cloud.nacos.discovery.metadata.userpassword}")
-    private String password;
+  @Value("${spring.cloud.nacos.discovery.metadata.userpassword}")
+  private String password;
 
-    @Bean
-    public FilterRegistrationBean<ActuatorAuthFilter> actuatorFilterRegistrationBean() {
-        FilterRegistrationBean<ActuatorAuthFilter> registrationBean =
-                new FilterRegistrationBean<>();
-        registrationBean.setFilter(new ActuatorAuthFilter(username, password));
-        registrationBean.addUrlPatterns("/actuator", "/actuator/*");
-        return registrationBean;
-    }
+  @Bean
+  public FilterRegistrationBean<ActuatorAuthFilter> actuatorFilterRegistrationBean() {
+    FilterRegistrationBean<ActuatorAuthFilter> registrationBean = new FilterRegistrationBean<>();
+    registrationBean.setFilter(new ActuatorAuthFilter(username, password));
+    registrationBean.addUrlPatterns("/actuator", "/actuator/*");
+    return registrationBean;
+  }
 }

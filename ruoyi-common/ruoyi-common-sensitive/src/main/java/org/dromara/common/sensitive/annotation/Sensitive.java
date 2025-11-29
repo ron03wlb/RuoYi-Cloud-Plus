@@ -10,7 +10,7 @@ import org.dromara.common.sensitive.core.SensitiveStrategy;
 import org.dromara.common.sensitive.handler.SensitiveHandler;
 
 /**
- * 数据脱敏注解
+ * 数据脱敏注解.
  *
  * @author zhujie
  */
@@ -19,11 +19,11 @@ import org.dromara.common.sensitive.handler.SensitiveHandler;
 @JacksonAnnotationsInside
 @JsonSerialize(using = SensitiveHandler.class)
 public @interface Sensitive {
-    SensitiveStrategy strategy();
+  SensitiveStrategy strategy();
 
-    /** 角色标识符 多个角色满足一个即可 */
-    String[] roleKey() default {};
+  /** 角色标识符 多个角色满足一个即可. */
+  String[] roleKey() default {};
 
-    /** 权限标识符 多个权限满足一个即可 */
-    String[] perms() default {};
+  /** 权限标识符 多个权限满足一个即可. */
+  String[] perms() default {};
 }

@@ -19,17 +19,17 @@ import org.springframework.stereotype.Component;
 @JobExecutor(name = "testBroadcastJob")
 public class TestBroadcastJob {
 
-    @Value("${snail-job.port}")
-    private int clientPort;
+  @Value("${snail-job.port}")
+  private int clientPort;
 
-    public ExecuteResult jobExecute(JobArgs jobArgs) {
-        int randomInt = RandomUtil.randomInt(100);
-        log.info("随机数: {}", randomInt);
-        SnailJobLog.REMOTE.info("随机数: {},客户端端口:{}", randomInt, clientPort);
-        if (randomInt < 50) {
-            throw new RuntimeException("随机数小于50，收集日志任务执行失败");
-        }
-        // 获得jobArgs 中传入的相加的两个数
-        return ExecuteResult.success("随机数大于50，收集日志任务执行成功");
+  public ExecuteResult jobExecute(JobArgs jobArgs) {
+    int randomInt = RandomUtil.randomInt(100);
+    log.info("随机数: {}", randomInt);
+    SnailJobLog.REMOTE.info("随机数: {},客户端端口:{}", randomInt, clientPort);
+    if (randomInt < 50) {
+      throw new RuntimeException("随机数小于50，收集日志任务执行失败");
     }
+    // 获得jobArgs 中传入的相加的两个数
+    return ExecuteResult.success("随机数大于50，收集日志任务执行成功");
+  }
 }

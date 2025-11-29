@@ -19,19 +19,19 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemoteTenantServiceImpl implements RemoteTenantService {
 
-    private final ISysTenantService tenantService;
+  private final ISysTenantService tenantService;
 
-    /** 根据租户id获取租户详情 */
-    @Override
-    public RemoteTenantVo queryByTenantId(String tenantId) {
-        SysTenantVo vo = tenantService.queryByTenantId(tenantId);
-        return MapstructUtils.convert(vo, RemoteTenantVo.class);
-    }
+  /** 根据租户id获取租户详情 */
+  @Override
+  public RemoteTenantVo queryByTenantId(String tenantId) {
+    SysTenantVo vo = tenantService.queryByTenantId(tenantId);
+    return MapstructUtils.convert(vo, RemoteTenantVo.class);
+  }
 
-    /** 获取租户列表 */
-    @Override
-    public List<RemoteTenantVo> queryList() {
-        List<SysTenantVo> list = tenantService.queryList(new SysTenantBo());
-        return MapstructUtils.convert(list, RemoteTenantVo.class);
-    }
+  /** 获取租户列表 */
+  @Override
+  public List<RemoteTenantVo> queryList() {
+    List<SysTenantVo> list = tenantService.queryList(new SysTenantBo());
+    return MapstructUtils.convert(list, RemoteTenantVo.class);
+  }
 }

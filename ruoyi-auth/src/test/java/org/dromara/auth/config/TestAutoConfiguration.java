@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableAutoConfiguration(
-        excludeName = {
-            "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
-            "org.redisson.spring.starter.RedissonAutoConfigurationV2",
-            "org.dromara.common.redis.config.RedisConfiguration",
-            "com.baomidou.lock.spring.boot.autoconfigure.LockAutoConfiguration"
-        })
+    excludeName = {
+      "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
+      "org.redisson.spring.starter.RedissonAutoConfigurationV2",
+      "org.dromara.common.redis.config.RedisConfiguration",
+      "com.baomidou.lock.spring.boot.autoconfigure.LockAutoConfiguration"
+    })
 public class TestAutoConfiguration {
-    // 这个类用于排除不需要的自动配置
+  // 这个类用于排除不需要的自动配置
 }

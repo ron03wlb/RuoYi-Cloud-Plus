@@ -9,46 +9,46 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Lion Li
  */
 @Disabled(
-        "原因：ruoyi-demo 是示例模块，没有完整的Spring Boot主程序和配置文件。" + "@SpringBootTest 需要一个完整的Spring Boot应用上下文")
+    "原因：ruoyi-demo 是示例模块，没有完整的Spring Boot主程序和配置文件。" + "@SpringBootTest 需要一个完整的Spring Boot应用上下文")
 @SpringBootTest
 @DisplayName("标签单元测试案例")
 public class TagUnitTest {
 
-    @Tag("dev")
-    @DisplayName("测试 @Tag dev")
-    @Test
-    public void testTagDev() {
-        System.out.println("dev");
-    }
+  @Tag("dev")
+  @DisplayName("测试 @Tag dev")
+  @Test
+  public void testTagDev() {
+    System.out.println("dev");
+  }
 
-    @Tag("prod")
-    @DisplayName("测试 @Tag prod")
-    @Test
-    public void testTagProd() {
-        System.out.println("prod");
-    }
+  @Tag("prod")
+  @DisplayName("测试 @Tag prod")
+  @Test
+  public void testTagProd() {
+    System.out.println("prod");
+  }
 
-    @Tag("local")
-    @DisplayName("测试 @Tag local")
-    @Test
-    public void testTagLocal() {
-        System.out.println("local");
-    }
+  @Tag("local")
+  @DisplayName("测试 @Tag local")
+  @Test
+  public void testTagLocal() {
+    System.out.println("local");
+  }
 
-    @Tag("exclude")
-    @DisplayName("测试 @Tag exclude")
-    @Test
-    public void testTagExclude() {
-        System.out.println("exclude");
-    }
+  @Tag("exclude")
+  @DisplayName("测试 @Tag exclude")
+  @Test
+  public void testTagExclude() {
+    System.out.println("exclude");
+  }
 
-    @BeforeEach
-    public void testBeforeEach() {
-        System.out.println("@BeforeEach ==================");
-    }
+  @BeforeEach
+  public void testBeforeEach() {
+    System.out.println("@BeforeEach ==================");
+  }
 
-    @AfterEach
-    public void testAfterEach() {
-        System.out.println("@AfterEach ==================");
-    }
+  @AfterEach
+  public void testAfterEach() {
+    System.out.println("@AfterEach ==================");
+  }
 }

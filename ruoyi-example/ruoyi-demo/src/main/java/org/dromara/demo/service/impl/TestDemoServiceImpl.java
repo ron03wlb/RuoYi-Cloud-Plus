@@ -29,88 +29,88 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestDemoServiceImpl implements ITestDemoService {
 
-    private final TestDemoMapper baseMapper;
+  private final TestDemoMapper baseMapper;
 
-    @Override
-    public TestDemoVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
-    }
+  @Override
+  public TestDemoVo queryById(Long id) {
+    return baseMapper.selectVoById(id);
+  }
 
-    @Override
-    public TableDataInfo<TestDemoVo> queryPageList(TestDemoBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
-    }
+  @Override
+  public TableDataInfo<TestDemoVo> queryPageList(TestDemoBo bo, PageQuery pageQuery) {
+    LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
+    Page<TestDemoVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    return TableDataInfo.build(result);
+  }
 
-    /** 自定义分页查询 */
-    @Override
-    public TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = baseMapper.customPageList(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
-    }
+  /** 自定义分页查询 */
+  @Override
+  public TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery) {
+    LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
+    Page<TestDemoVo> result = baseMapper.customPageList(pageQuery.build(), lqw);
+    return TableDataInfo.build(result);
+  }
 
-    @Override
-    public List<TestDemoVo> queryList(TestDemoBo bo) {
-        return baseMapper.selectVoList(buildQueryWrapper(bo));
-    }
+  @Override
+  public List<TestDemoVo> queryList(TestDemoBo bo) {
+    return baseMapper.selectVoList(buildQueryWrapper(bo));
+  }
 
-    private LambdaQueryWrapper<TestDemo> buildQueryWrapper(TestDemoBo bo) {
-        Map<String, Object> params = bo.getParams();
-        LambdaQueryWrapper<TestDemo> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getTestKey()), TestDemo::getTestKey, bo.getTestKey());
-        lqw.eq(StringUtils.isNotBlank(bo.getValue()), TestDemo::getValue, bo.getValue());
-        lqw.between(
-                params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
-                TestDemo::getCreateTime,
-                params.get("beginCreateTime"),
-                params.get("endCreateTime"));
-        lqw.orderByAsc(TestDemo::getId);
-        return lqw;
-    }
+  private LambdaQueryWrapper<TestDemo> buildQueryWrapper(TestDemoBo bo) {
+    Map<String, Object> params = bo.getParams();
+    LambdaQueryWrapper<TestDemo> lqw = Wrappers.lambdaQuery();
+    lqw.like(StringUtils.isNotBlank(bo.getTestKey()), TestDemo::getTestKey, bo.getTestKey());
+    lqw.eq(StringUtils.isNotBlank(bo.getValue()), TestDemo::getValue, bo.getValue());
+    lqw.between(
+        params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
+        TestDemo::getCreateTime,
+        params.get("beginCreateTime"),
+        params.get("endCreateTime"));
+    lqw.orderByAsc(TestDemo::getId);
+    return lqw;
+  }
 
-    @Override
-    public Boolean insertByBo(TestDemoBo bo) {
-        TestDemo add = BeanUtil.toBean(bo, TestDemo.class);
-        validEntityBeforeSave(add);
-        boolean flag = baseMapper.insert(add) > 0;
-        if (flag) {
-            bo.setId(add.getId());
-        }
-        return flag;
+  @Override
+  public Boolean insertByBo(TestDemoBo bo) {
+    TestDemo add = BeanUtil.toBean(bo, TestDemo.class);
+    validEntityBeforeSave(add);
+    boolean flag = baseMapper.insert(add) > 0;
+    if (flag) {
+      bo.setId(add.getId());
     }
+    return flag;
+  }
 
-    @Override
-    public Boolean updateByBo(TestDemoBo bo) {
-        TestDemo update = BeanUtil.toBean(bo, TestDemo.class);
-        validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
-    }
+  @Override
+  public Boolean updateByBo(TestDemoBo bo) {
+    TestDemo update = BeanUtil.toBean(bo, TestDemo.class);
+    validEntityBeforeSave(update);
+    return baseMapper.updateById(update) > 0;
+  }
 
-    /**
-     * 保存前的数据校验
-     *
-     * @param entity 实体类数据
-     */
-    private void validEntityBeforeSave(TestDemo entity) {
-        // TODO 做一些数据校验,如唯一约束
-    }
+  /**
+   * 保存前的数据校验
+   *
+   * @param entity 实体类数据
+   */
+  private void validEntityBeforeSave(TestDemo entity) {
+    // TODO 做一些数据校验,如唯一约束
+  }
 
-    @Override
-    public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if (isValid) {
-            // 做一些业务上的校验,判断是否需要校验
-            List<TestDemo> list = baseMapper.selectByIds(ids);
-            if (list.size() != ids.size()) {
-                throw new ServiceException("您没有删除权限!");
-            }
-        }
-        return baseMapper.deleteByIds(ids) > 0;
+  @Override
+  public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
+    if (isValid) {
+      // 做一些业务上的校验,判断是否需要校验
+      List<TestDemo> list = baseMapper.selectByIds(ids);
+      if (list.size() != ids.size()) {
+        throw new ServiceException("您没有删除权限!");
+      }
     }
+    return baseMapper.deleteByIds(ids) > 0;
+  }
 
-    @Override
-    public Boolean saveBatch(List<TestDemo> list) {
-        return baseMapper.insertBatch(list);
-    }
+  @Override
+  public Boolean saveBatch(List<TestDemo> list) {
+    return baseMapper.insertBatch(list);
+  }
 }

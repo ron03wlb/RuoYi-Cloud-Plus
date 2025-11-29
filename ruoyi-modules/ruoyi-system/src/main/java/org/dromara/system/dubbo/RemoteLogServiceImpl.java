@@ -23,31 +23,31 @@ import org.springframework.stereotype.Service;
 @DubboService
 public class RemoteLogServiceImpl implements RemoteLogService {
 
-    private final ISysOperLogService operLogService;
-    private final ISysLogininforService logininforService;
+  private final ISysOperLogService operLogService;
+  private final ISysLogininforService logininforService;
 
-    /**
-     * 保存系统日志
-     *
-     * @param remoteOperLogBo 日志实体
-     */
-    @Async
-    @Override
-    public void saveLog(RemoteOperLogBo remoteOperLogBo) {
-        SysOperLogBo sysOperLogBo = MapstructUtils.convert(remoteOperLogBo, SysOperLogBo.class);
-        operLogService.insertOperlog(sysOperLogBo);
-    }
+  /**
+   * 保存系统日志
+   *
+   * @param remoteOperLogBo 日志实体
+   */
+  @Async
+  @Override
+  public void saveLog(RemoteOperLogBo remoteOperLogBo) {
+    SysOperLogBo sysOperLogBo = MapstructUtils.convert(remoteOperLogBo, SysOperLogBo.class);
+    operLogService.insertOperlog(sysOperLogBo);
+  }
 
-    /**
-     * 保存访问记录
-     *
-     * @param remoteLogininforBo 访问实体
-     */
-    @Async
-    @Override
-    public void saveLogininfor(RemoteLogininforBo remoteLogininforBo) {
-        SysLogininforBo sysLogininforBo =
-                MapstructUtils.convert(remoteLogininforBo, SysLogininforBo.class);
-        logininforService.insertLogininfor(sysLogininforBo);
-    }
+  /**
+   * 保存访问记录
+   *
+   * @param remoteLogininforBo 访问实体
+   */
+  @Async
+  @Override
+  public void saveLogininfor(RemoteLogininforBo remoteLogininforBo) {
+    SysLogininforBo sysLogininforBo =
+        MapstructUtils.convert(remoteLogininforBo, SysLogininforBo.class);
+    logininforService.insertLogininfor(sysLogininforBo);
+  }
 }

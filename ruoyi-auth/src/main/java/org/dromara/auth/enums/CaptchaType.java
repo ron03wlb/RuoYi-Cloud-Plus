@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 验证码类型
+ * Captcha type enumeration defining the code generation strategy.
  *
  * @author Lion Li
  */
@@ -15,11 +15,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CaptchaType {
 
-    /** 数字 */
-    MATH(MathGenerator.class),
+  /** 数字. */
+  MATH(MathGenerator.class),
 
-    /** 字符 */
-    CHAR(RandomGenerator.class);
+  /** 字符. */
+  CHAR(RandomGenerator.class);
 
-    private final Class<? extends CodeGenerator> clazz;
+  private final Class<? extends CodeGenerator> clazz;
 }

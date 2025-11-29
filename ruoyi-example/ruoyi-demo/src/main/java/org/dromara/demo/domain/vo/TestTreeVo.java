@@ -20,28 +20,28 @@ import org.dromara.demo.domain.TestTree;
 @AutoMapper(target = TestTree.class)
 public class TestTreeVo implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    /** 主键 */
-    private Long id;
+  /** 主键 */
+  private Long id;
 
-    /** 父id */
-    @ExcelProperty(value = "父id")
-    private Long parentId;
+  /** 父id */
+  @ExcelProperty(value = "父id")
+  private Long parentId;
 
-    /** 部门id */
-    @ExcelProperty(value = "部门id")
-    private Long deptId;
+  /** 部门id */
+  @ExcelProperty(value = "部门id")
+  private Long deptId;
 
-    /** 用户id */
-    @ExcelProperty(value = "用户id")
-    private Long userId;
+  /** 用户id */
+  @ExcelProperty(value = "用户id")
+  private Long userId;
 
-    /** 树节点名 */
-    @ExcelProperty(value = "树节点名")
-    private String treeName;
+  /** 树节点名 */
+  @ExcelProperty(value = "树节点名")
+  private String treeName;
 
-    /** 创建时间 */
-    @ExcelProperty(value = "创建时间")
-    private Date createTime;
+  /** 创建时间 */
+  @ExcelProperty(value = "创建时间")
+  private Date createTime;
 }

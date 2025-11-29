@@ -21,42 +21,42 @@ import org.dromara.demo.domain.TestDemo;
 @AutoMapper(target = TestDemo.class, reverseConvertGenerate = false)
 public class TestDemoBo extends BaseEntity {
 
-    /** 主键 */
-    @NotNull(
-            message = "主键不能为空",
-            groups = {EditGroup.class})
-    private Long id;
+  /** 主键 */
+  @NotNull(
+      message = "主键不能为空",
+      groups = {EditGroup.class})
+  private Long id;
 
-    /** 部门id */
-    @NotNull(
-            message = "部门id不能为空",
-            groups = {AddGroup.class, EditGroup.class})
-    private Long deptId;
+  /** 部门id */
+  @NotNull(
+      message = "部门id不能为空",
+      groups = {AddGroup.class, EditGroup.class})
+  private Long deptId;
 
-    /** 用户id */
-    @NotNull(
-            message = "用户id不能为空",
-            groups = {AddGroup.class, EditGroup.class})
-    private Long userId;
+  /** 用户id */
+  @NotNull(
+      message = "用户id不能为空",
+      groups = {AddGroup.class, EditGroup.class})
+  private Long userId;
 
-    /** 排序号 */
-    @NotNull(
-            message = "排序号不能为空",
-            groups = {AddGroup.class, EditGroup.class})
-    private Integer orderNum;
+  /** 排序号 */
+  @NotNull(
+      message = "排序号不能为空",
+      groups = {AddGroup.class, EditGroup.class})
+  private Integer orderNum;
 
-    /** key键 */
-    @NotBlank(
-            message = "key键不能为空",
-            groups = {AddGroup.class, EditGroup.class})
-    private String testKey;
+  /** key键 */
+  @NotBlank(
+      message = "key键不能为空",
+      groups = {AddGroup.class, EditGroup.class})
+  private String testKey;
 
-    /** 值 */
-    @NotBlank(
-            message = "值不能为空",
-            groups = {AddGroup.class, EditGroup.class})
-    private String value;
+  /** 值 */
+  @NotBlank(
+      message = "值不能为空",
+      groups = {AddGroup.class, EditGroup.class})
+  private String value;
 
-    /** 版本 */
-    private Long version;
+  /** 版本 */
+  private Long version;
 }

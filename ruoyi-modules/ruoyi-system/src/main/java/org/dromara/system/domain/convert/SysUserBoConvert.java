@@ -14,17 +14,17 @@ import org.mapstruct.ReportingPolicy;
  * @author zhujie
  */
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SysUserBoConvert extends BaseMapper<RemoteUserBo, SysUserBo> {
 
-    /**
-     * RemoteUserBoToSysUserBo
-     *
-     * @param remoteUserBo 待转换对象
-     * @return 转换后对象
-     */
-    @Mapping(target = "roleIds", ignore = true)
-    @Mapping(target = "postIds", ignore = true)
-    SysUserBo convert(RemoteUserBo remoteUserBo);
+  /**
+   * RemoteUserBoToSysUserBo
+   *
+   * @param remoteUserBo 待转换对象
+   * @return 转换后对象
+   */
+  @Mapping(target = "roleIds", ignore = true)
+  @Mapping(target = "postIds", ignore = true)
+  SysUserBo convert(RemoteUserBo remoteUserBo);
 }
