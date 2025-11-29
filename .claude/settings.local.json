@@ -68,7 +68,8 @@
       "Bash(xmllint:*)",
       "Bash(done)",
       "Bash(/tmp/analyze-spotbugs.sh)",
-      "Bash(/tmp/final-issues.sh)"
+      "Bash(/tmp/final-issues.sh)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
