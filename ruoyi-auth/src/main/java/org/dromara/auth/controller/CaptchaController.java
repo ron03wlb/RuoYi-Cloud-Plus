@@ -82,8 +82,14 @@ public class CaptchaController {
     // 如果是数学验证码，使用SpEL表达式处理验证码结果
     String code = captcha.getCode();
     if (CaptchaType.MATH == captchaType) {
+      String expression = StringUtils.remove(code, "=");
+      // 安全检查：只允许数字、空格和基本数学运算符，防止 SpEL 注入
+      if (!expression.matches("[0-9+\\-*/()\\s]+")) {
+        log.warn("Invalid math captcha expression detected: {}", expression);
+        throw new IllegalStateException("Invalid captcha expression");
+      }
       ExpressionParser parser = new SpelExpressionParser();
-      Expression exp = parser.parseExpression(StringUtils.remove(code, "="));
+      Expression exp = parser.parseExpression(expression);
       code = exp.getValue(String.class);
     }
     RedisUtils.setCacheObject(verifyKey, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));

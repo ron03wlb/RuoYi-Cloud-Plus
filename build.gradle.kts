@@ -14,6 +14,8 @@ plugins {
     id("com.diffplug.spotless") version "6.25.0"
     // Checkstyle 代码质量检查插件
     id("checkstyle")
+    // SpotBugs 静态分析插件
+    id("com.github.spotbugs") version "6.0.26"
 }
 
 // ===========================================
@@ -364,6 +366,73 @@ subprojects {
             // 让 check 任务依赖 checkstyleMain（自动在 build 时运行）
             tasks.named("check") {
                 dependsOn("checkstyleMain")
+            }
+        }
+    }
+}
+
+// ===========================================
+// SpotBugs 静态分析配置
+// ===========================================
+
+// 应用 SpotBugs 到所有子项目（排除 BOM 和 example 模块）
+subprojects {
+    // 只对应用了 Java 插件的项目应用 SpotBugs
+    plugins.withId("java") {
+        // 排除示例/演示模块
+        if (!project.name.contains("demo") && !project.name.contains("example")) {
+            apply(plugin = "com.github.spotbugs")
+
+            configure<com.github.spotbugs.snom.SpotBugsExtension> {
+                // SpotBugs 工具版本
+                toolVersion = "4.8.6"
+
+                // 分析努力程度: min, less, default, more, max
+                effort = com.github.spotbugs.snom.Effort.DEFAULT
+
+                // 报告级别: low, medium, high
+                // 设置为 HIGH 只报告高优先级问题
+                reportLevel = com.github.spotbugs.snom.Confidence.HIGH
+
+                // 排除过滤器
+                excludeFilter = rootProject.file("config/spotbugs/excludeFilter.xml")
+
+                // 生成报告但不让构建失败（已配置排除规则和高优先级过滤）
+                ignoreFailures = true
+            }
+
+            // 配置 SpotBugs 任务
+            tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+                // 只分析 main 源代码，不分析 test
+                sourceDirs = files(project.extensions.getByType<SourceSetContainer>()["main"].allSource.srcDirs)
+                classDirs = files(project.extensions.getByType<SourceSetContainer>()["main"].output)
+
+                // 生成 HTML 报告（用于开发者本地查看）
+                reports.create("html") {
+                    required.set(true)
+                    outputLocation.set(file("${project.layout.buildDirectory.get()}/reports/spotbugs/main.html"))
+                    setStylesheet("fancy-hist.xsl")
+                }
+
+                // 生成 XML 报告（用于 CI/CD 集成）
+                reports.create("xml") {
+                    required.set(true)
+                    outputLocation.set(file("${project.layout.buildDirectory.get()}/reports/spotbugs/main.xml"))
+                }
+            }
+
+            // 添加 SpotBugs 插件依赖
+            dependencies {
+                // fb-contrib: 额外的程序错误检测规则
+                add("spotbugsPlugins", "com.mebigfatguy.fb-contrib:fb-contrib:7.6.8")
+
+                // find-sec-bugs: 专注于安全漏洞检测
+                add("spotbugsPlugins", "com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0")
+            }
+
+            // 让 check 任务依赖 spotbugsMain（自动在 build 时运行）
+            tasks.named("check") {
+                dependsOn("spotbugsMain")
             }
         }
     }

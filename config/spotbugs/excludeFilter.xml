@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs 排除过滤器配置
+  定义不需要进行静态分析的代码范围
+-->
+<FindBugsFilter
+    xmlns="https://github.com/spotbugs/filter/3.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+    <!-- ===========================================
+         排除测试代码
+         =========================================== -->
+    <Match>
+        <Source name="~.*[\\/]src[\\/]test[\\/]java[\\/].*"/>
+    </Match>
+
+    <!-- ===========================================
+         排除示例和演示模块
+         =========================================== -->
+    <Match>
+        <Or>
+            <Package name="~.*\.demo.*"/>
+            <Package name="~.*\.example.*"/>
+            <Class name="~.*Demo.*"/>
+            <Class name="~.*Example.*"/>
+        </Or>
+    </Match>
+
+    <!-- ===========================================
+         排除生成的代码
+         =========================================== -->
+
+    <!-- MapStruct 生成的实现类 -->
+    <Match>
+        <Class name="~.*MapperImpl"/>
+    </Match>
+
+    <Match>
+        <Class name="~.*\$.*Impl_.*"/>
+    </Match>
+
+    <!-- Lombok 生成的代码 -->
+    <Match>
+        <Or>
+            <!-- Lombok 生成的 Builder 类 -->
+            <Class name="~.*\$.*Builder"/>
+            <!-- Lombok @Data、@Getter、@Setter 生成的方法 -->
+            <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+        </Or>
+    </Match>
+
+    <!-- Lombok @Data 生成的 hashCode/equals/toString 方法中的 USBR 问题 -->
+    <Match>
+        <Or>
+            <Method name="hashCode"/>
+            <Method name="equals"/>
+            <Method name="toString"/>
+            <Method name="canEqual"/>
+        </Or>
+        <Bug pattern="USBR_UNNECESSARY_STORE_BEFORE_RETURN"/>
+    </Match>
+
+    <!-- ===========================================
+         排除特定的误报规则
+         =========================================== -->
+
+    <!-- 排除序列化 ID 警告（Spring Boot 项目通常不需要显式定义） -->
+    <Match>
+        <Bug pattern="SE_NO_SERIALVERSIONID"/>
+    </Match>
+
+    <!-- 排除内部类可以是静态的警告（有时需要访问外部类的非静态成员） -->
+    <Match>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
+
+    <!-- 排除 Spring 配置类的字段注入警告（@Autowired、@Value） -->
+    <Match>
+        <Or>
+            <Class name="~.*Configuration"/>
+            <Class name="~.*Config"/>
+            <Class name="~.*Properties"/>
+        </Or>
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR,USFW_UNSYNCHRONIZED_SINGLETON_FIELD_WRITES"/>
+    </Match>
+
+    <!-- 排除 Spring Controller、Service 等组件的字段注入警告 -->
+    <Match>
+        <Or>
+            <Class name="~.*Controller"/>
+            <Class name="~.*Service"/>
+            <Class name="~.*ServiceImpl"/>
+            <Class name="~.*Repository"/>
+            <Class name="~.*Mapper"/>
+            <Class name="~.*Handler"/>
+            <Class name="~.*Filter"/>
+            <Class name="~.*Interceptor"/>
+            <Class name="~.*Listener"/>
+        </Or>
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR,EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- ===========================================
+         排除特定包或类的检查
+         =========================================== -->
+
+    <!-- 排除从 Apache Dubbo 复制的类 -->
+    <Match>
+        <Package name="~org\.apache\.dubbo\..*"/>
+    </Match>
+
+    <!-- 排除工具类中的异常相关警告（这是有意的设计选择） -->
+    <Match>
+        <Or>
+            <Class name="~.*Utils?"/>
+            <Class name="~.*Helper"/>
+            <Class name="~.*Tool"/>
+        </Or>
+        <Bug
+            pattern="EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS,EXS_EXCEPTION_SOFTENING_RETURN_FALSE,EXS_EXCEPTION_SOFTENING_HAS_CHECKED,EXS_EXCEPTION_SOFTENING_NO_CHECKED,LEST_LOST_EXCEPTION_STACK_TRACE"/>
+    </Match>
+
+    <!-- ===========================================
+         排除风格偏好和误报警告
+         =========================================== -->
+
+    <!-- 排除字段应该是局部变量的警告（通常是 Spring 注入的字段或配置字段） -->
+    <Match>
+        <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL,WOC_WRITE_ONLY_COLLECTION_FIELD"/>
+    </Match>
+
+    <!-- 排除圈复杂度警告（需要大规模重构，且往往是业务逻辑复杂导致） -->
+    <Match>
+        <Bug pattern="CC_CYCLOMATIC_COMPLEXITY"/>
+    </Match>
+
+    <!-- 排除样式偏好警告 -->
+    <Match>
+        <Bug
+            pattern="OCP_OVERLY_CONCRETE_PARAMETER,DMC_DUBIOUS_MAP_COLLECTION,NM_SAME_SIMPLE_NAME_AS_SUPERCLASS,MOM_MISLEADING_OVERLOAD_MODEL,LO_STUTTERED_MESSAGE,CFS_CONFUSING_FUNCTION_SEMANTICS,COM_COPIED_OVERRIDDEN_METHOD,MS_SHOULD_BE_FINAL"/>
+    </Match>
+
+    <!-- 排除不成熟的类警告（IDE 生成的参数名、printStackTrace 等） -->
+    <Match>
+        <Bug
+            pattern="IMC_IMMATURE_CLASS_PRINTSTACKTRACE,IMC_IMMATURE_CLASS_IDE_GENERATED_PARAMETER_NAMES,IMC_IMMATURE_CLASS_MISSING_JAVADOC,IMC_IMMATURE_CLASS_WRONG_FIELD_ORDER,IMC_IMMATURE_CLASS_VAR_NAME,IMC_IMMATURE_CLASS_LOWER_CASE_LOG_LEVEL,IMC_IMMATURE_CLASS_NO_EQUALS,IMC_IMMATURE_CLASS_BAD_EXCEPTION"/>
+    </Match>
+
+    <!-- 排除次要优化建议 -->
+    <Match>
+        <Bug
+            pattern="DLS_DEAD_LOCAL_STORE,PSC_PRESIZE_COLLECTIONS,OI_OPTIONAL_ISSUES_USES_IMMEDIATE_EXECUTION,MUI_CONTAINSKEY_BEFORE_GET,LUI_USE_SINGLETON_LIST,UCPM_USE_CHARACTER_PARAMETERIZED_METHOD,WMI_WRONG_MAP_ITERATOR,CLI_CONSTANT_LIST_INDEX"/>
+    </Match>
+
+    <!-- 排除编码相关警告（项目统一使用 UTF-8） -->
+    <Match>
+        <Or>
+            <Class name="~.*Wrapper"/>
+            <Class name="~.*Filter"/>
+            <Package name="~.*\.filter"/>
+            <Package name="~.*\.utils"/>
+        </Or>
+        <Bug pattern="DM_DEFAULT_ENCODING,MDM_STRING_BYTES_ENCODING,DM_STRING_CTOR"/>
+    </Match>
+
+    <!-- 排除框架初始化代码中的 null 检查警告 -->
+    <Match>
+        <Or>
+            <Class name="~.*Factory"/>
+            <Class name="~.*Filter"/>
+            <Class name="~.*Wrapper"/>
+        </Or>
+        <Bug
+            pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_ON_SOME_PATH,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    </Match>
+
+    <!-- 排除低优先级代码风格警告 -->
+    <Match>
+        <Bug
+            pattern="NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,CT_CONSTRUCTOR_THROW,BED_BOGUS_EXCEPTION_DECLARATION,PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"/>
+    </Match>
+
+    <!-- 排除反射相关警告（框架代码常用） -->
+    <Match>
+        <Bug pattern="RFI_SET_ACCESSIBLE,DP_DO_INSIDE_DO_PRIVILEGED"/>
+    </Match>
+
+    <!-- 排除序列化相关警告 -->
+    <Match>
+        <Bug pattern="SE_BAD_FIELD,SE_BAD_FIELD_STORE,SE_BAD_FIELD_INNER_CLASS,SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+    </Match>
+
+    <!-- 排除框架/库相关的其他警告 -->
+    <Match>
+        <Bug
+            pattern="CNC_COLLECTION_NAMING_CONFUSION,WI_MANUALLY_ALLOCATING_AN_AUTOWIRED_BEAN,UP_UNUSED_PARAMETER,STT_STRING_PARSING_A_FIELD,BC_UNCONFIRMED_CAST,BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
+    </Match>
+
+    <!-- 排除 MyBatis Plus 数据权限处理器中的 SpEL（SQL 模板来自注解配置） -->
+    <Match>
+        <Class name="~.*DataPermissionHandler"/>
+        <Bug pattern="SPEL_INJECTION"/>
+    </Match>
+
+</FindBugsFilter>

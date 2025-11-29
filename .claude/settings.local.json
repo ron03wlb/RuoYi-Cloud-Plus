@@ -59,7 +59,16 @@
       "Bash(mvn checkstyle:checkstyle:*)",
       "Bash(git -C /Users/zhangxuanrong/Documents/Workspace/Java/Lion/RuoYi-Cloud-Plus status:*)",
       "Bash(/tmp/count-by-module2.sh)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(/dev/null -exec sh -c 'echo \"\"=== {} ===\"\" && grep -o \"\"type=\\\"\"[^\\\"\"]*\\\"\"\"\" {} | sort | uniq -c | sort -rn | head -10' ;)",
+      "Bash(/dev/null -exec sh -c 'echo \"\"=== {} ===\"\" && grep -o \"\"priority=\\\"\"[^\\\"\"]*\\\"\"\"\" {} | sort | uniq -c' ;)",
+      "Bash(for report in ./ruoyi-gateway/build/reports/spotbugs/main.xml ./ruoyi-auth/build/reports/spotbugs/main.xml ./ruoyi-common/ruoyi-common-core/build/reports/spotbugs/main.xml)",
+      "Bash(do echo '=== $(dirname $(dirname $report)) ===')",
+      "Bash(xmllint:*)",
+      "Bash(done)",
+      "Bash(/tmp/analyze-spotbugs.sh)",
+      "Bash(/tmp/final-issues.sh)"
     ],
     "deny": [],
     "ask": []
