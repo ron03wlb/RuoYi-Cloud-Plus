@@ -69,7 +69,8 @@
       "Bash(done)",
       "Bash(/tmp/analyze-spotbugs.sh)",
       "Bash(/tmp/final-issues.sh)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "WebFetch(domain:docs.vavr.io)"
     ],
     "deny": [],
     "ask": []

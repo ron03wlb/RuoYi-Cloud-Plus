@@ -231,6 +231,14 @@ subprojects {
             compileOnly(rootProject.libs.lombok)
 
             // ===========================================
+            // Vavr Functional Programming
+            // ===========================================
+            add("api", rootProject.libs.vavr)
+            add("api", rootProject.libs.vavr.jackson)
+            add("implementation", rootProject.libs.vavr)
+            add("implementation", rootProject.libs.vavr.jackson)
+
+            // ===========================================
             // 测试依赖
             // ===========================================
             testImplementation("org.springframework.boot:spring-boot-starter-test")

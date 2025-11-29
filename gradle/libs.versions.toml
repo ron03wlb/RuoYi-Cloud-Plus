@@ -53,6 +53,8 @@ snakeyaml = "2.3"
 transmittable-thread-local = "2.14.5"
 anyline = "8.7.2-20250603"
 jedis = "5.2.0"
+vavr = "0.10.4"
+vavr-jackson = "0.10.3"
 
 # ==========================================
 # 对象存储
@@ -226,6 +228,12 @@ hutool-captcha = { module = "cn.hutool:hutool-captcha", version.ref = "hutool" }
 # ==========================================
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 mapstruct-plus-spring-boot-starter = { module = "io.github.linpeilie:mapstruct-plus-spring-boot-starter", version.ref = "mapstructPlus" }
+
+# ==========================================
+# Vavr Functional Programming
+# ==========================================
+vavr = { module = "io.vavr:vavr", version.ref = "vavr" }
+vavr-jackson = { module = "io.vavr:vavr-jackson", version.ref = "vavr-jackson" }
 
 # ==========================================
 # Excel 处理
